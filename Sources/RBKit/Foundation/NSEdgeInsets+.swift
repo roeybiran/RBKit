@@ -1,4 +1,4 @@
-import AppKit
+import Foundation
 
 extension NSEdgeInsets {
   public init(_ constant: CGFloat) {

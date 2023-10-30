@@ -12,9 +12,9 @@ public struct BeepClient {
 extension BeepClient: DependencyKey {
   public static let liveValue = BeepClient(beep: NSSound.beep)
 
-#if DEBUG
+  #if DEBUG
   public static let testValue = BeepClient(beep: unimplemented("BeepClient.beep"))
-#endif
+  #endif
 }
 
 extension DependencyValues {

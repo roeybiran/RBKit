@@ -1,5 +1,7 @@
-import Foundation
 import Dependencies
+import Foundation
+
+// MARK: - UserDefaultsClient
 
 public struct UserDefaultsClient {
   public var getObject: (_ keyName: String) -> Any?
@@ -24,6 +26,8 @@ public struct UserDefaultsClient {
   public var removeObject: (_ keyName: String) -> Void
   public var registerDefaults: ([String: Any]) -> Void
 }
+
+// MARK: DependencyKey
 
 extension UserDefaultsClient: DependencyKey {
   public static let liveValue: Self = {
@@ -50,7 +54,7 @@ extension UserDefaultsClient: DependencyKey {
       registerDefaults: suite.register(defaults:))
   }()
 
-#if DEBUG
+  #if DEBUG
   public static let testValue = Self(
     getObject: { _ in unimplemented("getObject", placeholder: nil) },
     getUrl: { _ in unimplemented("getUrl", placeholder: nil) },
@@ -71,7 +75,7 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { _, _ in unimplemented("setURL") },
     removeObject: { _ in unimplemented("removeObject") },
     registerDefaults: { _ in unimplemented("registerDefaults") })
-#endif
+  #endif
 
 }
 

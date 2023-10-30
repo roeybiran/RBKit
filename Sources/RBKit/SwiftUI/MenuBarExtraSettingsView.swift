@@ -7,17 +7,15 @@ public struct MenuBarExtraSettingsView: View {
 
   // MARK: Lifecycle
 
-	let helpText: String?
-
-	public init(statusItem: NSStatusItem, helpText: String? = nil) {
+  public init(statusItem: NSStatusItem, helpText: String? = nil) {
     self.statusItem = statusItem
-		self.helpText = helpText
+    self.helpText = helpText
     isChecked = statusItem.isVisible
   }
 
-  // MARK: Internal
+  // MARK: Public
 
-	public var body: some View {
+  public var body: some View {
     Toggle(isOn: $isChecked) {
       Text("Show Menu Bar Extra")
       helpText.map { Text($0).foregroundColor(.secondary) }
@@ -26,6 +24,10 @@ public struct MenuBarExtraSettingsView: View {
       statusItem.isVisible = newValue
     }
   }
+
+  // MARK: Internal
+
+  let helpText: String?
 
   // MARK: Private
 
@@ -41,8 +43,7 @@ struct MenuBarExtraSettingsView_Previews: PreviewProvider {
     Form {
       MenuBarExtraSettingsView(
         statusItem: NSStatusItem(),
-        helpText: "When hiding the menu bar extra, the app remains accessible from the Finder."
-      )
+        helpText: "When hiding the menu bar extra, the app remains accessible from the Finder.")
     }.settingsStyle()
   }
 }

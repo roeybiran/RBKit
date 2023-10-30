@@ -11,7 +11,7 @@ open class TextTableCellView: NSTableCellView {
     addSubview(_textField!)
   }
 
-	required public init?(coder _: NSCoder) {
+  required public init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 

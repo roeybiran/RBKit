@@ -5,7 +5,8 @@ import Foundation
 
 public struct FileManagerClient {
   public var urls: (_ directory: FileManager.SearchPathDirectory, _ domainMask: FileManager.SearchPathDomainMask) -> [URL]
-  public var createDirectory: (_ atURL: URL, _ withIntermediateDirectories: Bool, _ attributes: [FileAttributeKey: Any]?) throws -> Void
+  public var createDirectory: (_ atURL: URL, _ withIntermediateDirectories: Bool, _ attributes: [FileAttributeKey: Any]?) throws
+    -> Void
 }
 
 // MARK: DependencyKey

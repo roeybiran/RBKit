@@ -1,7 +1,7 @@
 import XCTest
 @testable import RBKit
 
-final class KeyEventTests: XCTestCase {
+final class KeyEvent_Tests: XCTestCase {
   func test_keyEventInit() {
     let actual = KeyEvent(keyCode: 0, characters: "a", charactersIgnoringModifiers: "a")
     let expected = KeyEvent(

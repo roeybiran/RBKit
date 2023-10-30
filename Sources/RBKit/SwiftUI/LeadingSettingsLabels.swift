@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - LeadingSettingsLabels
+
 public struct LeadingSettingsLabels: View {
   let title: String
   let subtitle: String?
@@ -21,8 +23,10 @@ public struct LeadingSettingsLabels: View {
   }
 }
 
+// MARK: - LeadingSettingsLabels_Previews
+
 struct LeadingSettingsLabels_Previews: PreviewProvider {
-    static var previews: some View {
-      LeadingSettingsLabels(title: "Hello", subtitle: "Foobar")
-    }
+  static var previews: some View {
+    LeadingSettingsLabels(title: "Hello", subtitle: "Foobar")
+  }
 }

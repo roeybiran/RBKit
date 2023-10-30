@@ -1,7 +1,7 @@
 import AppKit.NSApplication
 import Dependencies
 
-// MARK: - NSAppClient
+// MARK: - NSApplicationClient
 
 public struct NSApplicationClient {
   public var terminate: (_ sender: Any?) -> Void

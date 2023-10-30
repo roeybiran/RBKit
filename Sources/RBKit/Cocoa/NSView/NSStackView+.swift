@@ -1,6 +1,9 @@
 import Cocoa
 
 extension NSStackView {
+
+  // MARK: Lifecycle
+
   /// A convenience initializer for NSStackView.
   /// - Parameters:
   ///   - orientation: `.horizontal` by default.
@@ -14,8 +17,8 @@ extension NSStackView {
     spacing: CGFloat = 8,
     edgeInsets: NSEdgeInsets = .init(.zero),
     distribution: NSStackView.Distribution = .fill,
-    @StackViewBuilder arrangedSubviews: () -> [NSView]
-  ) {
+    @StackViewBuilder arrangedSubviews: () -> [NSView])
+  {
     self.init()
     self.orientation = orientation
     self.alignment = alignment ?? (orientation == .horizontal ? .centerY : .centerX)
@@ -28,6 +31,8 @@ extension NSStackView {
     }
   }
 
+  // MARK: Public
+
   public func addArrangedSubviews(_ views: NSView...) {
     views.forEach {
       addArrangedSubview($0)
@@ -35,6 +40,8 @@ extension NSStackView {
   }
 }
 
+
+// MARK: - StackViewBuilder
 
 @resultBuilder
 public enum StackViewBuilder {

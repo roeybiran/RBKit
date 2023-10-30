@@ -25,7 +25,7 @@ let package = Package(
     .target(
       name: "RBKit",
       dependencies: [
-        .product(name: "Dependencies", package: "swift-dependencies")
+        .product(name: "Dependencies", package: "swift-dependencies"),
       ]),
     .target(
       name: "RBKitTestSupport",

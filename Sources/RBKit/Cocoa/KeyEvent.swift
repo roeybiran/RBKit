@@ -1,5 +1,5 @@
-import Cocoa
 import Carbon
+import Cocoa
 
 // MARK: - KeyEvent
 
@@ -13,8 +13,8 @@ public struct KeyEvent: Equatable {
   let isARepeat: Bool
 }
 
-public extension KeyEvent {
-  init(
+extension KeyEvent {
+  public init(
     keyCode: UInt16,
     characters: String,
     charactersIgnoringModifiers: String,
@@ -26,40 +26,38 @@ public extension KeyEvent {
     self.characters = characters
     self.charactersIgnoringModifiers = charactersIgnoringModifiers
     self.type = type
-    self.modifierFlags = modifiers
-    self.isARepeat = repeating
+    modifierFlags = modifiers
+    isARepeat = repeating
   }
 
-  init(event: NSEvent) {
-    self.keyCode = event.keyCode
-    self.characters = event.characters
-    self.charactersIgnoringModifiers = event.charactersIgnoringModifiers
-    self.type = event.type
-    self.modifierFlags = event.modifierFlags
-    self.isARepeat = event.isARepeat
+  public init(event: NSEvent) {
+    keyCode = event.keyCode
+    characters = event.characters
+    charactersIgnoringModifiers = event.charactersIgnoringModifiers
+    type = event.type
+    modifierFlags = event.modifierFlags
+    isARepeat = event.isARepeat
   }
 }
 
-public extension KeyEvent {
-  static func downArrow(modifiers: NSEvent.ModifierFlags = []) -> Self {
+extension KeyEvent {
+  public static func downArrow(modifiers: NSEvent.ModifierFlags = []) -> Self {
     KeyEvent(
       keyCode: UInt16(kVK_DownArrow),
       characters: "\(NSEvent.SpecialKey.downArrow.unicodeScalar)",
       charactersIgnoringModifiers: "\(NSEvent.SpecialKey.downArrow.unicodeScalar)",
-      modifiers: modifiers
-    )
+      modifiers: modifiers)
   }
 
-  static func upArrow(modifiers: NSEvent.ModifierFlags = []) -> Self {
+  public static func upArrow(modifiers: NSEvent.ModifierFlags = []) -> Self {
     KeyEvent(
       keyCode: UInt16(kVK_UpArrow),
       characters: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
       charactersIgnoringModifiers: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
-      modifiers: modifiers
-    )
+      modifiers: modifiers)
   }
 
-  static func pageUp() -> Self {
+  public static func pageUp() -> Self {
     .init(
       keyCode: UInt16(kVK_PageUp),
       characters: NSEvent.SpecialKey.pageUp.character,
@@ -67,7 +65,7 @@ public extension KeyEvent {
       modifiers: .init(rawValue: 0x800100))
   }
 
-  static func pageDown() -> Self {
+  public static func pageDown() -> Self {
     .init(
       keyCode: UInt16(kVK_PageDown),
       characters: NSEvent.SpecialKey.pageDown.character,
@@ -75,14 +73,14 @@ public extension KeyEvent {
       modifiers: .init(rawValue: 0x800100))
   }
 
-  static func home() -> Self {
+  public static func home() -> Self {
     .init(
       keyCode: UInt16(kVK_Home),
       characters: NSEvent.SpecialKey.home.character,
       charactersIgnoringModifiers: NSEvent.SpecialKey.home.character)
   }
 
-  static func end() -> Self {
+  public static func end() -> Self {
     .init(
       keyCode: UInt16(kVK_End),
       characters: NSEvent.SpecialKey.end.character,
@@ -97,8 +95,8 @@ extension NSEvent.SpecialKey {
   }
 }
 
-public extension NSView {
-  func keyDown(with event: KeyEvent) {
+extension NSView {
+  public func keyDown(with event: KeyEvent) {
     guard
       let characters = event.characters,
       let charactersIgnoringModifiers = event.charactersIgnoringModifiers,

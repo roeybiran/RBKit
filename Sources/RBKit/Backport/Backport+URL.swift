@@ -21,12 +21,22 @@ extension Backport where Content == URL? {
 
 @available(macOS, obsoleted: 13.0, message: "")
 extension Backport where Content == URL {
-  public func appending(component: String, directoryHint: URL._DirectoryHint = .inferFromPath) -> Backport<URL> {
+  public func appending(component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath) -> Backport<URL> {
     if #available(macOS 13.0, *) {
       return Backport(content.appending(component: component, directoryHint: directoryHint.directoryHint()))
     } else {
-      return Backport(content.appendingPathComponent(component, isDirectory: directoryHint == .isDirectory))
+      return Backport(content.appendingPathComponent(String(component), isDirectory: directoryHint == .isDirectory))
     }
+  }
+
+  public mutating func append(component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath) {
+    var copy = self.content
+    if #available(macOS 13.0, *) {
+      copy.append(component: component, directoryHint: directoryHint.directoryHint())
+    } else {
+      copy.appendPathComponent(String(component), isDirectory: directoryHint == .isDirectory)
+    }
+    self = .init(copy)
   }
 
   public func appending(queryItems: [URLQueryItem]) -> Backport<URL> {

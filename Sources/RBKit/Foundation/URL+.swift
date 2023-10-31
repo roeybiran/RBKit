@@ -35,7 +35,7 @@ extension URL {
   @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
   public func appending(queryItems: [URLQueryItem]) -> URL {
     if #available(macOS 13.0, *) {
-      Self.appending(queryItems:)(self)(queryItems)
+      Foundation.URL.appending(queryItems:)(self)(queryItems)
     } else {
       self._appending(queryItems: queryItems)
     }

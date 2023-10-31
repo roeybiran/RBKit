@@ -12,7 +12,14 @@
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
-
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "RBKitTests",
+        "name" : "RBKitTests"
+      }
+    }
   ],
   "version" : 1
 }

@@ -32,10 +32,9 @@ extension URL {
 
   public func appending(queryItems: [URLQueryItem]) -> URL {
     if #available(macOS 13.0, *) {
-      let f = Foundation.URL.appending(queryItems:)
-      return f(self)(queryItems)
+      Self.appending(queryItems:)(self)(queryItems)
     } else {
-      return self._appending(queryItems: queryItems)
+      self._appending(queryItems: queryItems)
     }
   }
 }

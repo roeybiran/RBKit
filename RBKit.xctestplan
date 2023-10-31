@@ -1,25 +1,18 @@
 {
   "configurations" : [
     {
-      "id" : "72F23833-CB7D-47BC-BAD9-D980C23D8C14",
-      "name" : "Test Scheme Action",
+      "id" : "E3EC7A2E-A3CF-4BCA-B67E-F56FAC48CD63",
+      "name" : "Configuration 1",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-
+    "testTimeoutsEnabled" : true
   },
   "testTargets" : [
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "RBKitTests",
-        "name" : "RBKitTests"
-      }
-    }
+
   ],
   "version" : 1
 }

@@ -3,7 +3,7 @@ import XCTest
 public func XCTAssertNoDifference<T: Equatable>(
   _ expression1: T,
   _ expression2: T,
-  showDiff: Bool = false,
+  showDiffInFileMerge: Bool,
   file: StaticString = #file,
   line: UInt = #line)
 {
@@ -18,7 +18,7 @@ public func XCTAssertNoDifference<T: Equatable>(
   dump(expression1, to: &output1)
   dump(expression2, to: &output2)
 
-  guard showDiff else { return }
+  guard showDiffInFileMerge else { return }
   showInFileMerge(output1, output2)
 }
 

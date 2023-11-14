@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 /// An `NSScrollView` with an `intrinsicContentSize`, derived from a enclosed `NSTableView`.
 final class DynamicHeightScrollView: NSScrollView {

@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 extension NSTextField {
   public static func label(

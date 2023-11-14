@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 @resultBuilder
 public enum MenuBuilder {

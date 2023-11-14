@@ -23,7 +23,7 @@ extension DiskClient: DependencyKey {
 }
 
 extension DependencyValues {
-  public var fileClient: DiskClient {
+  public var diskClient: DiskClient {
     get { self[DiskClient.self] }
     set { self[DiskClient.self] = newValue }
   }

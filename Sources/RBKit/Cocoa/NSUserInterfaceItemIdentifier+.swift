@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 // MARK: - NSUserInterfaceItemIdentifier + ExpressibleByStringLiteral
 

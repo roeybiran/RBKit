@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 extension NSLayoutConstraint {
   public static func activate(@ConstraintsBuilder constraints: () -> [NSLayoutConstraint]) {

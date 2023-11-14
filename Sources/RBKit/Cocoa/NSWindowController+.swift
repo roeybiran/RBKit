@@ -1,4 +1,4 @@
-import Cocoa
+import AppKit
 
 extension NSWindowController {
   public func showAndCenter(_ sender: Any?) {

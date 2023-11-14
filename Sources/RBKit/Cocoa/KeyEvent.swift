@@ -1,5 +1,5 @@
+import AppKit
 import Carbon
-import Cocoa
 
 // MARK: - KeyEvent
 

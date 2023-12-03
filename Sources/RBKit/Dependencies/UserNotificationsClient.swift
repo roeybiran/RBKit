@@ -19,6 +19,8 @@ extension UserNotificationsClient: DependencyKey {
       }
     }
   }()
+
+  public static let testValue = UserNotificationsClient(add: unimplemented("UserNotificationsClient.add"))
 }
 
 extension DependencyValues {

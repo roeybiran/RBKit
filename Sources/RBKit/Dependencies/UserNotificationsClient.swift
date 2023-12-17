@@ -4,23 +4,23 @@ import UserNotifications
 // MARK: - UserNotificationsClient
 
 public struct UserNotificationsClient {
-  public var add: (_ title: String, _ body: String) -> Void
+  public var requestAuthorization: (_ options: UNAuthorizationOptions) async throws -> Bool
+  public var add: (_ request: UNNotificationRequest) async throws -> Void
 }
 
 extension UserNotificationsClient: DependencyKey {
   public static let liveValue: UserNotificationsClient = {
     let center = UNUserNotificationCenter.current()
-    let content = UNMutableNotificationContent()
-    return UserNotificationsClient { _, _ in
-      center.requestAuthorization { granted, _ in
-        if granted {
-          center.add(UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil))
-        }
-      }
-    }
+    return Self(
+      requestAuthorization: center.requestAuthorization,
+      add: center.add
+    )
   }()
 
-  public static let testValue = UserNotificationsClient(add: unimplemented("UserNotificationsClient.add"))
+  public static let testValue = UserNotificationsClient(
+    requestAuthorization: unimplemented("requestAuthorization", placeholder: true),
+    add: unimplemented("UserNotificationsClient.add")
+  )
 }
 
 extension DependencyValues {

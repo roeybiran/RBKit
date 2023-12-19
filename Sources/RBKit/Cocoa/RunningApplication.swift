@@ -53,7 +53,7 @@ public struct RunningApplication: Equatable, Sendable {
 }
 
 extension RunningApplication {
-  init(runningApplication app: NSRunningApplication) {
+  public init(runningApplication app: NSRunningApplication) {
     self.init(
       isTerminated: app.isTerminated,
       isFinishedLaunching: app.isFinishedLaunching,

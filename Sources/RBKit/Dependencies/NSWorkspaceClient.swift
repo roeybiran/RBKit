@@ -1,10 +1,12 @@
 import AppKit.NSWorkspace
 import Dependencies
+import UniformTypeIdentifiers
 
 // MARK: - NSWorkspaceClient
 
 public struct NSWorkspaceClient {
-  public var iconForFile: (_ path: String) -> NSImage
+  public var iconForFile: (_ fullPath: String) -> NSImage
+  public var iconFor: (_ contentType: UTType) -> NSImage
   public var open: (_ url: URL) -> Bool
   public var menuBarOwningApplications: () -> AsyncStream<NSRunningApplication?>
 }
@@ -14,6 +16,7 @@ public struct NSWorkspaceClient {
 extension NSWorkspaceClient: DependencyKey {
   public static let liveValue = NSWorkspaceClient(
     iconForFile: NSWorkspace.shared.icon(forFile:),
+    iconFor: NSWorkspace.shared.icon(for:),
     open: NSWorkspace.shared.open,
     menuBarOwningApplications: {
       let publisher = NSWorkspace.shared.publisher(for: \.menuBarOwningApplication)
@@ -34,7 +37,8 @@ extension NSWorkspaceClient: DependencyKey {
     })
 
   public static let testValue = NSWorkspaceClient(
-    iconForFile: unimplemented("terminate"),
+    iconForFile: unimplemented("iconForFile"),
+    iconFor: unimplemented("iconFor"),
     open: unimplemented("open"),
     menuBarOwningApplications: unimplemented("menuBarOwningApplications"))
 }

@@ -18,15 +18,15 @@ public struct UserDefaultsClient {
   public var float: (_ forKey: String) -> Float = { _ in 0 }
   public var double: (_ forKey: String) -> Double = { _ in 0 }
 
-  public var setAny: (_ value: Any?, _ defaultName: String) -> Void
-  public var setFloat: (_ value: Float, _ defaultName: String) -> Void
-  public var setDouble: (_ value: Double, _ defaultName: String) -> Void
-  public var setInt: (_ value: Int, _ defaultName: String) -> Void
-  public var setBool: (_ value: Bool, _ defaultName: String) -> Void
-  public var setURL: (_ value: URL?, _ defaultName: String) -> Void
+  public var setAny: (_ value: Any?, _ forKey: String) -> Void
+  public var setFloat: (_ value: Float, _ forKey: String) -> Void
+  public var setDouble: (_ value: Double, _ forKey: String) -> Void
+  public var setInt: (_ value: Int, _ forKey: String) -> Void
+  public var setBool: (_ value: Bool, _ forKey: String) -> Void
+  public var setURL: (_ value: URL?, _ forKey: String) -> Void
 
-  public var removeObject: (_ defaultName: String) -> Void
-  public var register: (_ registrationDictionary: [String: Any]) -> Void
+  public var removeObject: (_ forKey: String) -> Void
+  public var register: (_ defaults: [String: Any]) -> Void
 }
 
 // MARK: DependencyKey

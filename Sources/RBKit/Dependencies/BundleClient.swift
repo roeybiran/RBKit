@@ -1,8 +1,10 @@
 import Dependencies
+import DependenciesMacros
 import Foundation
 
 // MARK: - BundleClient
 
+@DependencyClient
 public struct BundleClient {
   public var bundleIdentifier: () -> String?
 }
@@ -10,16 +12,8 @@ public struct BundleClient {
 // MARK: DependencyKey
 
 extension BundleClient: DependencyKey {
-  public static let liveValue = BundleClient(
-    bundleIdentifier: { Bundle.main.bundleIdentifier })
-
-  #if DEBUG
-  public static let testValue = BundleClient(
-    bundleIdentifier: unimplemented("BundleClient.bundleIdentifier"))
-
-  public static let placeholder = BundleClient(
-    bundleIdentifier: { "BUNDLE_ID" })
-  #endif
+  public static let liveValue = BundleClient(bundleIdentifier: { Bundle.main.bundleIdentifier })
+  public static let testValue = BundleClient()
 }
 
 extension DependencyValues {

@@ -1,46 +1,51 @@
 import AppKit.NSWorkspace
 import Dependencies
+import DependenciesMacros
 import UniformTypeIdentifiers
 
 // MARK: - NSWorkspaceClient
 
+@DependencyClient
 public struct NSWorkspaceClient {
-  public var iconForFile: (_ fullPath: String) -> NSImage
-  public var iconFor: (_ contentType: UTType) -> NSImage
-  public var open: (_ url: URL) -> Bool
-  public var menuBarOwningApplications: () -> AsyncStream<NSRunningApplication?>
+  public var notificationCenter: () -> NotificationCenter = { .init() }
+  public var iconForFile: (_ fullPath: String) -> NSImage = { _ in .init() }
+  public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
+  public var open: (_ url: URL) -> Bool = { _ in false }
+  public var frontmostApplication: () -> NSRunningApplication? = { nil }
+  public var runningApplications: () -> [NSRunningApplication] = { [] }
+  public var menuBarOwningApplication: () -> AsyncStream<NSRunningApplication?> = { .finished }
+  
 }
 
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
   public static let liveValue = NSWorkspaceClient(
+    notificationCenter: { NSWorkspace.shared.notificationCenter },
     iconForFile: NSWorkspace.shared.icon(forFile:),
     iconFor: NSWorkspace.shared.icon(for:),
     open: NSWorkspace.shared.open,
-    menuBarOwningApplications: {
+    frontmostApplication: { NSWorkspace.shared.frontmostApplication },
+    runningApplications: { NSWorkspace.shared.runningApplications },
+    menuBarOwningApplication: {
       let publisher = NSWorkspace.shared.publisher(for: \.menuBarOwningApplication)
+      return AsyncStream(publisher.values) // doesn't work!
       if #available(macOS 999.0, *) {
-        return AsyncStream(publisher.values) // doesn't work!
       } else {
         return AsyncStream { continuation in
           let cancellable = publisher
             .sink { app in
               continuation.yield(app)
             }
-
           continuation.onTermination = { _ in
             cancellable.cancel()
           }
         }
       }
-    })
+    }
+  )
 
-  public static let testValue = NSWorkspaceClient(
-    iconForFile: unimplemented("iconForFile"),
-    iconFor: unimplemented("iconFor"),
-    open: unimplemented("open"),
-    menuBarOwningApplications: unimplemented("menuBarOwningApplications"))
+  public static let testValue = NSWorkspaceClient()
 }
 
 extension DependencyValues {

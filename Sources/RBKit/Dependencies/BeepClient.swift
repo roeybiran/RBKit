@@ -1,8 +1,10 @@
 import AppKit.NSSound
 import Dependencies
+import DependenciesMacros
 
 // MARK: - BeepClient
 
+@DependencyClient
 public struct BeepClient {
   public var beep: () -> Void
 }
@@ -11,10 +13,7 @@ public struct BeepClient {
 
 extension BeepClient: DependencyKey {
   public static let liveValue = BeepClient(beep: NSSound.beep)
-
-  #if DEBUG
-  public static let testValue = BeepClient(beep: unimplemented("BeepClient.beep"))
-  #endif
+  public static let testValue = BeepClient()
 }
 
 extension DependencyValues {

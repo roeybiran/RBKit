@@ -1,32 +1,21 @@
 import Dependencies
+import DependenciesMacros
 import Foundation
 
 // MARK: - NotificationCenterClient
 
+@DependencyClient
 public struct NotificationCenterClient {
-  public var notifications: (_ name: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification>
+  public var notifications: (_ name: Notification.Name, _ object: AnyObject?) -> NotificationCenter.Notifications = { NotificationCenter().notifications(named: $0, object: $1) }
 }
 
 // MARK: DependencyKey
 
 extension NotificationCenterClient: DependencyKey {
-  public static let liveValue: NotificationCenterClient = Self(
-    notifications: { name, object in
-      AsyncStream<Notification> { continuation in
-        let cancellable = NotificationCenter
-          .default
-          .publisher(for: name, object: object)
-          .sink {
-            continuation.yield($0)
-          }
-
-        continuation.onTermination = { _ in
-          cancellable.cancel()
-        }
-      }
-    })
-
-  public static let testValue = NotificationCenterClient(notifications: unimplemented("NotificationCenterClient.notifications"))
+  public static let liveValue = NotificationCenterClient(
+    notifications: { NotificationCenter.default.notifications(named: $0, object: $1) }
+  )
+  public static let testValue = NotificationCenterClient()
 }
 
 extension DependencyValues {

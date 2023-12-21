@@ -28,18 +28,16 @@ extension NSWorkspaceClient: DependencyKey {
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: {
-      let publisher = NSWorkspace.shared.publisher(for: \.menuBarOwningApplication)
-      return AsyncStream(publisher.values) // doesn't work!
-      if #available(macOS 999.0, *) {
-      } else {
-        return AsyncStream { continuation in
-          let cancellable = publisher
-            .sink { app in
-              continuation.yield(app)
-            }
-          continuation.onTermination = { _ in
-            cancellable.cancel()
+      // return AsyncStream(publisher.values) // doesn't work!
+      return AsyncStream { continuation in
+        let cancellable = NSWorkspace
+          .shared
+          .publisher(for: \.menuBarOwningApplication)
+          .sink { app in
+            continuation.yield(app)
           }
+        continuation.onTermination = { _ in
+          cancellable.cancel()
         }
       }
     }

@@ -2,6 +2,7 @@ import XCTest
 @testable import RBKit
 
 final class CollectionPlus_Tests: XCTestCase {
+
   // MARK: - Collection+
   
   func test_safe_subscript() {

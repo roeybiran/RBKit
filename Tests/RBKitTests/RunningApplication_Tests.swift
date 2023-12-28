@@ -1,4 +1,5 @@
 import XCTest
+import CustomDump
 @testable import RBKit
 
 final class RunningApplicationTests: XCTestCase {
@@ -12,7 +13,7 @@ final class RunningApplicationTests: XCTestCase {
   // MARK: - TargetAppTests
   func test_targetApp_init() {
     let app = _App()
-    let a = RunningApplication(runningApplication: app)
+    let a = RunningApplication(app: app)
     let b = RunningApplication(
       isTerminated: app.isTerminated,
       isFinishedLaunching: app.isFinishedLaunching,
@@ -20,9 +21,15 @@ final class RunningApplicationTests: XCTestCase {
       isActive: app.isActive,
       ownsMenuBar: app.ownsMenuBar,
       activationPolicy: app.activationPolicy,
+      localizedName: app.localizedName,
+      bundleIdentifier: app.bundleIdentifier,
+      bundleURL: app.bundleURL,
+      executableURL: app.executableURL,
       processIdentifier: app.processIdentifier,
+      launchDate: app.launchDate,
       executableArchitecture: app.executableArchitecture
     )
-    XCTAssertEqual(a, b)
+    XCTAssertNoDifference(a, b)
+
   }
 }

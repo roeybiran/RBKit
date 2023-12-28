@@ -9,6 +9,15 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "RBKit",
+          "name" : "RBKit"
+        }
+      ]
+    },
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [

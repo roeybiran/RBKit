@@ -7,7 +7,9 @@ open class TextTableCellView: NSTableCellView {
   public override init(frame frameRect: NSRect) {
     super.init(frame: frameRect)
     identifier = "\(Self.self)"
-    _textField = NSTextField()
+    _textField = NSTextField(labelWithString: "")
+    _textField?.textColor = .controlTextColor
+    _textField?.backgroundColor = .controlColor
     addSubview(_textField!)
   }
 

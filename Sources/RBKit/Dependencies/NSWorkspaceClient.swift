@@ -7,7 +7,7 @@ import UniformTypeIdentifiers
 
 @DependencyClient
 public struct NSWorkspaceClient {
-  public var notificationCenter: () -> NotificationCenter = { .init() }
+  public var notificationCenter: () -> NotificationCenterClient = { .testValue }
   public var iconForFile: (_ fullPath: String) -> NSImage = { _ in .init() }
   public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var open: (_ url: URL) -> Bool = { _ in false }
@@ -17,11 +17,21 @@ public struct NSWorkspaceClient {
   
 }
 
+extension NotificationCenterClient {
+  static let nsWorkspace: NotificationCenterClient = {
+    let instance = NSWorkspace.shared.notificationCenter
+    return Self(
+      post: instance.post(_:),
+      notifications: instance.notifications(named:object:)
+    )
+  }()
+}
+
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
   public static let liveValue = NSWorkspaceClient(
-    notificationCenter: { NSWorkspace.shared.notificationCenter },
+    notificationCenter: { .nsWorkspace },
     iconForFile: NSWorkspace.shared.icon(forFile:),
     iconFor: NSWorkspace.shared.icon(for:),
     open: NSWorkspace.shared.open,

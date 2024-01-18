@@ -21,8 +21,8 @@ extension NotificationCenterClient {
   static let nsWorkspace: NotificationCenterClient = {
     let instance = NSWorkspace.shared.notificationCenter
     return Self(
-      post: instance.post(_:),
-      notifications: instance.notifications(named:object:)
+      post: instance.post,
+      notifications: instance.notifications
     )
   }()
 }

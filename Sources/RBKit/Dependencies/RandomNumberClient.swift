@@ -1,19 +1,18 @@
 import Dependencies
+import DependenciesMacros
 
 // MARK: - RandomNumberClient
 
+@DependencyClient
 public struct RandomNumberClient {
-  public var generate: (_ range: Range<Double>) -> Double
+  public var generate: (_ range: Range<Double>) -> Double = { _ in .zero }
 }
 
 // MARK: DependencyKey
 
 extension RandomNumberClient: DependencyKey {
   public static let liveValue = Self(generate: Double.random)
-
-  #if DEBUG
-  public static let testValue = Self(generate: { _ in 999 })
-  #endif
+  public static let testValue = Self()
 }
 
 extension DependencyValues {

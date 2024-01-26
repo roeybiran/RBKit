@@ -140,7 +140,7 @@ public struct NSEventValue {
 }
 
 extension NSEventValue {
-  init(nsEvent: NSEvent) {
+  public init(nsEvent: NSEvent) {
     type = nsEvent.type
     modifierFlags = nsEvent.modifierFlags
     timestamp = nsEvent.timestamp

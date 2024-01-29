@@ -5,12 +5,12 @@ import DependenciesMacros
 // MARK: - EventMonitor
 
 @DependencyClient
-public struct EventMonitorClient {
+public struct NSEventClient {
   public var globalEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
   public var localEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
 }
 
-extension EventMonitorClient: DependencyKey {
+extension NSEventClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
@@ -36,8 +36,8 @@ extension EventMonitorClient: DependencyKey {
 }
 
 extension DependencyValues {
-  public var eventMonitor: EventMonitorClient {
-    get { self[EventMonitorClient.self] }
-    set { self[EventMonitorClient.self] = newValue }
+  public var nsEventClient: NSEventClient {
+    get { self[NSEventClient.self] }
+    set { self[NSEventClient.self] = newValue }
   }
 }

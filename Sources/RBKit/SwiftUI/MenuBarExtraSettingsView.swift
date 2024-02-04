@@ -44,6 +44,7 @@ struct MenuBarExtraSettingsView_Previews: PreviewProvider {
       MenuBarExtraSettingsView(
         statusItem: NSStatusItem(),
         helpText: "When hiding the menu bar extra, the app remains accessible from the Finder.")
-    }.settingsStyle()
+    }
+    .settingsStyle()
   }
 }

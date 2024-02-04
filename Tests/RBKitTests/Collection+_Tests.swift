@@ -1,28 +1,23 @@
 import XCTest
 @testable import RBKit
 
-final class CollectionPlus_Tests: XCTestCase {
-
-  // MARK: - Collection+
-  
-  func test_safe_subscript() {
-    let a = [1, 2, 3]
-    XCTAssertNil(a[safe: 3])
-    XCTAssertNotNil(a[safe: 2])
+final class ChangeValueTests: XCTestCase {
+  func test_insert() {
+    let a = CollectionDifference.Change.insert(offset: 1, element: "a", associatedWith: nil).step()
+    let b = CollectionDifference.Change.Step.inserted(element: "a", at: 1)
+    XCTAssertEqual(a, b)
   }
 
-  func test_isNotEmpty() {
-    let a = [1, 2, 3]
-    XCTAssertTrue(a.isNotEmpty)
+  func test_remove() {
+    let a = CollectionDifference.Change.remove(offset: 2, element: "b", associatedWith: nil).step()
+    let b = CollectionDifference.Change.Step.removed(element: "b", from: 2)
+    XCTAssertEqual(a, b)
   }
 
-  func test_itemAt() {
-    let a = [1, 2, 3]
-    XCTAssertEqual(a.item(at: 1), 2)
-  }
-
-  func test_itemOptionallyAt() {
-    let a = [1, 2, 3]
-    XCTAssertEqual(a.item(optionallyAt: 1), 2)
+  func test_move() {
+    let a = CollectionDifference.Change.remove(offset: 2, element: "c", associatedWith: 9).step()
+    let b = CollectionDifference.Change.Step.moved(element: "c", from: 2, to: 9)
+    XCTAssertEqual(a, b)
   }
 }
+

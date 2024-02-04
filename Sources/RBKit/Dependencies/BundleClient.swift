@@ -1,6 +1,7 @@
+import Foundation
+
 import Dependencies
 import DependenciesMacros
-import Foundation
 
 // MARK: - BundleClient
 

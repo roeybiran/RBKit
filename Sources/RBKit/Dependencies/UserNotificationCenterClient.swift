@@ -5,23 +5,23 @@ import UserNotifications
 // MARK: - UserNotificationsClient
 
 @DependencyClient
-public struct UserNotificationsClient {
+public struct UserNotificationCenterClient {
   public var requestAuthorization: (_ options: UNAuthorizationOptions) async throws -> Bool
   public var add: (_ request: UNNotificationRequest) async throws -> Void
 }
 
-extension UserNotificationsClient: DependencyKey {
-  public static let liveValue = UserNotificationsClient(
+extension UserNotificationCenterClient: DependencyKey {
+  public static let liveValue = UserNotificationCenterClient(
     requestAuthorization: UNUserNotificationCenter.current().requestAuthorization(options:),
     add: UNUserNotificationCenter.current().add
   )
 
-  public static let testValue = UserNotificationsClient()
+  public static let testValue = UserNotificationCenterClient()
 }
 
 extension DependencyValues {
-  public var userNotificationsClient: UserNotificationsClient {
-    get { self[UserNotificationsClient.self] }
-    set { self[UserNotificationsClient.self] = newValue }
+  public var userNotificationsClient: UserNotificationCenterClient {
+    get { self[UserNotificationCenterClient.self] }
+    set { self[UserNotificationCenterClient.self] = newValue }
   }
 }

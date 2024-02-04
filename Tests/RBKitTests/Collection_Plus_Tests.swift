@@ -1,10 +1,7 @@
 import XCTest
 @testable import RBKit
 
-final class CollectionPlus_Tests: XCTestCase {
-
-  // MARK: - Collection+
-  
+final class Collection_Plus_Tests: XCTestCase {
   func test_safe_subscript() {
     let a = [1, 2, 3]
     XCTAssertNil(a[safe: 3])

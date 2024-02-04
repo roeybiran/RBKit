@@ -1,4 +1,3 @@
-#if DEBUG
 extension CollectionDifference.Change: CustomDebugStringConvertible {
   public var debugDescription: String {
     let label = switch self {
@@ -14,4 +13,3 @@ extension CollectionDifference.Change: CustomDebugStringConvertible {
     """
   }
 }
-#endif

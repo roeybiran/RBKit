@@ -17,4 +17,6 @@ extension NSTableView {
       return newCell
     }
   }
+
+  public static let bigSurVerticalInsets = CGFloat.standard
 }

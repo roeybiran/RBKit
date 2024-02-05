@@ -16,9 +16,9 @@ extension CollectionDifference.Step: CustomDebugStringConvertible {
     case .inserted(let element, let at):
       "inserted “\(element)” at \(at)"
     case .removed(let element, let at):
-      "removed “\(element)” at \(at)"
+      "removed “\(element)” from \(at)"
     case .moved(let element, let from, let to):
-      "move “\(element)” from \(from) to \(to)"
+      "moved “\(element)” from \(from) to \(to)"
     }
   }
 }

@@ -16,8 +16,12 @@ public struct NSRunningApplicationClient {
   @DependencyEndpoint(method: "activate")
   public var activateFromApplication: (_ app: NSRunningApplication, _ fromApp: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _, _ in false }
 
-  public var forceTerminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  // Hiding and unhiding applications
+  public var hide: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  public var unhide: (_ app: NSRunningApplication) -> Bool = { _ in false }
 
+  // Terminating applications
+  public var forceTerminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
   public var terminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
 }
 
@@ -37,6 +41,8 @@ extension NSRunningApplicationClient: DependencyKey {
         app.activate(options: options)
       }
     },
+    hide: { $0.hide() },
+    unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
     terminate: { $0.terminate() }
   )

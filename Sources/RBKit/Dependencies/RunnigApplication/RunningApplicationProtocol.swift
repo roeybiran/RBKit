@@ -17,42 +17,42 @@ public protocol RunningApplicationProtocol: Equatable, Sendable {
   // var icon: Data?
   var executableArchitecture: Int { get }
 
-//  init(
-//    isTerminated: Bool,
-//    isFinishedLaunching: Bool,
-//    isHidden: Bool,
-//    isActive: Bool,
-//    ownsMenuBar: Bool,
-//    activationPolicy: NSApplication.ActivationPolicy,
-//    localizedName: String?,
-//    bundleIdentifier: String?,
-//    bundleURL: URL?,
-//    executableURL: URL?,
-//    processIdentifier: pid_t,
-//    launchDate: Date?,
-//    // icon: Data? = nil,
-//    executableArchitecture: Int
-//  )
-//
-//  init(app: NSRunningApplication)
+  init(
+    isTerminated: Bool,
+    isFinishedLaunching: Bool,
+    isHidden: Bool,
+    isActive: Bool,
+    ownsMenuBar: Bool,
+    activationPolicy: NSApplication.ActivationPolicy,
+    localizedName: String?,
+    bundleIdentifier: String?,
+    bundleURL: URL?,
+    executableURL: URL?,
+    processIdentifier: pid_t,
+    launchDate: Date?,
+    // icon: Data? = nil,
+    executableArchitecture: Int
+  )
+
+  init(app: NSRunningApplication)
 }
 
-//extension RunningApplicationProtocol {
-//  public init(app: NSRunningApplication) {
-//    self.init(
-//      isTerminated: app.isTerminated,
-//      isFinishedLaunching: app.isFinishedLaunching,
-//      isHidden: app.isHidden,
-//      isActive: app.isActive,
-//      ownsMenuBar: app.ownsMenuBar,
-//      activationPolicy: app.activationPolicy,
-//      localizedName: app.localizedName,
-//      bundleIdentifier: app.bundleIdentifier,
-//      bundleURL: app.bundleURL,
-//      executableURL: app.executableURL,
-//      processIdentifier: app.processIdentifier,
-//      launchDate: app.launchDate,
-//      executableArchitecture: app.executableArchitecture
-//    )
-//  }
-//}
+extension RunningApplicationProtocol {
+  public init(app: NSRunningApplication) {
+    self.init(
+      isTerminated: app.isTerminated,
+      isFinishedLaunching: app.isFinishedLaunching,
+      isHidden: app.isHidden,
+      isActive: app.isActive,
+      ownsMenuBar: app.ownsMenuBar,
+      activationPolicy: app.activationPolicy,
+      localizedName: app.localizedName,
+      bundleIdentifier: app.bundleIdentifier,
+      bundleURL: app.bundleURL,
+      executableURL: app.executableURL,
+      processIdentifier: app.processIdentifier,
+      launchDate: app.launchDate,
+      executableArchitecture: app.executableArchitecture
+    )
+  }
+}

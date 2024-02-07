@@ -3,20 +3,20 @@ import AppKit
 extension NSView {
   public func keyDown(with event: NSEventValue) {
     guard
-      let characters = event.characters,
-      let charactersIgnoringModifiers = event.charactersIgnoringModifiers,
       let nsEvent = NSEvent.keyEvent(
         with: event.type,
         location: NSEvent.mouseLocation,
         modifierFlags: event.modifierFlags,
-        timestamp: ProcessInfo.processInfo.systemUptime,
-        windowNumber: window?.windowNumber ?? .zero,
-        context: .current,
-        characters: characters,
-        charactersIgnoringModifiers: charactersIgnoringModifiers,
+        timestamp: event.timestamp,
+        windowNumber: event.windowNumber,
+        context: nil,
+        characters: event.characters ?? "",
+        charactersIgnoringModifiers: event.charactersIgnoringModifiers ?? "",
         isARepeat: event.isARepeat,
         keyCode: event.keyCode)
-    else { return }
+    else {
+      return
+    }
 
     keyDown(with: nsEvent)
   }

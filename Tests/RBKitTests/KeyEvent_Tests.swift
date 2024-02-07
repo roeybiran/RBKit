@@ -5,7 +5,7 @@ final class KeyEvent_Tests: XCTestCase {
   func test_keyEventInit() {
     let actual = NSEventValue(characters: "a", charactersIgnoringModifiers: "a", keyCode: 0)
     let expected = NSEventValue(
-      _type: .keyDown,
+      type: .keyDown,
       modifierFlags: [],
       characters: "a",
       charactersIgnoringModifiers: "a",

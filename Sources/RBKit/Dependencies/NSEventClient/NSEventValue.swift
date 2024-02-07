@@ -2,17 +2,48 @@ import AppKit
 import Carbon
 
 public struct NSEventValue {
+  // Getting the event type
+  // ----------------------
   public let type: NSEvent.EventType
-  public let modifierFlags: NSEvent.ModifierFlags
+  public let subtype: NSEvent.EventSubtype
+
+  // Getting general event information
+  // ---------------------------------
+  public let locationInWindow: NSPoint
   public let timestamp: TimeInterval
   // weak let window: NSWindow?
   public let windowNumber: Int
-  // let context: NSGraphicsContext?
-  public let clickCount: Int
+  // let eventRef: UnsafeRawPointer?  /* EventRef */
+  // let cgEvent: CGEvent?
+  // public static let foreverDuration = NSEvent.foreverDuration
+
+  // Getting modifier flags
+  // ----------------------
+  public let modifierFlags: NSEvent.ModifierFlags
+  // public static let modifierFlags = NSEvent.modifierFlags
+
+  // Getting key event information
+  // -----------------------------
+  public let characters: String?
+  public let charactersIgnoringModifiers: String?
+  public let keyCode: UInt16
+  // func characters(byApplyingModifiers modifiers: NSEvent.ModifierFlags) -> String? {}
+  // static var keyRepeatDelay: TimeInterval
+  // static var keyRepeatInterval: TimeInterval
+  public let specialKey: NSEvent.SpecialKey?
+  public let isARepeat: Bool
+
+  // Getting mouse event information
+  // -----------------------------
+  // static var pressedMouseButtons: Int
+  // static var doubleClickInterval: TimeInterval
+  // static var mouseLocation: NSPoint
   public let buttonNumber: Int
-  public let eventNumber: Int
-  public let pressure: Float
-  public let locationInWindow: NSPoint
+  public let clickCount: Int
+  public let associatedEventsMask: NSEvent.EventTypeMask
+
+  // Getting scroll wheel and flick events
+  // -------------------------------------
   public let deltaX: CGFloat
   public let deltaY: CGFloat
   public let deltaZ: CGFloat
@@ -21,20 +52,25 @@ public struct NSEventValue {
   public let scrollingDeltaY: CGFloat
   public let momentumPhase: NSEvent.Phase
   public let isDirectionInvertedFromDevice: Bool
-  public let characters: String?
-  public let charactersIgnoringModifiers: String?
-  // let characters(byApplyingModifiers modifiers: NSEvent.ModifierFlags) -> String?
-  public let isARepeat: Bool
-  public let keyCode: UInt16
+
+
+  // Configuring swipe event behaviors
+  // ---------------------------------
+  // static var isSwipeTrackingFromScrollEventsEnabled: Bool
+  // func trackSwipeEvent(options: NSEvent.SwipeTrackingOptions = [], dampenAmountThresholdMin minDampenThreshold: CGFloat, max maxDampenThreshold: CGFloat, usingHandler trackingHandler: @escaping (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void)
+
+  // Getting gesture and touch information
+  // -------------------------------------
+
+  // let context: NSGraphicsContext?
+  public let eventNumber: Int
+  public let pressure: Float
   public let trackingNumber: Int
   public let userData: UnsafeMutableRawPointer?
   // let trackingArea: NSTrackingArea? /
-  public let subtype: NSEvent.EventSubtype
   public let data1: Int
   public let data2: Int
-  // let eventRef: UnsafeRawPointer?  /* EventRef */
   // init?(eventRef: UnsafeRawPointer)
-  // let cgEvent: CGEvent?
   // init?(cgEvent: CGEvent)
   // let var isMouseCoalescingEnabled: Bool
   public let magnification: CGFloat
@@ -64,24 +100,13 @@ public struct NSEventValue {
   public let phase: NSEvent.Phase
   public let stage: Int
   public let stageTransition: CGFloat
-  public let associatedEventsMask: NSEvent.EventTypeMask
   public let pressureBehavior: NSEvent.PressureBehavior
-  // static var isSwipeTrackingFromScrollEventsEnabled: Bool
-  // func trackSwipeEvent(options: NSEvent.SwipeTrackingOptions = [], dampenAmountThresholdMin minDampenThreshold: CGFloat, max maxDampenThreshold: CGFloat, usingHandler trackingHandler: @escaping (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void)
   // func startPeriodicEvents(afterDelay delay: TimeInterval, withPeriod period: TimeInterval)
   // func stopPeriodicEvents()
   // func mouseEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, clickCount cNum: Int, pressure: Float) -> NSEvent?
   // func keyEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, characters keys: String, charactersIgnoringModifiers ukeys: String, isARepeat flag: Bool, keyCode code: UInt16) -> NSEvent?
   // func enterExitEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, trackingNumber tNum: Int, userData data: UnsafeMutableRawPointer?) -> NSEvent?
   // func otherEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, subtype: Int16, data1 d1: Int, data2 d2: Int) -> NSEvent?
-  // static var mouseLocation: NSPoint
-  // static var modifierFlags: NSEvent.ModifierFlags
-  // static var pressedMouseButtons: Int
-  // static var doubleClickInterval: TimeInterval
-  // static var keyRepeatDelay: TimeInterval
-  // static var keyRepeatInterval: TimeInterval
-  public let specialKey: NSEvent.SpecialKey?
-
 
   public static func downArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
     Self(
@@ -134,9 +159,6 @@ public struct NSEventValue {
       keyCode: UInt16(kVK_End)
     )
   }
-
-
-
 }
 
 extension NSEventValue {
@@ -195,7 +217,7 @@ extension NSEventValue {
   }
 
   init(
-    _type: NSEvent.EventType = .keyDown,
+    type: NSEvent.EventType = .keyDown,
     modifierFlags: NSEvent.ModifierFlags = [],
     timestamp: TimeInterval = .zero,
     windowNumber: Int = .zero,
@@ -247,7 +269,7 @@ extension NSEventValue {
     pressureBehavior: NSEvent.PressureBehavior = .primaryAccelerator,
     specialKey: NSEvent.SpecialKey? = nil
   ) {
-    self.type = _type
+    self.type = type
     self.modifierFlags = modifierFlags
     self.timestamp = timestamp
     self.windowNumber = windowNumber

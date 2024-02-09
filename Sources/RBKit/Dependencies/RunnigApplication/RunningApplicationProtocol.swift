@@ -55,3 +55,42 @@ extension RunningApplicationProtocol {
   }
 }
 
+#if DEBUG
+extension RunningApplicationProtocol {
+  public static func safari(
+    isTerminated: Bool = false,
+    isFinishedLaunching: Bool = true,
+    isHidden: Bool = false,
+    isActive: Bool = true,
+    ownsMenuBar: Bool = true,
+    activationPolicy: NSApplication.ActivationPolicy = .regular,
+    localizedName: String = "Safari",
+    bundleIdentifier: String = "com.apple.Safari",
+    bundleURL: URL = URL(fileURLWithPath: "/Applications/Safari.app"),
+    executableURL: URL = URL(fileURLWithPath: "/Applications/Safari.app/Contents/MacOS/Safari"),
+    processIdentifier: pid_t = 0,
+    launchDate: Date = .now,
+    executableArchitecture: Int = 0
+  )
+  -> Self
+  {
+    Self(
+      isTerminated: isTerminated,
+      isFinishedLaunching: isFinishedLaunching,
+      isHidden: isHidden,
+      isActive: isActive,
+      ownsMenuBar: ownsMenuBar,
+      activationPolicy: activationPolicy,
+      localizedName: localizedName,
+      bundleIdentifier: bundleIdentifier,
+      bundleURL: bundleURL,
+      executableURL: executableURL,
+      processIdentifier: processIdentifier,
+      launchDate: launchDate,
+      executableArchitecture: executableArchitecture
+    )
+  }
+}
+
+#endif
+

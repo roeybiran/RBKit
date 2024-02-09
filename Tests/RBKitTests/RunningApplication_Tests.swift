@@ -13,7 +13,7 @@ final class RunningApplicationTests: XCTestCase {
   // MARK: - TargetAppTests
   func test_targetApp_init() {
     let app = _App()
-    let a = RunningApplication(app: app)
+    let a = RunningApplication(nsRunningApplication: app)
     let b = RunningApplication(
       isTerminated: app.isTerminated,
       isFinishedLaunching: app.isFinishedLaunching,

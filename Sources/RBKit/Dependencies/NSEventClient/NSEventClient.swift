@@ -6,16 +6,18 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSEventClient {
-  public var globalEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
-  public var localEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var mouseLocation: () -> NSPoint = { .zero }
+  public var globalEventMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var localEventMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
 }
 
 extension NSEventClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
-    globalEvents: { _, _ in .finished },
-    localEvents: { mask, handler in
+    mouseLocation: { NSEvent.mouseLocation },
+    globalEventMonitor: { _, _ in .finished },
+    localEventMonitor: { mask, handler in
       AsyncStream { continuation in
         let monitor = NSEvent
           .addLocalMonitorForEvents(

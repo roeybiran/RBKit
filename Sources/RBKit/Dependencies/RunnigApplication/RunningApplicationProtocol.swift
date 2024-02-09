@@ -1,7 +1,7 @@
 import Foundation
 import AppKit.NSRunningApplication
 
-public protocol RunningApplicationProtocol: Equatable, Sendable {
+public protocol RunningApplicationProtocol: Equatable {
   var isTerminated: Bool { get set }
   var isFinishedLaunching: Bool { get set }
   var isHidden: Bool { get set }
@@ -33,26 +33,25 @@ public protocol RunningApplicationProtocol: Equatable, Sendable {
     // icon: Data? = nil,
     executableArchitecture: Int
   )
-
-  init(app: NSRunningApplication)
 }
 
 extension RunningApplicationProtocol {
-  public init(app: NSRunningApplication) {
+  public init(nsRunningApplication: NSRunningApplication) {
     self.init(
-      isTerminated: app.isTerminated,
-      isFinishedLaunching: app.isFinishedLaunching,
-      isHidden: app.isHidden,
-      isActive: app.isActive,
-      ownsMenuBar: app.ownsMenuBar,
-      activationPolicy: app.activationPolicy,
-      localizedName: app.localizedName,
-      bundleIdentifier: app.bundleIdentifier,
-      bundleURL: app.bundleURL,
-      executableURL: app.executableURL,
-      processIdentifier: app.processIdentifier,
-      launchDate: app.launchDate,
-      executableArchitecture: app.executableArchitecture
+      isTerminated: nsRunningApplication.isTerminated,
+      isFinishedLaunching: nsRunningApplication.isFinishedLaunching,
+      isHidden: nsRunningApplication.isHidden,
+      isActive: nsRunningApplication.isActive,
+      ownsMenuBar: nsRunningApplication.ownsMenuBar,
+      activationPolicy: nsRunningApplication.activationPolicy,
+      localizedName: nsRunningApplication.localizedName,
+      bundleIdentifier: nsRunningApplication.bundleIdentifier,
+      bundleURL: nsRunningApplication.bundleURL,
+      executableURL: nsRunningApplication.executableURL,
+      processIdentifier: nsRunningApplication.processIdentifier,
+      launchDate: nsRunningApplication.launchDate,
+      executableArchitecture: nsRunningApplication.executableArchitecture
     )
   }
 }
+

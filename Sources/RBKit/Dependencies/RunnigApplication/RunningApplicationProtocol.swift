@@ -1,7 +1,7 @@
 import Foundation
 import AppKit.NSRunningApplication
 
-public protocol RunningApplicationProtocol: Equatable {
+public protocol RunningApplicationProtocol: Equatable, Hashable {
   var isTerminated: Bool { get set }
   var isFinishedLaunching: Bool { get set }
   var isHidden: Bool { get set }

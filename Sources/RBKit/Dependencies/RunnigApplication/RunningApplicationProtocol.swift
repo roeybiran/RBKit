@@ -57,7 +57,7 @@ extension RunningApplicationProtocol {
 
 #if DEBUG
 extension RunningApplicationProtocol {
-  public static func safari(
+  public static func mock(
     isTerminated: Bool = false,
     isFinishedLaunching: Bool = true,
     isHidden: Bool = false,

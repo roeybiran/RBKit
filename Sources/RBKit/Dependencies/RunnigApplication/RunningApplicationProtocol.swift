@@ -61,15 +61,15 @@ extension RunningApplicationProtocol {
     isTerminated: Bool = false,
     isFinishedLaunching: Bool = true,
     isHidden: Bool = false,
-    isActive: Bool = true,
-    ownsMenuBar: Bool = true,
+    isActive: Bool = false,
+    ownsMenuBar: Bool = false,
     activationPolicy: NSApplication.ActivationPolicy = .regular,
-    localizedName: String = "Safari",
-    bundleIdentifier: String = "com.apple.Safari",
-    bundleURL: URL = URL(fileURLWithPath: "/Applications/Safari.app"),
-    executableURL: URL = URL(fileURLWithPath: "/Applications/Safari.app/Contents/MacOS/Safari"),
+    localizedName: String? = nil,
+    bundleIdentifier: String? = nil,
+    bundleURL: URL? = nil,
+    executableURL: URL? = nil,
     processIdentifier: pid_t = 0,
-    launchDate: Date = .now,
+    launchDate: Date? = nil,
     executableArchitecture: Int = 0
   )
   -> Self

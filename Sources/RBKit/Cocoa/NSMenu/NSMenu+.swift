@@ -34,7 +34,7 @@ extension NSMenu {
       NSMenuItem.separator()
       NSMenuItem("Hide \(APP_NAME)", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
       NSMenuItem("Hide Others", action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
-        .with(\.keyEquivalentModifierMask, [.option, .command])
+        .setting(\.keyEquivalentModifierMask, to: [.option, .command])
       NSMenuItem("Show All", action: #selector(NSApplication.unhideAllApplications(_:)))
       NSMenuItem.separator()
       NSMenuItem("Quit \(APP_NAME)", action: #selector(NSApplication.terminate), keyEquivalent: "q")
@@ -62,25 +62,25 @@ extension NSMenu {
       NSMenuItem("Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
       NSMenuItem("Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
       NSMenuItem("Paste and Match Style", action: #selector(NSTextView.pasteAsPlainText(_:)), keyEquivalent: "v")
-        .with(\.keyEquivalentModifierMask, [.option, .shift, .command])
+        .setting(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
       NSMenuItem("Delete", action: #selector(NSText.delete(_:)))
       NSMenuItem("Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
       NSMenuItem.separator()
       NSMenuItem("Find") {
         NSMenuItem("Find…", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "f")
-          .with(\.tag, NSTextFinder.Action.showFindInterface.rawValue)
+          .setting(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
         NSMenuItem("Find and Replace…", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "f")
-          .with(\.keyEquivalentModifierMask, [.option, .command])
-          .with(\.tag, NSTextFinder.Action.showReplaceInterface.rawValue)
+          .setting(\.keyEquivalentModifierMask, to: [.option, .command])
+          .setting(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
         NSMenuItem("Find Next", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "g")
-          .with(\.tag, NSTextFinder.Action.nextMatch.rawValue)
+          .setting(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
         NSMenuItem("Find Previous", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "G")
-          .with(\.tag, NSTextFinder.Action.previousMatch.rawValue)
+          .setting(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
         NSMenuItem(
           "Use Selection for Find",
           action: #selector(NSResponder.performTextFinderAction(_:)),
           keyEquivalent: "e")
-          .with(\.tag, NSTextFinder.Action.setSearchString.rawValue)
+        .setting(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
         NSMenuItem(
           "Jump to Selection",
           action: #selector(NSStandardKeyBindingResponding.centerSelectionInVisibleArea(_:)),
@@ -118,15 +118,15 @@ extension NSMenu {
       NSMenuItem("Font") {
         NSMenuItem("Show Fonts", action: #selector(NSFontManager.orderFrontFontPanel(_:)), keyEquivalent: "t")
         NSMenuItem("Bold", action: #selector(NSFontManager.addFontTrait(_:)), keyEquivalent: "b")
-          .with(\.tag, 2)
+          .setting(\.tag, to: 2)
         NSMenuItem("Italic", action: #selector(NSFontManager.addFontTrait(_:)), keyEquivalent: "i")
-          .with(\.tag, 1)
+          .setting(\.tag, to: 1)
         NSMenuItem("Underline", action: #selector(NSText.underline(_:)), keyEquivalent: "u")
         NSMenuItem.separator()
         NSMenuItem("Bigger", action: #selector(NSFontManager.modifyFont(_:)), keyEquivalent: "+")
-          .with(\.tag, 3)
+          .setting(\.tag, to: 3)
         NSMenuItem("Smaller", action: #selector(NSFontManager.modifyFont(_:)), keyEquivalent: "-")
-          .with(\.tag, 4)
+          .setting(\.tag, to: 4)
         NSMenuItem.separator()
         NSMenuItem("Kern") {
           NSMenuItem("Use Default", action: #selector(NSTextView.useStandardKerning(_:)))
@@ -150,9 +150,9 @@ extension NSMenu {
         NSMenuItem("Show Colors", action: #selector(NSApplication.orderFrontColorPanel(_:)), keyEquivalent: "C")
         NSMenuItem.separator()
         NSMenuItem("Copy Style", action: #selector(NSText.copyFont(_:)), keyEquivalent: "c")
-          .with(\.keyEquivalentModifierMask, [.option, .command])
+          .setting(\.keyEquivalentModifierMask, to: [.option, .command])
         NSMenuItem("Paste Style", action: #selector(NSText.pasteFont(_:)), keyEquivalent: "v")
-          .with(\.keyEquivalentModifierMask, [.option, .command])
+          .setting(\.keyEquivalentModifierMask, to: [.option, .command])
       }
       NSMenuItem("Text") {
         NSMenuItem("Align Left", action: #selector(NSText.alignLeft(_:)), keyEquivalent: "{")
@@ -162,13 +162,13 @@ extension NSMenu {
         NSMenuItem.separator()
         NSMenuItem("Writing Direction", action: #selector(NSText.unscript(_:))) {
           NSMenuItem("Paragraph")
-            .with(\.isEnabled, false)
+            .setting(\.isEnabled, to: false)
           NSMenuItem("\tDefault", action: #selector(NSResponder.makeBaseWritingDirectionNatural(_:)))
           NSMenuItem("\tLeft to Right", action: #selector(NSResponder.makeBaseWritingDirectionLeftToRight(_:)))
           NSMenuItem("\tRight to Left", action: #selector(NSResponder.makeBaseWritingDirectionRightToLeft(_:)))
           NSMenuItem.separator()
           NSMenuItem("Selection")
-            .with(\.isEnabled, false)
+            .setting(\.isEnabled, to: false)
           NSMenuItem("\tDefault", action: #selector(NSResponder.makeTextWritingDirectionNatural(_:)))
           NSMenuItem("\tLeft to Right", action: #selector(NSResponder.makeTextWritingDirectionLeftToRight(_:)))
           NSMenuItem("\tRight to Left", action: #selector(NSResponder.makeTextWritingDirectionRightToLeft(_:)))
@@ -176,20 +176,20 @@ extension NSMenu {
         NSMenuItem.separator()
         NSMenuItem("Show Ruler", action: #selector(NSText.toggleRuler(_:)))
         NSMenuItem("Copy Ruler", action: #selector(NSText.copyRuler(_:)), keyEquivalent: "c")
-          .with(\.keyEquivalentModifierMask, [.control, .command])
+          .setting(\.keyEquivalentModifierMask, to: [.control, .command])
         NSMenuItem("Paste Ruler", action: #selector(NSText.pasteRuler(_:)), keyEquivalent: "v")
-          .with(\.keyEquivalentModifierMask, [.control, .command])
+          .setting(\.keyEquivalentModifierMask, to: [.control, .command])
       }
     }
     NSMenuItem("View") {
       NSMenuItem("Show Toolbar", action: #selector(NSWindow.toggleToolbarShown(_:)), keyEquivalent: "t")
-        .with(\.keyEquivalentModifierMask, [.option, .command])
+        .setting(\.keyEquivalentModifierMask, to: [.option, .command])
       NSMenuItem("Customize Toolbar…", action: #selector(NSWindow.runToolbarCustomizationPalette(_:)))
       NSMenuItem.separator()
       NSMenuItem("Show Sidebar", action: #selector(NSSplitViewController.toggleSidebar(_:)), keyEquivalent: "s")
-        .with(\.keyEquivalentModifierMask, [.control, .command])
+        .setting(\.keyEquivalentModifierMask, to: [.control, .command])
       NSMenuItem("Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
-        .with(\.keyEquivalentModifierMask, [.control, .command])
+        .setting(\.keyEquivalentModifierMask, to: [.control, .command])
     }
     NSMenuItem.windowMenu {
       NSMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), keyEquivalent: "m")

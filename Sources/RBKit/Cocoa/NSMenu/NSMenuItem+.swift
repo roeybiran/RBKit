@@ -63,15 +63,4 @@ extension NSMenuItem {
     }
     return menuItem
   }
-
-  public func with<T>(_ keyPath: ReferenceWritableKeyPath<NSMenuItem, T>, _ value: T) -> Self {
-    self[keyPath: keyPath] = value
-    return self
-  }
-
-  public func applying(_ configurationHandler: (NSMenuItem) -> Void) -> Self {
-    configurationHandler(self)
-    return self
-  }
-
 }

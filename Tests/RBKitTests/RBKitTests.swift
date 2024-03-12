@@ -3,45 +3,8 @@ import CustomDump
 @testable import RBKit
 
 final class Collection_Plus_Tests: XCTestCase {
+
   // MARK: - CollectionDifferenceChange
-
-  func test_collectionDifferenceCHange() {
-    let a = ["a", "b", "c"]
-    let b = ["a", "c", "b"]
-
-    let diff = b.difference(from: a).inferringMoves()
-
-    let insertion = diff.insertions[0]
-    let removal = diff.removals[0]
-
-    XCTAssertEqual(insertion.offset, 2)
-    XCTAssertEqual(insertion.element, "b")
-    XCTAssertEqual(insertion.associatedWith, 1)
-
-    XCTAssertEqual(removal.offset, 1)
-    XCTAssertEqual(removal.element, "b")
-    XCTAssertEqual(removal.associatedWith, 2)
-  }
-
-  // MARK: - CollectionDifference Step
-
-  func test_insert() {
-    let a = CollectionDifference.Change.insert(offset: 1, element: "a", associatedWith: nil).step
-    let b = CollectionDifference.Step.inserted(element: "a", at: 1)
-    XCTAssertEqual(a, b)
-  }
-
-  func test_remove() {
-    let a = CollectionDifference.Change.remove(offset: 2, element: "b", associatedWith: nil).step
-    let b = CollectionDifference.Step.removed(element: "b", from: 2)
-    XCTAssertEqual(a, b)
-  }
-
-  func test_move() {
-    let a = CollectionDifference.Change.remove(offset: 2, element: "c", associatedWith: 9).step
-    let b = CollectionDifference.Step.moved(element: "c", from: 2, to: 9)
-    XCTAssertEqual(a, b)
-  }
 
   func test_steps() {
     let steps = ["a", "b", "c"].difference(from: ["c", "b", "d"]).inferringMoves().steps
@@ -55,7 +18,6 @@ final class Collection_Plus_Tests: XCTestCase {
     )
   }
 
-  
   // MARK: - Collection Extensions
 
   func test_safe_subscript() {
@@ -189,5 +151,45 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertEqual(a.stringValue, "foo")
   }
 
+  // MARK: - IdentifiedHash
 
+  func test_identifiedHash() {
+    struct Foo: Identifiable {
+      let id: String
+      let name: String
+    }
+
+    let a = IdentifiedHash(Foo(id: "a", name: "a"))
+    let a1 = IdentifiedHash(Foo(id: "a", name: "a1"))
+    let b = IdentifiedHash(Foo(id: "b", name: "b"))
+
+    XCTAssertEqual(a.name, "a")
+    XCTAssertEqual(a, a1)
+    XCTAssertEqual(a.hashValue, a1.hashValue)
+    XCTAssertEqual(a.hashValue, a.id.hashValue)
+    XCTAssertNotEqual(a, b)
+  }
+
+  // MARK: - <#mark name#>
+
+  func test_enumerateSubviews() {
+    let a = NSView()
+    let b = NSView()
+    let c = NSView()
+    let d = NSView()
+    let e = NSView()
+    a.addSubview(b)
+    b.addSubview(c)
+    b.addSubview(d)
+    d.addSubview(e)
+
+    var count = 0
+    a.enumerateSubviews(using: { view in
+      view.identifier = "a"
+      count += 1
+    })
+
+    XCTAssertEqual(count, 4)
+    XCTAssertEqual(a.subviews[0].identifier, "a")
+  }
 }

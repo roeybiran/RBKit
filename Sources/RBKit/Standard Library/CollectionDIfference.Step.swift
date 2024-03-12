@@ -14,24 +14,11 @@ extension CollectionDifference.Step: CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
     case .inserted(let element, let at):
-      "inserted “\(element)” at \(at)"
+      "inserted “\(element.self)” at \(at)"
     case .removed(let element, let at):
-      "removed “\(element)” from \(at)"
+      "removed “\(element.self)” from \(at)"
     case .moved(let element, let from, let to):
-      "moved “\(element)” from \(from) to \(to)"
-    }
-  }
-}
-
-extension CollectionDifference.Change {
-  public var step: CollectionDifference.Step {
-    switch self {
-    case .insert(let offset, let element, _):
-        .inserted(element: element, at: offset)
-    case .remove(let offset, let element, let associatedWith?):
-        .moved(element: element, from: offset, to: associatedWith)
-    case .remove(let offset, let element, associatedWith: .none):
-        .removed(element: element, from: offset)
+      "moved “\(element.self)” from \(from) to \(to)"
     }
   }
 }

@@ -1,34 +1,66 @@
 extension CollectionDifference {
   public var steps: [Step] {
-    var _removals: [Step] = []
-    var _insertions: [Step] = []
-    var _moves: [Step] = []
-    for removal in removals where removal.associatedWith == nil {
-      _removals.append(.removed(element: removal.element, from: removal.offset))
-    }
+    let removals = removals
+      .filter {
+        $0.associatedWith == nil
+      }
+      .map {
+        Step.removed(element: $0.element, from: $0.offset)
+      }
 
+    var _insertions: [Step] = []
+    var moves: [Step] = []
     for insertion in insertions {
       if let associatedWith = insertion.associatedWith {
-        _moves.append(.moved(element: insertion.element, from: associatedWith, to: insertion.offset))
+        moves.append(.moved(element: insertion.element, from: associatedWith, to: insertion.offset))
       } else {
         _insertions.append(.inserted(element: insertion.element, at: insertion.offset))
       }
     }
-
-    return _removals + _moves + _insertions
+    return removals + moves + _insertions
   }
-
 }
 
 extension CollectionDifference: CustomDebugStringConvertible {
   public var debugDescription: String {
-    isEmpty ? 
-    "<NO DIFFERENCES>"
-    : """
-    removals:
+    if isEmpty {
+      return "<NO DIFFERENCES>"
+    } else {
+      return """
+      removals:
       \(removals.enumerated().map { "\($0)) \($1)" }.joined(separator: "\n") )
-    insertions:
+      insertions:
       \(insertions.enumerated().map { "\($0)) \($1)" }.joined(separator: "\n") )
-    """
+      """
+    }
+  }
+}
+
+private extension CollectionDifference.Change {
+  var offset: Int {
+    switch self {
+    case .insert(let offset, _, _):
+      offset
+    case .remove(let offset, _, _):
+      offset
+    }
+  }
+
+  var element: ChangeElement {
+    switch self {
+    case .insert(_, let element, _):
+      element
+    case .remove(_, let element, _):
+      element
+    }
+  }
+
+  var associatedWith: Int? {
+    switch self {
+    case .insert(_, _, let associatedWith):
+      associatedWith
+    case .remove(_, _, let associatedWith):
+      associatedWith
+    }
   }
 }

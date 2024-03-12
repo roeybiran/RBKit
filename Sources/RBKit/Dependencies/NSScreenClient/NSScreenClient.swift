@@ -22,15 +22,6 @@ public struct NSScreenClient {
 
 // MARK: DependencyKey
 
-// NotificationCenter
-//   .default
-//   .publisher(for: NSApplication.didChangeScreenParametersNotification)
-//   .sink { [weak self] _ in
-//     guard let self else { return }
-// self.viewStore?.send(.didBecomeKey(screen: self.window?.screen.map(Screen.init)))
-//   }
-//   .store(in: &cancellables)
-
 extension NSScreenClient: DependencyKey { }
 
 extension DependencyValues {

@@ -147,7 +147,7 @@ final class Collection_Plus_Tests: XCTestCase {
 
   func test_DotSyntaxSettable() {
     let a = NSTextField()
-    a.setting(\.stringValue, to: "foo")
+    a.set(\.stringValue, to: "foo")
     XCTAssertEqual(a.stringValue, "foo")
   }
 

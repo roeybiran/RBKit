@@ -13,12 +13,12 @@ extension CollectionDifference.Step: Hashable where ChangeElement: Hashable {}
 extension CollectionDifference.Step: CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
-    case .inserted(let element, let at):
-      "inserted “\(element.self)” at \(at)"
-    case .removed(let element, let at):
-      "removed “\(element.self)” from \(at)"
-    case .moved(let element, let from, let to):
-      "moved “\(element.self)” from \(from) to \(to)"
+    case let .inserted(_, at):
+      "inserted at \(at)"
+    case let .removed(_, from):
+      "removed from \(from)"
+    case let .moved(_, from, to):
+      "moved from \(from) to \(to)"
     }
   }
 }

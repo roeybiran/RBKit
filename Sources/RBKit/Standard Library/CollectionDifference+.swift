@@ -1,38 +1,22 @@
 extension CollectionDifference {
   public var steps: [Step] {
-    let removals = removals
-      .filter {
-        $0.associatedWith == nil
-      }
-      .map {
-        Step.removed(element: $0.element, from: $0.offset)
-      }
-
+    var _removals: [Step] = []
     var _insertions: [Step] = []
-    var moves: [Step] = []
+    var _moves: [Step] = []
+
+    for removal in removals where removal.associatedWith == nil {
+      _removals.append(Step.removed(element: removal.element, from: removal.offset))
+    }
+
     for insertion in insertions {
       if let associatedWith = insertion.associatedWith {
-        moves.append(.moved(element: insertion.element, from: associatedWith, to: insertion.offset))
+        _moves.append(.moved(element: insertion.element, from: associatedWith, to: insertion.offset))
       } else {
         _insertions.append(.inserted(element: insertion.element, at: insertion.offset))
       }
     }
-    return removals + moves + _insertions
-  }
-}
 
-extension CollectionDifference: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    if isEmpty {
-      return "<NO DIFFERENCES>"
-    } else {
-      return """
-      removals:
-      \(removals.enumerated().map { "\($0)) \($1)" }.joined(separator: "\n") )
-      insertions:
-      \(insertions.enumerated().map { "\($0)) \($1)" }.joined(separator: "\n") )
-      """
-    }
+    return _removals + _moves + _insertions
   }
 }
 

@@ -6,8 +6,8 @@ extension NSObject: DotSyntaxSettable {}
 
 extension DotSyntaxSettable {
   @discardableResult
-  public func set<T>(_ property: ReferenceWritableKeyPath<Self, T>, to value: T) -> Self {
-    self[keyPath: property] = value
+  public func set<T>(_ keyPath: ReferenceWritableKeyPath<Self, T>, to value: T) -> Self {
+    self[keyPath: keyPath] = value
     return self
   }
 }

@@ -192,4 +192,11 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertEqual(count, 4)
     XCTAssertEqual(a.subviews[0].identifier, "a")
   }
+
+  func test_dotSyntaxSettable() {
+    let view = NSView()
+    XCTAssertEqual(view.identifier, nil)
+    view.set(\.identifier, to: "foo")
+    XCTAssertEqual(view.identifier, "foo")
+  }
 }

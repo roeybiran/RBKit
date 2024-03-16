@@ -154,6 +154,14 @@ final class Collection_Plus_Tests: XCTestCase {
   // MARK: - IdentifiedHash
 
   func test_identifiedHash() {
+    struct IdentifiedHash: IdentityHashable {
+      let value: Foo
+
+      init(_ value: Foo) {
+        self.value = value
+      }
+    }
+    
     struct Foo: Identifiable {
       let id: String
       let name: String
@@ -170,7 +178,108 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertNotEqual(a, b)
   }
 
-  // MARK: - <#mark name#>
+  // MARK: - TreeNodeProtocol
+
+  static let testNode = Node("1", children: [
+    Node("1.1", children: [
+      Node("1.1.1"),
+      Node("1.1.2")
+    ]),
+    Node("1.2", children: [
+      Node("1.2.1", children: [
+        Node("1.2.1.1", children: [
+          Node("1.2.1.1.1")
+        ]),
+        Node("1.2.1.2")
+      ]),
+      Node("1.2.2")
+    ])
+  ])
+
+  static let testNode2 = Node2("1", children: [
+    Node2("1.1", children: [
+      Node2("1.1.1"),
+      Node2("1.1.2")
+    ]),
+    Node2("1.2", children: [
+      Node2("1.2.1", children: [
+        Node2("1.2.1.1", children: [
+          Node2("1.2.1.1.1")
+        ]),
+        Node2("1.2.1.2")
+      ]),
+      Node2("1.2.2")
+    ])
+  ])
+
+  struct Node: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [Node]()
+
+    init(_ title: String, children: [Node] = [Node]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  struct Node2: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [Node2]()
+
+    init(_ title: String, children: [Node2] = [Node2]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  func test_descendants() {
+    XCTAssertNoDifference(
+      Self.testNode.descendants,
+      [
+        Node("1.1", children: [
+          Node("1.1.1"),
+          Node("1.1.2")
+        ]),
+        Node("1.2", children: [
+          Node("1.2.1", children: [
+            Node("1.2.1.1", children: [
+              Node("1.2.1.1.1")
+            ]),
+            Node("1.2.1.2")
+          ]),
+          Node("1.2.2")
+        ]),
+        Node("1.1.1"),
+        Node("1.1.2"),
+        Node("1.2.1", children: [
+          Node("1.2.1.1", children: [
+            Node("1.2.1.1.1")
+          ]),
+          Node("1.2.1.2")
+        ]),
+        Node("1.2.2"),
+        Node("1.2.1.1", children: [
+          Node("1.2.1.1.1")
+        ]),
+        Node("1.2.1.2"),
+        Node("1.2.1.1.1")
+      ]
+    )
+  }
+
+  func test_firstNode() {
+    XCTAssertNotNil(Self.testNode.firstNode(where: { $0.title == "1.2.1.2"} ))
+    XCTAssertNil(Self.testNode.firstNode(where: { $0.title == "zzzzzzzz"} ))
+  }
+
+  func test_map() {
+    XCTAssertNoDifference(
+      Self.testNode.map { Node2($0.title) },
+      Self.testNode2
+    )
+  }
+
+  // MARK: -
 
   func test_enumerateSubviews() {
     let a = NSView()
@@ -198,5 +307,22 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertEqual(view.identifier, nil)
     view.set(\.identifier, to: "foo")
     XCTAssertEqual(view.identifier, "foo")
+  }
+
+  func test_dictionary() {
+    let dict = ["a": 0]
+    XCTAssertEqual(dict[Optional("a")], 0)
+    XCTAssertEqual(dict[nil], nil)
+  }
+
+  func test_dictionary2() {
+    let dict = ["a": [0]]
+    XCTAssertEqual(dict[Optional("a")], [0])
+    XCTAssertEqual(dict[nil], [])
+  }
+
+  func test_dictionary3() {
+    let dict = ["a": [0]]
+    XCTAssertEqual(dict[Optional("b")], [])
   }
 }

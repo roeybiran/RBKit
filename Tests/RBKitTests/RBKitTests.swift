@@ -268,8 +268,8 @@ final class Collection_Plus_Tests: XCTestCase {
   }
 
   func test_firstNode() {
-    XCTAssertNotNil(Self.testNode.firstNode(where: { $0.title == "1.2.1.2"} ))
-    XCTAssertNil(Self.testNode.firstNode(where: { $0.title == "zzzzzzzz"} ))
+    XCTAssertNotNil(Self.testNode.first(where: { $0.title == "1.2.1.2"} ))
+    XCTAssertNil(Self.testNode.first(where: { $0.title == "zzzzzzzz"} ))
   }
 
   func test_map() {

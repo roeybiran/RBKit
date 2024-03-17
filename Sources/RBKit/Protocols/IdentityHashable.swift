@@ -7,16 +7,16 @@ public protocol IdentityHashable: Hashable {
   init(_ value: Value)
 }
 
-public extension IdentityHashable {
-  func hash(into hasher: inout Hasher) {
+extension IdentityHashable {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine(value.id)
   }
 
-  static func == (lhs: Self, rhs: Self) -> Bool {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.value.id == rhs.value.id
   }
 
-  subscript<Member>(dynamicMember keyPath: KeyPath<Value, Member>) -> Member {
+  public subscript<Member>(dynamicMember keyPath: KeyPath<Value, Member>) -> Member {
     value[keyPath: keyPath]
   }
 }

@@ -3,7 +3,7 @@ public protocol TreeNodeProtocol {
 
   func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T
 
-  func firstNode(where predicate: (Self) -> Bool) -> Self?
+  func first(where predicate: (Self) -> Bool) -> Self?
 
   var descendants: [Self] { get }
 }
@@ -15,13 +15,13 @@ public extension TreeNodeProtocol {
     return transformed
   }
 
-  func firstNode(where predicate: (Self) -> Bool) -> Self? {
+  func first(where predicate: (Self) -> Bool) -> Self? {
     if predicate(self) {
       return self
     }
 
     for child in children {
-      if let match = child.firstNode(where: predicate) {
+      if let match = child.first(where: predicate) {
         return match
       }
     }
@@ -29,6 +29,7 @@ public extension TreeNodeProtocol {
     return nil
   }
 
+  /// Children are returned in a breadth-first order.
   var descendants: [Self] {
     children.concat(children.reduce(into: [], { $0.append(contentsOf: $1.descendants) }))
   }

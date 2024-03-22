@@ -2,10 +2,8 @@ extension Dictionary {
   public subscript(key: Key?) -> Value? {
     key.map { self[$0] } ?? nil
   }
-}
 
-extension Dictionary where Value: RangeReplaceableCollection {
-  public subscript(key: Key?) -> Value {
-    key.map { self[$0] ?? Value() } ?? Value()
+  public subscript(key: Key?, default defaultValue: @autoclosure () -> Value) -> Value {
+    key.map { self[$0, default: defaultValue()] } ?? defaultValue()
   }
 }

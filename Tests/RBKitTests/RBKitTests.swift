@@ -309,20 +309,90 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertEqual(view.identifier, "foo")
   }
 
+  // MARK: - Sequence extensions
+
+  func test_sortByKeyPath() {
+    struct Foo: Equatable {
+      let id: Int
+      let kind: String
+    }
+    let a = [Foo(id: 1, kind: "Book"), Foo(id: 0, kind: "Library")]
+    let b = a.sorted(by: \.id)
+    XCTAssertEqual(b, a.reversed())
+  }
+
+  func test_grouping() {
+    struct Foo: Equatable {
+      let name: String
+      let kind: String
+    }
+    let a = [Foo(name: "a", kind: "Book"), Foo(name: "b", kind: "Library")]
+    let b = a.dictionary(groupingBy: { $0.kind })
+    XCTAssertEqual(b, [
+      "Book": [a[0]],
+      "Library": [a[1]],
+    ])
+  }
+
+  func test_toArray() {
+    let a = Set<String>()
+    let b = [String]()
+    XCTAssertEqual(a.toArray(), b)
+  }
+
+  func test_toSet() {
+    let a = ["a", "a"]
+    let b = Set(["a"])
+    XCTAssertEqual(a.toSet(), b)
+  }
+
+  // MARK: - Dictionary extensions
+
   func test_dictionary() {
     let dict = ["a": 0]
-    XCTAssertEqual(dict[Optional("a")], 0)
+    let key: String? = "a"
+    XCTAssertEqual(dict[key], 0)
     XCTAssertEqual(dict[nil], nil)
   }
 
   func test_dictionary2() {
     let dict = ["a": [0]]
-    XCTAssertEqual(dict[Optional("a")], [0])
-    XCTAssertEqual(dict[nil], [])
+    let key: String? = "a"
+    XCTAssertEqual(dict[key, default: [0]], [0])
   }
 
   func test_dictionary3() {
+    let dict = ["b": [0]]
+    let key: String? = "a"
+    XCTAssertEqual(dict[key, default: [0]], [0])
+  }
+
+  func test_dictionary4() {
     let dict = ["a": [0]]
-    XCTAssertEqual(dict[Optional("b")], [])
+    let key: String? = nil
+    XCTAssertEqual(dict[key, default: [0]], [0])
+  }
+
+  // MARK: - Array tests
+
+  func test_concat() {
+    let a = ["a"].concat(["b"])
+    XCTAssertEqual(a, ["a", "b"])
+
+    let b = ["a"].concat("b")
+    XCTAssertEqual(b, ["a", "b"])
+  }
+
+
+  // MARK: - Cocoa
+
+  func test_makeCell() {
+    let tv = NSTableView()
+    let cell1 = tv.makeCell(withIdentifier: "foo", owner: self) as NSTableCellView
+    XCTAssertEqual(cell1.identifier, "foo")
+
+    let cell2 = tv.makeCell() as NSTableCellView
+    XCTAssertEqual(cell2.identifier, "\(NSTableCellView.self)")
+
   }
 }

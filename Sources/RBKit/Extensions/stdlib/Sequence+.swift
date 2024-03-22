@@ -8,5 +8,14 @@ extension Sequence {
   public func toArray() -> [Element] {
     Array(self)
   }
+
+  public func dictionary<T: Hashable>(groupingBy closure: (Element) throws -> T) rethrows -> [T: [Element]] {
+    try Dictionary(grouping: self, by: closure)
+  }
 }
 
+extension Sequence where Element: Hashable {
+  public func toSet() -> Set<Element> {
+    .init(self)
+  }
+}

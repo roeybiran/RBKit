@@ -1,7 +1,7 @@
 import AppKit
 import UniformTypeIdentifiers
 
-public enum NSImageDescriptor: Equatable {
+public enum NSImageDescriptor: Hashable, Sendable {
   case name(String)
   case systemSymbol(name: String, accessibilityDescription: String?)
   case contentType(UTType)

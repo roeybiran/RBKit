@@ -1,10 +1,12 @@
 public protocol TreeNodeProtocol {
   var children: [Self] { get set }
 
+  /// Recursively apply `transform` on all descendants of `Self`.
   func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T
 
   func first(where predicate: (Self) -> Bool) -> Self?
 
+  /// Children are returned in a breadth-first order.
   var descendants: [Self] { get }
 }
 
@@ -29,7 +31,6 @@ public extension TreeNodeProtocol {
     return nil
   }
 
-  /// Children are returned in a breadth-first order.
   var descendants: [Self] {
     children.concat(children.reduce(into: [], { $0.append(contentsOf: $1.descendants) }))
   }

@@ -16,7 +16,7 @@ extension NSEventClient: DependencyKey {
 
   public static let liveValue = Self(
     mouseLocation: { NSEvent.mouseLocation },
-    globalEventMonitor: { _, _ in .finished },
+    globalEventMonitor: { _, _ in .finished }, // TODO
     localEventMonitor: { mask, handler in
       AsyncStream { continuation in
         let monitor = NSEvent

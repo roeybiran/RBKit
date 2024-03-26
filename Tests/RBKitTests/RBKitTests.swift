@@ -95,7 +95,7 @@ final class Collection_Plus_Tests: XCTestCase {
 
 
   // MARK: - TargetAppTests
-  
+
   private class _App: NSRunningApplication {
     override var processIdentifier: pid_t { 0 }
     override var bundleIdentifier: String? { "com.foo.bar" }
@@ -161,7 +161,7 @@ final class Collection_Plus_Tests: XCTestCase {
         self.value = value
       }
     }
-    
+
     struct Foo: Identifiable {
       let id: String
       let name: String
@@ -180,53 +180,53 @@ final class Collection_Plus_Tests: XCTestCase {
 
   // MARK: - TreeNodeProtocol
 
-  static let testNode = Node("1", children: [
-    Node("1.1", children: [
-      Node("1.1.1"),
-      Node("1.1.2")
+  static let testNode = MockNode("1", children: [
+    MockNode("1.1", children: [
+      MockNode("1.1.1"),
+      MockNode("1.1.2")
     ]),
-    Node("1.2", children: [
-      Node("1.2.1", children: [
-        Node("1.2.1.1", children: [
-          Node("1.2.1.1.1")
+    MockNode("1.2", children: [
+      MockNode("1.2.1", children: [
+        MockNode("1.2.1.1", children: [
+          MockNode("1.2.1.1.1")
         ]),
-        Node("1.2.1.2")
+        MockNode("1.2.1.2")
       ]),
-      Node("1.2.2")
+      MockNode("1.2.2")
     ])
   ])
 
-  static let testNode2 = Node2("1", children: [
-    Node2("1.1", children: [
-      Node2("1.1.1"),
-      Node2("1.1.2")
+  static let testNode2 = MockNode2("1", children: [
+    MockNode2("1.1", children: [
+      MockNode2("1.1.1"),
+      MockNode2("1.1.2")
     ]),
-    Node2("1.2", children: [
-      Node2("1.2.1", children: [
-        Node2("1.2.1.1", children: [
-          Node2("1.2.1.1.1")
+    MockNode2("1.2", children: [
+      MockNode2("1.2.1", children: [
+        MockNode2("1.2.1.1", children: [
+          MockNode2("1.2.1.1.1")
         ]),
-        Node2("1.2.1.2")
+        MockNode2("1.2.1.2")
       ]),
-      Node2("1.2.2")
+      MockNode2("1.2.2")
     ])
   ])
 
-  struct Node: TreeNodeProtocol, Equatable {
+  struct MockNode: TreeNodeProtocol, Equatable {
     let title: String
-    var children = [Node]()
+    var children = [MockNode]()
 
-    init(_ title: String, children: [Node] = [Node]()) {
+    init(_ title: String, children: [MockNode] = [MockNode]()) {
       self.title = title
       self.children = children
     }
   }
 
-  struct Node2: TreeNodeProtocol, Equatable {
+  struct MockNode2: TreeNodeProtocol, Equatable {
     let title: String
-    var children = [Node2]()
+    var children = [MockNode2]()
 
-    init(_ title: String, children: [Node2] = [Node2]()) {
+    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
       self.title = title
       self.children = children
     }
@@ -236,33 +236,33 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertNoDifference(
       Self.testNode.descendants,
       [
-        Node("1.1", children: [
-          Node("1.1.1"),
-          Node("1.1.2")
+        MockNode("1.1", children: [
+          MockNode("1.1.1"),
+          MockNode("1.1.2")
         ]),
-        Node("1.2", children: [
-          Node("1.2.1", children: [
-            Node("1.2.1.1", children: [
-              Node("1.2.1.1.1")
+        MockNode("1.2", children: [
+          MockNode("1.2.1", children: [
+            MockNode("1.2.1.1", children: [
+              MockNode("1.2.1.1.1")
             ]),
-            Node("1.2.1.2")
+            MockNode("1.2.1.2")
           ]),
-          Node("1.2.2")
+          MockNode("1.2.2")
         ]),
-        Node("1.1.1"),
-        Node("1.1.2"),
-        Node("1.2.1", children: [
-          Node("1.2.1.1", children: [
-            Node("1.2.1.1.1")
+        MockNode("1.1.1"),
+        MockNode("1.1.2"),
+        MockNode("1.2.1", children: [
+          MockNode("1.2.1.1", children: [
+            MockNode("1.2.1.1.1")
           ]),
-          Node("1.2.1.2")
+          MockNode("1.2.1.2")
         ]),
-        Node("1.2.2"),
-        Node("1.2.1.1", children: [
-          Node("1.2.1.1.1")
+        MockNode("1.2.2"),
+        MockNode("1.2.1.1", children: [
+          MockNode("1.2.1.1.1")
         ]),
-        Node("1.2.1.2"),
-        Node("1.2.1.1.1")
+        MockNode("1.2.1.2"),
+        MockNode("1.2.1.1.1")
       ]
     )
   }
@@ -274,12 +274,98 @@ final class Collection_Plus_Tests: XCTestCase {
 
   func test_map() {
     XCTAssertNoDifference(
-      Self.testNode.map { Node2($0.title) },
+      Self.testNode.map { MockNode2($0.title) },
       Self.testNode2
     )
   }
 
-  // MARK: -
+  func test_int_subscript_get() throws {
+    let a = MockNode(
+      "a",
+      children: [
+        MockNode("b"),
+        MockNode("c"),
+      ])
+    let b = MockNode("c")
+    XCTAssertEqual(a[1], b)
+  }
+
+  func test_int_subscript_set() throws {
+    var a = MockNode(
+      "a",
+      children: [
+        MockNode("b"),
+        MockNode("c"),
+      ])
+    a[1] = MockNode("z")
+    let b = MockNode("z")
+    XCTAssertEqual(a[1], b)
+  }
+
+  func test_array_subscript_get() throws {
+    let a = MockNode(
+      "a",
+      children: [
+        MockNode(
+          "b",
+          children: [
+            MockNode("y"),
+          ]),
+        MockNode("c"),
+      ])
+    XCTAssertEqual(a[[0, 0]], MockNode("y"))
+    XCTAssertEqual(a[[1]], MockNode("c"))
+  }
+
+  func test_array_subscript_set() throws {
+    var a = MockNode(
+      "a",
+      children: [
+        MockNode("b"),
+        MockNode(
+          "c",
+          children: [
+            MockNode("y"),
+          ]),
+      ])
+    a[[1, 0]] = MockNode("z")
+    let b = MockNode("z")
+    XCTAssertEqual(a[[1, 0]], b)
+  }
+
+  func test_variadic_subscript_get() throws {
+    let a = MockNode(
+      "a",
+      children: [
+        MockNode(
+          "b",
+          children: [
+            MockNode("y"),
+          ]),
+        MockNode("c"),
+      ])
+    XCTAssertEqual(a[0, 0], MockNode("y"))
+  }
+
+  func test_variadic_subscript_set() throws {
+    var a = MockNode(
+      "a",
+      children: [
+        MockNode("b"),
+        MockNode(
+          "c",
+          children: [
+            MockNode("y"),
+          ]),
+      ])
+    a[1, 0] = MockNode("z")
+    let b = MockNode("z")
+    XCTAssertEqual(a[1, 0], b)
+  }
+
+
+
+  // MARK: - NSView+
 
   func test_enumerateSubviews() {
     let a = NSView()

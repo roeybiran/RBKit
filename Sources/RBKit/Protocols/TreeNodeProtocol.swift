@@ -8,6 +8,10 @@ public protocol TreeNodeProtocol {
 
   /// Children are returned in a breadth-first order.
   var descendants: [Self] { get }
+
+  subscript(indices: [Int]) -> Self { get set }
+
+  subscript(indices: Int...) -> Self { get set }
 }
 
 public extension TreeNodeProtocol {
@@ -33,5 +37,29 @@ public extension TreeNodeProtocol {
 
   var descendants: [Self] {
     children.concat(children.reduce(into: [], { $0.append(contentsOf: $1.descendants) }))
+  }
+
+  subscript(indices: [Int]) -> Self {
+    get {
+      let next = indices.dropFirst()
+      if next.isEmpty {
+        return children[indices[0]]
+      } else {
+        return children[indices[0]][Array(next)]
+      }
+    }
+    set {
+      let next = indices.dropFirst()
+      if next.isEmpty {
+        children[indices[0]] = newValue
+      } else {
+        children[indices[0]][Array(next)] = newValue
+      }
+    }
+  }
+
+  subscript(indices: Int...) -> Self {
+    get { self[indices] }
+    set { self[indices] = newValue }
   }
 }

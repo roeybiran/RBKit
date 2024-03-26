@@ -41,19 +41,21 @@ public extension TreeNodeProtocol {
 
   subscript(indices: [Int]) -> Self {
     get {
-      let next = indices.dropFirst()
-      if next.isEmpty {
-        return children[indices[0]]
+      if indices.isEmpty {
+        return self
       } else {
-        return children[indices[0]][Array(next)]
+        var indicesCopy = indices
+        let next = indicesCopy.removeFirst()
+        return children[next][indicesCopy]
       }
     }
     set {
-      let next = indices.dropFirst()
-      if next.isEmpty {
-        children[indices[0]] = newValue
+      if indices.isEmpty {
+        self = newValue
       } else {
-        children[indices[0]][Array(next)] = newValue
+        var indicesCopy = indices
+        let next = indicesCopy.removeFirst()
+        children[next][indicesCopy] = newValue
       }
     }
   }

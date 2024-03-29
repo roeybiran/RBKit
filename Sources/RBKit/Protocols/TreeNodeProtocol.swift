@@ -1,27 +1,19 @@
+// NSTreeController.h
+// NSTreeNode.h
+
 public protocol TreeNodeProtocol {
   var children: [Self] { get set }
-
-  /// Recursively apply `transform` on all descendants of `Self`.
-  func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T
-
-  func first(where predicate: (Self) -> Bool) -> Self?
-
-  /// Children are returned in a breadth-first order.
-  var descendants: [Self] { get }
-
-  subscript(indices: [Int]) -> Self { get set }
-
-  subscript(indices: Int...) -> Self { get set }
 }
 
-public extension TreeNodeProtocol {
-  func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
+extension TreeNodeProtocol {
+  /// Apply `transform` on `self` and recursively on all of its descendants.
+  public func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
     var transformed = try transform(self)
     transformed.children = try children.map { try $0.map(transform) }
     return transformed
   }
 
-  func first(where predicate: (Self) -> Bool) -> Self? {
+  public func first(where predicate: (Self) -> Bool) -> Self? {
     if predicate(self) {
       return self
     }
@@ -35,11 +27,13 @@ public extension TreeNodeProtocol {
     return nil
   }
 
-  var descendants: [Self] {
+  /// Recursively returns children of self in a breadth-first order.
+  public var descendants: [Self] {
     children.concat(children.reduce(into: [], { $0.append(contentsOf: $1.descendants) }))
   }
 
-  subscript(indices: [Int]) -> Self {
+  /// If `indices` is empty, returns `self`.
+  public subscript(indices: [Int]) -> Self {
     get {
       if indices.isEmpty {
         return self
@@ -58,10 +52,5 @@ public extension TreeNodeProtocol {
         children[next][indicesCopy] = newValue
       }
     }
-  }
-
-  subscript(indices: Int...) -> Self {
-    get { self[indices] }
-    set { self[indices] = newValue }
   }
 }

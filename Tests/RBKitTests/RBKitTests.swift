@@ -2,21 +2,7 @@ import XCTest
 import CustomDump
 @testable import RBKit
 
-final class Collection_Plus_Tests: XCTestCase {
-
-  // MARK: - CollectionDifferenceChange
-
-  func test_steps() {
-    let steps = ["a", "b", "c"].difference(from: ["c", "b", "d"]).inferringMoves().steps
-    XCTAssertEqual(
-      steps,
-      [
-        .removed(element: "d", from: 2),
-        .moved(element: "c", from: 0, to: 2),
-        .inserted(element: "a", at: 0),
-      ]
-    )
-  }
+final class RBKitTests: XCTestCase {
 
   // MARK: - Collection Extensions
 
@@ -287,7 +273,7 @@ final class Collection_Plus_Tests: XCTestCase {
         MockNode("c"),
       ])
     let b = MockNode("c")
-    XCTAssertEqual(a[1], b)
+    XCTAssertEqual(a[[1]], b)
   }
 
   func test_int_subscript_set() throws {
@@ -297,9 +283,9 @@ final class Collection_Plus_Tests: XCTestCase {
         MockNode("b"),
         MockNode("c"),
       ])
-    a[1] = MockNode("z")
+    a[[1]] = MockNode("z")
     let b = MockNode("z")
-    XCTAssertEqual(a[1], b)
+    XCTAssertEqual(a[[1]], b)
   }
 
   func test_array_subscript_get() throws {
@@ -333,35 +319,35 @@ final class Collection_Plus_Tests: XCTestCase {
     XCTAssertEqual(a[[1, 0]], b)
   }
 
-  func test_variadic_subscript_get() throws {
-    let a = MockNode(
-      "a",
-      children: [
-        MockNode(
-          "b",
-          children: [
-            MockNode("y"),
-          ]),
-        MockNode("c"),
-      ])
-    XCTAssertEqual(a[0, 0], MockNode("y"))
-  }
-
-  func test_variadic_subscript_set() throws {
-    var a = MockNode(
-      "a",
-      children: [
-        MockNode("b"),
-        MockNode(
-          "c",
-          children: [
-            MockNode("y"),
-          ]),
-      ])
-    a[1, 0] = MockNode("z")
-    let b = MockNode("z")
-    XCTAssertEqual(a[1, 0], b)
-  }
+//  func test_variadic_subscript_get() throws {
+//    let a = MockNode(
+//      "a",
+//      children: [
+//        MockNode(
+//          "b",
+//          children: [
+//            MockNode("y"),
+//          ]),
+//        MockNode("c"),
+//      ])
+//    XCTAssertEqual(a[[0, 0]], MockNode("y"))
+//  }
+//
+//  func test_variadic_subscript_set() throws {
+//    var a = MockNode(
+//      "a",
+//      children: [
+//        MockNode("b"),
+//        MockNode(
+//          "c",
+//          children: [
+//            MockNode("y"),
+//          ]),
+//      ])
+//    a[1, 0] = MockNode("z")
+//    let b = MockNode("z")
+//    XCTAssertEqual(a[1, 0], b)
+//  }
 
 
 

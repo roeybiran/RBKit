@@ -108,21 +108,47 @@ public struct NSEventValue {
   // func enterExitEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, trackingNumber tNum: Int, userData data: UnsafeMutableRawPointer?) -> NSEvent?
   // func otherEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, subtype: Int16, data1 d1: Int, data2 d2: Int) -> NSEvent?
 
-  public static func downArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    Self(
+  public static func upArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    let char = "\(NSEvent.SpecialKey.upArrow.unicodeScalar)"
+    let code = UInt16(kVK_UpArrow)
+    return Self(
       modifierFlags: modifierFlags,
-      characters: "\(NSEvent.SpecialKey.downArrow.unicodeScalar)",
-      charactersIgnoringModifiers: "\(NSEvent.SpecialKey.downArrow.unicodeScalar)",
-      keyCode: UInt16(kVK_DownArrow)
+      characters: char,
+      charactersIgnoringModifiers: char,
+      keyCode: code
     )
   }
 
-  public static func upArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    Self(
+  public static func rightArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    let char = "\(NSEvent.SpecialKey.rightArrow.unicodeScalar)"
+    let code = UInt16(kVK_RightArrow)
+    return Self(
       modifierFlags: modifierFlags,
-      characters: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
-      charactersIgnoringModifiers: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
-      keyCode: UInt16(kVK_UpArrow)
+      characters: char,
+      charactersIgnoringModifiers: char,
+      keyCode: code
+    )
+  }
+
+  public static func downArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    let char = "\(NSEvent.SpecialKey.downArrow.unicodeScalar)"
+    let code = UInt16(kVK_DownArrow)
+    return Self(
+      modifierFlags: modifierFlags,
+      characters: char,
+      charactersIgnoringModifiers: char,
+      keyCode: code
+    )
+  }
+
+  public static func leftArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    let char = "\(NSEvent.SpecialKey.leftArrow.unicodeScalar)"
+    let code = UInt16(kVK_LeftArrow)
+    return Self(
+      modifierFlags: modifierFlags,
+      characters: char,
+      charactersIgnoringModifiers: char,
+      keyCode: code
     )
   }
 

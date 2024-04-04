@@ -51,7 +51,7 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(b, [1])
   }
 
-  // MARK: - Key Event Tests
+  // MARK: - NSEventValue
 
   func test_keyEventInit() {
     let actual = NSEventValue(characters: "a", charactersIgnoringModifiers: "a", keyCode: 0)
@@ -78,7 +78,6 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(actual.characters?.count, 1)
     XCTAssertEqual(actual.charactersIgnoringModifiers?.count, 1)
   }
-
 
   // MARK: - TargetAppTests
 

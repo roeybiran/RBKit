@@ -193,10 +193,10 @@ extension NSEventValue {
     modifierFlags = nsEvent.modifierFlags
     timestamp = nsEvent.timestamp
     windowNumber = nsEvent.windowNumber
-    clickCount = nsEvent.clickCount
+    clickCount = nsEvent.clickCount // NSInternalInconsistencyException
     buttonNumber = nsEvent.buttonNumber
-    eventNumber = nsEvent.eventNumber
-    pressure = nsEvent.pressure
+    eventNumber = nsEvent.eventNumber // NSInternalInconsistencyException
+    pressure = nsEvent.pressure // NSInternalInconsistencyException
     locationInWindow = nsEvent.locationInWindow
     deltaX = nsEvent.deltaX
     deltaY = nsEvent.deltaY
@@ -241,6 +241,8 @@ extension NSEventValue {
     pressureBehavior = nsEvent.pressureBehavior
     specialKey = nsEvent.specialKey
   }
+
+  // MARK: - memberwise init with default arguments
 
   init(
     type: NSEvent.EventType = .keyDown,

@@ -1,5 +1,4 @@
-import Cocoa
-import RBKit
+import AppKit
 
 extension NSTableView.AnimationOptions: CustomDebugStringConvertible {
   public var debugDescription: String {

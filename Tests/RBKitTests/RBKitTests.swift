@@ -53,13 +53,115 @@ final class RBKitTests: XCTestCase {
 
   // MARK: - NSEventValue
 
-  func test_keyEventInit() {
-    let actual = NSEventValue(characters: "a", charactersIgnoringModifiers: "a", keyCode: 0)
+  func test_keyEventInitFromNSEvent_withKeyDown_shouldCreateEvent() {
+    let actual = NSEventValue(
+      nsEvent: NSEvent.keyEvent(
+        with: .keyDown,
+        location: .zero,
+        modifierFlags: [],
+        timestamp: .zero,
+        windowNumber: .zero,
+        context: nil,
+        characters: NSEvent.SpecialKey.downArrow.character,
+        charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+        isARepeat: false,
+        keyCode: UInt16(126)
+      )!
+    )
     let expected = NSEventValue(
       type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
       modifierFlags: [],
-      characters: "a",
-      charactersIgnoringModifiers: "a",
+      characters: NSEvent.SpecialKey.downArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+      keyCode: UInt16(126),
+      specialKey: .downArrow,
+      isARepeat: false
+    )
+    
+    XCTAssertNoDifference(actual, expected)
+  }
+
+  func test_keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
+    let actual = NSEventValue(
+      nsEvent: NSEvent.keyEvent(
+        with: .keyUp,
+        location: .zero,
+        modifierFlags: .command,
+        timestamp: .zero,
+        windowNumber: .zero,
+        context: nil,
+        characters: NSEvent.SpecialKey.downArrow.character,
+        charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+        isARepeat: false,
+        keyCode: UInt16(126)
+      )!
+    )
+    let expected = NSEventValue(
+      type: .keyUp,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: .command,
+      characters: NSEvent.SpecialKey.downArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+      keyCode: UInt16(126),
+      specialKey: .downArrow,
+      isARepeat: false
+    )
+
+    XCTAssertNoDifference(actual, expected)
+  }
+
+  func test_keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
+    let actual = NSEventValue(
+      nsEvent: NSEvent.keyEvent(
+        with: .flagsChanged,
+        location: .zero,
+        modifierFlags: .command,
+        timestamp: .zero,
+        windowNumber: .zero,
+        context: nil,
+        characters: NSEvent.SpecialKey.downArrow.character,
+        charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+        isARepeat: false,
+        keyCode: UInt16(126)
+      )!
+    )
+    XCTAssertNoDifference(actual, nil)
+  }
+
+  func test_keyEventUpArrow() {
+    let actual = NSEventValue.upArrow()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.upArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.upArrow.character,
+      keyCode: UInt16(126),
+      specialKey: .upArrow,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
+  }
+
+  func test_keyEventRightArrow() {
+    let actual = NSEventValue.rightArrow()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.rightArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.rightArrow.character,
+      keyCode: UInt16(124),
+      specialKey: .rightArrow,
       isARepeat: false
     )
     XCTAssertEqual(actual, expected)
@@ -67,16 +169,104 @@ final class RBKitTests: XCTestCase {
 
   func test_keyEventDownArrow() {
     let actual = NSEventValue.downArrow()
-    XCTAssertEqual(actual.keyCode, 125)
-    XCTAssertEqual(actual.characters?.count, 1)
-    XCTAssertEqual(actual.charactersIgnoringModifiers?.count, 1)
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.downArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
+      keyCode: UInt16(125),
+      specialKey: .downArrow,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
   }
 
-  func test_keyEventUpArrow() {
-    let actual = NSEventValue.upArrow()
-    XCTAssertEqual(actual.keyCode, 126)
-    XCTAssertEqual(actual.characters?.count, 1)
-    XCTAssertEqual(actual.charactersIgnoringModifiers?.count, 1)
+  func test_keyEventLeftArrow() {
+    let actual = NSEventValue.leftArrow()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.leftArrow.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.leftArrow.character,
+      keyCode: UInt16(123),
+      specialKey: .leftArrow,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
+  }
+
+  func test_keyEventPageUp() {
+    let actual = NSEventValue.pageUp()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: .init(rawValue: 0x800100),
+      characters: NSEvent.SpecialKey.pageUp.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.pageUp.character,
+      keyCode: UInt16(116),
+      specialKey: .pageUp,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
+  }
+
+  func test_keyEventPageDown() {
+    let actual = NSEventValue.pageDown()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: .init(rawValue: 0x800100),
+      characters: NSEvent.SpecialKey.pageDown.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.pageDown.character,
+      keyCode: UInt16(121),
+      specialKey: .pageDown,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
+  }
+
+  func test_keyEventHome() {
+    let actual = NSEventValue.home()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.home.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.home.character,
+      keyCode: UInt16(115),
+      specialKey: .home,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
+  }
+
+  func test_keyEventEnd() {
+    let actual = NSEventValue.end()
+    let expected = NSEventValue(
+      type: .keyDown,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: [],
+      characters: NSEvent.SpecialKey.end.character,
+      charactersIgnoringModifiers: NSEvent.SpecialKey.end.character,
+      keyCode: UInt16(119),
+      specialKey: .end,
+      isARepeat: false
+    )
+    XCTAssertEqual(actual, expected)
   }
 
   // MARK: - TargetAppTests

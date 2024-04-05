@@ -53,4 +53,13 @@ extension TreeNodeProtocol {
       }
     }
   }
+
+  public subscript(indices: Int...) -> Self {
+    get {
+      self[indices]
+    }
+    set {
+      self[indices] = newValue
+    }
+  }
 }

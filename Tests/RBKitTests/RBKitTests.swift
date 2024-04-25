@@ -642,6 +642,18 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(b, ["a", "b"])
   }
 
+  func test_lastIndex() {
+    XCTAssertEqual(["a"].lastIndex, 0)
+    XCTAssertEqual(["a", "b"].lastIndex, 1)
+    XCTAssertEqual([].lastIndex, 0)
+  }
+
+  // MARK: -
+
+  func test_clamp() {
+    XCTAssertEqual(clamp(min: 2, ideal: 999, max: 10), 10)
+    XCTAssertEqual(clamp(min: 2, ideal: 5, max: 10), 5)
+  }
 
   // MARK: - Cocoa
 
@@ -652,6 +664,27 @@ final class RBKitTests: XCTestCase {
 
     let cell2 = tv.makeCell() as NSTableCellView
     XCTAssertEqual(cell2.identifier, "\(NSTableCellView.self)")
-
   }
+
+  // MARK: - Quartz Core
+
+  func test_cornerMasks() {
+    XCTAssertEqual(CACornerMask.topLeft, .layerMinXMaxYCorner)
+    XCTAssertEqual(CACornerMask.topRight, .layerMaxXMaxYCorner)
+    XCTAssertEqual(CACornerMask.bottomRight, .layerMaxXMinYCorner)
+    XCTAssertEqual(CACornerMask.bottomLeft, .layerMinXMinYCorner)
+    XCTAssertEqual(CACornerMask.all, [.topLeft, .topRight, .bottomLeft, .bottomRight])
+  }
+
+  // MARK: -
+
+  func test_NSObjectUIIdentifier() {
+    XCTAssertEqual(NSObject.userInterfaceIdentifier, "NSObject")
+    XCTAssertEqual(NSView.userInterfaceIdentifier, "NSView")
+
+    class MainCell: NSTableCellView {}
+
+    XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
+  }
+
 }

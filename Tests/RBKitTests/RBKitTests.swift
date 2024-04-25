@@ -1,5 +1,6 @@
 import XCTest
 import CustomDump
+import Carbon
 @testable import RBKit
 
 final class RBKitTests: XCTestCase {
@@ -685,6 +686,12 @@ final class RBKitTests: XCTestCase {
     class MainCell: NSTableCellView {}
 
     XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
+  }
+
+  // MARK: - Carbon
+
+  func test_CGEventFlags_normalized() throws {
+    throw XCTSkip()
   }
 
 }

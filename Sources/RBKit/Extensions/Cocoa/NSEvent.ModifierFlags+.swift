@@ -3,25 +3,16 @@ import AppKit
 
 extension NSEvent.ModifierFlags {
   public init(carbon flags: Int) {
-    var modifiers = NSEvent.ModifierFlags()
-
-    if flags & controlKey == controlKey {
-      modifiers.insert(.control)
+    self = [
+      (cocoa: Self.control, carbon: controlKey),
+      (.option, optionKey),
+      (.shift, shiftKey),
+      (.command, cmdKey),
+    ].reduce(into: Self()) { partialResult, pair in
+      if flags & pair.carbon == pair.carbon {
+        partialResult.insert(pair.cocoa)
+      }
     }
-
-    if flags & optionKey == optionKey {
-      modifiers.insert(.option)
-    }
-
-    if flags & shiftKey == shiftKey {
-      modifiers.insert(.shift)
-    }
-
-    if flags & cmdKey == cmdKey {
-      modifiers.insert(.command)
-    }
-
-    self = modifiers
   }
 
   public var carbonized: Int {
@@ -59,9 +50,12 @@ extension NSEvent.ModifierFlags: CustomStringConvertible {
       (.shift, kShiftUnicode),
       (.command, kCommandUnicode),
     ]
-      .filter { contains($0.0) }
-      .map(\.1)
-      .map { String(format: "%C", $0) }
+      .filter {
+        contains($0.0)
+      }
+      .map {
+        String(format: "%C", $0.1)
+      }
       .reduce("", +)
   }
 }

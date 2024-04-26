@@ -5,6 +5,9 @@ import UniformTypeIdentifiers
 
 // MARK: - NSWorkspaceClient
 
+// https://www.donnywals.com/building-an-asyncsequence-with-asyncstream-makestream/
+// https://gist.github.com/ole/fc5c1f4c763d28d9ba70940512e81916
+
 @DependencyClient
 public struct NSWorkspaceClient {
   public var notificationCenter: () -> NotificationCenterClient = { .testValue }
@@ -12,9 +15,14 @@ public struct NSWorkspaceClient {
   public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var open: (_ url: URL) -> Bool = { _ in false }
   public var frontmostApplication: () -> NSRunningApplication? = { nil }
+  @DependencyEndpoint(method: "frontmostApplication")
+  public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
   public var runningApplications: () -> [NSRunningApplication] = { [] }
-  public var menuBarOwningApplication: () -> AsyncStream<NSRunningApplication?> = { .finished }
-  
+  @DependencyEndpoint(method: "runningApplications")
+  public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<[NSRunningApplication]>> = { _ in .finished }
+  public var menuBarOwningApplication: () -> NSRunningApplication?
+  @DependencyEndpoint(method: "menuBarOwningApplication")
+  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
 }
 
 extension NotificationCenterClient {
@@ -30,28 +38,37 @@ extension NotificationCenterClient {
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
-  public static let liveValue = NSWorkspaceClient(
-    notificationCenter: { .nsWorkspace },
-    iconForFile: NSWorkspace.shared.icon(forFile:),
-    iconFor: NSWorkspace.shared.icon(for:),
-    open: NSWorkspace.shared.open,
-    frontmostApplication: { NSWorkspace.shared.frontmostApplication },
-    runningApplications: { NSWorkspace.shared.runningApplications },
-    menuBarOwningApplication: {
-      // return AsyncStream(publisher.values) // doesn't work!
-      return AsyncStream { continuation in
-        let cancellable = NSWorkspace
-          .shared
-          .publisher(for: \.menuBarOwningApplication)
-          .sink { app in
-            continuation.yield(app)
-          }
-        continuation.onTermination = { _ in
-          cancellable.cancel()
-        }
+  public static let liveValue: Self = {
+    let instance = NSWorkspace.shared
+    let client = NSWorkspaceClient.liveValue
+
+    func toStream<Value>(
+      options: NSKeyValueObservingOptions,
+      keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChange<Value>>
+    {
+      let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChange<Value>.self)
+      let observation = instance.observe(keyPath, options: options) { _, change in
+        continuation.yield(change)
       }
+      continuation.onTermination = { _ in
+        observation.invalidate()
+      }
+      return stream
     }
-  )
+
+    return Self(
+      notificationCenter: { .nsWorkspace },
+      iconForFile: NSWorkspace.shared.icon(forFile:),
+      iconFor: NSWorkspace.shared.icon(for:),
+      open: NSWorkspace.shared.open,
+      frontmostApplication: { NSWorkspace.shared.frontmostApplication },
+      frontmostApplicationObservation: { toStream(options: $0, keyPath: \.frontmostApplication) },
+      runningApplications: { NSWorkspace.shared.runningApplications },
+      runningApplicationsObservation: { toStream(options: $0, keyPath: \.runningApplications) },
+      menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
+      menuBarOwningApplicationObservation: { toStream(options: $0, keyPath: \.menuBarOwningApplication) }
+    )
+  }()
 
   public static let testValue = NSWorkspaceClient()
 }

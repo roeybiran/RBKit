@@ -688,10 +688,35 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
   }
 
-  // MARK: - Carbon
+  // MARK: - NSEvent.ModifierFlags
 
-  func test_CGEventFlags_normalized() throws {
-    throw XCTSkip()
+  func test_NSEventModifierFlags_initWithCarbon() throws {
+    XCTAssertEqual(NSEvent.ModifierFlags(carbon: cmdKey), .command)
+
+    var mods = 0
+    mods |= cmdKey
+    mods |= shiftKey
+    mods |= controlKey
+    mods |= optionKey
+    XCTAssertEqual(NSEvent.ModifierFlags(carbon: mods), [.command, .shift, .control, .option])
   }
 
+  func test_carbonized() throws {
+    var mods = 0
+    mods |= cmdKey
+    mods |= shiftKey
+    mods |= controlKey
+    mods |= optionKey
+    XCTAssertEqual(NSEvent.ModifierFlags([.command, .shift, .control, .option]).carbonized, mods)
+  }
+
+  func test_hotKeyApplicable() throws {
+    let a = NSEvent.ModifierFlags([.command, .shift, .control, .option, .function, .capsLock, .numericPad])
+    XCTAssertEqual(a.hotkeyApplicable, [.command, .shift, .control, .option])
+  }
+
+  func test_description() throws {
+    let a = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
+    XCTAssertEqual("\(a)", "⌃⌥⇧⌘")
+  }
 }

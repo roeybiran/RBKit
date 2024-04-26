@@ -1,6 +1,6 @@
 import AppKit
 
-open class ProgrammaticCollectionViewItem: NSCollectionViewItem {
+open class TextAndImageCollectionViewItem: NSCollectionViewItem {
 
   // MARK: Open
 

@@ -8,7 +8,9 @@ extension NSMenu {
     self.init(title: title)
     items = builder()
   }
+}
 
+extension NSMenu {
   // MARK: Public
 
   public static func fromNib(named nibName: String, bundle: Bundle = .main) -> NSMenu {
@@ -21,7 +23,7 @@ extension NSMenu {
 
   // MARK: Internal
 
-  static let APP_NAME = "YOUR_APP_NAME"
+  private static let APP_NAME = "YOUR_APP_NAME"
 
   /// A programmatically created application menu bar (`NSApp.mainMenu`). The menu’s structure and contents are an exact clone of those in a Storyboard–based, non–modified menu bar (as of **Xcode 14.2**). This is not meant to be used directly in your project (hence the lack of the `public` modifier), but rather copied and modified to suit your needs.
   static let standardMenuBar = NSMenu(APP_NAME) {

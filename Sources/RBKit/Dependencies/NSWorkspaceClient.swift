@@ -38,35 +38,33 @@ extension NotificationCenterClient {
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
-  public static let liveValue: Self = {
-    let instance = NSWorkspace.shared
-    let client = NSWorkspaceClient.liveValue
-
-    func toStream<Value>(
-      options: NSKeyValueObservingOptions,
-      keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChange<Value>>
-    {
-      let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChange<Value>.self)
-      let observation = instance.observe(keyPath, options: options) { _, change in
-        continuation.yield(change)
-      }
-      continuation.onTermination = { _ in
-        observation.invalidate()
-      }
-      return stream
+  private static func toStream<Value>(
+    workspace: NSWorkspace,
+    options: NSKeyValueObservingOptions,
+    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChange<Value>>
+  {
+    let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChange<Value>.self)
+    let observation = workspace.observe(keyPath, options: options) { _, change in
+      continuation.yield(change)
     }
+    continuation.onTermination = { _ in
+      observation.invalidate()
+    }
+    return stream
+  }
 
+  public static let liveValue: Self = {
     return Self(
       notificationCenter: { .nsWorkspace },
       iconForFile: NSWorkspace.shared.icon(forFile:),
       iconFor: NSWorkspace.shared.icon(for:),
       open: NSWorkspace.shared.open,
       frontmostApplication: { NSWorkspace.shared.frontmostApplication },
-      frontmostApplicationObservation: { toStream(options: $0, keyPath: \.frontmostApplication) },
+      frontmostApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.frontmostApplication) },
       runningApplications: { NSWorkspace.shared.runningApplications },
-      runningApplicationsObservation: { toStream(options: $0, keyPath: \.runningApplications) },
+      runningApplicationsObservation: { toStream(workspace: .shared, options: $0, keyPath: \.runningApplications) },
       menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-      menuBarOwningApplicationObservation: { toStream(options: $0, keyPath: \.menuBarOwningApplication) }
+      menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) }
     )
   }()
 

@@ -11,4 +11,20 @@ extension NSView {
       $0.enumerateSubviews(using: handler)
     }
   }
+
+  // https://stackoverflow.com/questions/41386423/get-image-from-calayer-or-nsview-swift-3
+  public func image() -> NSImage? {
+    let imageRep = bitmapImageRepForCachingDisplay(in: bounds)
+    if let imageRep {
+      cacheDisplay(in: bounds, to: imageRep)
+      let data = imageRep.representation(using: .jpeg, properties: [:])
+      if let data {
+        return NSImage(data: data)
+      } else {
+        return nil
+      }
+    } else {
+      return nil
+    }
+  }
 }

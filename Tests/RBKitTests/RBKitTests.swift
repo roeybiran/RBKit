@@ -539,36 +539,6 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(a[1, 0], b)
   }
 
-  // MARK: - NSView+
-
-  func test_enumerateSubviews() {
-    let a = NSView()
-    let b = NSView()
-    let c = NSView()
-    let d = NSView()
-    let e = NSView()
-    a.addSubview(b)
-    b.addSubview(c)
-    b.addSubview(d)
-    d.addSubview(e)
-
-    var count = 0
-    a.enumerateSubviews(using: { view in
-      view.identifier = "a"
-      count += 1
-    })
-
-    XCTAssertEqual(count, 4)
-    XCTAssertEqual(a.subviews[0].identifier, "a")
-  }
-
-  func test_dotSyntaxSettable() {
-    let view = NSView()
-    XCTAssertEqual(view.identifier, nil)
-    view.set(\.identifier, to: "foo")
-    XCTAssertEqual(view.identifier, "foo")
-  }
-
   // MARK: - Sequence extensions
 
   func test_sortByKeyPath() {
@@ -677,15 +647,65 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(CACornerMask.all, [.topLeft, .topRight, .bottomLeft, .bottomRight])
   }
 
-  // MARK: -
+  // MARK: - NSObject
 
-  func test_NSObjectUIIdentifier() {
+  func test_NSObject_UIIdentifier() {
     XCTAssertEqual(NSObject.userInterfaceIdentifier, "NSObject")
     XCTAssertEqual(NSView.userInterfaceIdentifier, "NSView")
-
     class MainCell: NSTableCellView {}
-
     XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
+  }
+
+  func test_NSObject_dotSyntaxSettable() {
+    let view = NSView()
+    XCTAssertEqual(view.identifier, nil)
+    view.set(\.identifier, to: "foo")
+    XCTAssertEqual(view.identifier, "foo")
+  }
+
+  // MARK: - Cocoa
+
+  func test_NSDirectionalEdgeInsets() {
+    let sut = NSDirectionalEdgeInsets(2)
+    XCTAssertEqual(sut.top, 2)
+    XCTAssertEqual(sut.bottom, 2)
+    XCTAssertEqual(sut.leading, 2)
+    XCTAssertEqual(sut.trailing, 2)
+  }
+
+  func test_NSDirectionalEdgeInsets2() {
+    let sut = NSDirectionalEdgeInsets(top: 1)
+    XCTAssertEqual(sut.top, 1)
+    XCTAssertEqual(sut.bottom, 0)
+    XCTAssertEqual(sut.leading, 0)
+    XCTAssertEqual(sut.trailing, 0)
+  }
+
+  func test_supplementaryViewKind() {
+    class FooView: NSView {}
+    let sut = FooView.supplementaryViewKind
+    XCTAssertEqual(sut, "FooView")
+  }
+
+  func test_enumerateSubviews() {
+    let a = NSView()
+    let b = NSView()
+    let c = NSView()
+    let d = NSView()
+    let e = NSView()
+    a.addSubview(b)
+    b.addSubview(c)
+    b.addSubview(d)
+    d.addSubview(e)
+
+    var count = 0
+    a.enumerateSubviews(using: { view in
+      view.identifier = "a"
+      count += 1
+    })
+
+    XCTAssertEqual(count, 4)
+    XCTAssertEqual(a.subviews[0].identifier, "a")
   }
 
   // MARK: - NSEvent.ModifierFlags

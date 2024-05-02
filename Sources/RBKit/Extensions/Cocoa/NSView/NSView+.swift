@@ -27,4 +27,9 @@ extension NSView {
       return nil
     }
   }
+
+  public static var supplementaryViewKind: String {
+    userInterfaceIdentifier.rawValue
+  }
 }
+

@@ -280,9 +280,36 @@ final class RBKitTests: XCTestCase {
   }
 
   func test_targetApp_init() {
+    struct RunningApp: RunningApplicationProtocol {
+      var isTerminated: Bool
+      
+      var isFinishedLaunching: Bool
+      
+      var isHidden: Bool
+      
+      var isActive: Bool
+      
+      var ownsMenuBar: Bool
+      
+      var activationPolicy: NSApplication.ActivationPolicy
+      
+      var localizedName: String?
+      
+      var bundleIdentifier: String?
+      
+      var bundleURL: URL?
+      
+      var executableURL: URL?
+      
+      var processIdentifier: pid_t
+      
+      var launchDate: Date?
+      
+      var executableArchitecture: Int
+    }
     let app = _App()
-    let a = RunningApplication(nsRunningApplication: app)
-    let b = RunningApplication(
+    let a = RunningApp(nsRunningApplication: app)
+    let b = RunningApp(
       isTerminated: app.isTerminated,
       isFinishedLaunching: app.isFinishedLaunching,
       isHidden: app.isHidden,

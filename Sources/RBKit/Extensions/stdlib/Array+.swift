@@ -6,8 +6,9 @@ extension Array {
   public func concat(_ other: Element...) -> Array {
     self + other
   }
-
-  public var lastIndex: Int {
-    startIndex == endIndex ? endIndex : (endIndex - 1)
+  
+  /// If the array is empty, returns the array’s `endIndex`.
+  public var lastValidIndex: Int {
+    isEmpty ? endIndex : (endIndex - 1)
   }
 }

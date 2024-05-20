@@ -10,6 +10,11 @@ public struct FileManagerClient {
     _ directory: FileManager.SearchPathDirectory,
     _ domainMask: FileManager.SearchPathDomainMask
   ) -> [URL] = { _, _ in [] }
+  public var contentsOfDirectory: (
+    _ url: URL,
+    _ keys: [URLResourceKey]?,
+    _ mask: FileManager.DirectoryEnumerationOptions
+  ) throws -> [URL]
   public var createDirectory: (
     _ atURL: URL,
     _ withIntermediateDirectories: Bool,
@@ -23,7 +28,8 @@ public struct FileManagerClient {
 extension FileManagerClient: DependencyKey {
   public static let liveValue = FileManagerClient(
     urls: FileManager.default.urls,
-    createDirectory: FileManager.default.createDirectory(at:withIntermediateDirectories:attributes:)
+    contentsOfDirectory: FileManager.default.contentsOfDirectory,
+    createDirectory: FileManager.default.createDirectory
   )
   public static let testValue = FileManagerClient()
 }

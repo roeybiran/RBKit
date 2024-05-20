@@ -8,6 +8,8 @@ import UniformTypeIdentifiers
 // https://www.donnywals.com/building-an-asyncsequence-with-asyncstream-makestream/
 // https://gist.github.com/ole/fc5c1f4c763d28d9ba70940512e81916
 
+//
+
 @DependencyClient
 public struct NSWorkspaceClient {
   public var notificationCenter: () -> NotificationCenterClient = { .testValue }

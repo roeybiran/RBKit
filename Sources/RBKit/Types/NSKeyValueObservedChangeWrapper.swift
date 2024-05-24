@@ -7,7 +7,7 @@ public struct NSKeyValueObservedChangeWrapper<Value> {
   public let indexes: IndexSet?
   public let isPrior: Bool
 
-  init(kind: NSKeyValueChange, newValue: Value?, oldValue: Value?, indexes: IndexSet?, isPrior: Bool) {
+  public init(kind: NSKeyValueChange, newValue: Value?, oldValue: Value?, indexes: IndexSet?, isPrior: Bool) {
     self.kind = kind
     self.newValue = newValue
     self.oldValue = oldValue
@@ -15,7 +15,7 @@ public struct NSKeyValueObservedChangeWrapper<Value> {
     self.isPrior = isPrior
   }
 
-  init(_ change: NSKeyValueObservedChange<Value>) {
+  public init(_ change: NSKeyValueObservedChange<Value>) {
     kind = change.kind
     newValue = change.newValue
     oldValue = change.oldValue

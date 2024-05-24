@@ -8,8 +8,6 @@ import UniformTypeIdentifiers
 // https://www.donnywals.com/building-an-asyncsequence-with-asyncstream-makestream/
 // https://gist.github.com/ole/fc5c1f4c763d28d9ba70940512e81916
 
-//
-
 @DependencyClient
 public struct NSWorkspaceClient {
   public var notificationCenter: () -> NotificationCenterClient = { .testValue }
@@ -18,13 +16,13 @@ public struct NSWorkspaceClient {
   public var open: (_ url: URL) -> Bool = { _ in false }
   public var frontmostApplication: () -> NSRunningApplication? = { nil }
   @DependencyEndpoint(method: "frontmostApplication")
-  public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
+  public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
   public var runningApplications: () -> [NSRunningApplication] = { [] }
   @DependencyEndpoint(method: "runningApplications")
-  public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<[NSRunningApplication]>> = { _ in .finished }
+  public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<[NSRunningApplication]>> = { _ in .finished }
   public var menuBarOwningApplication: () -> NSRunningApplication?
   @DependencyEndpoint(method: "menuBarOwningApplication")
-  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
+  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
 }
 
 extension NotificationCenterClient {
@@ -43,11 +41,11 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChange<Value>>
+    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChangeWrapper<Value>>
   {
-    let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChange<Value>.self)
+    let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChangeWrapper<Value>.self)
     let observation = workspace.observe(keyPath, options: options) { _, change in
-      continuation.yield(change)
+      continuation.yield(.init(change))
     }
     continuation.onTermination = { _ in
       observation.invalidate()

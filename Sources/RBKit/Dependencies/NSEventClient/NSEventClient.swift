@@ -14,7 +14,6 @@ public struct NSEventClient {
 
 extension NSEventClient: DependencyKey {
   // MARK: Public
-
   public static let liveValue = Self(
     mouseLocation: { NSEvent.mouseLocation },
     globalEvents: { mask in
@@ -56,15 +55,5 @@ extension DependencyValues {
   public var nsEventClient: NSEventClient {
     get { self[NSEventClient.self] }
     set { self[NSEventClient.self] = newValue }
-  }
-}
-
-func f() {
-  Task {
-    for await (event, handler) in NSEventClient.liveValue.localEvents(mask: []) {
-      if 0 < 2 {
-        handler(event)
-      }
-    }
   }
 }

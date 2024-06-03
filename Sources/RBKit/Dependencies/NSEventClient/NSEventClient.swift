@@ -60,6 +60,7 @@ extension NSEventClient: DependencyKey {
     stopLocalMonitor: {
       guard let monitor else { return }
       NSEvent.removeMonitor(monitor as Any)
+      Self.monitor = nil
     }
   )
 

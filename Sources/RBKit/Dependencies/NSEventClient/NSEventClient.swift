@@ -8,45 +8,45 @@ import DependenciesMacros
 public struct NSEventClient {
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
+  public var stopLocalMonitor: () -> Void
 }
 
 extension NSEventClient: DependencyKey {
   // MARK: Public
-
-  public static let liveValue = Self(
-    mouseLocation: { NSEvent.mouseLocation },
-    globalEvents: { mask in
-      AsyncStream { continuation in
-        let monitor = NSEvent
-          .addGlobalMonitorForEvents(
-            matching: mask,
-            handler: { nsEvent in
-              continuation.yield(nsEvent)
-            }
-          )
-        continuation.onTermination = { _ in
-          NSEvent.removeMonitor(monitor as Any)
+  private static var monitor: Any?
+  public static let liveValue: Self = {
+    return Self(
+      mouseLocation: { NSEvent.mouseLocation },
+      globalEvents: { mask in
+        AsyncStream { continuation in
+          let monitor = NSEvent
+            .addGlobalMonitorForEvents(
+              matching: mask,
+              handler: { nsEvent in
+                continuation.yield(nsEvent)
+              }
+            )
+          continuation.onTermination = { _ in
+            NSEvent.removeMonitor(monitor as Any)
+          }
         }
-
-      }
-    },
-    localEvents: { mask, handler in
-      AsyncStream { continuation in
-        let monitor = NSEvent
+      },
+      addLocalMonitor: { mask, handler in
+        guard monitor == nil else { return }
+        monitor = NSEvent
           .addLocalMonitorForEvents(
             matching: mask,
-            handler: { nsEvent in
-              continuation.yield(nsEvent)
-              return handler(nsEvent)
-            }
+            handler: handler
           )
-        continuation.onTermination = { _ in
-          NSEvent.removeMonitor(monitor as Any)
-        }
+      },
+      stopLocalMonitor: {
+        guard let monitor else { return }
+        NSEvent.removeMonitor(monitor as Any)
       }
-    }
-  )
+    )
+  }()
+
 
   public static let testValue = Self()
 }

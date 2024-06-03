@@ -6,14 +6,17 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSEventClient {
-  public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
+  public typealias LocalEventsStream = AsyncStream<(NSEvent, @MainActor (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
   public var localEvents: (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
+  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
+  public var stopLocalMonitor: () -> Void
 }
 
 extension NSEventClient: DependencyKey {
   // MARK: Public
+  private static var monitor: Any?
   public static let liveValue = Self(
     mouseLocation: { NSEvent.mouseLocation },
     globalEvents: { mask in
@@ -45,6 +48,18 @@ extension NSEventClient: DependencyKey {
         NSEvent.removeMonitor(monitor as Any)
       }
       return stream
+    },
+    addLocalMonitor: { mask, handler in
+      guard monitor == nil else { return }
+      monitor = NSEvent
+        .addLocalMonitorForEvents(
+          matching: mask,
+          handler: handler
+        )
+    },
+    stopLocalMonitor: {
+      guard let monitor else { return }
+      NSEvent.removeMonitor(monitor as Any)
     }
   )
 

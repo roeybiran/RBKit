@@ -6,10 +6,9 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSEventClient {
-  public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localEvents: (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
+  public var localEvents: (_ mask: NSEvent.EventTypeMask, _ filter: @escaping (_ event: NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
   public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
   public var stopLocalMonitor: () -> Void
 }
@@ -33,15 +32,17 @@ extension NSEventClient: DependencyKey {
       }
       return stream
     },
-    localEvents: { mask in
-      let (stream, continuation) = LocalEventsStream.makeStream()
+    localEvents: { mask, filter in
+      let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
       let monitor = NSEvent
         .addLocalMonitorForEvents(
           matching: mask,
           handler: { nsEvent in
-            var handledEvent: NSEvent?
-            continuation.yield((nsEvent, { handledEvent = $0 }))
-            return handledEvent
+            let filterResult = filter(nsEvent)
+            if let filterResult {
+              continuation.yield(filterResult)
+            }
+            return filterResult
           }
         )
       continuation.onTermination = { _ in

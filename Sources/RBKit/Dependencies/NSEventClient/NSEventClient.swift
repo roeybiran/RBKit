@@ -6,47 +6,48 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSEventClient {
+  public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
-  public var stopLocalMonitor: () -> Void
+  public var localEvents: (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
 }
 
 extension NSEventClient: DependencyKey {
   // MARK: Public
-  private static var monitor: Any?
-  public static let liveValue: Self = {
-    return Self(
-      mouseLocation: { NSEvent.mouseLocation },
-      globalEvents: { mask in
-        AsyncStream { continuation in
-          let monitor = NSEvent
-            .addGlobalMonitorForEvents(
-              matching: mask,
-              handler: { nsEvent in
-                continuation.yield(nsEvent)
-              }
-            )
-          continuation.onTermination = { _ in
-            NSEvent.removeMonitor(monitor as Any)
+
+  public static let liveValue = Self(
+    mouseLocation: { NSEvent.mouseLocation },
+    globalEvents: { mask in
+      let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
+      let monitor = NSEvent
+        .addGlobalMonitorForEvents(
+          matching: mask,
+          handler: { nsEvent in
+            continuation.yield(nsEvent)
           }
-        }
-      },
-      addLocalMonitor: { mask, handler in
-        guard monitor == nil else { return }
-        monitor = NSEvent
-          .addLocalMonitorForEvents(
-            matching: mask,
-            handler: handler
-          )
-      },
-      stopLocalMonitor: {
-        guard let monitor else { return }
+        )
+      continuation.onTermination = { _ in
         NSEvent.removeMonitor(monitor as Any)
       }
-    )
-  }()
-
+      return stream
+    },
+    localEvents: { mask in
+      let (stream, continuation) = LocalEventsStream.makeStream()
+      let monitor = NSEvent
+        .addLocalMonitorForEvents(
+          matching: mask,
+          handler: { nsEvent in
+            var handledEvent: NSEvent?
+            continuation.yield((nsEvent, { handledEvent = $0 }))
+            return handledEvent
+          }
+        )
+      continuation.onTermination = { _ in
+        NSEvent.removeMonitor(monitor as Any)
+      }
+      return stream
+    }
+  )
 
   public static let testValue = Self()
 }
@@ -55,5 +56,15 @@ extension DependencyValues {
   public var nsEventClient: NSEventClient {
     get { self[NSEventClient.self] }
     set { self[NSEventClient.self] = newValue }
+  }
+}
+
+func f() {
+  Task {
+    for await (event, handler) in NSEventClient.liveValue.localEvents(mask: []) {
+      if 0 < 2 {
+        handler(event)
+      }
+    }
   }
 }

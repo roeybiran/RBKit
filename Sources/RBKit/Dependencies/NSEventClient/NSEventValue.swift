@@ -194,7 +194,7 @@ public struct NSEventValue {
 }
 
 extension NSEventValue {
-  public init?(nsEvent: NSEvent) {
+   public init?(nsEvent: NSEvent) {
     guard nsEvent.type == .keyDown || nsEvent.type == .keyUp else { return nil }
     type = nsEvent.type
     timestamp = nsEvent.timestamp

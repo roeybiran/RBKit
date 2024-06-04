@@ -8,10 +8,8 @@ import DependenciesMacros
 public struct NSEventClient {
   public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
-  public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localEvents: (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
-  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
-  public var stopLocalMonitor: () -> Void
+  public var globalMonitorEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
+  public var localMonitorEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
 }
 
 extension NSEventClient: DependencyKey {
@@ -19,7 +17,7 @@ extension NSEventClient: DependencyKey {
   private static var monitor: Any?
   public static let liveValue = Self(
     mouseLocation: { NSEvent.mouseLocation },
-    globalEvents: { mask in
+    globalMonitorEvents: { mask in
       let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
       let monitor = NSEvent
         .addGlobalMonitorForEvents(
@@ -33,34 +31,20 @@ extension NSEventClient: DependencyKey {
       }
       return stream
     },
-    localEvents: { mask in
-      let (stream, continuation) = LocalEventsStream.makeStream()
+    localMonitorEvents: { mask, handler in
+      let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
       let monitor = NSEvent
         .addLocalMonitorForEvents(
           matching: mask,
           handler: { nsEvent in
-            var handledEvent: NSEvent?
-            continuation.yield((nsEvent, { handledEvent = $0 }))
-            return handledEvent
+            continuation.yield(nsEvent)
+            return handler(nsEvent)
           }
         )
       continuation.onTermination = { _ in
         NSEvent.removeMonitor(monitor as Any)
       }
       return stream
-    },
-    addLocalMonitor: { mask, handler in
-      guard monitor == nil else { return }
-      monitor = NSEvent
-        .addLocalMonitorForEvents(
-          matching: mask,
-          handler: handler
-        )
-    },
-    stopLocalMonitor: {
-      guard let monitor else { return }
-      NSEvent.removeMonitor(monitor as Any)
-      Self.monitor = nil
     }
   )
 

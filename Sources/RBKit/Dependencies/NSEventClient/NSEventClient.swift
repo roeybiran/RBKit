@@ -8,8 +8,8 @@ import DependenciesMacros
 public struct NSEventClient {
   public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
-  public var globalEvents: @MainActor (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localEvents: @MainActor (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
+  public var globalEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
+  public var localEvents: (_ mask: NSEvent.EventTypeMask) -> LocalEventsStream = { _ in .finished }
   public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
   public var stopLocalMonitor: () -> Void
 }

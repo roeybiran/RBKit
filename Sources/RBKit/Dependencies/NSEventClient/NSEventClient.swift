@@ -11,7 +11,10 @@ public struct NSEventClient {
   public var globalMonitorEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
   public var localMonitorEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?)
     -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
+  public var stopLocalMonitor: () -> Void
 }
+
 
 // MARK: DependencyKey
 
@@ -47,7 +50,21 @@ extension NSEventClient: DependencyKey {
         NSEvent.removeMonitor(monitor as Any)
       }
       return stream
-    })
+    },
+    addLocalMonitor: { mask, handler in
+      guard monitor == nil else { return }
+      monitor = NSEvent
+        .addLocalMonitorForEvents(
+          matching: mask,
+          handler: handler
+        )
+    },
+    stopLocalMonitor: {
+      guard let monitor else { return }
+      NSEvent.removeMonitor(monitor as Any)
+      Self.monitor = nil
+    }
+  )
 
   public static let testValue = Self()
 

@@ -1,80 +1,80 @@
 import AppKit
 import Carbon
 
-// Getting mouse event information
-// -----------------------------
-// static var pressedMouseButtons: Int
-// static var doubleClickInterval: TimeInterval
-// static var mouseLocation: NSPoint
-// public let buttonNumber: Int
-// public let clickCount: Int
-// public let associatedEventsMask: NSEvent.EventTypeMask
-
-// Getting scroll wheel and flick events
-// -------------------------------------
-// public let deltaX: CGFloat
-// public let deltaY: CGFloat
-// public let deltaZ: CGFloat
-// public let hasPreciseScrollingDeltas: Bool
-// public let scrollingDeltaX: CGFloat
-// public let scrollingDeltaY: CGFloat
-// public let momentumPhase: NSEvent.Phase
-// public let isDirectionInvertedFromDevice: Bool
-
-// Configuring swipe event behaviors
-// ---------------------------------
-// static var isSwipeTrackingFromScrollEventsEnabled: Bool
-// func trackSwipeEvent(options: NSEvent.SwipeTrackingOptions = [], dampenAmountThresholdMin minDampenThreshold: CGFloat, max maxDampenThreshold: CGFloat, usingHandler trackingHandler: @escaping (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void)
-
-// Getting gesture and touch information
-// -------------------------------------
-// let context: NSGraphicsContext?
-// public let eventNumber: Int
-// public let pressure: Float
-// public let trackingNumber: Int
-// public let userData: UnsafeMutableRawPointer?
-// let trackingArea: NSTrackingArea? /
-// public let data1: Int
-// public let data2: Int
-// init?(eventRef: UnsafeRawPointer)
-// init?(cgEvent: CGEvent)
-// let var isMouseCoalescingEnabled: Bool
-// public let magnification: CGFloat
-// public let deviceID: Int
-// public let rotation: Float
-// public let absoluteX: Int
-// public let absoluteY: Int
-// public let absoluteZ: Int
-// public let buttonMask: NSEvent.ButtonMask
-// public let tilt: NSPoint
-// public let tangentialPressure: Float
-// let vendorDefined: Any
-// public let vendorID: Int
-// public let tabletID: Int
-// public let pointingDeviceID: Int
-// public let systemTabletID: Int
-// public let vendorPointingDeviceType: Int
-// public let pointingDeviceSerialNumber: Int
-// public let uniqueID: UInt64
-// public let capabilityMask: Int
-// public let pointingDeviceType: NSEvent.PointingDeviceType
-// public let isEnteringProximity: Bool
-// func touches(matching phase: NSTouch.Phase, in view: NSView?) -> Set<NSTouch>
-// func allTouches() -> Set<NSTouch>
-// func touches(for view: NSView) -> Set<NSTouch>
-// func coalescedTouches(for touch: NSTouch) -> [NSTouch]
-// public let phase: NSEvent.Phase
-// public let stage: Int
-// public let stageTransition: CGFloat
-// public let pressureBehavior: NSEvent.PressureBehavior
-// func startPeriodicEvents(afterDelay delay: TimeInterval, withPeriod period: TimeInterval)
-// func stopPeriodicEvents()
-// func mouseEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, clickCount cNum: Int, pressure: Float) -> NSEvent?
-// func keyEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, characters keys: String, charactersIgnoringModifiers ukeys: String, isARepeat flag: Bool, keyCode code: UInt16) -> NSEvent?
-// func enterExitEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, trackingNumber tNum: Int, userData data: UnsafeMutableRawPointer?) -> NSEvent?
-// func otherEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, subtype: Int16, data1 d1: Int, data2 d2: Int) -> NSEvent?
-
 public struct NSEventValue {
+  // Getting mouse event information
+  // -----------------------------
+  // static var pressedMouseButtons: Int
+  // static var doubleClickInterval: TimeInterval
+  // static var mouseLocation: NSPoint
+  // public let buttonNumber: Int
+  // public let clickCount: Int
+  // public let associatedEventsMask: NSEvent.EventTypeMask
+
+  // Getting scroll wheel and flick events
+  // -------------------------------------
+  // public let deltaX: CGFloat
+  // public let deltaY: CGFloat
+  // public let deltaZ: CGFloat
+  // public let hasPreciseScrollingDeltas: Bool
+  // public let scrollingDeltaX: CGFloat
+  // public let scrollingDeltaY: CGFloat
+  // public let momentumPhase: NSEvent.Phase
+  // public let isDirectionInvertedFromDevice: Bool
+
+  // Configuring swipe event behaviors
+  // ---------------------------------
+  // static var isSwipeTrackingFromScrollEventsEnabled: Bool
+  // func trackSwipeEvent(options: NSEvent.SwipeTrackingOptions = [], dampenAmountThresholdMin minDampenThreshold: CGFloat, max maxDampenThreshold: CGFloat, usingHandler trackingHandler: @escaping (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void)
+
+  // Getting gesture and touch information
+  // -------------------------------------
+  // let context: NSGraphicsContext?
+  // public let eventNumber: Int
+  // public let pressure: Float
+  // public let trackingNumber: Int
+  // public let userData: UnsafeMutableRawPointer?
+  // let trackingArea: NSTrackingArea? /
+  // public let data1: Int
+  // public let data2: Int
+  // init?(eventRef: UnsafeRawPointer)
+  // init?(cgEvent: CGEvent)
+  // let var isMouseCoalescingEnabled: Bool
+  // public let magnification: CGFloat
+  // public let deviceID: Int
+  // public let rotation: Float
+  // public let absoluteX: Int
+  // public let absoluteY: Int
+  // public let absoluteZ: Int
+  // public let buttonMask: NSEvent.ButtonMask
+  // public let tilt: NSPoint
+  // public let tangentialPressure: Float
+  // let vendorDefined: Any
+  // public let vendorID: Int
+  // public let tabletID: Int
+  // public let pointingDeviceID: Int
+  // public let systemTabletID: Int
+  // public let vendorPointingDeviceType: Int
+  // public let pointingDeviceSerialNumber: Int
+  // public let uniqueID: UInt64
+  // public let capabilityMask: Int
+  // public let pointingDeviceType: NSEvent.PointingDeviceType
+  // public let isEnteringProximity: Bool
+  // func touches(matching phase: NSTouch.Phase, in view: NSView?) -> Set<NSTouch>
+  // func allTouches() -> Set<NSTouch>
+  // func touches(for view: NSView) -> Set<NSTouch>
+  // func coalescedTouches(for touch: NSTouch) -> [NSTouch]
+  // public let phase: NSEvent.Phase
+  // public let stage: Int
+  // public let stageTransition: CGFloat
+  // public let pressureBehavior: NSEvent.PressureBehavior
+  // func startPeriodicEvents(afterDelay delay: TimeInterval, withPeriod period: TimeInterval)
+  // func stopPeriodicEvents()
+  // func mouseEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, clickCount cNum: Int, pressure: Float) -> NSEvent?
+  // func keyEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, characters keys: String, charactersIgnoringModifiers ukeys: String, isARepeat flag: Bool, keyCode code: UInt16) -> NSEvent?
+  // func enterExitEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, trackingNumber tNum: Int, userData data: UnsafeMutableRawPointer?) -> NSEvent?
+  // func otherEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, subtype: Int16, data1 d1: Int, data2 d2: Int) -> NSEvent?
+
   // Getting the event type
   // ----------------------
   public let type: NSEvent.EventType
@@ -216,7 +216,7 @@ extension NSEventValue: Equatable {}
 #if DEBUG
 extension NSEventValue {
   public static func mock(
-    _ keyCode: Int,
+    _ keyCode: UInt16?,
     _ modifierFlags: NSEvent.ModifierFlags = [],
     _ type: NSEvent.EventType = .keyDown
   )
@@ -230,7 +230,7 @@ extension NSEventValue {
       modifierFlags: modifierFlags,
       characters: nil,
       charactersIgnoringModifiers: nil,
-      keyCode: UInt16(keyCode),
+      keyCode: keyCode ?? 0,
       specialKey: nil,
       isARepeat: false
     )

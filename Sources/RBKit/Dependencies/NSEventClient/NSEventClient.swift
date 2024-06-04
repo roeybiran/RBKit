@@ -5,6 +5,7 @@ import DependenciesMacros
 // MARK: - EventMonitor
 
 @DependencyClient
+@MainActor
 public struct NSEventClient {
   public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }

@@ -2,8 +2,6 @@ import AppKit
 
 extension NSMenu {
 
-  // MARK: Lifecycle
-
   public convenience init(_ title: String, @MenuBuilder builder: () -> [NSMenuItem] = { [] }) {
     self.init(title: title)
     items = builder()
@@ -11,6 +9,7 @@ extension NSMenu {
 }
 
 extension NSMenu {
+
   // MARK: Public
 
   public static func fromNib(named nibName: String, bundle: Bundle = .main) -> NSMenu {
@@ -22,8 +21,6 @@ extension NSMenu {
   }
 
   // MARK: Internal
-
-  private static let APP_NAME = "YOUR_APP_NAME"
 
   /// A programmatically created application menu bar (`NSApp.mainMenu`). The menu’s structure and contents are an exact clone of those in a Storyboard–based, non–modified menu bar (as of **Xcode 14.2**). This is not meant to be used directly in your project (hence the lack of the `public` modifier), but rather copied and modified to suit your needs.
   static let standardMenuBar = NSMenu(APP_NAME) {
@@ -82,7 +79,7 @@ extension NSMenu {
           "Use Selection for Find",
           action: #selector(NSResponder.performTextFinderAction(_:)),
           keyEquivalent: "e")
-        .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
+          .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
         NSMenuItem(
           "Jump to Selection",
           action: #selector(NSStandardKeyBindingResponding.centerSelectionInVisibleArea(_:)),
@@ -203,4 +200,9 @@ extension NSMenu {
       NSMenuItem("\(APP_NAME) Help", action: #selector(NSApplication.showHelp(_:)), keyEquivalent: "?")
     }
   }
+
+  // MARK: Private
+
+  private static let APP_NAME = "YOUR_APP_NAME"
+
 }

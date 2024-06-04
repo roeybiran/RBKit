@@ -16,13 +16,16 @@ public struct NSWorkspaceClient {
   public var open: (_ url: URL) -> Bool = { _ in false }
   public var frontmostApplication: () -> NSRunningApplication? = { nil }
   @DependencyEndpoint(method: "frontmostApplication")
-  public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
+  public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions)
+    -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
   public var runningApplications: () -> [NSRunningApplication] = { [] }
   @DependencyEndpoint(method: "runningApplications")
-  public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<[NSRunningApplication]>> = { _ in .finished }
+  public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions)
+    -> AsyncStream<NSKeyValueObservedChangeWrapper<[NSRunningApplication]>> = { _ in .finished }
   public var menuBarOwningApplication: () -> NSRunningApplication?
   @DependencyEndpoint(method: "menuBarOwningApplication")
-  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions) -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
+  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
+    -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
 }
 
 extension NotificationCenterClient {
@@ -30,14 +33,32 @@ extension NotificationCenterClient {
     let instance = NSWorkspace.shared.notificationCenter
     return Self(
       post: instance.post,
-      notifications: instance.notifications
-    )
+      notifications: instance.notifications)
   }()
 }
 
-// MARK: DependencyKey
+// MARK: - NSWorkspaceClient + DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
+
+  // MARK: Public
+
+  public static let liveValue = Self(
+    notificationCenter: { .nsWorkspace },
+    iconForFile: NSWorkspace.shared.icon(forFile:),
+    iconFor: NSWorkspace.shared.icon(for:),
+    open: NSWorkspace.shared.open,
+    frontmostApplication: { NSWorkspace.shared.frontmostApplication },
+    frontmostApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.frontmostApplication) },
+    runningApplications: { NSWorkspace.shared.runningApplications },
+    runningApplicationsObservation: { toStream(workspace: .shared, options: $0, keyPath: \.runningApplications) },
+    menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
+    menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) })
+
+  public static let testValue = NSWorkspaceClient()
+
+  // MARK: Private
+
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
@@ -53,22 +74,6 @@ extension NSWorkspaceClient: DependencyKey {
     return stream
   }
 
-  public static let liveValue: Self = {
-    return Self(
-      notificationCenter: { .nsWorkspace },
-      iconForFile: NSWorkspace.shared.icon(forFile:),
-      iconFor: NSWorkspace.shared.icon(for:),
-      open: NSWorkspace.shared.open,
-      frontmostApplication: { NSWorkspace.shared.frontmostApplication },
-      frontmostApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.frontmostApplication) },
-      runningApplications: { NSWorkspace.shared.runningApplications },
-      runningApplicationsObservation: { toStream(workspace: .shared, options: $0, keyPath: \.runningApplications) },
-      menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-      menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) }
-    )
-  }()
-
-  public static let testValue = NSWorkspaceClient()
 }
 
 extension DependencyValues {

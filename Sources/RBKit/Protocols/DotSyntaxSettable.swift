@@ -1,8 +1,12 @@
 import Foundation
 
-public protocol DotSyntaxSettable: AnyObject {}
+// MARK: - DotSyntaxSettable
 
-extension NSObject: DotSyntaxSettable {}
+public protocol DotSyntaxSettable: AnyObject { }
+
+// MARK: - NSObject + DotSyntaxSettable
+
+extension NSObject: DotSyntaxSettable { }
 
 extension DotSyntaxSettable {
   @discardableResult

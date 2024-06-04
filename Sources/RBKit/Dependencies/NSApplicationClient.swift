@@ -35,9 +35,9 @@ extension NSApplicationClient: DependencyKey {
         } else {
           // Fallback on earlier versions
         }
-      }
-    )
+      })
   }()
+
   public static let testValue = Self()
 }
 

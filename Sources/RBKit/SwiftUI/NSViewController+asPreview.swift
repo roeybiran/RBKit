@@ -26,4 +26,3 @@ extension NSViewController {
     func updateNSViewController(_: NSViewController, context _: Context) { }
   }
 }
-

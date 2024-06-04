@@ -2,7 +2,7 @@ import AppKit.NSApplication
 import Dependencies
 import DependenciesMacros
 
-// MARK: - NSApplicationClient
+// MARK: - NSRunningApplicationClient
 
 @DependencyClient
 public struct NSRunningApplicationClient {
@@ -10,11 +10,15 @@ public struct NSRunningApplicationClient {
   public var make: (_ pid: pid_t) -> NSRunningApplication?
   public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
   public var current: () -> NSRunningApplication = { .init() }
-  // Activating applications
+  /// Activating applications
   @DependencyEndpoint(method: "activate")
   public var activate: (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _ in false }
   @DependencyEndpoint(method: "activate")
-  public var activateFromApplication: (_ app: NSRunningApplication, _ fromApp: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _, _ in false }
+  public var activateFromApplication: (
+    _ app: NSRunningApplication,
+    _ fromApp: NSRunningApplication,
+    _ options: NSApplication.ActivationOptions)
+    -> Bool = { _, _, _ in false }
   // Hiding and unhiding applications
   public var hide: (_ app: NSRunningApplication) -> Bool = { _ in false }
   public var unhide: (_ app: NSRunningApplication) -> Bool = { _ in false }
@@ -43,8 +47,7 @@ extension NSRunningApplicationClient: DependencyKey {
     hide: { $0.hide() },
     unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
-    terminate: { $0.terminate() }
-  )
+    terminate: { $0.terminate() })
   public static let testValue = NSRunningApplicationClient()
 }
 

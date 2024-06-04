@@ -1,7 +1,12 @@
 import AppKit
 import Carbon
 
+// MARK: - NSEventValue
+
 public struct NSEventValue {
+
+  // MARK: Public
+
   // Getting mouse event information
   // -----------------------------
   // static var pressedMouseButtons: Int
@@ -75,8 +80,8 @@ public struct NSEventValue {
   // func enterExitEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, eventNumber eNum: Int, trackingNumber tNum: Int, userData data: UnsafeMutableRawPointer?) -> NSEvent?
   // func otherEvent(with type: NSEvent.EventType, location: NSPoint, modifierFlags flags: NSEvent.ModifierFlags, timestamp time: TimeInterval, windowNumber wNum: Int, context unusedPassNil: NSGraphicsContext?, subtype: Int16, data1 d1: Int, data2 d2: Int) -> NSEvent?
 
-  // Getting the event type
-  // ----------------------
+  /// Getting the event type
+  /// ----------------------
   public let type: NSEvent.EventType
   // Getting general event information
   // ---------------------------------
@@ -84,8 +89,8 @@ public struct NSEventValue {
   public let timestamp: TimeInterval
   public let windowNumber: Int
 
-  // Getting modifier flags
-  // ----------------------
+  /// Getting modifier flags
+  /// ----------------------
   public let modifierFlags: NSEvent.ModifierFlags
   // public static let modifierFlags = NSEvent.modifierFlags
 
@@ -100,12 +105,79 @@ public struct NSEventValue {
   public let specialKey: NSEvent.SpecialKey?
   public let isARepeat: Bool
 
+  public static func upArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    keyDownEvent(
+      character: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
+      code: kVK_UpArrow,
+      modifierFlags: modifierFlags,
+      specialKey: .upArrow)
+  }
+
+  public static func rightArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.rightArrow.character,
+      code: kVK_RightArrow,
+      modifierFlags: modifierFlags,
+      specialKey: .rightArrow)
+  }
+
+  public static func downArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.downArrow.character,
+      code: kVK_DownArrow,
+      modifierFlags: modifierFlags,
+      specialKey: .downArrow)
+  }
+
+  public static func leftArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.leftArrow.character,
+      code: kVK_LeftArrow,
+      modifierFlags: modifierFlags,
+      specialKey: .leftArrow)
+  }
+
+  public static func pageUp() -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.pageUp.character,
+      code: kVK_PageUp,
+      modifierFlags: .init(rawValue: 0x800100),
+      specialKey: .pageUp)
+  }
+
+  public static func pageDown() -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.pageDown.character,
+      code: kVK_PageDown,
+      modifierFlags: .init(rawValue: 0x800100),
+      specialKey: .pageDown)
+  }
+
+  public static func home() -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.home.character,
+      code: kVK_Home,
+      modifierFlags: [],
+      specialKey: .home)
+  }
+
+  public static func end() -> Self {
+    keyDownEvent(
+      character: NSEvent.SpecialKey.end.character,
+      code: kVK_End,
+      modifierFlags: [],
+      specialKey: .end)
+  }
+
+  // MARK: Internal
+
   static func keyDownEvent(
     character: String,
     code: Int,
     modifierFlags: NSEvent.ModifierFlags,
-    specialKey: NSEvent.SpecialKey? = nil
-  ) -> Self {
+    specialKey: NSEvent.SpecialKey? = nil)
+    -> Self
+  {
     Self(
       type: .keyDown,
       locationInWindow: .zero,
@@ -116,85 +188,13 @@ public struct NSEventValue {
       charactersIgnoringModifiers: character,
       keyCode: UInt16(code),
       specialKey: specialKey,
-      isARepeat: false
-    )
+      isARepeat: false)
   }
 
-  public static func upArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    keyDownEvent(
-      character: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
-      code: kVK_UpArrow,
-      modifierFlags: modifierFlags,
-      specialKey: .upArrow
-    )
-  }
-
-  public static func rightArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.rightArrow.character,
-      code: kVK_RightArrow,
-      modifierFlags: modifierFlags,
-      specialKey: .rightArrow
-    )
-  }
-
-  public static func downArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.downArrow.character,
-      code: kVK_DownArrow,
-      modifierFlags: modifierFlags,
-      specialKey: .downArrow
-    )
-  }
-
-  public static func leftArrow(modifierFlags: NSEvent.ModifierFlags = []) -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.leftArrow.character,
-      code: kVK_LeftArrow,
-      modifierFlags: modifierFlags,
-      specialKey: .leftArrow
-    )
-  }
-
-  public static func pageUp() -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.pageUp.character,
-      code: kVK_PageUp,
-      modifierFlags: .init(rawValue: 0x800100),
-      specialKey: .pageUp
-    )
-  }
-
-  public static func pageDown() -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.pageDown.character,
-      code: kVK_PageDown,
-      modifierFlags: .init(rawValue: 0x800100),
-      specialKey: .pageDown
-    )
-  }
-
-  public static func home() -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.home.character,
-      code: kVK_Home,
-      modifierFlags: [],
-      specialKey: .home
-    )
-  }
-
-  public static func end() -> Self {
-    keyDownEvent(
-      character: NSEvent.SpecialKey.end.character,
-      code: kVK_End,
-      modifierFlags: [],
-      specialKey: .end
-    )
-  }
 }
 
 extension NSEventValue {
-   public init?(nsEvent: NSEvent) {
+  public init?(nsEvent: NSEvent) {
     guard nsEvent.type == .keyDown || nsEvent.type == .keyUp else { return nil }
     type = nsEvent.type
     timestamp = nsEvent.timestamp
@@ -211,16 +211,15 @@ extension NSEventValue {
 
 // MARK: Equatable
 
-extension NSEventValue: Equatable {}
+extension NSEventValue: Equatable { }
 
 #if DEBUG
 extension NSEventValue {
   public static func mock(
     _ keyCode: UInt16?,
     _ modifierFlags: NSEvent.ModifierFlags = [],
-    _ type: NSEvent.EventType = .keyDown
-  )
-  -> Self
+    _ type: NSEvent.EventType = .keyDown)
+    -> Self
   {
     Self(
       type: type,
@@ -232,8 +231,7 @@ extension NSEventValue {
       charactersIgnoringModifiers: nil,
       keyCode: keyCode ?? 0,
       specialKey: nil,
-      isARepeat: false
-    )
+      isARepeat: false)
   }
 }
 #endif

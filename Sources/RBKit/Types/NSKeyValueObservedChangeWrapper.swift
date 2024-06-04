@@ -1,11 +1,10 @@
 import Foundation
 
+// MARK: - NSKeyValueObservedChangeWrapper
+
 public struct NSKeyValueObservedChangeWrapper<Value> {
-  public let kind: NSKeyValueChange
-  public let newValue: Value?
-  public let oldValue: Value?
-  public let indexes: IndexSet?
-  public let isPrior: Bool
+
+  // MARK: Lifecycle
 
   public init(kind: NSKeyValueChange, newValue: Value?, oldValue: Value?, indexes: IndexSet?, isPrior: Bool) {
     self.kind = kind
@@ -22,10 +21,25 @@ public struct NSKeyValueObservedChangeWrapper<Value> {
     indexes = change.indexes
     isPrior = change.isPrior
   }
+
+  // MARK: Public
+
+  public let kind: NSKeyValueChange
+  public let newValue: Value?
+  public let oldValue: Value?
+  public let indexes: IndexSet?
+  public let isPrior: Bool
+
 }
+
+// MARK: Hashable
 
 extension NSKeyValueObservedChangeWrapper: Hashable where Value: Hashable { }
 
+// MARK: Equatable
+
 extension NSKeyValueObservedChangeWrapper: Equatable where Value: Equatable { }
+
+// MARK: Sendable
 
 extension NSKeyValueObservedChangeWrapper: Sendable where Value: Sendable { }

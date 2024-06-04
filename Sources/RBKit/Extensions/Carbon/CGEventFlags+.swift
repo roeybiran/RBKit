@@ -15,9 +15,9 @@ extension CGEventFlags: CustomDebugStringConvertible {
       (.maskNumericPad, "numericPad"),
       (.maskNonCoalesced, "nonCoalesced"),
     ]
-      .filter { contains($0.0) }
-      .map(\.1)
-      .joined(separator: ", ")
+    .filter { contains($0.0) }
+    .map(\.1)
+    .joined(separator: ", ")
 
     return "\(flags) (rawValue: \(rawValue))"
   }

@@ -26,20 +26,19 @@ extension NSStackView {
     self.edgeInsets = edgeInsets
     self.distribution = distribution
 
-    arrangedSubviews().forEach {
-      addArrangedSubview($0)
+    for arrangedSubview in arrangedSubviews() {
+      addArrangedSubview(arrangedSubview)
     }
   }
 
   // MARK: Public
 
   public func addArrangedSubviews(_ views: NSView...) {
-    views.forEach {
-      addArrangedSubview($0)
+    for view in views {
+      addArrangedSubview(view)
     }
   }
 }
-
 
 // MARK: - StackViewBuilder
 

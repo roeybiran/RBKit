@@ -1,11 +1,18 @@
 // NSTreeController.h
 // NSTreeNode.h
 
+// MARK: - TreeNodeProtocol
+
 public protocol TreeNodeProtocol {
   var children: [Self] { get set }
 }
 
 extension TreeNodeProtocol {
+  /// Recursively returns children of self in a breadth-first order.
+  public var descendants: [Self] {
+    children.concat(children.reduce(into: []) { $0.append(contentsOf: $1.descendants) })
+  }
+
   /// Apply `transform` on `self` and recursively on all of its descendants.
   public func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
     var transformed = try transform(self)
@@ -25,11 +32,6 @@ extension TreeNodeProtocol {
     }
 
     return nil
-  }
-
-  /// Recursively returns children of self in a breadth-first order.
-  public var descendants: [Self] {
-    children.concat(children.reduce(into: [], { $0.append(contentsOf: $1.descendants) }))
   }
 
   /// If `indices` is empty, returns `self`.

@@ -2,19 +2,23 @@ import AppKit
 import Dependencies
 import DependenciesMacros
 
-// MARK: - EventMonitor
+// MARK: - NSEventClient
 
 @DependencyClient
 public struct NSEventClient {
   public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalMonitorEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localMonitorEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var localMonitorEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?)
+    -> AsyncStream<NSEvent> = { _, _ in .finished }
 }
 
+// MARK: DependencyKey
+
 extension NSEventClient: DependencyKey {
+
   // MARK: Public
-  private static var monitor: Any?
+
   public static let liveValue = Self(
     mouseLocation: { NSEvent.mouseLocation },
     globalMonitorEvents: { mask in
@@ -24,8 +28,7 @@ extension NSEventClient: DependencyKey {
           matching: mask,
           handler: { nsEvent in
             continuation.yield(nsEvent)
-          }
-        )
+          })
       continuation.onTermination = { _ in
         NSEvent.removeMonitor(monitor as Any)
       }
@@ -39,16 +42,18 @@ extension NSEventClient: DependencyKey {
           handler: { nsEvent in
             continuation.yield(nsEvent)
             return handler(nsEvent)
-          }
-        )
+          })
       continuation.onTermination = { _ in
         NSEvent.removeMonitor(monitor as Any)
       }
       return stream
-    }
-  )
+    })
 
   public static let testValue = Self()
+
+  // MARK: Private
+
+  private static var monitor: Any?
 }
 
 extension DependencyValues {

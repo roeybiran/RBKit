@@ -2,7 +2,7 @@ import Dependencies
 import DependenciesMacros
 import Foundation
 
-// MARK: - FileReadWriteClient
+// MARK: - DiskClient
 
 @DependencyClient
 public struct DiskClient {
@@ -15,8 +15,7 @@ public struct DiskClient {
 extension DiskClient: DependencyKey {
   public static let liveValue = DiskClient(
     read: { try Data(contentsOf: $0) },
-    write: { data, destinationURL, options in try data.write(to: destinationURL, options: options) }
-  )
+    write: { data, destinationURL, options in try data.write(to: destinationURL, options: options) })
 
   public static let testValue = DiskClient()
 }

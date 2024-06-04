@@ -45,4 +45,3 @@ extension String {
     try? write(toFile: path, atomically: true, encoding: .utf8)
   }
 }
-

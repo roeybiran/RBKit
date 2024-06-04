@@ -1,9 +1,65 @@
-import XCTest
-import CustomDump
 import Carbon
+import CustomDump
+import XCTest
 @testable import RBKit
 
 final class RBKitTests: XCTestCase {
+
+  // MARK: Internal
+
+  struct MockNode: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [MockNode]()
+
+    init(_ title: String, children: [MockNode] = [MockNode]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  struct MockNode2: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [MockNode2]()
+
+    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  // MARK: - TreeNodeProtocol
+
+  static let testNode = MockNode("1", children: [
+    MockNode("1.1", children: [
+      MockNode("1.1.1"),
+      MockNode("1.1.2"),
+    ]),
+    MockNode("1.2", children: [
+      MockNode("1.2.1", children: [
+        MockNode("1.2.1.1", children: [
+          MockNode("1.2.1.1.1"),
+        ]),
+        MockNode("1.2.1.2"),
+      ]),
+      MockNode("1.2.2"),
+    ]),
+  ])
+
+  static let testNode2 = MockNode2("1", children: [
+    MockNode2("1.1", children: [
+      MockNode2("1.1.1"),
+      MockNode2("1.1.2"),
+    ]),
+    MockNode2("1.2", children: [
+      MockNode2("1.2.1", children: [
+        MockNode2("1.2.1.1", children: [
+          MockNode2("1.2.1.1.1"),
+        ]),
+        MockNode2("1.2.1.2"),
+      ]),
+      MockNode2("1.2.2"),
+    ]),
+  ])
 
   // MARK: - Collection Extensions
 
@@ -66,9 +122,7 @@ final class RBKitTests: XCTestCase {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126)
-      )!
-    )
+        keyCode: UInt16(126))!)
     let expected = NSEventValue(
       type: .keyDown,
       locationInWindow: .zero,
@@ -79,8 +133,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(126),
       specialKey: .downArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
 
     XCTAssertNoDifference(actual, expected)
   }
@@ -97,9 +150,7 @@ final class RBKitTests: XCTestCase {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126)
-      )!
-    )
+        keyCode: UInt16(126))!)
     let expected = NSEventValue(
       type: .keyUp,
       locationInWindow: .zero,
@@ -110,8 +161,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(126),
       specialKey: .downArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
 
     XCTAssertNoDifference(actual, expected)
   }
@@ -128,9 +178,7 @@ final class RBKitTests: XCTestCase {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126)
-      )!
-    )
+        keyCode: UInt16(126))!)
     XCTAssertNoDifference(actual, nil)
   }
 
@@ -146,8 +194,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.upArrow.character,
       keyCode: UInt16(126),
       specialKey: .upArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -163,8 +210,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.rightArrow.character,
       keyCode: UInt16(124),
       specialKey: .rightArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -180,8 +226,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(125),
       specialKey: .downArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -197,8 +242,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.leftArrow.character,
       keyCode: UInt16(123),
       specialKey: .leftArrow,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -214,8 +258,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.pageUp.character,
       keyCode: UInt16(116),
       specialKey: .pageUp,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -231,8 +274,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.pageDown.character,
       keyCode: UInt16(121),
       specialKey: .pageDown,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -248,8 +290,7 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.home.character,
       keyCode: UInt16(115),
       specialKey: .home,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
   }
 
@@ -265,46 +306,36 @@ final class RBKitTests: XCTestCase {
       charactersIgnoringModifiers: NSEvent.SpecialKey.end.character,
       keyCode: UInt16(119),
       specialKey: .end,
-      isARepeat: false
-    )
+      isARepeat: false)
     XCTAssertEqual(actual, expected)
-  }
-
-  // MARK: - TargetAppTests
-
-  private class _App: NSRunningApplication {
-    override var processIdentifier: pid_t { 0 }
-    override var bundleIdentifier: String? { "com.foo.bar" }
-    override var localizedName: String? { "Foo" }
-    override var bundleURL: URL? { URL(fileURLWithPath: "file://apps/foo") }
   }
 
   func test_targetApp_init() {
     struct RunningApp: RunningApplicationProtocol {
       var isTerminated: Bool
-      
+
       var isFinishedLaunching: Bool
-      
+
       var isHidden: Bool
-      
+
       var isActive: Bool
-      
+
       var ownsMenuBar: Bool
-      
+
       var activationPolicy: NSApplication.ActivationPolicy
-      
+
       var localizedName: String?
-      
+
       var bundleIdentifier: String?
-      
+
       var bundleURL: URL?
-      
+
       var executableURL: URL?
-      
+
       var processIdentifier: pid_t
-      
+
       var launchDate: Date?
-      
+
       var executableArchitecture: Int
     }
     let app = _App()
@@ -322,8 +353,7 @@ final class RBKitTests: XCTestCase {
       executableURL: app.executableURL,
       processIdentifier: app.processIdentifier,
       launchDate: app.launchDate,
-      executableArchitecture: app.executableArchitecture
-    )
+      executableArchitecture: app.executableArchitecture)
     XCTAssertNoDifference(a, b)
   }
 
@@ -381,105 +411,49 @@ final class RBKitTests: XCTestCase {
     XCTAssertNotEqual(a, b)
   }
 
-  // MARK: - TreeNodeProtocol
-
-  static let testNode = MockNode("1", children: [
-    MockNode("1.1", children: [
-      MockNode("1.1.1"),
-      MockNode("1.1.2")
-    ]),
-    MockNode("1.2", children: [
-      MockNode("1.2.1", children: [
-        MockNode("1.2.1.1", children: [
-          MockNode("1.2.1.1.1")
-        ]),
-        MockNode("1.2.1.2")
-      ]),
-      MockNode("1.2.2")
-    ])
-  ])
-
-  static let testNode2 = MockNode2("1", children: [
-    MockNode2("1.1", children: [
-      MockNode2("1.1.1"),
-      MockNode2("1.1.2")
-    ]),
-    MockNode2("1.2", children: [
-      MockNode2("1.2.1", children: [
-        MockNode2("1.2.1.1", children: [
-          MockNode2("1.2.1.1.1")
-        ]),
-        MockNode2("1.2.1.2")
-      ]),
-      MockNode2("1.2.2")
-    ])
-  ])
-
-  struct MockNode: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode]()
-
-    init(_ title: String, children: [MockNode] = [MockNode]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
-  struct MockNode2: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode2]()
-
-    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
   func test_descendants() {
     XCTAssertNoDifference(
       Self.testNode.descendants,
       [
         MockNode("1.1", children: [
           MockNode("1.1.1"),
-          MockNode("1.1.2")
+          MockNode("1.1.2"),
         ]),
         MockNode("1.2", children: [
           MockNode("1.2.1", children: [
             MockNode("1.2.1.1", children: [
-              MockNode("1.2.1.1.1")
+              MockNode("1.2.1.1.1"),
             ]),
-            MockNode("1.2.1.2")
+            MockNode("1.2.1.2"),
           ]),
-          MockNode("1.2.2")
+          MockNode("1.2.2"),
         ]),
         MockNode("1.1.1"),
         MockNode("1.1.2"),
         MockNode("1.2.1", children: [
           MockNode("1.2.1.1", children: [
-            MockNode("1.2.1.1.1")
+            MockNode("1.2.1.1.1"),
           ]),
-          MockNode("1.2.1.2")
+          MockNode("1.2.1.2"),
         ]),
         MockNode("1.2.2"),
         MockNode("1.2.1.1", children: [
-          MockNode("1.2.1.1.1")
+          MockNode("1.2.1.1.1"),
         ]),
         MockNode("1.2.1.2"),
-        MockNode("1.2.1.1.1")
-      ]
-    )
+        MockNode("1.2.1.1.1"),
+      ])
   }
 
   func test_firstNode() {
-    XCTAssertNotNil(Self.testNode.first(where: { $0.title == "1.2.1.2"} ))
-    XCTAssertNil(Self.testNode.first(where: { $0.title == "zzzzzzzz"} ))
+    XCTAssertNotNil(Self.testNode.first(where: { $0.title == "1.2.1.2" }))
+    XCTAssertNil(Self.testNode.first(where: { $0.title == "zzzzzzzz" }))
   }
 
   func test_map() {
     XCTAssertNoDifference(
       Self.testNode.map { MockNode2($0.title) },
-      Self.testNode2
-    )
+      Self.testNode2)
   }
 
   func test_subscript_singleMemberArray_get() throws {
@@ -679,7 +653,7 @@ final class RBKitTests: XCTestCase {
   func test_NSObject_UIIdentifier() {
     XCTAssertEqual(NSObject.userInterfaceIdentifier, "NSObject")
     XCTAssertEqual(NSView.userInterfaceIdentifier, "NSView")
-    class MainCell: NSTableCellView {}
+    class MainCell: NSTableCellView { }
     XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
   }
 
@@ -709,7 +683,7 @@ final class RBKitTests: XCTestCase {
   }
 
   func test_supplementaryViewKind() {
-    class FooView: NSView {}
+    class FooView: NSView { }
     let sut = FooView.supplementaryViewKind
     XCTAssertEqual(sut, "FooView")
   }
@@ -766,4 +740,16 @@ final class RBKitTests: XCTestCase {
     let a = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
     XCTAssertEqual("\(a)", "⌃⌥⇧⌘")
   }
+
+  // MARK: Private
+
+  // MARK: - TargetAppTests
+
+  private class _App: NSRunningApplication {
+    override var processIdentifier: pid_t { 0 }
+    override var bundleIdentifier: String? { "com.foo.bar" }
+    override var localizedName: String? { "Foo" }
+    override var bundleURL: URL? { URL(fileURLWithPath: "file://apps/foo") }
+  }
+
 }

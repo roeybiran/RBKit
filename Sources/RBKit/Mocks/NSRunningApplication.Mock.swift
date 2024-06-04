@@ -2,6 +2,7 @@ import AppKit
 
 extension NSRunningApplication {
   open class Mock: NSRunningApplication {
+
     // MARK: Lifecycle
 
     public init(
@@ -34,7 +35,23 @@ extension NSRunningApplication {
       self._executableArchitecture = _executableArchitecture
     }
 
-    // MARK: Internal
+    // MARK: Open
+
+    override open var isTerminated: Bool { _isTerminated }
+    override open var isFinishedLaunching: Bool { _isFinishedLaunching }
+    override open var isHidden: Bool { _isHidden }
+    override open var isActive: Bool { _isActive }
+    override open var ownsMenuBar: Bool { _ownsMenuBar }
+    override open var activationPolicy: NSApplication.ActivationPolicy { _activationPolicy }
+    override open var localizedName: String? { _localizedName }
+    override open var bundleIdentifier: String? { _bundleIdentifier }
+    override open var bundleURL: URL? { _bundleURL }
+    override open var executableURL: URL? { _executableURL }
+    override open var processIdentifier: pid_t { _processIdentifier }
+    override open var launchDate: Date? { _launchDate }
+    override open var executableArchitecture: Int { _executableArchitecture }
+
+    // MARK: Public
 
     public var _isTerminated: Bool
     public var _isFinishedLaunching: Bool
@@ -50,18 +67,5 @@ extension NSRunningApplication {
     public var _launchDate: Date?
     public var _executableArchitecture: Int
 
-    override open var isTerminated: Bool { _isTerminated }
-    override open var isFinishedLaunching: Bool { _isFinishedLaunching }
-    override open var isHidden: Bool { _isHidden }
-    override open var isActive: Bool { _isActive }
-    override open var ownsMenuBar: Bool { _ownsMenuBar }
-    override open var activationPolicy: NSApplication.ActivationPolicy { _activationPolicy }
-    override open var localizedName: String? { _localizedName }
-    override open var bundleIdentifier: String? { _bundleIdentifier }
-    override open var bundleURL: URL? { _bundleURL }
-    override open var executableURL: URL? { _executableURL }
-    override open var processIdentifier: pid_t { _processIdentifier }
-    override open var launchDate: Date? { _launchDate }
-    override open var executableArchitecture: Int { _executableArchitecture }
   }
 }

@@ -1,18 +1,22 @@
 import AppKit
 
 extension NSView {
+  public static var supplementaryViewKind: String {
+    userInterfaceIdentifier.rawValue
+  }
+
   public func addSubviews(_ views: NSView...) {
-    views.forEach { addSubview($0) }
+    for view in views { addSubview(view) }
   }
 
   public func enumerateSubviews(using handler: (NSView) -> Void) {
-    subviews.forEach {
-      handler($0)
-      $0.enumerateSubviews(using: handler)
+    for subview in subviews {
+      handler(subview)
+      subview.enumerateSubviews(using: handler)
     }
   }
 
-  // https://stackoverflow.com/questions/41386423/get-image-from-calayer-or-nsview-swift-3
+  /// https://stackoverflow.com/questions/41386423/get-image-from-calayer-or-nsview-swift-3
   public func image() -> NSImage? {
     let imageRep = bitmapImageRepForCachingDisplay(in: bounds)
     if let imageRep {
@@ -28,8 +32,4 @@ extension NSView {
     }
   }
 
-  public static var supplementaryViewKind: String {
-    userInterfaceIdentifier.rawValue
-  }
 }
-

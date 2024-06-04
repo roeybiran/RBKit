@@ -5,12 +5,34 @@ import Foundation
 // https://alejandromp.com/blog/backport-swiftui-modifiers
 
 extension URL {
+
+  // MARK: Lifecycle
+
   @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
   public init(filePath path: String, directoryHint: URL._DirectoryHint = .inferFromPath, relativeTo base: URL? = nil) {
     if #available(macOS 13.0, *) {
       self = URL(filePath: path, directoryHint: directoryHint.directoryHint(), relativeTo: base)
     } else {
       self = URL(fileURLWithPath: path, isDirectory: directoryHint == .isDirectory)
+    }
+  }
+
+  // MARK: Public
+
+  public enum _DirectoryHint {
+    case isDirectory
+    case notDirectory
+    case checkFileSystem
+    case inferFromPath
+
+    @available(macOS 13, *)
+    func directoryHint() -> DirectoryHint {
+      switch self {
+      case .isDirectory: .isDirectory
+      case .notDirectory: .notDirectory
+      case .checkFileSystem: .checkFileSystem
+      case .inferFromPath: .inferFromPath
+      }
     }
   }
 
@@ -58,23 +80,6 @@ extension URL {
     }
   }
 
-  public enum _DirectoryHint {
-    case isDirectory
-    case notDirectory
-    case checkFileSystem
-    case inferFromPath
-
-    @available(macOS 13, *)
-    func directoryHint() -> DirectoryHint {
-      switch self {
-      case .isDirectory: .isDirectory
-      case .notDirectory: .notDirectory
-      case .checkFileSystem: .checkFileSystem
-      case .inferFromPath: .inferFromPath
-      }
-    }
-  }
-
   // MARK: Internal
 
   func _appending(queryItems: [URLQueryItem]) -> URL {
@@ -85,4 +90,3 @@ extension URL {
     return url
   }
 }
-

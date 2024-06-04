@@ -1,42 +1,11 @@
 import AppKit.NSScreen
 import Foundation
 
-// MARK: - Screen
+// MARK: - NSScreenValue
 
 public struct NSScreenValue {
-  // Getting Screen Information
-  public let depth: NSWindow.Depth
-  public let frame: NSRect
-  // var supportedWindowDepths: UnsafePointer<NSWindow.Depth>
-  // var deviceDescription: [NSDeviceDescriptionKey : Any]
-  // struct NSDeviceDescriptionKey
-  // var colorSpace: NSColorSpace?
-  public let localizedName: String
-  // func canRepresent(NSDisplayGamut) -> Bool
-  // class var screensHaveSeparateSpaces: Bool
 
-  // Converting Between Screen and Backing Coordinates
-  // func backingAlignedRect(NSRect, options: AlignmentOptions) -> NSRect
-  public let backingScaleFactor: CGFloat
-  // func convertRectFromBacking(NSRect) -> NSRect
-  // func convertRectToBacking(NSRect) -> NSRect
-  // Getting the Visible Portion of the Screen
-  public let visibleFrame: NSRect
-  // let safeAreaInsets: NSEdgeInsets
-  public let auxiliaryTopLeftArea: NSRect?
-  public let auxiliaryTopRightArea: NSRect?
-
-  // Getting Extended Dynamic Range Details
-  public let maximumPotentialExtendedDynamicRangeColorComponentValue: CGFloat
-  public let maximumExtendedDynamicRangeColorComponentValue: CGFloat
-  public let maximumReferenceExtendedDynamicRangeColorComponentValue: CGFloat
-
-  // Getting Variable Refresh Rate Details
-  public let maximumFramesPerSecond: Int
-  public let minimumRefreshInterval: TimeInterval
-  public let maximumRefreshInterval: TimeInterval
-  public let displayUpdateGranularity: TimeInterval
-  public let lastDisplayUpdateTimestamp: TimeInterval
+  // MARK: Lifecycle
 
   // Receiving Screen-Related Notifications
   // class let colorSpaceDidChangeNotification: NSNotification.Name
@@ -59,8 +28,8 @@ public struct NSScreenValue {
     minimumRefreshInterval: TimeInterval,
     maximumRefreshInterval: TimeInterval,
     displayUpdateGranularity: TimeInterval,
-    lastDisplayUpdateTimestamp: TimeInterval
-  ) {
+    lastDisplayUpdateTimestamp: TimeInterval)
+  {
     self.depth = depth
     self.frame = frame
     self.localizedName = localizedName
@@ -77,9 +46,48 @@ public struct NSScreenValue {
     self.displayUpdateGranularity = displayUpdateGranularity
     self.lastDisplayUpdateTimestamp = lastDisplayUpdateTimestamp
   }
+
+  // MARK: Public
+
+  // Getting Screen Information
+  public let depth: NSWindow.Depth
+  public let frame: NSRect
+  /// var supportedWindowDepths: UnsafePointer<NSWindow.Depth>
+  /// var deviceDescription: [NSDeviceDescriptionKey : Any]
+  /// struct NSDeviceDescriptionKey
+  /// var colorSpace: NSColorSpace?
+  public let localizedName: String
+  // func canRepresent(NSDisplayGamut) -> Bool
+  // class var screensHaveSeparateSpaces: Bool
+
+  /// Converting Between Screen and Backing Coordinates
+  /// func backingAlignedRect(NSRect, options: AlignmentOptions) -> NSRect
+  public let backingScaleFactor: CGFloat
+  /// func convertRectFromBacking(NSRect) -> NSRect
+  /// func convertRectToBacking(NSRect) -> NSRect
+  /// Getting the Visible Portion of the Screen
+  public let visibleFrame: NSRect
+  // let safeAreaInsets: NSEdgeInsets
+  public let auxiliaryTopLeftArea: NSRect?
+  public let auxiliaryTopRightArea: NSRect?
+
+  // Getting Extended Dynamic Range Details
+  public let maximumPotentialExtendedDynamicRangeColorComponentValue: CGFloat
+  public let maximumExtendedDynamicRangeColorComponentValue: CGFloat
+  public let maximumReferenceExtendedDynamicRangeColorComponentValue: CGFloat
+
+  // Getting Variable Refresh Rate Details
+  public let maximumFramesPerSecond: Int
+  public let minimumRefreshInterval: TimeInterval
+  public let maximumRefreshInterval: TimeInterval
+  public let displayUpdateGranularity: TimeInterval
+  public let lastDisplayUpdateTimestamp: TimeInterval
+
 }
 
-extension NSScreenValue: Equatable {}
+// MARK: Equatable
+
+extension NSScreenValue: Equatable { }
 
 extension NSScreenValue {
   public init(nsScreen: NSScreen) {
@@ -119,8 +127,9 @@ extension NSScreenValue {
     minimumRefreshInterval: TimeInterval = 0,
     maximumRefreshInterval: TimeInterval = 0,
     displayUpdateGranularity: TimeInterval = 0,
-    lastDisplayUpdateTimestamp: TimeInterval = 0
-  ) -> Self {
+    lastDisplayUpdateTimestamp: TimeInterval = 0)
+    -> Self
+  {
     .init(
       depth: depth,
       frame: frame,
@@ -136,9 +145,7 @@ extension NSScreenValue {
       minimumRefreshInterval: minimumRefreshInterval,
       maximumRefreshInterval: maximumRefreshInterval,
       displayUpdateGranularity: displayUpdateGranularity,
-      lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp
-    )
+      lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp)
   }
 }
 #endif
-

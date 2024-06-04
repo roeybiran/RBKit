@@ -2,7 +2,7 @@ import Dependencies
 import DependenciesMacros
 import UserNotifications
 
-// MARK: - UserNotificationsClient
+// MARK: - UserNotificationCenterClient
 
 @DependencyClient
 public struct UserNotificationCenterClient {
@@ -10,11 +10,12 @@ public struct UserNotificationCenterClient {
   public var add: (_ request: UNNotificationRequest) async throws -> Void
 }
 
+// MARK: DependencyKey
+
 extension UserNotificationCenterClient: DependencyKey {
   public static let liveValue = UserNotificationCenterClient(
     requestAuthorization: UNUserNotificationCenter.current().requestAuthorization(options:),
-    add: UNUserNotificationCenter.current().add
-  )
+    add: UNUserNotificationCenter.current().add)
 
   public static let testValue = UserNotificationCenterClient()
 }

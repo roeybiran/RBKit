@@ -1,7 +1,10 @@
-import Carbon
 import AppKit
+import Carbon
 
 extension NSEvent.ModifierFlags {
+
+  // MARK: Lifecycle
+
   public init(carbon flags: Int) {
     self = [
       (cocoa: Self.control, carbon: controlKey),
@@ -14,6 +17,8 @@ extension NSEvent.ModifierFlags {
       }
     }
   }
+
+  // MARK: Public
 
   public var carbonized: Int {
     var modifierFlags = 0
@@ -42,6 +47,8 @@ extension NSEvent.ModifierFlags {
   }
 }
 
+// MARK: - NSEvent.ModifierFlags + CustomStringConvertible
+
 extension NSEvent.ModifierFlags: CustomStringConvertible {
   public var description: String {
     [
@@ -50,13 +57,12 @@ extension NSEvent.ModifierFlags: CustomStringConvertible {
       (.shift, kShiftUnicode),
       (.command, kCommandUnicode),
     ]
-      .filter {
-        contains($0.0)
-      }
-      .map {
-        String(format: "%C", $0.1)
-      }
-      .reduce("", +)
+    .filter {
+      contains($0.0)
+    }
+    .map {
+      String(format: "%C", $0.1)
+    }
+    .reduce("", +)
   }
 }
-

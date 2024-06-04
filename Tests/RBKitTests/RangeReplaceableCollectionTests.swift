@@ -1,5 +1,5 @@
-import XCTest
 import CustomDump
+import XCTest
 
 @testable import RBKit
 

@@ -5,4 +5,3 @@ extension NSEvent.SpecialKey {
     "\(unicodeScalar)"
   }
 }
-

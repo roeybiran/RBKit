@@ -1,6 +1,6 @@
 import XCTest
 
-// https://www.swiftbysundell.com/articles/testing-error-code-paths-in-swift/#equatable-errors
+/// https://www.swiftbysundell.com/articles/testing-error-code-paths-in-swift/#equatable-errors
 public func XCTAssertThrowsError<T, E: Error & Equatable>(
   _ expression: @autoclosure () throws -> T,
   ofType errorType: E,
@@ -20,12 +20,13 @@ public func XCTAssertThrowsError<T, E: Error & Equatable>(
   XCTAssertEqual(thrownError as? E, errorType, file: file, line: line)
 }
 
-// https://www.swiftbysundell.com/articles/testing-error-code-paths-in-swift/#equatable-errors
+/// https://www.swiftbysundell.com/articles/testing-error-code-paths-in-swift/#equatable-errors
 public func XCTAssertThrowsError<T, E: Error & Equatable>(
   _ expression: @autoclosure () async throws -> T,
   ofType errorType: E,
   file: StaticString = #file,
-  line: UInt = #line) async
+  line: UInt = #line)
+  async
 {
   var thrownError: Error?
 

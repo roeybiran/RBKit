@@ -1,12 +1,11 @@
-import XCTest
-import CustomDump
 import Carbon
+import CustomDump
+import XCTest
 @testable import RBKit
 
 final class URLResourceValuesWrapperTests: XCTestCase {
   func test_init() {
     let a = URLResourceValuesWrapper(.init())
-
 
     XCTAssertTrue(a.allValues.isEmpty)
     XCTAssertEqual(a.name, nil)
@@ -123,6 +122,5 @@ final class URLResourceValuesWrapperTests: XCTestCase {
     XCTAssertEqual(a.totalFileSize, nil)
     XCTAssertEqual(a.totalFileAllocatedSize, nil)
     XCTAssertEqual(a.isAliasFile, nil)
-
   }
 }

@@ -1,5 +1,7 @@
-import Foundation
 import AppKit.NSRunningApplication
+import Foundation
+
+// MARK: - RunningApplicationProtocol
 
 public protocol RunningApplicationProtocol: Hashable {
   var isTerminated: Bool { get set }
@@ -14,7 +16,7 @@ public protocol RunningApplicationProtocol: Hashable {
   var executableURL: URL? { get }
   var processIdentifier: pid_t { get }
   var launchDate: Date? { get }
-  // var icon: Data?
+  /// var icon: Data?
   var executableArchitecture: Int { get }
 
   init(
@@ -31,8 +33,7 @@ public protocol RunningApplicationProtocol: Hashable {
     processIdentifier: pid_t,
     launchDate: Date?,
     // icon: Data? = nil,
-    executableArchitecture: Int
-  )
+    executableArchitecture: Int)
 }
 
 extension RunningApplicationProtocol {
@@ -50,8 +51,7 @@ extension RunningApplicationProtocol {
       executableURL: nsRunningApplication.executableURL,
       processIdentifier: nsRunningApplication.processIdentifier,
       launchDate: nsRunningApplication.launchDate,
-      executableArchitecture: nsRunningApplication.executableArchitecture
-    )
+      executableArchitecture: nsRunningApplication.executableArchitecture)
   }
 }
 
@@ -70,9 +70,8 @@ extension RunningApplicationProtocol {
     executableURL: URL? = nil,
     processIdentifier: pid_t = 0,
     launchDate: Date? = nil,
-    executableArchitecture: Int = 0
-  )
-  -> Self
+    executableArchitecture: Int = 0)
+    -> Self
   {
     Self(
       isTerminated: isTerminated,
@@ -87,10 +86,8 @@ extension RunningApplicationProtocol {
       executableURL: executableURL,
       processIdentifier: processIdentifier,
       launchDate: launchDate,
-      executableArchitecture: executableArchitecture
-    )
+      executableArchitecture: executableArchitecture)
   }
 }
 
 #endif
-

@@ -3,7 +3,7 @@ import AppKit.NSSound
 import Dependencies
 import DependenciesMacros
 
-// MARK: - BeepClient
+// MARK: - NSSoundClient
 
 @DependencyClient
 public struct NSSoundClient {

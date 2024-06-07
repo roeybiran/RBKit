@@ -1,9 +1,7 @@
-import CustomDump
 import XCTest
-
 @testable import RBKit
 
-final class RangeReplaceableCollectionTests: XCTestCase {
+final class RangeReplaceableCollectionExtensionsTests: XCTestCase {
   func test_append() {
     var sut = ["a"]
     sut.append("b", "c")

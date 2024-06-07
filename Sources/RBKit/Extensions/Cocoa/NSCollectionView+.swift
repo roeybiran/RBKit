@@ -1,0 +1,18 @@
+import AppKit
+
+extension NSCollectionView {
+  public func register(supplementary view: NSView.Type) {
+    register(view, forSupplementaryViewOfKind: view.supplementaryViewKind, withIdentifier: view.userInterfaceIdentifier)
+  }
+
+  public func register(item: NSCollectionViewItem.Type) {
+    register(item, forItemWithIdentifier: item.userInterfaceIdentifier)
+  }
+
+  public func makeSupplementaryView<T: NSView & NSCollectionViewElement>(ofKind elementKind: T.Type, for indexPath: IndexPath) -> T? {
+    makeSupplementaryView(
+      ofKind: elementKind.supplementaryViewKind,
+      withIdentifier: elementKind.userInterfaceIdentifier,
+      for: indexPath) as? T
+  }
+}

@@ -15,7 +15,6 @@ public struct NSEventClient {
   public var stopLocalMonitor: () -> Void
 }
 
-
 // MARK: DependencyKey
 
 extension NSEventClient: DependencyKey {
@@ -56,15 +55,13 @@ extension NSEventClient: DependencyKey {
       monitor = NSEvent
         .addLocalMonitorForEvents(
           matching: mask,
-          handler: handler
-        )
+          handler: handler)
     },
     stopLocalMonitor: {
       guard let monitor else { return }
       NSEvent.removeMonitor(monitor as Any)
       Self.monitor = nil
-    }
-  )
+    })
 
   public static let testValue = Self()
 

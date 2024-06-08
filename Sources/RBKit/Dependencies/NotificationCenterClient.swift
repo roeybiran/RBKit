@@ -7,7 +7,7 @@ import Foundation
 @DependencyClient
 public struct NotificationCenterClient {
   public var post: (_ notification: Notification) -> Void
-  public var notifications: (_ name: Notification.Name, _ object: AnyObject?) -> NotificationCenter
+  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> NotificationCenter
     .Notifications = { NotificationCenter().notifications(
       named: $0,
       object: $1) }

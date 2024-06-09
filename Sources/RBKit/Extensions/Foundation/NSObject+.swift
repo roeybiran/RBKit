@@ -1,6 +1,6 @@
 import AppKit
 
-extension NSObject {
+extension NSObject: UserInterfaceItemIdentifiable {
   public static var userInterfaceIdentifier: NSUserInterfaceItemIdentifier {
     "\(Self.self)"
   }

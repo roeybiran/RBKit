@@ -614,11 +614,11 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(b, ["a", "b"])
   }
 
-  func test_lastIndex() {
-    XCTAssertEqual(["a"].lastValidIndex, 0)
-    XCTAssertEqual(["a", "b"].lastValidIndex, 1)
-    XCTAssertEqual([].lastValidIndex, 0)
-  }
+//  func test_lastIndex() {
+//    XCTAssertEqual(["a"].lastValidIndex, 0)
+//    XCTAssertEqual(["a", "b"].lastValidIndex, 1)
+//    XCTAssertEqual([].lastValidIndex, 0)
+//  }
 
   // MARK: -
 

@@ -15,4 +15,8 @@ extension NSCollectionView {
       withIdentifier: elementKind.userInterfaceIdentifier,
       for: indexPath) as? T
   }
+
+  public func makeItem<T: NSCollectionViewElement & UserInterfaceItemIdentifiable>(of type: T.Type, for indexPath: IndexPath) -> T? {
+    makeItem(withIdentifier: T.userInterfaceIdentifier, for: indexPath) as? T
+  }
 }

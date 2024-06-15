@@ -55,6 +55,8 @@ final class NSCollectionViewTests: XCTestCase {
 
 }
 
+// MARK: - MockCollectionView
+
 private class MockCollectionView: NSCollectionView {
   var calls = [Any]()
 
@@ -74,18 +76,26 @@ private class MockCollectionView: NSCollectionView {
     ofKind elementKind: NSCollectionView.SupplementaryElementKind,
     withIdentifier identifier: NSUserInterfaceItemIdentifier,
     for indexPath: IndexPath)
-  -> NSView
+    -> NSView
   {
     calls.append([elementKind, identifier, indexPath])
     return super.makeSupplementaryView(ofKind: elementKind, withIdentifier: identifier, for: indexPath)
   }
 
-  override func makeItem(withIdentifier identifier: NSUserInterfaceItemIdentifier, for indexPath: IndexPath) -> NSCollectionViewItem {
+  override func makeItem(
+    withIdentifier identifier: NSUserInterfaceItemIdentifier,
+    for indexPath: IndexPath)
+    -> NSCollectionViewItem
+  {
     calls.append([identifier, indexPath])
     return MockViewItem()
   }
 }
 
+// MARK: - MockViewItem
+
 class MockViewItem: NSCollectionViewItem { }
+
+// MARK: - MockViewElement
 
 class MockViewElement: NSView, NSCollectionViewElement { }

@@ -1,5 +1,5 @@
 extension Array {
-/// If the array is empty, returns the array’s `endIndex`.
+  /// If the array is empty, returns the array’s `endIndex`.
 //  public var lastValidIndex: Int {
 //    isEmpty ? endIndex : (endIndex - 1)
 //  }

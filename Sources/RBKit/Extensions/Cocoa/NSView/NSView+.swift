@@ -5,10 +5,6 @@ extension NSView {
     userInterfaceIdentifier.rawValue
   }
 
-  public func addSubviews(_ views: NSView...) {
-    for view in views { addSubview(view) }
-  }
-
   public func enumerateSubviews(using handler: (NSView) -> Void) {
     for subview in subviews {
       handler(subview)

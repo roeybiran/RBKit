@@ -6,6 +6,10 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSEventClient {
+  // key event information
+  public var keyRepeatDelay: () -> TimeInterval = { .zero }
+  public var keyRepeatInterval: () -> TimeInterval = { .zero }
+  //
   public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
   public var mouseLocation: () -> NSPoint = { .zero }
   public var globalMonitorEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
@@ -22,6 +26,8 @@ extension NSEventClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
+    keyRepeatDelay: { NSEvent.keyRepeatDelay },
+    keyRepeatInterval: { NSEvent.keyRepeatInterval },
     mouseLocation: { NSEvent.mouseLocation },
     globalMonitorEvents: { mask in
       let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)

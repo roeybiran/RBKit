@@ -17,6 +17,8 @@ public struct NSEventClient {
     -> AsyncStream<NSEvent> = { _, _ in .finished }
   public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
   public var stopLocalMonitor: () -> Void
+  //
+  public var specialKey: (_ event: NSEvent) -> NSEvent.SpecialKey?
 }
 
 // MARK: DependencyKey
@@ -67,7 +69,9 @@ extension NSEventClient: DependencyKey {
       guard let monitor else { return }
       NSEvent.removeMonitor(monitor as Any)
       Self.monitor = nil
-    })
+    },
+    specialKey: { $0.specialKey }
+  )
 
   public static let testValue = Self()
 

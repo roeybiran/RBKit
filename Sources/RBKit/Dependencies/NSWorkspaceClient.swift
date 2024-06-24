@@ -27,11 +27,15 @@ public struct NSWorkspaceClient {
   @DependencyEndpoint(method: "menuBarOwningApplication")
   public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
     -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
-  //
-  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in .finished }
+  ///
+  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
+    .finished
+  }
 }
 
-//extension NotificationCenterClient {
+// MARK: DependencyKey
+
+// extension NotificationCenterClient {
 //  static let nsWorkspace: NotificationCenterClient = {
 //    let instance = NSWorkspace.shared.notificationCenter
 //    let k = NSWorkspace.shared.notificationCenter.notifications(named: NSWorkspace.willLaunchApplicationNotification, object: nil).eraseToStream()
@@ -39,9 +43,7 @@ public struct NSWorkspaceClient {
 //      post: instance.post,
 //      notifications: instance.notifications)
 //  }()
-//}
-
-// MARK: - NSWorkspaceClient + DependencyKey
+// }
 
 extension NSWorkspaceClient: DependencyKey {
 
@@ -58,8 +60,7 @@ extension NSWorkspaceClient: DependencyKey {
     runningApplicationsObservation: { toStream(workspace: .shared, options: $0, keyPath: \.runningApplications) },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
     menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) },
-    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() }
-  )
+    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() })
 
   public static let testValue = NSWorkspaceClient()
 

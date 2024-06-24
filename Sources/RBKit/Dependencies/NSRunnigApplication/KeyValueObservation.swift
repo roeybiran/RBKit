@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - KeyValueObservation
+
 public struct KeyValueObservation {
   public let value: NSObject
   public var invalidate: () -> Void
@@ -10,12 +12,15 @@ public struct KeyValueObservation {
   }
 }
 
+// MARK: Hashable
+
 extension KeyValueObservation: Hashable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.value == rhs.value
+  }
+
   public func hash(into hasher: inout Hasher) {
     hasher.combine(value)
   }
 
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.value == rhs.value
-  }
 }

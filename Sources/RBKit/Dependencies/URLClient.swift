@@ -15,8 +15,7 @@ public struct URLClient {
 extension URLClient: DependencyKey {
   public static let liveValue: Self = .init(
     resolvingSymlinksInPath: { $0.resolvingSymlinksInPath() },
-    resourceValues: { url, keys in .init(try url.resourceValues(forKeys: keys)) }
-  )
+    resourceValues: { url, keys in .init(try url.resourceValues(forKeys: keys)) })
 
   public static let testValue = Self()
 }

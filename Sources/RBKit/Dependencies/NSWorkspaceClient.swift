@@ -10,7 +10,8 @@ import UniformTypeIdentifiers
 
 @DependencyClient
 public struct NSWorkspaceClient {
-  public var notificationCenter: () -> NotificationCenterClient = { .testValue }
+  // public var notificationCenter: () -> NotificationCenterClient = { .testValue }
+
   public var iconForFile: (_ fullPath: String) -> NSImage = { _ in .init() }
   public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var open: (_ url: URL) -> Bool = { _ in false }
@@ -26,16 +27,19 @@ public struct NSWorkspaceClient {
   @DependencyEndpoint(method: "menuBarOwningApplication")
   public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
     -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
+  //
+  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in .finished }
 }
 
-extension NotificationCenterClient {
-  static let nsWorkspace: NotificationCenterClient = {
-    let instance = NSWorkspace.shared.notificationCenter
-    return Self(
-      post: instance.post,
-      notifications: instance.notifications)
-  }()
-}
+//extension NotificationCenterClient {
+//  static let nsWorkspace: NotificationCenterClient = {
+//    let instance = NSWorkspace.shared.notificationCenter
+//    let k = NSWorkspace.shared.notificationCenter.notifications(named: NSWorkspace.willLaunchApplicationNotification, object: nil).eraseToStream()
+//    return Self(
+//      post: instance.post,
+//      notifications: instance.notifications)
+//  }()
+//}
 
 // MARK: - NSWorkspaceClient + DependencyKey
 
@@ -44,7 +48,7 @@ extension NSWorkspaceClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
-    notificationCenter: { .nsWorkspace },
+    // notificationCenter: { .nsWorkspace },
     iconForFile: NSWorkspace.shared.icon(forFile:),
     iconFor: NSWorkspace.shared.icon(for:),
     open: NSWorkspace.shared.open,
@@ -53,7 +57,9 @@ extension NSWorkspaceClient: DependencyKey {
     runningApplications: { NSWorkspace.shared.runningApplications },
     runningApplicationsObservation: { toStream(workspace: .shared, options: $0, keyPath: \.runningApplications) },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-    menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) })
+    menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) },
+    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() }
+  )
 
   public static let testValue = NSWorkspaceClient()
 

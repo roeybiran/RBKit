@@ -6,24 +6,46 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSRunningApplicationClient {
-  // Getting running application instances
+  // MARK: - Getting running application instances
+
   public var make: (_ pid: pid_t) -> NSRunningApplication?
   public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
   public var current: () -> NSRunningApplication = { .init() }
-  /// Activating applications
+  
+  // MARK: - Activating applications
+
   @DependencyEndpoint(method: "activate")
   public var activate: (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _ in false }
+
   @DependencyEndpoint(method: "activate")
   public var activateFromApplication: (
     _ app: NSRunningApplication,
     _ fromApp: NSRunningApplication,
     _ options: NSApplication.ActivationOptions)
     -> Bool = { _, _, _ in false }
-  // Hiding and unhiding applications
+
+  public var activationPolicyObservation: (
+    _ app: NSRunningApplication,
+    _ options: NSKeyValueObservingOptions,
+    _ handler: @escaping (_ app: NSRunningApplication, _ change: NSKeyValueObservedChange<NSApplication.ActivationPolicy>) -> Void
+  ) -> KeyValueObservation = { _, _, _ in .init() }
+
+  public var isFinishedLaunchingObservation: (
+    _ app: NSRunningApplication,
+    _ options: NSKeyValueObservingOptions,
+    _ handler: @escaping (_ app: NSRunningApplication, _ change: NSKeyValueObservedChange<Bool>) -> Void
+  ) -> KeyValueObservation = { _, _, _ in .init() }
+
+  // MARK: - Hiding and unhiding applications
+
   public var hide: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  
   public var unhide: (_ app: NSRunningApplication) -> Bool = { _ in false }
-  // Terminating applications
+
+  // MARK: - Terminating applications
+
   public var forceTerminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
+
   public var terminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
 }
 
@@ -33,7 +55,9 @@ extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
     make: NSRunningApplication.init,
     runningApplications: NSRunningApplication.runningApplications,
-    current: { NSRunningApplication.current },
+    current: {
+      NSRunningApplication.current
+    },
     activate: { app, options in
       app.activate(options: options)
     },
@@ -44,10 +68,27 @@ extension NSRunningApplicationClient: DependencyKey {
         app.activate(options: options)
       }
     },
+    activationPolicyObservation: {
+      let observation = $0.observe(
+        \.activationPolicy,
+         options: $1,
+         changeHandler: $2
+      )
+      return .init(value: observation, invalidate: observation.invalidate)
+    },
+    isFinishedLaunchingObservation: {
+      let observation = $0.observe(
+        \.isFinishedLaunching,
+         options: $1,
+         changeHandler: $2
+      )
+      return .init(value: observation, invalidate: observation.invalidate)
+    },
     hide: { $0.hide() },
     unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
-    terminate: { $0.terminate() })
+    terminate: { $0.terminate() }
+  )
   public static let testValue = NSRunningApplicationClient()
 }
 

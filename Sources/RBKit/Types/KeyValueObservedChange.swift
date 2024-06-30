@@ -1,8 +1,8 @@
 import Foundation
 
-// MARK: - NSKeyValueObservedChangeWrapper
+// MARK: - KeyValueObservedChange
 
-public struct NSKeyValueObservedChangeWrapper<Value> {
+public struct KeyValueObservedChange<Value> {
 
   // MARK: Lifecycle
 
@@ -30,16 +30,24 @@ public struct NSKeyValueObservedChangeWrapper<Value> {
   public let indexes: IndexSet?
   public let isPrior: Bool
 
+  func map<T>(_ transform: (Value) throws -> T) rethrows -> KeyValueObservedChange<T> {
+    .init(
+      kind: kind,
+      newValue: try newValue.map(transform),
+      oldValue: try oldValue.map(transform),
+      indexes: indexes,
+      isPrior: isPrior)
+  }
 }
 
 // MARK: Hashable
 
-extension NSKeyValueObservedChangeWrapper: Hashable where Value: Hashable { }
+extension KeyValueObservedChange: Hashable where Value: Hashable { }
 
 // MARK: Equatable
 
-extension NSKeyValueObservedChangeWrapper: Equatable where Value: Equatable { }
+extension KeyValueObservedChange: Equatable where Value: Equatable { }
 
 // MARK: Sendable
 
-extension NSKeyValueObservedChangeWrapper: Sendable where Value: Sendable { }
+extension KeyValueObservedChange: Sendable where Value: Sendable { }

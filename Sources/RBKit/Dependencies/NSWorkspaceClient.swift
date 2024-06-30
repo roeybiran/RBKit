@@ -18,15 +18,15 @@ public struct NSWorkspaceClient {
   public var frontmostApplication: () -> NSRunningApplication? = { nil }
   @DependencyEndpoint(method: "frontmostApplication")
   public var frontmostApplicationObservation: (_ options: NSKeyValueObservingOptions)
-    -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
+    -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
   public var runningApplications: () -> [NSRunningApplication] = { [] }
   @DependencyEndpoint(method: "runningApplications")
   public var runningApplicationsObservation: (_ options: NSKeyValueObservingOptions)
-    -> AsyncStream<NSKeyValueObservedChangeWrapper<[NSRunningApplication]>> = { _ in .finished }
+    -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> = { _ in .finished }
   public var menuBarOwningApplication: () -> NSRunningApplication?
   @DependencyEndpoint(method: "menuBarOwningApplication")
   public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
-    -> AsyncStream<NSKeyValueObservedChangeWrapper<NSRunningApplication?>> = { _ in .finished }
+    -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
   ///
   public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
     .finished
@@ -69,9 +69,9 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<NSKeyValueObservedChangeWrapper<Value>>
+    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>>
   {
-    let (stream, continuation) = AsyncStream.makeStream(of: NSKeyValueObservedChangeWrapper<Value>.self)
+    let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
     let observation = workspace.observe(keyPath, options: options) { _, change in
       continuation.yield(.init(change))
     }

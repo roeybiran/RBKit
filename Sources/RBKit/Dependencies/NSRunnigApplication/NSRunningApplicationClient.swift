@@ -27,14 +27,14 @@ public struct NSRunningApplicationClient {
   public var activationPolicyObservation: (
     _ app: NSRunningApplication,
     _ options: NSKeyValueObservingOptions,
-    _ handler: @escaping (_ app: NSRunningApplication, _ change: NSKeyValueObservedChangeWrapper<NSApplication.ActivationPolicy>)
+    _ handler: @escaping (_ app: NSRunningApplication, _ change: KeyValueObservedChange<NSApplication.ActivationPolicy>)
       -> Void)
     -> KeyValueObservation = { _, _, _ in .init() }
 
   public var isFinishedLaunchingObservation: (
     _ app: NSRunningApplication,
     _ options: NSKeyValueObservingOptions,
-    _ handler: @escaping (_ app: NSRunningApplication, _ change: NSKeyValueObservedChangeWrapper<Bool>) -> Void)
+    _ handler: @escaping (_ app: NSRunningApplication, _ change: KeyValueObservedChange<Bool>) -> Void)
     -> KeyValueObservation = { _, _, _ in .init() }
 
   // MARK: - Hiding and unhiding applications

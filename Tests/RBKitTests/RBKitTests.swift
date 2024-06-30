@@ -604,22 +604,6 @@ final class RBKitTests: XCTestCase {
     XCTAssertEqual(dict[key, default: [0]], [0])
   }
 
-  // MARK: - Array tests
-
-  func test_concat() {
-    let a = ["a"].concat(["b"])
-    XCTAssertEqual(a, ["a", "b"])
-
-    let b = ["a"].concat("b")
-    XCTAssertEqual(b, ["a", "b"])
-  }
-
-//  func test_lastIndex() {
-//    XCTAssertEqual(["a"].lastValidIndex, 0)
-//    XCTAssertEqual(["a", "b"].lastValidIndex, 1)
-//    XCTAssertEqual([].lastValidIndex, 0)
-//  }
-
   // MARK: -
 
   func test_clamp() {

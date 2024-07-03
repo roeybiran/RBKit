@@ -15,9 +15,9 @@ extension AXClient: DependencyKey {
   public static let liveValue = Self(
     isProcessTrusted: { usePrompt in
       if usePrompt {
-        return AXIsProcessTrusted()
-      } else {
         return AXIsProcessTrustedWithOptions(.withPrompt(usePrompt))
+      } else {
+        return AXIsProcessTrusted()
       }
     }
   )

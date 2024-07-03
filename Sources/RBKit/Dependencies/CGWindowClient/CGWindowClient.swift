@@ -4,16 +4,21 @@ import DependenciesMacros
 
 @DependencyClient
 public struct CGWindowClient {
-  public var list: (_ options: CGWindowListOption, _ referenceWindow: CGWindowID) -> [CGWindowValue] = { _, _ in [] }
+  public var list: (_ options: CGWindowListOption /*[.excludeDesktopElements, .optionOnScreenOnly]*/, _ referenceWindow: CGWindowID /*kCGNullWindowID*/) -> [CGWindowValue] = { _, _ in [] }
+  public var checkCaptureAccess: () -> Bool = { false }
+  public var requestCaptureAccess: () -> Bool = { false }
+
 }
 
 extension CGWindowClient: DependencyKey {
   public static let liveValue: Self = {
-    Self(list: { options, referenceWindow in
-      // [.excludeDesktopElements, .optionOnScreenOnly]
-      // kCGNullWindowID
-      (CGWindowListCopyWindowInfo(options, referenceWindow) as? [[CFString: Any]])?.compactMap(CGWindowValue.init) ?? []
-    })
+    Self(
+      list: { options, referenceWindow in
+        (CGWindowListCopyWindowInfo(options, referenceWindow) as? [[CFString: Any]])?.compactMap(CGWindowValue.init) ?? []
+      },
+      checkCaptureAccess: CGPreflightScreenCaptureAccess,
+      requestCaptureAccess: CGRequestScreenCaptureAccess
+    )
   }()
 
   public static let testValue = Self()

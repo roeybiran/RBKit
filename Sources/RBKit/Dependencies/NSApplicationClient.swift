@@ -6,11 +6,17 @@ import DependenciesMacros
 
 @DependencyClient
 public struct NSApplicationClient {
+  // Terminating the App
   public var terminate: (_ sender: Any?) -> Void
+
+  // Activating and Deactivating the App
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationTo: (_ to: NSRunningApplication) -> Void
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationToApplicationWithBundleIdentifier: (_ toApplicationWithBundleIdentifier: String) -> Void
+
+  // Managing the App's Appearance
+  public var stopModal: () -> Void
 }
 
 // MARK: DependencyKey
@@ -35,7 +41,9 @@ extension NSApplicationClient: DependencyKey {
         } else {
           // Fallback on earlier versions
         }
-      })
+      },
+      stopModal: NSApplication.shared.stopModal
+    )
   }()
 
   public static let testValue = Self()

@@ -615,11 +615,9 @@ final class RBKitTests: XCTestCase {
 
   func test_makeCell() {
     let tv = NSTableView()
-    let cell1 = tv.makeCell(withIdentifier: "foo", owner: self) as NSTableCellView
-    XCTAssertEqual(cell1.identifier, "foo")
-
-    let cell2 = tv.makeCell() as NSTableCellView
-    XCTAssertEqual(cell2.identifier, "\(NSTableCellView.self)")
+    class Foo: NSView { }
+    let cell1 = tv.makeView(ofType: Foo.self)
+    XCTAssertEqual(cell1.identifier, "Foo")
   }
 
   // MARK: - Quartz Core

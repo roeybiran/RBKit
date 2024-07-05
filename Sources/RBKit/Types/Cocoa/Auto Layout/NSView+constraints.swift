@@ -3,6 +3,7 @@ import AppKit
 extension NSView {
   public enum ConstraintType {
     case pinningToEdges
+    case pinningHorizontally(constant: CGFloat)
     case pinningToCenter
   }
 
@@ -39,8 +40,14 @@ extension NSView {
 
     case .pinningToCenter:
       return [
-        centerXAnchor.constraint(equalTo: otherView.centerXAnchor, constant: 0),
-        centerYAnchor.constraint(equalTo: otherView.centerYAnchor, constant: 0),
+        centerXAnchor.constraint(equalTo: otherView.centerXAnchor),
+        centerYAnchor.constraint(equalTo: otherView.centerYAnchor),
+      ]
+
+    case .pinningHorizontally(let constant):
+      return [
+        widthAnchor.constraint(equalTo: otherView.widthAnchor, constant: constant),
+        centerXAnchor.constraint(equalTo: otherView.centerXAnchor),
       ]
     }
   }

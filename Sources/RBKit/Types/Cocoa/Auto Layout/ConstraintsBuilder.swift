@@ -16,3 +16,9 @@ public enum ConstraintsBuilder {
     expression
   }
 }
+
+extension NSLayoutConstraint {
+  public static func activate(@ConstraintsBuilder constraints: () -> [NSLayoutConstraint]) {
+    Self.activate(constraints())
+  }
+}

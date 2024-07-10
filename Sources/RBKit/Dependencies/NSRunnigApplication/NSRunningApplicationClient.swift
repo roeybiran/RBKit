@@ -48,6 +48,12 @@ public struct NSRunningApplicationClient {
   public var forceTerminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
 
   public var terminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
+
+  public var isTerminatedObservation: (
+    _ app: NSRunningApplication,
+    _ options: NSKeyValueObservingOptions,
+    _ handler: @escaping (_ app: NSRunningApplication, _ change: KeyValueObservedChange<Bool>) -> Void)
+    -> KeyValueObservation = { _, _ , _ in .init() }
 }
 
 // MARK: DependencyKey
@@ -90,7 +96,17 @@ extension NSRunningApplicationClient: DependencyKey {
     hide: { $0.hide() },
     unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
-    terminate: { $0.terminate() })
+    terminate: { $0.terminate() },
+    isTerminatedObservation: { app, options, handler in
+      let observation = app.observe(
+        \.isTerminated,
+        options: options)
+      { app, change in
+        handler(app, .init(change))
+      }
+      return .init(value: observation, invalidate: observation.invalidate)
+    })
+
   public static let testValue = NSRunningApplicationClient()
 }
 

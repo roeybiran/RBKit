@@ -1,6 +1,8 @@
-import ServiceManagement
 import Dependencies
 import DependenciesMacros
+import ServiceManagement
+
+// MARK: - Status
 
 public enum Status: Int {
   case notRegistered
@@ -9,12 +11,16 @@ public enum Status: Int {
   case notFound
 }
 
+// MARK: - ServiceManagementClient
+
 @DependencyClient
 public struct ServiceManagementClient {
   public var register: () throws -> Void
   public var unregister: () throws -> Void
   public var status: () -> Status?
 }
+
+// MARK: DependencyKey
 
 extension ServiceManagementClient: DependencyKey {
   public static let liveValue: Self = {
@@ -23,20 +29,17 @@ extension ServiceManagementClient: DependencyKey {
       return .init(
         register: { try instance.register() },
         unregister: { try instance.unregister() },
-        status: { .init(rawValue: instance.status.rawValue) }
-      )
+        status: { .init(rawValue: instance.status.rawValue) })
     } else {
       return .init(
         register: { },
         unregister: { },
-        status: { .notFound }
-      )
+        status: { .notFound })
     }
   }()
 
   public static let testValue = Self()
 }
-
 
 extension DependencyValues {
   public var serviceManagementClient: ServiceManagementClient {

@@ -30,6 +30,8 @@ public struct KeyValueObservedChange<Value> {
   public let indexes: IndexSet?
   public let isPrior: Bool
 
+  // MARK: Internal
+
   func map<T>(_ transform: (Value) throws -> T) rethrows -> KeyValueObservedChange<T> {
     .init(
       kind: kind,

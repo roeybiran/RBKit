@@ -25,4 +25,3 @@ extension Collection {
     isEmpty ? replacement : self
   }
 }
-

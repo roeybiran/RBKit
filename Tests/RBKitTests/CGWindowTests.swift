@@ -1,5 +1,5 @@
-import XCTest
 import Dependencies
+import XCTest
 @testable import RBKit
 
 final class CGWindowTests: XCTestCase {
@@ -34,8 +34,7 @@ final class CGWindowTests: XCTestCase {
       ownerName: nil,
       name: nil,
       isOnscreen: nil,
-      backingLocationVideoMemory: nil
-    )
+      backingLocationVideoMemory: nil)
     XCTAssertEqual(a, b)
   }
 

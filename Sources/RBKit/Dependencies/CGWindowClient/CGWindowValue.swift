@@ -1,7 +1,7 @@
 import Foundation
 import Quartz
 
-// MARK: - CGWindow
+// MARK: - CGWindowValue
 
 // https://gist.github.com/stephancasas/d230ac93d5bc1b0130555e2bc7203fce
 
@@ -22,6 +22,8 @@ public struct CGWindowValue {
   public let isOnscreen: Bool?
   public let backingLocationVideoMemory: Bool?
 }
+
+// MARK: Equatable
 
 extension CGWindowValue: Equatable { }
 
@@ -44,7 +46,7 @@ extension CGWindowValue {
     self.number = number
     self.storeType = storeType
     self.layer = layer
-    self.bounds = CGRect(x: x, y: y, width: w, height: h)
+    bounds = CGRect(x: x, y: y, width: w, height: h)
     self.sharingState = sharingState
     self.alpha = alpha
     self.ownerPID = ownerPID

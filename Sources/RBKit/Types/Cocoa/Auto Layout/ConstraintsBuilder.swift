@@ -1,5 +1,7 @@
 import AppKit
 
+// MARK: - ConstraintsBuilder
+
 // https://www.avanderlee.com/swift/result-builders/
 
 @resultBuilder

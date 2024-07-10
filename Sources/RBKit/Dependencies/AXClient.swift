@@ -19,8 +19,7 @@ extension AXClient: DependencyKey {
       } else {
         return AXIsProcessTrusted()
       }
-    }
-  )
+    })
 
   public static let testValue = Self()
 }
@@ -32,12 +31,12 @@ extension DependencyValues {
   }
 }
 
-private extension CFDictionary {
-  static func withPrompt(_ flag: Bool) -> CFDictionary {
+extension CFDictionary {
+  fileprivate static func withPrompt(_ flag: Bool) -> CFDictionary {
     [
       kAXTrustedCheckOptionPrompt.takeUnretainedValue(): flag
-      ? kCFBooleanTrue
-      : kCFBooleanFalse,
+        ? kCFBooleanTrue
+        : kCFBooleanFalse,
     ] as CFDictionary
   }
 }

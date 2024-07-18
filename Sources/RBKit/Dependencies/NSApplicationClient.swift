@@ -15,7 +15,9 @@ public struct NSApplicationClient {
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationToApplicationWithBundleIdentifier: (_ toApplicationWithBundleIdentifier: String) -> Void
 
-  /// Managing the App's Appearance
+  
+  /// Managing Windows, Panels, and Menus
+  public var runModal: (_ window: NSWindow) -> NSApplication.ModalResponse = { _ in .OK }
   public var stopModal: () -> Void
 }
 
@@ -42,6 +44,7 @@ extension NSApplicationClient: DependencyKey {
           // Fallback on earlier versions
         }
       },
+      runModal: NSApplication.shared.runModal(for:),
       stopModal: NSApplication.shared.stopModal)
   }()
 

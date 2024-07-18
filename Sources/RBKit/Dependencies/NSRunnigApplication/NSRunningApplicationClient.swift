@@ -9,7 +9,9 @@ public struct NSRunningApplicationClient {
   // MARK: - Getting running application instances
 
   public var make: (_ pid: pid_t) -> NSRunningApplication?
+
   public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
+
   public var current: () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications

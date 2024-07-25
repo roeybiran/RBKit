@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - RunningApplicationProtocol
 
-public protocol RunningApplicationProtocol: Hashable {
+public protocol RunningApplicationProtocol: Hashable, Codable {
   var isTerminated: Bool { get set }
   var isFinishedLaunching: Bool { get set }
   var isHidden: Bool { get set }

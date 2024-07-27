@@ -17,7 +17,7 @@ public struct MenuBarExtraSettingsView: View {
 
   public var body: some View {
     Toggle(isOn: $isChecked) {
-      Text("Show Menu Bar Extra")
+      Text("Show menu bar extra")
       helpText.map { Text($0).foregroundColor(.secondary) }
     }
     .onChange(of: isChecked) { newValue in

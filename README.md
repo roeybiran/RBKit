@@ -1,3 +1,3 @@
 # RBKit
 
-A collection of utilities and extensions I find useful when making Mac apps.
+A helper library for developing Mac apps using Cocoa and Swift.

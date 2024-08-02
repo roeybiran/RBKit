@@ -15,10 +15,13 @@ public struct NSApplicationClient {
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationToApplicationWithBundleIdentifier: (_ toApplicationWithBundleIdentifier: String) -> Void
 
-  
   /// Managing Windows, Panels, and Menus
   public var runModal: (_ window: NSWindow) -> NSApplication.ModalResponse = { _ in .OK }
   public var stopModal: () -> Void
+
+  //
+  public var activationPolicy: () -> NSApplication.ActivationPolicy = { .prohibited }
+  public var setActivationPolicy: (_ activationPolicy: NSApplication.ActivationPolicy) -> Bool = { _ in false }
 }
 
 // MARK: DependencyKey
@@ -44,8 +47,11 @@ extension NSApplicationClient: DependencyKey {
           // Fallback on earlier versions
         }
       },
-      runModal: NSApplication.shared.runModal(for:),
-      stopModal: NSApplication.shared.stopModal)
+      runModal: instance.runModal(for:),
+      stopModal: instance.stopModal,
+      activationPolicy: instance.activationPolicy,
+      setActivationPolicy: instance.setActivationPolicy
+    )
   }()
 
   public static let testValue = Self()

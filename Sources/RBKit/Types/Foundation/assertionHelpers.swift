@@ -1,6 +1,6 @@
 import Foundation
 
-func runtimeAssert(
+public func runtimeAssert(
   _ condition: @autoclosure () -> Bool,
   _ message: @autoclosure () -> String = String(),
   file: StaticString = #file,
@@ -13,7 +13,7 @@ func runtimeAssert(
   #endif
 }
 
-func runtimeAssertionFailure(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
+public func runtimeAssertionFailure(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
   #if DEBUG
   if NSClassFromString("XCTestCase") == nil {
     assertionFailure(message(), file: file, line: line)

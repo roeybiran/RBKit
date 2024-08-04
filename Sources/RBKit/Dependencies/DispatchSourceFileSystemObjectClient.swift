@@ -6,10 +6,10 @@ import Foundation
 
 @DependencyClient
 public struct DispatchSourceFileSystemObjectClient {
-  var make: (
+  public var make: (
     _ path: UnsafePointer<CChar>,
     _ mask: DispatchSource.FileSystemEvent,
-    _ handler: @escaping (_ data: DispatchSource.FileSystemEvent) -> Void) -> Void
+    _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void) -> Void
 }
 
 // MARK: DependencyKey
@@ -37,7 +37,7 @@ extension DispatchSourceFileSystemObjectClient: DependencyKey {
 }
 
 extension DependencyValues {
-  var dispatchSourceFileSystemObjectClient: DispatchSourceFileSystemObjectClient {
+  public var dispatchSourceFileSystemObjectClient: DispatchSourceFileSystemObjectClient {
     get { self[DispatchSourceFileSystemObjectClient.self] }
     set { self[DispatchSourceFileSystemObjectClient.self] = newValue }
   }

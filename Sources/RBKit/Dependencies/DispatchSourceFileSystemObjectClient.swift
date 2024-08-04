@@ -5,12 +5,11 @@ import Foundation
 // MARK: - DispatchSourceFileSystemObjectClient
 
 @DependencyClient
-struct DispatchSourceFileSystemObjectClient {
+public struct DispatchSourceFileSystemObjectClient {
   var make: (
     _ path: UnsafePointer<CChar>,
     _ mask: DispatchSource.FileSystemEvent,
-    _ handler: @escaping (_ data: DispatchSource.FileSystemEvent) -> Void
-  ) -> Void
+    _ handler: @escaping (_ data: DispatchSource.FileSystemEvent) -> Void) -> Void
 }
 
 // MARK: DependencyKey
@@ -22,22 +21,19 @@ struct DispatchSourceFileSystemObjectClient {
 // https://github.com/pointfreeco/episode-code-samples/blob/2d7472cc6f33f4c290ca42e26485f04d9fc3bdd2/0275-shared-state-pt8/swift-composable-architecture/Sources/ComposableArchitecture/PersistenceKey.swift#L137
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {
-  static let liveValue: Self = {
-    return .init(make: { path, mask, handler in
-      let source = DispatchSource
-        .makeFileSystemObjectSource(
-          fileDescriptor: open(path, O_EVTONLY),
-          eventMask: mask,
-          queue: nil
-        )
-      source.setEventHandler {
-        handler(source.data)
-      }
-      source.resume()
-    })
-  }()
+  public static let liveValue: Self = .init(make: { path, mask, handler in
+    let source = DispatchSource
+      .makeFileSystemObjectSource(
+        fileDescriptor: open(path, O_EVTONLY),
+        eventMask: mask,
+        queue: nil)
+    source.setEventHandler {
+      handler(source.data)
+    }
+    source.resume()
+  })
 
-  static let testValue = Self()
+  public static let testValue = Self()
 }
 
 extension DependencyValues {

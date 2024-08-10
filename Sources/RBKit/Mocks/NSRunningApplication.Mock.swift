@@ -18,6 +18,7 @@ extension NSRunningApplication {
       _executableURL: URL? = nil,
       _processIdentifier: pid_t = 0,
       _launchDate: Date? = nil,
+      _icon _: NSImage? = nil,
       _executableArchitecture: Int = 0)
     {
       self._isTerminated = _isTerminated
@@ -49,6 +50,7 @@ extension NSRunningApplication {
     override open var executableURL: URL? { _executableURL }
     override open var processIdentifier: pid_t { _processIdentifier }
     override open var launchDate: Date? { _launchDate }
+    override open var icon: NSImage? { _icon }
     override open var executableArchitecture: Int { _executableArchitecture }
 
     // MARK: Public
@@ -65,7 +67,7 @@ extension NSRunningApplication {
     public var _executableURL: URL?
     public var _processIdentifier: pid_t
     public var _launchDate: Date?
+    public var _icon: NSImage?
     public var _executableArchitecture: Int
-
   }
 }

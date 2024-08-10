@@ -61,8 +61,7 @@ extension NSRunningApplicationClient: DependencyKey {
     hide: { $0.hide() },
     unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
-    terminate: { $0.terminate() }
-  )
+    terminate: { $0.terminate() })
 
   public static let testValue = NSRunningApplicationClient()
 }

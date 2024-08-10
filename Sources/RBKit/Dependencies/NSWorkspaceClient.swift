@@ -13,13 +13,13 @@ public struct NSWorkspaceClient {
   public var iconForFile: (_ fullPath: String) -> NSImage = { _ in .init() }
 
   public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
-  
+
   public var open: (_ url: URL) -> Bool = { _ in false }
-  
+
   public var frontmostApplication: () -> NSRunningApplication? = { nil }
-  
+
   public var runningApplications: () -> [NSRunningApplication] = { [] }
-  
+
   public var menuBarOwningApplication: () -> NSRunningApplication?
 
   public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in

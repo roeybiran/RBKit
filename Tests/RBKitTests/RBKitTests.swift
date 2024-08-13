@@ -3,6 +3,12 @@ import CustomDump
 import XCTest
 @testable import RBKit
 
+// MARK: - NSApplication.ActivationPolicy + Codable
+
+extension NSApplication.ActivationPolicy: Codable { }
+
+// MARK: - RBKitTests
+
 final class RBKitTests: XCTestCase {
 
   // MARK: Internal
@@ -135,7 +141,7 @@ final class RBKitTests: XCTestCase {
       specialKey: .downArrow,
       isARepeat: false)
 
-    XCTAssertNoDifference(actual, expected)
+    expectNoDifference(actual, expected)
   }
 
   func test_keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
@@ -163,7 +169,7 @@ final class RBKitTests: XCTestCase {
       specialKey: .downArrow,
       isARepeat: false)
 
-    XCTAssertNoDifference(actual, expected)
+    expectNoDifference(actual, expected)
   }
 
   func test_keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
@@ -179,7 +185,7 @@ final class RBKitTests: XCTestCase {
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
         keyCode: UInt16(126))!)
-    XCTAssertNoDifference(actual, nil)
+    expectNoDifference(actual, nil)
   }
 
   func test_keyEventUpArrow() {
@@ -354,7 +360,7 @@ final class RBKitTests: XCTestCase {
       processIdentifier: app.processIdentifier,
       launchDate: app.launchDate,
       executableArchitecture: app.executableArchitecture)
-    XCTAssertNoDifference(a, b)
+    expectNoDifference(a, b)
   }
 
   // MARK: - URL Extensions Tests
@@ -412,7 +418,7 @@ final class RBKitTests: XCTestCase {
   }
 
   func test_descendants() {
-    XCTAssertNoDifference(
+    expectNoDifference(
       Self.testNode.descendants,
       [
         MockNode("1.1", children: [
@@ -451,7 +457,7 @@ final class RBKitTests: XCTestCase {
   }
 
   func test_map() {
-    XCTAssertNoDifference(
+    expectNoDifference(
       Self.testNode.map { MockNode2($0.title) },
       Self.testNode2)
   }

@@ -22,6 +22,10 @@ public struct NSWorkspaceClient {
 
   public var menuBarOwningApplication: () -> NSRunningApplication?
 
+  @DependencyEndpoint(method: "menuBarOwningApplication")
+  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
+  -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
+
   public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
     .finished
   }
@@ -40,6 +44,7 @@ extension NSWorkspaceClient: DependencyKey {
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
+    menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) },
     notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() })
 
   public static let testValue = NSWorkspaceClient()

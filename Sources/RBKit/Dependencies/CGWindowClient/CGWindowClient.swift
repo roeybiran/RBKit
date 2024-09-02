@@ -10,8 +10,8 @@ public struct CGWindowClient {
     _ options: CGWindowListOption /* [.excludeDesktopElements, .optionOnScreenOnly] */,
     _ referenceWindow: CGWindowID /* kCGNullWindowID */ ) -> [CGWindowValue] = { _, _ in [] }
   // https://github.com/nonstrict-hq/ScreenCaptureKit-Recording-example/blob/main/Sources/sckrecording/main.swift
-  public var checkCaptureAccess: () -> Bool = { false }
-  public var requestCaptureAccess: () -> Bool = { false }
+  public var preflightScreenCaptureAccess: () -> Bool = { false }
+  public var requestScreenCaptureAccess: () -> Bool = { false }
 
 }
 
@@ -22,8 +22,8 @@ extension CGWindowClient: DependencyKey {
     list: { options, referenceWindow in
       (CGWindowListCopyWindowInfo(options, referenceWindow) as? [[CFString: Any]])?.compactMap(CGWindowValue.init) ?? []
     },
-    checkCaptureAccess: CGPreflightScreenCaptureAccess,
-    requestCaptureAccess: CGRequestScreenCaptureAccess)
+    preflightScreenCaptureAccess: CGPreflightScreenCaptureAccess,
+    requestScreenCaptureAccess: CGRequestScreenCaptureAccess)
 
   public static let testValue = Self()
 }

@@ -26,9 +26,12 @@ public struct NSWorkspaceClient {
   public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
   -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
 
+  public var accessibilityDisplayShouldReduceMotion: () -> Bool = { false }
+
   public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
     .finished
   }
+
 }
 
 // MARK: DependencyKey
@@ -45,6 +48,7 @@ extension NSWorkspaceClient: DependencyKey {
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
     menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) },
+    accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
     notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() })
 
   public static let testValue = NSWorkspaceClient()

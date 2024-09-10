@@ -1,6 +1,6 @@
 import AppKit
 
-public class DockVisualEffectView: NSVisualEffectView {
+open class DockVisualEffectView: NSVisualEffectView {
   public override init(frame frameRect: NSRect) {
     super.init(frame: frameRect)
     blendingMode = .behindWindow

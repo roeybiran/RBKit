@@ -1,12 +1,12 @@
-import ApplicationServices
+@preconcurrency import ApplicationServices
 import Dependencies
 import DependenciesMacros
 
 // MARK: - AXClient
 
 @DependencyClient
-public struct AXClient {
-  public var isProcessTrusted: (_ usePrompt: Bool) -> Bool = { _ in false }
+public struct AXClient: Sendable {
+  public var isProcessTrusted: @Sendable (_ usePrompt: Bool) -> Bool = { _ in false }
 }
 
 // MARK: DependencyKey

@@ -1,6 +1,6 @@
 import AppKit
 
-extension NSApplication.ActivationPolicy: CustomDebugStringConvertible {
+extension NSApplication.ActivationPolicy: @retroactive CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
     case .accessory:

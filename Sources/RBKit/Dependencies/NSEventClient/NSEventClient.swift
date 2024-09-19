@@ -5,20 +5,17 @@ import DependenciesMacros
 // MARK: - NSEventClient
 
 @DependencyClient
-public struct NSEventClient {
+public struct NSEventClient: Sendable {
   // key event information
-  public var keyRepeatDelay: () -> TimeInterval = { .zero }
-  public var keyRepeatInterval: () -> TimeInterval = { .zero }
+  public var keyRepeatDelay: @Sendable () -> TimeInterval = { .zero }
+  public var keyRepeatInterval: @Sendable () -> TimeInterval = { .zero }
   //
-  public typealias LocalEventsStream = AsyncStream<(NSEvent, (_ event: NSEvent?) -> Void)>
-  public var mouseLocation: () -> NSPoint = { .zero }
-  public var globalMonitorEvents: (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localMonitorEvents: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?)
-    -> AsyncStream<NSEvent> = { _, _ in .finished }
-  public var addLocalMonitor: (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Void
-  public var stopLocalMonitor: () -> Void
+  public var mouseLocation: @Sendable () -> NSPoint = { .zero }
+  public var globalEvents: @MainActor @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
+  public var addLocalMonitor: @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Any? = { _, _ in nil }
+  public var removeMonitor: @Sendable (_ monitor: Any) -> Void
   ///
-  public var specialKey: (_ event: NSEvent) -> NSEvent.SpecialKey?
+  public var specialKey: @Sendable (_ event: NSEvent) -> NSEvent.SpecialKey?
 }
 
 // MARK: DependencyKey
@@ -31,7 +28,7 @@ extension NSEventClient: DependencyKey {
     keyRepeatDelay: { NSEvent.keyRepeatDelay },
     keyRepeatInterval: { NSEvent.keyRepeatInterval },
     mouseLocation: { NSEvent.mouseLocation },
-    globalMonitorEvents: { mask in
+    globalEvents: { mask in
       let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
       let monitor = NSEvent
         .addGlobalMonitorForEvents(
@@ -44,39 +41,11 @@ extension NSEventClient: DependencyKey {
       }
       return stream
     },
-    localMonitorEvents: { mask, handler in
-      let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
-      let monitor = NSEvent
-        .addLocalMonitorForEvents(
-          matching: mask,
-          handler: { nsEvent in
-            continuation.yield(nsEvent)
-            return handler(nsEvent)
-          })
-      continuation.onTermination = { _ in
-        NSEvent.removeMonitor(monitor as Any)
-      }
-      return stream
-    },
-    addLocalMonitor: { mask, handler in
-      guard monitor == nil else { return }
-      monitor = NSEvent
-        .addLocalMonitorForEvents(
-          matching: mask,
-          handler: handler)
-    },
-    stopLocalMonitor: {
-      guard let monitor else { return }
-      NSEvent.removeMonitor(monitor as Any)
-      Self.monitor = nil
-    },
+    addLocalMonitor: { NSEvent.addLocalMonitorForEvents(matching: $0, handler: $1) },
+    removeMonitor: { NSEvent.removeMonitor($0) },
     specialKey: { $0.specialKey })
 
   public static let testValue = Self()
-
-  // MARK: Private
-
-  private static var monitor: Any?
 }
 
 extension DependencyValues {

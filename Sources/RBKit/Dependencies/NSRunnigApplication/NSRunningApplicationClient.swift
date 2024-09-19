@@ -5,22 +5,22 @@ import DependenciesMacros
 // MARK: - NSRunningApplicationClient
 
 @DependencyClient
-public struct NSRunningApplicationClient {
+public struct NSRunningApplicationClient: Sendable {
   // MARK: - Getting running application instances
 
-  public var make: (_ pid: pid_t) -> NSRunningApplication?
+  public var make: @Sendable (_ pid: pid_t) -> NSRunningApplication?
 
-  public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
+  public var runningApplications: @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
 
-  public var current: () -> NSRunningApplication = { .init() }
+  public var current: @Sendable () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
 
   @DependencyEndpoint(method: "activate")
-  public var activate: (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _ in false }
+  public var activate: @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _ in false }
 
   @DependencyEndpoint(method: "activate")
-  public var activateFromApplication: (
+  public var activateFromApplication: @Sendable (
     _ app: NSRunningApplication,
     _ fromApp: NSRunningApplication,
     _ options: NSApplication.ActivationOptions)
@@ -28,23 +28,23 @@ public struct NSRunningApplicationClient {
 
   // MARK: - Hiding and unhiding applications
 
-  public var hide: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  public var hide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
-  public var unhide: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  public var unhide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
   // MARK: - Terminating applications
 
-  public var forceTerminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  public var forceTerminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
-  public var terminate: (_ app: NSRunningApplication) -> Bool = { _ in false }
+  public var terminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 }
 
 // MARK: DependencyKey
 
 extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
-    make: NSRunningApplication.init,
-    runningApplications: NSRunningApplication.runningApplications,
+    make: { NSRunningApplication(processIdentifier: $0) },
+    runningApplications: { NSRunningApplication.runningApplications(withBundleIdentifier: $0) },
     current: {
       NSRunningApplication.current
     },

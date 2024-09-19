@@ -6,12 +6,12 @@ import DependenciesMacros
 // MARK: - BundleClient
 
 @DependencyClient
-public struct BundleClient {
-  public var main: () -> Bundle = { .init() }
-  public var create: (_ url: URL) -> Bundle?
-  public var bundleIdentifier: (_ bundle: Bundle) -> String?
-  public var infoDictionary: (_ bundle: Bundle) -> [String: Any]?
-  public var object: (_ inBundle: Bundle, _ forInfoDictionaryKey: String) -> Any?
+public struct BundleClient: Sendable {
+  public var main: @Sendable () -> Bundle = { .init() }
+  public var create: @Sendable (_ url: URL) -> Bundle?
+  public var bundleIdentifier: @Sendable (_ bundle: Bundle) -> String?
+  public var infoDictionary: @Sendable (_ bundle: Bundle) -> [String: Any]?
+  public var object: @Sendable (_ inBundle: Bundle, _ forInfoDictionaryKey: String) -> Any?
 }
 
 // MARK: DependencyKey

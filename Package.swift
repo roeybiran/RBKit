@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -29,7 +29,11 @@ let package = Package(
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
-      ]),
+      ],
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency"),
+      ]
+    ),
     .target(
       name: "RBKitTestSupport",
       dependencies: []),

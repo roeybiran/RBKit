@@ -5,11 +5,11 @@ import DependenciesMacros
 // MARK: - SecureEventInputClient
 
 @DependencyClient
-public struct SecureEventInputClient {
+public struct SecureEventInputClient: Sendable {
   // https://developer.apple.com/library/archive/technotes/tn2150/_index.html
   // https://alexwlchan.net/2021/secure-input/
-  public var updates: (_ interval: TimeInterval) -> AsyncStream<Bool> = { _ in .finished }
-  public var isEnabled: () -> Bool = { false }
+  public var updates: @Sendable (_ interval: TimeInterval) -> AsyncStream<Bool> = { _ in .finished }
+  public var isEnabled: @Sendable () -> Bool = { false }
 }
 
 // MARK: DependencyKey
@@ -24,17 +24,15 @@ extension SecureEventInputClient: DependencyKey {
         Task {
           while !Task.isCancelled {
             try? await Task.sleep(forSeconds: interval)
-            continuation.yield(isEnabled())
+            continuation.yield(IsSecureEventInputEnabled())
           }
         }
       }
     },
-    isEnabled: isEnabled)
+    isEnabled: { IsSecureEventInputEnabled() }
+  )
+
   public static let testValue = Self()
-
-  // MARK: Private
-
-  private static var isEnabled = IsSecureEventInputEnabled
 }
 
 extension DependencyValues {

@@ -5,9 +5,9 @@ import Foundation
 // MARK: - DiskClient
 
 @DependencyClient
-public struct DiskClient {
-  public var read: (_ sourceURL: URL) throws -> Data
-  public var write: (_ data: Data, _ destinationURL: URL, _ options: Data.WritingOptions) throws -> Void
+public struct DiskClient: Sendable {
+  public var read: @Sendable (_ sourceURL: URL) throws -> Data
+  public var write: @Sendable (_ data: Data, _ destinationURL: URL, _ options: Data.WritingOptions) throws -> Void
 }
 
 // MARK: DependencyKey

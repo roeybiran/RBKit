@@ -1,10 +1,8 @@
-import XCTest
+import Testing
 @testable import RBKit
 
-final class DockVisualEffectViewTests: XCTestCase {
-  func test() {
-    let sut = DockVisualEffectView()
-    XCTAssertEqual(sut.blendingMode, .behindWindow)
-    XCTAssertEqual(sut.material, .fullScreenUI)
-  }
+@Test @MainActor func dockVisualEffectView() {
+  let sut = DockVisualEffectView()
+  #expect(sut.blendingMode == .behindWindow)
+  #expect(sut.material == .fullScreenUI)
 }

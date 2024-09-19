@@ -2,7 +2,9 @@ import AppKit
 
 // MARK: - NSEventMock
 
+#if DEBUG
 extension NSEvent {
+
   open class Mock: NSEvent {
 
     // MARK: Open
@@ -210,13 +212,13 @@ extension NSEvent {
 
     // MARK: Public
 
-    static public var _isSwipeTrackingFromScrollEventsEnabled = false
+    static nonisolated(unsafe) public var _isSwipeTrackingFromScrollEventsEnabled = false
 
-    static public var _startPeriodicEvents: (_ delay: TimeInterval, _ period: TimeInterval) -> Void = { _, _ in fatalError() }
+    static nonisolated(unsafe) public var _startPeriodicEvents: @Sendable (_ delay: TimeInterval, _ period: TimeInterval) -> Void = { _, _ in fatalError() }
 
-    static public var _stopPeriodicEvents: () -> Void = { fatalError() }
+    static nonisolated(unsafe) public var _stopPeriodicEvents: @Sendable () -> Void = { fatalError() }
 
-    static public var _mouseEvent: (
+    static nonisolated(unsafe) public var _mouseEvent: @Sendable (
       _ type: NSEvent.EventType,
       _ location: NSPoint,
       _ flags: NSEvent.ModifierFlags,
@@ -228,7 +230,7 @@ extension NSEvent {
       _ pressure: Float)
       -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError() }
 
-    static public var _keyEvent: (
+    static nonisolated(unsafe) public var _keyEvent: @Sendable (
       _ type: NSEvent.EventType,
       _ location: NSPoint,
       _ flags: NSEvent.ModifierFlags,
@@ -253,7 +255,7 @@ extension NSEvent {
         fatalError()
       }
 
-    static public var _enterExitEvent: (
+    static nonisolated(unsafe) public var _enterExitEvent: @Sendable (
       _ type: NSEvent.EventType,
       _ location: NSPoint,
       _ flags: NSEvent.ModifierFlags,
@@ -275,7 +277,7 @@ extension NSEvent {
           _ in fatalError()
       }
 
-    static public var _otherEvent: (
+    static nonisolated(unsafe) public var _otherEvent: @Sendable (
       _ type: NSEvent.EventType,
       _ location: NSPoint,
       _ flags: NSEvent.ModifierFlags,
@@ -297,29 +299,29 @@ extension NSEvent {
           _ in fatalError()
       }
 
-    static public var _mouseLocation: NSPoint = .zero
+    static nonisolated(unsafe) public var _mouseLocation: NSPoint = .zero
 
-    static public var _modifierFlags: NSEvent.ModifierFlags = []
+    static nonisolated(unsafe) public var _modifierFlags: NSEvent.ModifierFlags = []
 
-    static public var _pressedMouseButtons = 0
+    static nonisolated(unsafe) public var _pressedMouseButtons = 0
 
-    static public var _doubleClickInterval: TimeInterval = 0
+    static nonisolated(unsafe) public var _doubleClickInterval: TimeInterval = 0
 
-    static public var _keyRepeatDelay: TimeInterval = 0
+    static nonisolated(unsafe) public var _keyRepeatDelay: TimeInterval = 0
 
-    static public var _keyRepeatInterval: TimeInterval = 0
+    static nonisolated(unsafe) public var _keyRepeatInterval: TimeInterval = 0
 
-    static public var _addGlobalMonitorForEvents: (
+    static nonisolated(unsafe) public var _addGlobalMonitorForEvents: @Sendable (
       _ mask: NSEvent.EventTypeMask,
       _ block: @escaping (NSEvent) -> Void)
       -> Any? = { _, _ in fatalError() }
 
-    static public var _addLocalMonitorForEvents: (
+    static nonisolated(unsafe) public var _addLocalMonitorForEvents: @Sendable (
       _ mask: NSEvent.EventTypeMask,
       _ block: @escaping (NSEvent) -> NSEvent?)
       -> Any? = { _, _ in fatalError() }
 
-    static public var _removeMonitor: (_ eventMonitor: Any) -> Void = { _ in fatalError() }
+    static nonisolated(unsafe) public var _removeMonitor: @Sendable (_ eventMonitor: Any) -> Void = { _ in fatalError() }
 
     public var _type: NSEvent.EventType = .keyDown
 
@@ -363,7 +365,7 @@ extension NSEvent {
 
     public var _charactersIgnoringModifiers: String? = nil
 
-    public var _charactersbyApplyingModifiers: (_ modifiers: NSEvent.ModifierFlags) -> String? = { _ in fatalError() }
+    public var _charactersbyApplyingModifiers: @Sendable (_ modifiers: NSEvent.ModifierFlags) -> String? = { _ in fatalError() }
 
     public var _isARepeat = false
 
@@ -423,13 +425,13 @@ extension NSEvent {
 
     public var _isEnteringProximity = false
 
-    public var _touches: (_ phase: NSTouch.Phase, _ view: NSView?) -> Set<NSTouch> = { _, _ in [] }
+    public var _touches: @Sendable (_ phase: NSTouch.Phase, _ view: NSView?) -> Set<NSTouch> = { _, _ in [] }
 
-    public var _allTouches: () -> Set<NSTouch> = { fatalError() }
+    public var _allTouches: @Sendable () -> Set<NSTouch> = { fatalError() }
 
-    public var _touchesForView: (_ view: NSView) -> Set<NSTouch> = { _ in fatalError() }
+    public var _touchesForView: @Sendable (_ view: NSView) -> Set<NSTouch> = { _ in fatalError() }
 
-    public var _coalescedTouches: (_ touch: NSTouch) -> [NSTouch] = { _ in fatalError() }
+    public var _coalescedTouches: @Sendable (_ touch: NSTouch) -> [NSTouch] = { _ in fatalError() }
 
     public var _phase: NSEvent.Phase = .began
 
@@ -441,7 +443,7 @@ extension NSEvent {
 
     public var _pressureBehavior: NSEvent.PressureBehavior = .primaryAccelerator
 
-    public var _trackSwipeEvent: (
+    public var _trackSwipeEvent: @Sendable (
       _ options: NSEvent.SwipeTrackingOptions,
       _ minDampenThreshold: CGFloat,
       _ maxDampenThreshold: CGFloat,
@@ -450,3 +452,4 @@ extension NSEvent {
 
   }
 }
+#endif

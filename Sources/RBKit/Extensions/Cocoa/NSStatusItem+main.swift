@@ -1,7 +1,7 @@
 import AppKit
 
 extension NSStatusItem {
-  public static func main(
+  @MainActor public static func main(
     menu: NSMenu = NSMenu(),
     length: CGFloat = NSStatusItem.variableLength,
     statusBar: NSStatusBar = .system,

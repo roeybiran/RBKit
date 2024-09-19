@@ -2,7 +2,7 @@ import Carbon
 
 // MARK: - CGEventFlags + CustomDebugStringConvertible
 
-extension CGEventFlags: CustomDebugStringConvertible {
+extension CGEventFlags: @retroactive CustomDebugStringConvertible {
   public var debugDescription: String {
     let flags = [
       (CGEventFlags.maskAlphaShift, "alphaShift"),

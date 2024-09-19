@@ -14,10 +14,10 @@ public enum Status: Int {
 // MARK: - ServiceManagementClient
 
 @DependencyClient
-public struct ServiceManagementClient {
-  public var register: () throws -> Void
-  public var unregister: () throws -> Void
-  public var status: () -> Status?
+public struct ServiceManagementClient: Sendable {
+  public var register: @Sendable () throws -> Void
+  public var unregister: @Sendable () throws -> Void
+  public var status: @Sendable () -> Status?
 }
 
 // MARK: DependencyKey
@@ -25,11 +25,10 @@ public struct ServiceManagementClient {
 extension ServiceManagementClient: DependencyKey {
   public static let liveValue: Self = {
     if #available(macOS 13.0, *) {
-      let instance = SMAppService.mainApp
       return .init(
-        register: { try instance.register() },
-        unregister: { try instance.unregister() },
-        status: { .init(rawValue: instance.status.rawValue) })
+        register: { try SMAppService.mainApp.register() },
+        unregister: { try SMAppService.mainApp.unregister() },
+        status: { .init(rawValue: SMAppService.mainApp.status.rawValue) })
     } else {
       return .init(
         register: { },

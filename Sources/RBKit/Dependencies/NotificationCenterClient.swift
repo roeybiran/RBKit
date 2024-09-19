@@ -5,9 +5,9 @@ import Foundation
 // MARK: - NotificationCenterClient
 
 @DependencyClient
-public struct NotificationCenterClient {
+public struct NotificationCenterClient: Sendable {
   /// Adding and Removing Notification Observers
-  public var addObserver: (
+  public var addObserver: @Sendable (
     _ notificationCenter: NotificationCenter,
     _ observer: Any,
     _ selector: Selector,
@@ -15,10 +15,10 @@ public struct NotificationCenterClient {
     _ object: Any?) -> Void
 
   /// Posting notifications
-  public var post: (_ notification: Notification) -> Void
+  public var post: @Sendable (_ notification: Notification) -> Void
 
   /// Receiving Notifications as an Asynchronous Sequence
-  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
+  public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> AsyncStream<Notification> = { _, _ in
     .finished
   }
 }
@@ -30,10 +30,9 @@ extension NotificationCenterClient: DependencyKey {
     addObserver: { notificationCenter, observer, selector, name, object in
       notificationCenter.addObserver(observer, selector: selector, name: name, object: object)
     },
-    post: NotificationCenter.default.post,
-    notifications: {
-      NotificationCenter.default.notifications(named: $0, object: $1).eraseToStream()
-    })
+    post: { NotificationCenter.default.post($0) },
+    notifications: { NotificationCenter.default.notifications(named: $0, object: $1).eraseToStream() }
+  )
 
   public static let testValue = Self()
 }

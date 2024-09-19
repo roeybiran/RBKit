@@ -1,6 +1,6 @@
 import Carbon
 
-extension CGEventType: CustomDebugStringConvertible {
+extension CGEventType: @retroactive CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
     case .null:

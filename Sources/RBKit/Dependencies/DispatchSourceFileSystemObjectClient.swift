@@ -5,8 +5,8 @@ import Foundation
 // MARK: - DispatchSourceFileSystemObjectClient
 
 @DependencyClient
-public struct DispatchSourceFileSystemObjectClient {
-  public var make: (
+public struct DispatchSourceFileSystemObjectClient: Sendable {
+  public var make: @Sendable (
     _ path: UnsafePointer<CChar>,
     _ mask: DispatchSource.FileSystemEvent,
     _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void) -> Void

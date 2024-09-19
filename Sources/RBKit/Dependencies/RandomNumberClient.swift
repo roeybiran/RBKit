@@ -4,14 +4,16 @@ import DependenciesMacros
 // MARK: - RandomNumberClient
 
 @DependencyClient
-public struct RandomNumberClient {
-  public var generate: (_ range: Range<Double>) -> Double = { _ in .zero }
+public struct RandomNumberClient: Sendable {
+  public var generate: @Sendable (_ range: Range<Double>) -> Double = { _ in .zero }
 }
 
 // MARK: DependencyKey
 
 extension RandomNumberClient: DependencyKey {
-  public static let liveValue = Self(generate: Double.random)
+  public static let liveValue = Self(
+    generate: { Double.random(in: $0) }
+  )
   public static let testValue = Self()
 }
 

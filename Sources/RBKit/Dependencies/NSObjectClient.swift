@@ -5,14 +5,14 @@ import Foundation
 // MARK: - NSObjectClient
 
 @DependencyClient
-public struct NSObjectClient {
-  public var addObserver: (
+public struct NSObjectClient: Sendable {
+  public var addObserver: @Sendable (
     _ observee: NSObject,
     _ observer: NSObject,
     _ keyPath: String,
     _ options: NSKeyValueObservingOptions,
     _ context: UnsafeMutableRawPointer?) -> Void
-  public var removeObserver: (_ observee: NSObject, _ observer: NSObject, _ keyPath: String, _ context: UnsafeMutableRawPointer?)
+  public var removeObserver: @Sendable (_ observee: NSObject, _ observer: NSObject, _ keyPath: String, _ context: UnsafeMutableRawPointer?)
     -> Void
 }
 

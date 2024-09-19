@@ -4,9 +4,9 @@ import Foundation
 
 public struct KeyValueObservation {
   public let value: NSObject
-  public var invalidate: () -> Void
+  public var invalidate: @Sendable () -> Void
 
-  public init(value: NSObject = .init(), invalidate: @escaping () -> Void = { }) {
+  public init(value: NSObject = .init(), invalidate: @Sendable @escaping () -> Void = { }) {
     self.value = value
     self.invalidate = invalidate
   }

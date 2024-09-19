@@ -1,6 +1,6 @@
 import AppKit
 
-extension NSTableView.AnimationOptions: CustomDebugStringConvertible {
+extension NSTableView.AnimationOptions: @retroactive CustomDebugStringConvertible {
   public var debugDescription: String {
     [
       (Self.effectFade, "effectFade"),

@@ -6,9 +6,9 @@ import ScreenCaptureKit
 
 @available(macOS 12.3, *)
 @DependencyClient
-public struct ScreenCaptureClient {
-  public var current: () async throws -> SCShareableContent
-  public var requestAccess: () async -> Void
+public struct ScreenCaptureClient: Sendable {
+  public var current: @Sendable () async throws -> SCShareableContent
+  public var requestAccess: @Sendable () async -> Void
 }
 
 // MARK: DependencyKey

@@ -32,7 +32,7 @@ extension NSMenuItem {
     return NSMenuItem("\(title)…", keyEquivalent: ",")
   }
 
-  public static func servicesMenu() -> NSMenuItem {
+  @MainActor public static func servicesMenu() -> NSMenuItem {
     let title = "Services"
     let menuItem = NSMenuItem(title)
     menuItem.submenu = NSMenu(title)
@@ -40,7 +40,7 @@ extension NSMenuItem {
     return menuItem
   }
 
-  public static func windowMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
+  @MainActor public static func windowMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
     let title = "Window"
     let menuItem = NSMenuItem(title)
     menuItem.submenu = NSMenu(title: title)
@@ -52,7 +52,7 @@ extension NSMenuItem {
     return menuItem
   }
 
-  public static func helpMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
+  @MainActor public static func helpMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
     let title = "Help"
     let menuItem = NSMenuItem(title)
     menuItem.submenu = NSMenu(title)

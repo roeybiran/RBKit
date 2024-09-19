@@ -85,6 +85,8 @@ public struct NSScreenValue {
 
 }
 
+extension NSScreenValue : Sendable { }
+
 // MARK: Equatable
 
 extension NSScreenValue: Equatable { }

@@ -9,26 +9,26 @@ import UniformTypeIdentifiers
 // https://gist.github.com/ole/fc5c1f4c763d28d9ba70940512e81916
 
 @DependencyClient
-public struct NSWorkspaceClient {
-  public var iconForFile: (_ fullPath: String) -> NSImage = { _ in .init() }
+public struct NSWorkspaceClient: Sendable {
+  public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
 
-  public var iconFor: (_ contentType: UTType) -> NSImage = { _ in .init() }
+  public var iconFor: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
 
-  public var open: (_ url: URL) -> Bool = { _ in false }
+  public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
-  public var frontmostApplication: () -> NSRunningApplication? = { nil }
+  public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
 
-  public var runningApplications: () -> [NSRunningApplication] = { [] }
+  public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
 
-  public var menuBarOwningApplication: () -> NSRunningApplication?
+  public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
 
   @DependencyEndpoint(method: "menuBarOwningApplication")
-  public var menuBarOwningApplicationObservation: (_ options: NSKeyValueObservingOptions)
+  public var menuBarOwningApplicationObservation: @Sendable (_ options: NSKeyValueObservingOptions)
   -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
 
-  public var accessibilityDisplayShouldReduceMotion: () -> Bool = { false }
+  public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
 
-  public var notifications: (_ named: Notification.Name, _ object: AnyObject?) -> AsyncStream<Notification> = { _, _ in
+  public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> AsyncStream<Notification> = { _, _ in
     .finished
   }
 
@@ -41,9 +41,9 @@ extension NSWorkspaceClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
-    iconForFile: NSWorkspace.shared.icon(forFile:),
-    iconFor: NSWorkspace.shared.icon(for:),
-    open: NSWorkspace.shared.open,
+    iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
+    iconFor: { NSWorkspace.shared.icon(for: $0) },
+    open: { NSWorkspace.shared.open($0) },
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
@@ -58,11 +58,11 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>>
+    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
   {
     let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
-    let observation = workspace.observe(keyPath, options: options) { _, change in
-      continuation.yield(.init(change))
+    let observation = workspace.observe(keyPath, options: options) {  _, change in
+      continuation.yield(KeyValueObservedChange(change))
     }
     continuation.onTermination = { _ in
       observation.invalidate()

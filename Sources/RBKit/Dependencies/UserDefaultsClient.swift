@@ -32,29 +32,27 @@ public struct UserDefaultsClient: Sendable {
 // MARK: DependencyKey
 
 extension UserDefaultsClient: DependencyKey {
-  public static let liveValue: Self = {
-    return Self(
-      object: { UserDefaults.standard.object(forKey:$0) },
-      url: { UserDefaults.standard.url(forKey: $0) },
-      array: { UserDefaults.standard.array(forKey: $0) },
-      dictionary: { UserDefaults.standard.dictionary(forKey: $0) },
-      string: { UserDefaults.standard.string(forKey: $0) },
-      stringArray: { UserDefaults.standard.stringArray(forKey: $0) },
-      data: { UserDefaults.standard.data(forKey: $0) },
-      bool: { UserDefaults.standard.bool(forKey: $0) },
-      integer: { UserDefaults.standard.integer(forKey: $0) },
-      float: { UserDefaults.standard.float(forKey: $0) },
-      double: { UserDefaults.standard.double(forKey: $0) },
-      setAny: { UserDefaults.standard.set($0, forKey: $1) },
-      setFloat: { UserDefaults.standard.set($0, forKey: $1) },
-      setDouble: { UserDefaults.standard.set($0, forKey: $1) },
-      setInt: { UserDefaults.standard.set($0, forKey: $1) },
-      setBool: { UserDefaults.standard.set($0, forKey: $1) },
-      setURL: { UserDefaults.standard.set($0, forKey: $1) },
-      removeObject: { UserDefaults.standard.removeObject(forKey: $0) },
-      register: { UserDefaults.standard.register(defaults: $0) }
-    )
-  }()
+  public static let liveValue = Self(
+    object: { UserDefaults.standard.object(forKey:$0) },
+    url: { UserDefaults.standard.url(forKey: $0) },
+    array: { UserDefaults.standard.array(forKey: $0) },
+    dictionary: { UserDefaults.standard.dictionary(forKey: $0) },
+    string: { UserDefaults.standard.string(forKey: $0) },
+    stringArray: { UserDefaults.standard.stringArray(forKey: $0) },
+    data: { UserDefaults.standard.data(forKey: $0) },
+    bool: { UserDefaults.standard.bool(forKey: $0) },
+    integer: { UserDefaults.standard.integer(forKey: $0) },
+    float: { UserDefaults.standard.float(forKey: $0) },
+    double: { UserDefaults.standard.double(forKey: $0) },
+    setAny: { UserDefaults.standard.set($0, forKey: $1) },
+    setFloat: { UserDefaults.standard.set($0, forKey: $1) },
+    setDouble: { UserDefaults.standard.set($0, forKey: $1) },
+    setInt: { UserDefaults.standard.set($0, forKey: $1) },
+    setBool: { UserDefaults.standard.set($0, forKey: $1) },
+    setURL: { UserDefaults.standard.set($0, forKey: $1) },
+    removeObject: { UserDefaults.standard.removeObject(forKey: $0) },
+    register: { UserDefaults.standard.register(defaults: $0) }
+  )
 
   public static let testValue = Self()
 }

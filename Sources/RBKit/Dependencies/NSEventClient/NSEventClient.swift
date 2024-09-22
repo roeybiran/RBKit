@@ -1,8 +1,7 @@
 import AppKit
 import Dependencies
 import DependenciesMacros
-
-// MARK: - NSEventClient
+import Foundation
 
 @DependencyClient
 public struct NSEventClient: Sendable {
@@ -11,9 +10,8 @@ public struct NSEventClient: Sendable {
   public var keyRepeatInterval: @Sendable () -> TimeInterval = { .zero }
   //
   public var mouseLocation: @Sendable () -> NSPoint = { .zero }
-  public var globalEvents: @MainActor @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var addLocalMonitor: @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> Any? = { _, _ in nil }
-  public var removeMonitor: @Sendable (_ monitor: Any) -> Void
+  public var globalEvents: @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
+  public var localEvents: @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
   ///
   public var specialKey: @Sendable (_ event: NSEvent) -> NSEvent.SpecialKey?
 }
@@ -37,12 +35,26 @@ extension NSEventClient: DependencyKey {
             continuation.yield(nsEvent)
           })
       continuation.onTermination = { _ in
-        NSEvent.removeMonitor(monitor as Any)
+        guard let monitor else { return }
+        NSEvent.removeMonitor(monitor)
       }
       return stream
     },
-    addLocalMonitor: { NSEvent.addLocalMonitorForEvents(matching: $0, handler: $1) },
-    removeMonitor: { NSEvent.removeMonitor($0) },
+    localEvents: { mask, handler in
+      let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
+      let monitor = NSEvent
+        .addLocalMonitorForEvents(
+          matching: mask,
+          handler: { nsEvent in
+            continuation.yield(nsEvent)
+            return handler(nsEvent)
+          })
+      continuation.onTermination = { _ in
+        guard let monitor else { return }
+        NSEvent.removeMonitor(monitor)
+      }
+      return stream
+    },
     specialKey: { $0.specialKey })
 
   public static let testValue = Self()

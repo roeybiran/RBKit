@@ -1,9 +1,10 @@
 // MARK: - Either
 
 public enum Either<Left, Right> {
-  case left(Left), right(Right)
+  case left(Left)
+  case right(Right)
 }
 
 // MARK: Equatable
 
-extension Either: Equatable where Left: Equatable, Right: Equatable { }
+extension Either: Equatable where Left: Equatable, Right: Equatable {}

@@ -1,4 +1,5 @@
 extension Task<Never, Never> {
+  @available(macOS, deprecated: 13.0)
   public static func sleep(forSeconds seconds: Double) async throws {
     if #available(macOS 13.0, *) {
       try await Task.sleep(for: .seconds(seconds))

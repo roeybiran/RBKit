@@ -10,8 +10,12 @@ public struct NSEventClient: Sendable {
   public var keyRepeatInterval: @Sendable () -> TimeInterval = { .zero }
   //
   public var mouseLocation: @Sendable () -> NSPoint = { .zero }
-  public var globalEvents: @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = { _ in .finished }
-  public var localEvents: @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) -> AsyncStream<NSEvent> = { _, _ in .finished }
+  public var globalEvents: @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEvent> = {
+    _ in .finished
+  }
+  public var localEvents:
+    @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) ->
+      AsyncStream<NSEvent> = { _, _ in .finished }
   ///
   public var specialKey: @Sendable (_ event: NSEvent) -> NSEvent.SpecialKey?
 }
@@ -28,7 +32,8 @@ extension NSEventClient: DependencyKey {
     mouseLocation: { NSEvent.mouseLocation },
     globalEvents: { mask in
       let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
-      let monitor = NSEvent
+      let monitor =
+        NSEvent
         .addGlobalMonitorForEvents(
           matching: mask,
           handler: { nsEvent in
@@ -42,7 +47,8 @@ extension NSEventClient: DependencyKey {
     },
     localEvents: { mask, handler in
       let (stream, continuation) = AsyncStream.makeStream(of: NSEvent.self)
-      let monitor = NSEvent
+      let monitor =
+        NSEvent
         .addLocalMonitorForEvents(
           matching: mask,
           handler: { nsEvent in

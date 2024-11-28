@@ -1,4 +1,5 @@
 import Testing
+
 @testable import RBKit
 
 @Test @MainActor func dockVisualEffectView() {

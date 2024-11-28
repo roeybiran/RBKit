@@ -1,13 +1,15 @@
-import XCTest
+import Testing
+import AppKit
+
 @testable import RBKit
 
-final class NSRunningApplicationMockTests: XCTestCase {
-  func test() {
+struct NSRunningApplicationMockTests {
+  @Test func test() {
     let app = NSRunningApplication.Mock()
-    XCTAssertEqual(app.activationPolicy, .regular)
+    #expect(app.activationPolicy == .regular)
     app._activationPolicy = .prohibited
-    XCTAssertEqual(app.activationPolicy, .prohibited)
-    XCTAssertEqual(app.isHidden, false)
-    XCTAssertEqual(NSRunningApplication.Mock(_isHidden: true).isHidden, true)
+    #expect(app.activationPolicy == .prohibited)
+    #expect(app.isHidden == false)
+    #expect(NSRunningApplication.Mock(_isHidden: true).isHidden == true)
   }
 }

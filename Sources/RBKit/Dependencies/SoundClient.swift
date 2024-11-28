@@ -1,5 +1,4 @@
 import AppKit.NSSound
-
 import Dependencies
 import DependenciesMacros
 

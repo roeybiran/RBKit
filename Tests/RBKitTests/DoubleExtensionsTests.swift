@@ -1,10 +1,11 @@
 import Dependencies
-import XCTest
+import Testing
+
 @testable import RBKit
 
-final class DoubleExtensionsTests: XCTestCase {
-  func test() {
+struct DoubleExtensionsTests {
+  @Test func test() {
     let a = Double(360).radians
-    XCTAssertEqual(a, 2 * .pi)
+    #expect(a == 2 * .pi)
   }
 }

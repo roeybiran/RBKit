@@ -23,14 +23,18 @@ public struct NSWorkspaceClient: Sendable {
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
 
   @DependencyEndpoint(method: "menuBarOwningApplication")
-  public var menuBarOwningApplicationObservation: @Sendable (_ options: NSKeyValueObservingOptions)
-  -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
+  public var menuBarOwningApplicationObservation:
+    @Sendable (_ options: NSKeyValueObservingOptions)
+      -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
 
   public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
 
-  public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> AsyncStream<Notification> = { _, _ in
-    .finished
-  }
+  public var notifications:
+    @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> AsyncStream<
+      Notification
+    > = { _, _ in
+      .finished
+    }
 
 }
 
@@ -47,9 +51,15 @@ extension NSWorkspaceClient: DependencyKey {
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-    menuBarOwningApplicationObservation: { toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication) },
-    accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
-    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream() })
+    menuBarOwningApplicationObservation: {
+      toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication)
+    },
+    accessibilityDisplayShouldReduceMotion: {
+      NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+    },
+    notifications: {
+      NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream()
+    })
 
   public static let testValue = NSWorkspaceClient()
 
@@ -58,10 +68,10 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
-  {
+    keyPath: KeyPath<NSWorkspace, Value>
+  ) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable {
     let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
-    let observation = workspace.observe(keyPath, options: options) {  _, change in
+    let observation = workspace.observe(keyPath, options: options) { _, change in
       continuation.yield(KeyValueObservedChange(change))
     }
     continuation.onTermination = { _ in

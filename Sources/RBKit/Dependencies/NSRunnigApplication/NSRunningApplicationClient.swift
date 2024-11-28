@@ -10,21 +10,27 @@ public struct NSRunningApplicationClient: Sendable {
 
   public var make: @Sendable (_ pid: pid_t) -> NSRunningApplication?
 
-  public var runningApplications: @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
+  public var runningApplications:
+    @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
 
   public var current: @Sendable () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
 
   @DependencyEndpoint(method: "activate")
-  public var activate: @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = { _, _ in false }
+  public var activate:
+    @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
+      _, _ in false
+    }
 
   @DependencyEndpoint(method: "activate")
-  public var activateFromApplication: @Sendable (
-    _ app: NSRunningApplication,
-    _ fromApp: NSRunningApplication,
-    _ options: NSApplication.ActivationOptions)
-    -> Bool = { _, _, _ in false }
+  public var activateFromApplication:
+    @Sendable (
+      _ app: NSRunningApplication,
+      _ fromApp: NSRunningApplication,
+      _ options: NSApplication.ActivationOptions
+    )
+      -> Bool = { _, _, _ in false }
 
   // MARK: - Hiding and unhiding applications
 

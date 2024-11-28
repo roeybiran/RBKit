@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 
 extension NSView {
   public static var supplementaryViewKind: String {
@@ -50,8 +51,6 @@ extension NSView {
 
 }
 
-import SwiftUI
-
 extension NSView {
 
   // MARK: Public
@@ -69,7 +68,6 @@ extension NSView {
       view
     }
 
-    func updateNSView(_: NSView, context _: Context) { }
+    func updateNSView(_: NSView, context _: Context) {}
   }
 }
-

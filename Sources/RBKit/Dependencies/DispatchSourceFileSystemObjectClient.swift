@@ -6,10 +6,12 @@ import Foundation
 
 @DependencyClient
 public struct DispatchSourceFileSystemObjectClient: Sendable {
-  public var make: @Sendable (
-    _ path: UnsafePointer<CChar>,
-    _ mask: DispatchSource.FileSystemEvent,
-    _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void) -> Void
+  public var make:
+    @Sendable (
+      _ path: UnsafePointer<CChar>,
+      _ mask: DispatchSource.FileSystemEvent,
+      _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void
+    ) -> Void
 }
 
 // MARK: DependencyKey
@@ -22,7 +24,8 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {
   public static let liveValue: Self = .init(make: { path, mask, handler in
-    let source = DispatchSource
+    let source =
+      DispatchSource
       .makeFileSystemObjectSource(
         fileDescriptor: open(path, O_EVTONLY),
         eventMask: mask,

@@ -31,7 +31,7 @@ let package = Package(
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
       ],
       swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency"),
+        .enableExperimentalFeature("StrictConcurrency")
       ]
     ),
     .target(
@@ -41,7 +41,7 @@ let package = Package(
       name: "RBKitTests",
       dependencies: [
         "RBKit",
-        .product(name: "CustomDump", package: "swift-custom-dump")
+        .product(name: "CustomDump", package: "swift-custom-dump"),
       ]
     ),
   ]

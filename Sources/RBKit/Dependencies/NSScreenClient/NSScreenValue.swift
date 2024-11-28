@@ -28,8 +28,8 @@ public struct NSScreenValue {
     minimumRefreshInterval: TimeInterval,
     maximumRefreshInterval: TimeInterval,
     displayUpdateGranularity: TimeInterval,
-    lastDisplayUpdateTimestamp: TimeInterval)
-  {
+    lastDisplayUpdateTimestamp: TimeInterval
+  ) {
     self.depth = depth
     self.frame = frame
     self.localizedName = localizedName
@@ -37,9 +37,12 @@ public struct NSScreenValue {
     self.visibleFrame = visibleFrame
     self.auxiliaryTopLeftArea = auxiliaryTopLeftArea
     self.auxiliaryTopRightArea = auxiliaryTopRightArea
-    self.maximumPotentialExtendedDynamicRangeColorComponentValue = maximumPotentialExtendedDynamicRangeColorComponentValue
-    self.maximumExtendedDynamicRangeColorComponentValue = maximumExtendedDynamicRangeColorComponentValue
-    self.maximumReferenceExtendedDynamicRangeColorComponentValue = maximumReferenceExtendedDynamicRangeColorComponentValue
+    self.maximumPotentialExtendedDynamicRangeColorComponentValue =
+      maximumPotentialExtendedDynamicRangeColorComponentValue
+    self.maximumExtendedDynamicRangeColorComponentValue =
+      maximumExtendedDynamicRangeColorComponentValue
+    self.maximumReferenceExtendedDynamicRangeColorComponentValue =
+      maximumReferenceExtendedDynamicRangeColorComponentValue
     self.maximumFramesPerSecond = maximumFramesPerSecond
     self.minimumRefreshInterval = minimumRefreshInterval
     self.maximumRefreshInterval = maximumRefreshInterval
@@ -85,11 +88,11 @@ public struct NSScreenValue {
 
 }
 
-extension NSScreenValue : Sendable { }
+extension NSScreenValue: Sendable {}
 
 // MARK: Equatable
 
-extension NSScreenValue: Equatable { }
+extension NSScreenValue: Equatable {}
 
 extension NSScreenValue {
   public init(nsScreen: NSScreen) {
@@ -101,9 +104,12 @@ extension NSScreenValue {
     // safeAreaInsets = nsScreen.safeAreaInsets
     auxiliaryTopLeftArea = nsScreen.auxiliaryTopLeftArea
     auxiliaryTopRightArea = nsScreen.auxiliaryTopRightArea
-    maximumPotentialExtendedDynamicRangeColorComponentValue = nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
-    maximumExtendedDynamicRangeColorComponentValue = nsScreen.maximumExtendedDynamicRangeColorComponentValue
-    maximumReferenceExtendedDynamicRangeColorComponentValue = nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
+    maximumPotentialExtendedDynamicRangeColorComponentValue =
+      nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
+    maximumExtendedDynamicRangeColorComponentValue =
+      nsScreen.maximumExtendedDynamicRangeColorComponentValue
+    maximumReferenceExtendedDynamicRangeColorComponentValue =
+      nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
     maximumFramesPerSecond = nsScreen.maximumFramesPerSecond
     minimumRefreshInterval = nsScreen.minimumRefreshInterval
     maximumRefreshInterval = nsScreen.maximumRefreshInterval
@@ -113,41 +119,45 @@ extension NSScreenValue {
 }
 
 #if DEBUG
-extension NSScreenValue {
-  public static func mock(
-    depth: NSWindow.Depth = .sixtyfourBitRGB,
-    frame: NSRect = .zero,
-    localizedName: String = "foo",
-    backingScaleFactor: CGFloat = .zero,
-    visibleFrame: NSRect = .zero,
-    auxiliaryTopLeftArea: NSRect? = nil,
-    auxiliaryTopRightArea: NSRect? = nil,
-    maximumPotentialExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
-    maximumExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
-    maximumReferenceExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
-    maximumFramesPerSecond: Int = 0,
-    minimumRefreshInterval: TimeInterval = 0,
-    maximumRefreshInterval: TimeInterval = 0,
-    displayUpdateGranularity: TimeInterval = 0,
-    lastDisplayUpdateTimestamp: TimeInterval = 0)
-    -> Self
-  {
-    .init(
-      depth: depth,
-      frame: frame,
-      localizedName: localizedName,
-      backingScaleFactor: backingScaleFactor,
-      visibleFrame: visibleFrame,
-      auxiliaryTopLeftArea: auxiliaryTopLeftArea,
-      auxiliaryTopRightArea: auxiliaryTopRightArea,
-      maximumPotentialExtendedDynamicRangeColorComponentValue: maximumPotentialExtendedDynamicRangeColorComponentValue,
-      maximumExtendedDynamicRangeColorComponentValue: maximumExtendedDynamicRangeColorComponentValue,
-      maximumReferenceExtendedDynamicRangeColorComponentValue: maximumReferenceExtendedDynamicRangeColorComponentValue,
-      maximumFramesPerSecond: maximumFramesPerSecond,
-      minimumRefreshInterval: minimumRefreshInterval,
-      maximumRefreshInterval: maximumRefreshInterval,
-      displayUpdateGranularity: displayUpdateGranularity,
-      lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp)
+  extension NSScreenValue {
+    public static func mock(
+      depth: NSWindow.Depth = .sixtyfourBitRGB,
+      frame: NSRect = .zero,
+      localizedName: String = "foo",
+      backingScaleFactor: CGFloat = .zero,
+      visibleFrame: NSRect = .zero,
+      auxiliaryTopLeftArea: NSRect? = nil,
+      auxiliaryTopRightArea: NSRect? = nil,
+      maximumPotentialExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
+      maximumExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
+      maximumReferenceExtendedDynamicRangeColorComponentValue: CGFloat = .zero,
+      maximumFramesPerSecond: Int = 0,
+      minimumRefreshInterval: TimeInterval = 0,
+      maximumRefreshInterval: TimeInterval = 0,
+      displayUpdateGranularity: TimeInterval = 0,
+      lastDisplayUpdateTimestamp: TimeInterval = 0
+    )
+      -> Self
+    {
+      .init(
+        depth: depth,
+        frame: frame,
+        localizedName: localizedName,
+        backingScaleFactor: backingScaleFactor,
+        visibleFrame: visibleFrame,
+        auxiliaryTopLeftArea: auxiliaryTopLeftArea,
+        auxiliaryTopRightArea: auxiliaryTopRightArea,
+        maximumPotentialExtendedDynamicRangeColorComponentValue:
+          maximumPotentialExtendedDynamicRangeColorComponentValue,
+        maximumExtendedDynamicRangeColorComponentValue:
+          maximumExtendedDynamicRangeColorComponentValue,
+        maximumReferenceExtendedDynamicRangeColorComponentValue:
+          maximumReferenceExtendedDynamicRangeColorComponentValue,
+        maximumFramesPerSecond: maximumFramesPerSecond,
+        minimumRefreshInterval: minimumRefreshInterval,
+        maximumRefreshInterval: maximumRefreshInterval,
+        displayUpdateGranularity: displayUpdateGranularity,
+        lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp)
+    }
   }
-}
 #endif

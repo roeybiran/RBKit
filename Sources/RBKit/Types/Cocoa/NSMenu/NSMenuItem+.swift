@@ -8,8 +8,8 @@ extension NSMenuItem {
     _ title: String,
     action: Selector? = nil,
     keyEquivalent: String = "",
-    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
-  {
+    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
+  ) {
     self.init(title: title, action: action, keyEquivalent: keyEquivalent)
     let children = builder()
     if !children.isEmpty {
@@ -40,7 +40,9 @@ extension NSMenuItem {
     return menuItem
   }
 
-  @MainActor public static func windowMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
+  @MainActor public static func windowMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
+    -> NSMenuItem
+  {
     let title = "Window"
     let menuItem = NSMenuItem(title)
     menuItem.submenu = NSMenu(title: title)
@@ -52,7 +54,9 @@ extension NSMenuItem {
     return menuItem
   }
 
-  @MainActor public static func helpMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] }) -> NSMenuItem {
+  @MainActor public static func helpMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
+    -> NSMenuItem
+  {
     let title = "Help"
     let menuItem = NSMenuItem(title)
     menuItem.submenu = NSMenu(title)

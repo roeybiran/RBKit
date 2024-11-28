@@ -9,7 +9,10 @@ extension URL {
   // MARK: Lifecycle
 
   @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
-  public init(filePath path: String, directoryHint: URL._DirectoryHint = .inferFromPath, relativeTo base: URL? = nil) {
+  public init(
+    filePath path: String, directoryHint: URL._DirectoryHint = .inferFromPath,
+    relativeTo base: URL? = nil
+  ) {
     if #available(macOS 13.0, *) {
       self = URL(filePath: path, directoryHint: directoryHint.directoryHint(), relativeTo: base)
     } else {
@@ -37,7 +40,9 @@ extension URL {
   }
 
   @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
-  public func appending(component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath) -> URL {
+  public func appending(
+    component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath
+  ) -> URL {
     if #available(macOS 13.0, *) {
       appending(component: component, directoryHint: directoryHint.directoryHint())
     } else {
@@ -45,17 +50,19 @@ extension URL {
     }
   }
 
-//  @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
-//  public func appending<T: StringProtocol>(components: T..., directoryHint: URL._DirectoryHint = .inferFromPath) -> URL {
-//    if #available(macOS 13.0, *) {
-//      appending(components: components, directoryHint: directoryHint.directoryHint())
-//    } else {
-//      components.map { String($0) }.reduce(self) { $0.appendingPathComponent($1) }
-//    }
-//  }
+  //  @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
+  //  public func appending<T: StringProtocol>(components: T..., directoryHint: URL._DirectoryHint = .inferFromPath) -> URL {
+  //    if #available(macOS 13.0, *) {
+  //      appending(components: components, directoryHint: directoryHint.directoryHint())
+  //    } else {
+  //      components.map { String($0) }.reduce(self) { $0.appendingPathComponent($1) }
+  //    }
+  //  }
 
   @available(macOS, introduced: 10.10, obsoleted: 13.0, message: "")
-  public mutating func append(component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath) {
+  public mutating func append(
+    component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath
+  ) {
     if #available(macOS 13.0, *) {
       append(component: component, directoryHint: directoryHint.directoryHint())
     } else {

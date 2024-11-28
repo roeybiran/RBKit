@@ -25,7 +25,7 @@ public struct CGWindowValue {
 
 // MARK: Equatable
 
-extension CGWindowValue: Equatable { }
+extension CGWindowValue: Equatable {}
 
 extension CGWindowValue {
   public init?(_ dictionary: [CFString: Any]) {

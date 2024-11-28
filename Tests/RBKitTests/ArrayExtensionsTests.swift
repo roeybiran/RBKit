@@ -1,25 +1,26 @@
 import Carbon
 import CustomDump
-import XCTest
+import Testing
+
 @testable import RBKit
 
-final class ArrayExtensionsTests: XCTestCase {
-  func test_concat() {
+struct ArrayExtensionsTests {
+  @Test func test_concat() {
     let a = ["a"].concat(["b"])
-    XCTAssertEqual(a, ["a", "b"])
+    #expect(a == ["a", "b"])
 
     let b = ["a"].concat("b")
-    XCTAssertEqual(b, ["a", "b"])
+    #expect(b == ["a", "b"])
   }
 
-  func test_subscript_safe_get() {
+  @Test func test_subscript_safe_get() {
     var a = ["a", "b", "c"]
 
-    XCTAssertEqual(a[safe: 3], nil)
-    XCTAssertEqual(a[safe: 0], "a")
+    #expect(a[safe: 3] == nil)
+    #expect(a[safe: 0] == "a")
     a[safe: 0] = "z"
-    XCTAssertEqual(a[safe: 0], "z")
+    #expect(a[safe: 0] == "z")
     a[safe: 9] = "y"
-    XCTAssertEqual(a[safe: 9], nil)
+    #expect(a[safe: 9] == nil)
   }
 }

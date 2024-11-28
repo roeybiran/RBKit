@@ -1,10 +1,11 @@
-import XCTest
+import Testing
+
 @testable import RBKit
 
-final class RangeReplaceableCollectionExtensionsTests: XCTestCase {
-  func test_append() {
+struct RangeReplaceableCollectionExtensionsTests {
+  @Test func test_append() {
     var sut = ["a"]
     sut.append("b", "c")
-    XCTAssertEqual(sut, ["a", "b", "c"])
+    #expect(sut == ["a", "b", "c"])
   }
 }

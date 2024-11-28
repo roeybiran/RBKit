@@ -36,7 +36,7 @@ extension CFDictionary {
     [
       kAXTrustedCheckOptionPrompt.takeUnretainedValue(): flag
         ? kCFBooleanTrue
-        : kCFBooleanFalse,
+        : kCFBooleanFalse
     ] as CFDictionary
   }
 }

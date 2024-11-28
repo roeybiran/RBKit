@@ -119,8 +119,8 @@ public struct URLResourceValuesWrapper {
     fileAllocatedSize: Int? = nil,
     totalFileSize: Int? = nil,
     totalFileAllocatedSize: Int? = nil,
-    isAliasFile: Bool? = nil)
-  {
+    isAliasFile: Bool? = nil
+  ) {
     self.allValues = allValues
     self.name = name
     self.localizedName = localizedName
@@ -229,7 +229,8 @@ public struct URLResourceValuesWrapper {
     self.ubiquitousSharedItemCurrentUserRole = ubiquitousSharedItemCurrentUserRole
     self.ubiquitousSharedItemCurrentUserPermissions = ubiquitousSharedItemCurrentUserPermissions
     self.ubiquitousSharedItemOwnerNameComponents = ubiquitousSharedItemOwnerNameComponents
-    self.ubiquitousSharedItemMostRecentEditorNameComponents = ubiquitousSharedItemMostRecentEditorNameComponents
+    self.ubiquitousSharedItemMostRecentEditorNameComponents =
+      ubiquitousSharedItemMostRecentEditorNameComponents
     self.fileProtection = fileProtection
     self.fileSize = fileSize
     self.fileAllocatedSize = fileAllocatedSize
@@ -291,8 +292,10 @@ public struct URLResourceValuesWrapper {
     volumeLocalizedFormatDescription = resourceValues.volumeLocalizedFormatDescription
     volumeTotalCapacity = resourceValues.volumeTotalCapacity
     volumeAvailableCapacity = resourceValues.volumeAvailableCapacity
-    volumeAvailableCapacityForImportantUsage = resourceValues.volumeAvailableCapacityForImportantUsage
-    volumeAvailableCapacityForOpportunisticUsage = resourceValues.volumeAvailableCapacityForOpportunisticUsage
+    volumeAvailableCapacityForImportantUsage =
+      resourceValues.volumeAvailableCapacityForImportantUsage
+    volumeAvailableCapacityForOpportunisticUsage =
+      resourceValues.volumeAvailableCapacityForOpportunisticUsage
     volumeResourceCount = resourceValues.volumeResourceCount
     volumeSupportsPersistentIDs = resourceValues.volumeSupportsPersistentIDs
     volumeSupportsSymbolicLinks = resourceValues.volumeSupportsSymbolicLinks
@@ -345,9 +348,11 @@ public struct URLResourceValuesWrapper {
     ubiquitousItemIsExcludedFromSync = resourceValues.ubiquitousItemIsExcludedFromSync
     ubiquitousItemIsShared = resourceValues.ubiquitousItemIsShared
     ubiquitousSharedItemCurrentUserRole = resourceValues.ubiquitousSharedItemCurrentUserRole
-    ubiquitousSharedItemCurrentUserPermissions = resourceValues.ubiquitousSharedItemCurrentUserPermissions
+    ubiquitousSharedItemCurrentUserPermissions =
+      resourceValues.ubiquitousSharedItemCurrentUserPermissions
     ubiquitousSharedItemOwnerNameComponents = resourceValues.ubiquitousSharedItemOwnerNameComponents
-    ubiquitousSharedItemMostRecentEditorNameComponents = resourceValues.ubiquitousSharedItemMostRecentEditorNameComponents
+    ubiquitousSharedItemMostRecentEditorNameComponents =
+      resourceValues.ubiquitousSharedItemMostRecentEditorNameComponents
     fileProtection = resourceValues.fileProtection
     fileSize = resourceValues.fileSize
     fileAllocatedSize = resourceValues.fileAllocatedSize

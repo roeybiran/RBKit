@@ -1,20 +1,22 @@
-import Carbon
 import CustomDump
-import XCTest
+import AppKit
+import Testing
+
 @testable import RBKit
 
-final class NSObjectExtensionsTests: XCTestCase {
-  func test_NSObject_UIIdentifier() {
-    XCTAssertEqual(NSObject.userInterfaceIdentifier, "NSObject")
-    XCTAssertEqual(NSView.userInterfaceIdentifier, "NSView")
-    class MainCell: NSTableCellView { }
-    XCTAssertEqual(MainCell.userInterfaceIdentifier, "MainCell")
+@MainActor
+struct NSObjectExtensionsTests {
+  @Test func test_NSObject_UIIdentifier() {
+    #expect(NSObject.userInterfaceIdentifier == "NSObject")
+    #expect(NSView.userInterfaceIdentifier == "NSView")
+    class MainCell: NSTableCellView {}
+    #expect(MainCell.userInterfaceIdentifier == "MainCell")
   }
 
-  func test_NSObject_dotSyntaxSettable() {
+  @Test func test_NSObject_dotSyntaxSettable() {
     let view = NSView()
-    XCTAssertEqual(view.identifier, nil)
+    #expect(view.identifier == nil)
     view.set(\.identifier, to: "foo")
-    XCTAssertEqual(view.identifier, "foo")
+    #expect(view.identifier == "foo")
   }
 }

@@ -5,8 +5,8 @@ public func XCTAssertThrowsError<T, E: Error & Equatable>(
   _ expression: @autoclosure () throws -> T,
   ofType errorType: E,
   file: StaticString = #file,
-  line: UInt = #line)
-{
+  line: UInt = #line
+) {
   var thrownError: Error?
 
   XCTAssertThrowsError(try expression(), file: file, line: line) { thrownError = $0 }
@@ -25,7 +25,8 @@ public func XCTAssertThrowsError<T, E: Error & Equatable>(
   _ expression: @autoclosure () async throws -> T,
   ofType errorType: E,
   file: StaticString = #file,
-  line: UInt = #line)
+  line: UInt = #line
+)
   async
 {
   var thrownError: Error?

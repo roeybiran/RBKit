@@ -1,11 +1,14 @@
 import Dependencies
-import XCTest
+import Foundation
+import AppKit
+import Testing
+
 @testable import RBKit
 
-final class CGWindowTests: XCTestCase {
+final class CGWindowTests {
   var dict = [CFString: Any]()
 
-  override func setUp() {
+  init() {
     dict[kCGWindowNumber] = CGWindowID()
     dict[kCGWindowStoreType] = 0
     dict[kCGWindowLayer] = Int32()
@@ -16,11 +19,11 @@ final class CGWindowTests: XCTestCase {
     dict[kCGWindowMemoryUsage] = 0
   }
 
-  override func tearDown() {
+  deinit {
     dict = [:]
   }
 
-  func test_init() async throws {
+  @Test func test_init() async throws {
     let a = CGWindowValue(dict)
     let b = CGWindowValue(
       number: 0,
@@ -35,79 +38,79 @@ final class CGWindowTests: XCTestCase {
       name: nil,
       isOnscreen: nil,
       backingLocationVideoMemory: nil)
-    XCTAssertEqual(a, b)
+    #expect(a == b)
   }
 
-  func test_withoutWindowNumber() async throws {
+  @Test func test_withoutWindowNumber() async throws {
     dict[kCGWindowNumber] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutWindowStoreType() async throws {
+  @Test func test_withoutWindowStoreType() async throws {
     dict[kCGWindowStoreType] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutWindowLayer() async throws {
+  @Test func test_withoutWindowLayer() async throws {
     dict[kCGWindowLayer] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutBounds() async throws {
+  @Test func test_withoutBounds() async throws {
     dict[kCGWindowBounds] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withOnlyX() async throws {
+  @Test func test_withOnlyX() async throws {
     dict[kCGWindowBounds] = ["X": CGFloat()]
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withOnlyY() async throws {
+  @Test func test_withOnlyY() async throws {
     dict[kCGWindowBounds] = ["Y": CGFloat()]
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withOnlyW() async throws {
+  @Test func test_withOnlyW() async throws {
     dict[kCGWindowBounds] = ["Width": CGFloat()]
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withOnlyH() async throws {
+  @Test func test_withOnlyH() async throws {
     dict[kCGWindowBounds] = ["Height": CGFloat()]
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutSharingState() async throws {
+  @Test func test_withoutSharingState() async throws {
     dict[kCGWindowSharingState] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutAlpha() async throws {
+  @Test func test_withoutAlpha() async throws {
     dict[kCGWindowAlpha] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutOwnerPID() async throws {
+  @Test func test_withoutOwnerPID() async throws {
     dict[kCGWindowOwnerPID] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
-  func test_withoutMemUsage() async throws {
+  @Test func test_withoutMemUsage() async throws {
     dict[kCGWindowMemoryUsage] = nil
     let a = CGWindowValue(dict)
-    XCTAssertEqual(a, nil)
+    #expect(a == nil)
   }
 
 }

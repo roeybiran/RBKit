@@ -7,7 +7,10 @@ import Foundation
 @DependencyClient
 public struct URLClient: Sendable {
   public var resolvingSymlinksInPath: @Sendable (_ url: URL) -> URL = { $0 }
-  public var resourceValues: @Sendable (_ url: URL, _ keys: Set<URLResourceKey>) throws -> URLResourceValuesWrapper = { _, _ in .init() }
+  public var resourceValues:
+    @Sendable (_ url: URL, _ keys: Set<URLResourceKey>) throws -> URLResourceValuesWrapper = {
+      _, _ in .init()
+    }
 }
 
 // MARK: DependencyKey

@@ -33,7 +33,7 @@ public struct UserDefaultsClient: Sendable {
 
 extension UserDefaultsClient: DependencyKey {
   public static let liveValue = Self(
-    object: { UserDefaults.standard.object(forKey:$0) },
+    object: { UserDefaults.standard.object(forKey: $0) },
     url: { UserDefaults.standard.url(forKey: $0) },
     array: { UserDefaults.standard.array(forKey: $0) },
     dictionary: { UserDefaults.standard.dictionary(forKey: $0) },

@@ -1,15 +1,18 @@
 import Carbon
+import AppKit
 import CustomDump
-import XCTest
+import Testing
+
 @testable import RBKit
 
 // MARK: - NSApplication.ActivationPolicy + Codable
 
-extension NSApplication.ActivationPolicy: Codable { }
+extension NSApplication.ActivationPolicy: Codable {}
 
 // MARK: - RBKitTests
 
-final class RBKitTests: XCTestCase {
+@MainActor
+struct RBKitTests {
 
   // MARK: Internal
 
@@ -35,88 +38,108 @@ final class RBKitTests: XCTestCase {
 
   // MARK: - TreeNodeProtocol
 
-  static let testNode = MockNode("1", children: [
-    MockNode("1.1", children: [
-      MockNode("1.1.1"),
-      MockNode("1.1.2"),
-    ]),
-    MockNode("1.2", children: [
-      MockNode("1.2.1", children: [
-        MockNode("1.2.1.1", children: [
-          MockNode("1.2.1.1.1"),
+  static let testNode = MockNode(
+    "1",
+    children: [
+      MockNode(
+        "1.1",
+        children: [
+          MockNode("1.1.1"),
+          MockNode("1.1.2"),
         ]),
-        MockNode("1.2.1.2"),
-      ]),
-      MockNode("1.2.2"),
-    ]),
-  ])
+      MockNode(
+        "1.2",
+        children: [
+          MockNode(
+            "1.2.1",
+            children: [
+              MockNode(
+                "1.2.1.1",
+                children: [
+                  MockNode("1.2.1.1.1")
+                ]),
+              MockNode("1.2.1.2"),
+            ]),
+          MockNode("1.2.2"),
+        ]),
+    ])
 
-  static let testNode2 = MockNode2("1", children: [
-    MockNode2("1.1", children: [
-      MockNode2("1.1.1"),
-      MockNode2("1.1.2"),
-    ]),
-    MockNode2("1.2", children: [
-      MockNode2("1.2.1", children: [
-        MockNode2("1.2.1.1", children: [
-          MockNode2("1.2.1.1.1"),
+  static let testNode2 = MockNode2(
+    "1",
+    children: [
+      MockNode2(
+        "1.1",
+        children: [
+          MockNode2("1.1.1"),
+          MockNode2("1.1.2"),
         ]),
-        MockNode2("1.2.1.2"),
-      ]),
-      MockNode2("1.2.2"),
-    ]),
-  ])
+      MockNode2(
+        "1.2",
+        children: [
+          MockNode2(
+            "1.2.1",
+            children: [
+              MockNode2(
+                "1.2.1.1",
+                children: [
+                  MockNode2("1.2.1.1.1")
+                ]),
+              MockNode2("1.2.1.2"),
+            ]),
+          MockNode2("1.2.2"),
+        ]),
+    ])
 
   // MARK: - Collection Extensions
 
-  func test_safe_subscript() {
+  @Test func test_safe_subscript() {
     let a = [1, 2, 3]
-    XCTAssertNil(a[safe: 3])
-    XCTAssertNotNil(a[safe: 2])
+    #expect(a[safe: 3] == nil)
+    #expect(a[safe: 2] != nil)
   }
 
-  func test_isNotEmpty() {
+  @Test func test_isNotEmpty() {
     let a = [1, 2, 3]
-    XCTAssertTrue(a.isNotEmpty)
+    #expect(a.isNotEmpty)
   }
 
-  func test_itemAt() {
+  @Test func test_itemAt() {
     let a = [1, 2, 3]
-    XCTAssertEqual(a.item(at: 1), 2)
+    #expect(a.item(at: 1) == 2)
   }
 
-  func test_itemOptionallyAt() {
+  @Test func test_itemOptionallyAt() {
     let a = [1, 2, 3]
-    XCTAssertEqual(a.item(optionallyAt: 1), 2)
+    #expect(a.item(optionallyAt: 1) == 2)
   }
 
-  func test_replaceEmpty() {
+  @Test func test_replaceEmpty() {
     let a = [Int]()
     let b = a.replaceEmpty(with: [0])
-    XCTAssertEqual(b, [0])
+    #expect(b == [0])
   }
 
-  func test_replaceEmpty2() {
+  @Test func test_replaceEmpty2() {
     let a = [1]
     let b = a.replaceEmpty(with: [0])
-    XCTAssertEqual(b, [1])
+    #expect(b == [1])
   }
 
-  func test_replaceEmptyWithOptional() {
+  @Test func test_replaceEmptyWithOptional() {
     let a = [Int]()
     let b = a.replaceEmpty(with: nil)
-    XCTAssertEqual(b, nil)
+    #expect(b == nil)
   }
 
-  func test_replaceEmptyWithOptional2() {
+  @Test func test_replaceEmptyWithOptional2() {
     let a = [1]
     let b = a.replaceEmpty(with: nil)
-    XCTAssertEqual(b, [1])
+    #expect(b == [1])
   }
 
   // MARK: - NSEventValue
 
-  func test_keyEventInitFromNSEvent_withKeyDown_shouldCreateEvent() {
+  @Test func test_keyEventInitFromNSEvent_withKeyDown_shouldCreateEvent() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .keyDown,
@@ -144,7 +167,7 @@ final class RBKitTests: XCTestCase {
     expectNoDifference(actual, expected)
   }
 
-  func test_keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
+  @Test func test_keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .keyUp,
@@ -172,7 +195,7 @@ final class RBKitTests: XCTestCase {
     expectNoDifference(actual, expected)
   }
 
-  func test_keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
+  @Test func test_keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .flagsChanged,
@@ -188,7 +211,7 @@ final class RBKitTests: XCTestCase {
     expectNoDifference(actual, nil)
   }
 
-  func test_keyEventUpArrow() {
+  @Test func test_keyEventUpArrow() {
     let actual = NSEventValue.upArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -201,10 +224,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(126),
       specialKey: .upArrow,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventRightArrow() {
+  @Test func test_keyEventRightArrow() {
     let actual = NSEventValue.rightArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -217,10 +240,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(124),
       specialKey: .rightArrow,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventDownArrow() {
+  @Test func test_keyEventDownArrow() {
     let actual = NSEventValue.downArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -233,10 +256,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(125),
       specialKey: .downArrow,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventLeftArrow() {
+  @Test func test_keyEventLeftArrow() {
     let actual = NSEventValue.leftArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -249,10 +272,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(123),
       specialKey: .leftArrow,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventPageUp() {
+  @Test func test_keyEventPageUp() {
     let actual = NSEventValue.pageUp()
     let expected = NSEventValue(
       type: .keyDown,
@@ -265,10 +288,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(116),
       specialKey: .pageUp,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventPageDown() {
+  @Test func test_keyEventPageDown() {
     let actual = NSEventValue.pageDown()
     let expected = NSEventValue(
       type: .keyDown,
@@ -281,10 +304,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(121),
       specialKey: .pageDown,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventHome() {
+  @Test func test_keyEventHome() {
     let actual = NSEventValue.home()
     let expected = NSEventValue(
       type: .keyDown,
@@ -297,10 +320,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(115),
       specialKey: .home,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_keyEventEnd() {
+  @Test func test_keyEventEnd() {
     let actual = NSEventValue.end()
     let expected = NSEventValue(
       type: .keyDown,
@@ -313,10 +336,10 @@ final class RBKitTests: XCTestCase {
       keyCode: UInt16(119),
       specialKey: .end,
       isARepeat: false)
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test_targetApp_init() {
+  @Test func test_targetApp_init() {
     struct RunningApp: RunningApplicationProtocol {
       var isTerminated: Bool
 
@@ -365,34 +388,38 @@ final class RBKitTests: XCTestCase {
 
   // MARK: - URL Extensions Tests
 
-  func test_appending_queryItems() {
-    let actual = URL(fileURLWithPath: "/Users/roey/file.txt").appending(queryItems: [.init(name: "id", value: "foo")])
+  @Test func test_appending_queryItems() {
+    let actual = URL(fileURLWithPath: "/Users/roey/file.txt").appending(queryItems: [
+      .init(name: "id", value: "foo")
+    ])
     let expected = URL(string: "file:///Users/roey/file.txt?id=foo")
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test__appending_queryItems() {
-    let actual = URL(fileURLWithPath: "/Users/roey/file.txt")._appending(queryItems: [.init(name: "id", value: "foo")])
+  @Test func test__appending_queryItems() {
+    let actual = URL(fileURLWithPath: "/Users/roey/file.txt")._appending(queryItems: [
+      .init(name: "id", value: "foo")
+    ])
     let expected = URL(string: "file:///Users/roey/file.txt?id=foo")
-    XCTAssertEqual(actual, expected)
+    #expect(actual == expected)
   }
 
-  func test__directoryHint() {
-    XCTAssertEqual(URL._DirectoryHint.isDirectory.directoryHint(), .isDirectory)
-    XCTAssertEqual(URL._DirectoryHint.notDirectory.directoryHint(), .notDirectory)
-    XCTAssertEqual(URL._DirectoryHint.checkFileSystem.directoryHint(), .checkFileSystem)
-    XCTAssertEqual(URL._DirectoryHint.inferFromPath.directoryHint(), .inferFromPath)
+  @Test func test__directoryHint() {
+    #expect(URL._DirectoryHint.isDirectory.directoryHint() == .isDirectory)
+    #expect(URL._DirectoryHint.notDirectory.directoryHint() == .notDirectory)
+    #expect(URL._DirectoryHint.checkFileSystem.directoryHint() == .checkFileSystem)
+    #expect(URL._DirectoryHint.inferFromPath.directoryHint() == .inferFromPath)
   }
 
-  func test_DotSyntaxSettable() {
+  @Test func test_DotSyntaxSettable() {
     let a = NSTextField()
     a.set(\.stringValue, to: "foo")
-    XCTAssertEqual(a.stringValue, "foo")
+    #expect(a.stringValue == "foo")
   }
 
   // MARK: - IdentifiedHash
 
-  func test_identifiedHash() {
+  @Test func test_identifiedHash() {
     struct IdentifiedHash: IdentityHashable {
       let value: Foo
 
@@ -410,59 +437,73 @@ final class RBKitTests: XCTestCase {
     let a1 = IdentifiedHash(Foo(id: "a", name: "a1"))
     let b = IdentifiedHash(Foo(id: "b", name: "b"))
 
-    XCTAssertEqual(a.name, "a")
-    XCTAssertEqual(a, a1)
-    XCTAssertEqual(a.hashValue, a1.hashValue)
-    XCTAssertEqual(a.hashValue, a.id.hashValue)
-    XCTAssertNotEqual(a, b)
+    #expect(a.name == "a")
+    #expect(a == a1)
+    #expect(a.hashValue == a1.hashValue)
+    #expect(a.hashValue == a.id.hashValue)
+    #expect(a != b)
   }
 
-  func test_descendants() {
+  @Test func test_descendants() {
     expectNoDifference(
       Self.testNode.descendants,
       [
-        MockNode("1.1", children: [
-          MockNode("1.1.1"),
-          MockNode("1.1.2"),
-        ]),
-        MockNode("1.2", children: [
-          MockNode("1.2.1", children: [
-            MockNode("1.2.1.1", children: [
-              MockNode("1.2.1.1.1"),
-            ]),
-            MockNode("1.2.1.2"),
+        MockNode(
+          "1.1",
+          children: [
+            MockNode("1.1.1"),
+            MockNode("1.1.2"),
           ]),
-          MockNode("1.2.2"),
-        ]),
+        MockNode(
+          "1.2",
+          children: [
+            MockNode(
+              "1.2.1",
+              children: [
+                MockNode(
+                  "1.2.1.1",
+                  children: [
+                    MockNode("1.2.1.1.1")
+                  ]),
+                MockNode("1.2.1.2"),
+              ]),
+            MockNode("1.2.2"),
+          ]),
         MockNode("1.1.1"),
         MockNode("1.1.2"),
-        MockNode("1.2.1", children: [
-          MockNode("1.2.1.1", children: [
-            MockNode("1.2.1.1.1"),
+        MockNode(
+          "1.2.1",
+          children: [
+            MockNode(
+              "1.2.1.1",
+              children: [
+                MockNode("1.2.1.1.1")
+              ]),
+            MockNode("1.2.1.2"),
           ]),
-          MockNode("1.2.1.2"),
-        ]),
         MockNode("1.2.2"),
-        MockNode("1.2.1.1", children: [
-          MockNode("1.2.1.1.1"),
-        ]),
+        MockNode(
+          "1.2.1.1",
+          children: [
+            MockNode("1.2.1.1.1")
+          ]),
         MockNode("1.2.1.2"),
         MockNode("1.2.1.1.1"),
       ])
   }
 
-  func test_firstNode() {
-    XCTAssertNotNil(Self.testNode.first(where: { $0.title == "1.2.1.2" }))
-    XCTAssertNil(Self.testNode.first(where: { $0.title == "zzzzzzzz" }))
+  @Test func test_firstNode() {
+    #expect(Self.testNode.first(where: { $0.title == "1.2.1.2" }) != nil)
+    #expect(Self.testNode.first(where: { $0.title == "zzzzzzzz" }) == nil)
   }
 
-  func test_map() {
+  @Test func test_map() {
     expectNoDifference(
       Self.testNode.map { MockNode2($0.title) },
       Self.testNode2)
   }
 
-  func test_subscript_singleMemberArray_get() throws {
+  @Test func test_subscript_singleMemberArray_get() throws {
     let a = MockNode(
       "a",
       children: [
@@ -470,10 +511,10 @@ final class RBKitTests: XCTestCase {
         MockNode("c"),
       ])
     let b = MockNode("c")
-    XCTAssertEqual(a[[1]], b)
+    #expect(a[[1]] == b)
   }
 
-  func test_subscript_singleMemberArray_set() throws {
+  @Test func test_subscript_singleMemberArray_set() throws {
     var a = MockNode(
       "a",
       children: [
@@ -482,25 +523,25 @@ final class RBKitTests: XCTestCase {
       ])
     a[[1]] = MockNode("z")
     let b = MockNode("z")
-    XCTAssertEqual(a[[1]], b)
+    #expect(a[[1]] == b)
   }
 
-  func test_subscript_array_get() throws {
+  @Test func test_subscript_array_get() throws {
     let a = MockNode(
       "a",
       children: [
         MockNode(
           "b",
           children: [
-            MockNode("y"),
+            MockNode("y")
           ]),
         MockNode("c"),
       ])
-    XCTAssertEqual(a[[0, 0]], MockNode("y"))
-    XCTAssertEqual(a[[1]], MockNode("c"))
+    #expect(a[[0, 0]] == MockNode("y"))
+    #expect(a[[1]] == MockNode("c"))
   }
 
-  func test_subscript_array_set() throws {
+  @Test func test_subscript_array_set() throws {
     var a = MockNode(
       "a",
       children: [
@@ -508,29 +549,29 @@ final class RBKitTests: XCTestCase {
         MockNode(
           "c",
           children: [
-            MockNode("y"),
+            MockNode("y")
           ]),
       ])
     a[[1, 0]] = MockNode("z")
     let b = MockNode("z")
-    XCTAssertEqual(a[[1, 0]], b)
+    #expect(a[[1, 0]] == b)
   }
 
-  func test_subscript_variadic_get() throws {
+  @Test func test_subscript_variadic_get() throws {
     let a = MockNode(
       "a",
       children: [
         MockNode(
           "b",
           children: [
-            MockNode("y"),
+            MockNode("y")
           ]),
         MockNode("c"),
       ])
-    XCTAssertEqual(a[[0, 0]], MockNode("y"))
+    #expect(a[[0, 0]] == MockNode("y"))
   }
 
-  func test_subscript_variadic_set() throws {
+  @Test func test_subscript_variadic_set() throws {
     var a = MockNode(
       "a",
       children: [
@@ -538,129 +579,131 @@ final class RBKitTests: XCTestCase {
         MockNode(
           "c",
           children: [
-            MockNode("y"),
+            MockNode("y")
           ]),
       ])
     a[1, 0] = MockNode("z")
     let b = MockNode("z")
-    XCTAssertEqual(a[1, 0], b)
+    #expect(a[1, 0] == b)
   }
 
   // MARK: - Sequence extensions
 
-  func test_sortByKeyPath() {
+  @Test func test_sortByKeyPath() {
     struct Foo: Equatable {
       let id: Int
       let kind: String
     }
     let a = [Foo(id: 1, kind: "Book"), Foo(id: 0, kind: "Library")]
     let b = a.sorted(by: \.id)
-    XCTAssertEqual(b, a.reversed())
+    #expect(b == a.reversed())
   }
 
-  func test_grouping() {
+  @Test func test_grouping() {
     struct Foo: Equatable {
       let name: String
       let kind: String
     }
     let a = [Foo(name: "a", kind: "Book"), Foo(name: "b", kind: "Library")]
     let b = a.dictionary(groupingBy: { $0.kind })
-    XCTAssertEqual(b, [
-      "Book": [a[0]],
-      "Library": [a[1]],
-    ])
+    #expect(
+      b == 
+      [
+        "Book": [a[0]],
+        "Library": [a[1]],
+      ])
   }
 
-  func test_toArray() {
+  @Test func test_toArray() {
     let a = Set<String>()
     let b = [String]()
-    XCTAssertEqual(a.toArray(), b)
+    #expect(a.toArray() == b)
   }
 
-  func test_toSet() {
+  @Test func test_toSet() {
     let a = ["a", "a"]
     let b = Set(["a"])
-    XCTAssertEqual(a.toSet(), b)
+    #expect(a.toSet() == b)
   }
 
   // MARK: - Dictionary extensions
 
-  func test_dictionary() {
+  @Test func test_dictionary() {
     let dict = ["a": 0]
     let key: String? = "a"
-    XCTAssertEqual(dict[key], 0)
-    XCTAssertEqual(dict[nil], nil)
+    #expect(dict[key] == 0)
+    #expect(dict[nil] == nil)
   }
 
-  func test_dictionary2() {
+  @Test func test_dictionary2() {
     let dict = ["a": [0]]
     let key: String? = "a"
-    XCTAssertEqual(dict[key, default: [0]], [0])
+    #expect(dict[key, default: [0]] == [0])
   }
 
-  func test_dictionary3() {
+  @Test func test_dictionary3() {
     let dict = ["b": [0]]
     let key: String? = "a"
-    XCTAssertEqual(dict[key, default: [0]], [0])
+    #expect(dict[key, default: [0]] == [0])
   }
 
-  func test_dictionary4() {
+  @Test func test_dictionary4() {
     let dict = ["a": [0]]
     let key: String? = nil
-    XCTAssertEqual(dict[key, default: [0]], [0])
+    #expect(dict[key, default: [0]] == [0])
   }
 
   // MARK: -
 
-  func test_clamp() {
-    XCTAssertEqual(clamp(min: 2, ideal: 999, max: 10), 10)
-    XCTAssertEqual(clamp(min: 2, ideal: 5, max: 10), 5)
+  @Test func test_clamp() {
+    #expect(clamp(min: 2, ideal: 999, max: 10) == 10)
+    #expect(clamp(min: 2, ideal: 5, max: 10) == 5)
   }
 
   // MARK: - Cocoa
 
-  func test_makeCell() {
+  @Test func test_makeCell() {
     let tv = NSTableView()
-    class Foo: NSView { }
+    class Foo: NSView {}
     let cell1 = tv.makeView(ofType: Foo.self)
-    XCTAssertEqual(cell1.identifier, "Foo")
+    #expect(cell1.identifier == "Foo")
   }
 
   // MARK: - Quartz Core
 
-  func test_cornerMasks() {
-    XCTAssertEqual(CACornerMask.topLeft, .layerMinXMaxYCorner)
-    XCTAssertEqual(CACornerMask.topRight, .layerMaxXMaxYCorner)
-    XCTAssertEqual(CACornerMask.bottomRight, .layerMaxXMinYCorner)
-    XCTAssertEqual(CACornerMask.bottomLeft, .layerMinXMinYCorner)
-    XCTAssertEqual(CACornerMask.all, [.topLeft, .topRight, .bottomLeft, .bottomRight])
+  @Test func test_cornerMasks() {
+    #expect(CACornerMask.topLeft == .layerMinXMaxYCorner)
+    #expect(CACornerMask.topRight == .layerMaxXMaxYCorner)
+    #expect(CACornerMask.bottomRight == .layerMaxXMinYCorner)
+    #expect(CACornerMask.bottomLeft == .layerMinXMinYCorner)
+    #expect(CACornerMask.all == [.topLeft, .topRight, .bottomLeft, .bottomRight])
   }
 
   // MARK: - Cocoa
 
-  func test_NSDirectionalEdgeInsets() {
+  @Test func test_NSDirectionalEdgeInsets() {
     let sut = NSDirectionalEdgeInsets(2)
-    XCTAssertEqual(sut.top, 2)
-    XCTAssertEqual(sut.bottom, 2)
-    XCTAssertEqual(sut.leading, 2)
-    XCTAssertEqual(sut.trailing, 2)
+    #expect(sut.top == 2)
+    #expect(sut.bottom == 2)
+    #expect(sut.leading == 2)
+    #expect(sut.trailing == 2)
   }
 
-  func test_NSDirectionalEdgeInsets2() {
+  @Test func test_NSDirectionalEdgeInsets2() {
     let sut = NSDirectionalEdgeInsets(top: 1)
-    XCTAssertEqual(sut.top, 1)
-    XCTAssertEqual(sut.bottom, 0)
-    XCTAssertEqual(sut.leading, 0)
-    XCTAssertEqual(sut.trailing, 0)
+    #expect(sut.top == 1)
+    #expect(sut.bottom == 0)
+    #expect(sut.leading == 0)
+    #expect(sut.trailing == 0)
   }
 
-  func test_supplementaryViewKind() {
-    class FooView: NSView { }
+  @Test func test_supplementaryViewKind() {
+    class FooView: NSView {}
     let sut = FooView.supplementaryViewKind
-    XCTAssertEqual(sut, "FooView")
+    #expect(sut == "FooView")
   }
 
-  func test_enumerateSubviews() {
+  @Test func test_enumerateSubviews() {
     let a = NSView()
     let b = NSView()
     let c = NSView()
@@ -677,40 +720,42 @@ final class RBKitTests: XCTestCase {
       count += 1
     })
 
-    XCTAssertEqual(count, 4)
-    XCTAssertEqual(a.subviews[0].identifier, "a")
+    #expect(count == 4)
+    #expect(a.subviews[0].identifier == "a")
   }
 
   // MARK: - NSEvent.ModifierFlags
 
-  func test_NSEventModifierFlags_initWithCarbon() throws {
-    XCTAssertEqual(NSEvent.ModifierFlags(carbon: cmdKey), .command)
+  @Test func test_NSEventModifierFlags_initWithCarbon() throws {
+    #expect(NSEvent.ModifierFlags(carbon: cmdKey) == .command)
 
     var mods = 0
     mods |= cmdKey
     mods |= shiftKey
     mods |= controlKey
     mods |= optionKey
-    XCTAssertEqual(NSEvent.ModifierFlags(carbon: mods), [.command, .shift, .control, .option])
+    #expect(NSEvent.ModifierFlags(carbon: mods) == [.command, .shift, .control, .option])
   }
 
-  func test_carbonized() throws {
+  @Test func test_carbonized() throws {
     var mods = 0
     mods |= cmdKey
     mods |= shiftKey
     mods |= controlKey
     mods |= optionKey
-    XCTAssertEqual(NSEvent.ModifierFlags([.command, .shift, .control, .option]).carbonized, mods)
+    #expect(NSEvent.ModifierFlags([.command, .shift, .control, .option]).carbonized == mods)
   }
 
-  func test_hotKeyApplicable() throws {
-    let a = NSEvent.ModifierFlags([.command, .shift, .control, .option, .function, .capsLock, .numericPad])
-    XCTAssertEqual(a.hotkeyApplicable, [.command, .shift, .control, .option])
+  @Test func test_hotKeyApplicable() throws {
+    let a = NSEvent.ModifierFlags([
+      .command, .shift, .control, .option, .function, .capsLock, .numericPad,
+    ])
+    #expect(a.hotkeyApplicable == [.command, .shift, .control, .option])
   }
 
-  func test_description() throws {
+  @Test func test_description() throws {
     let a = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
-    XCTAssertEqual("\(a)", "⌃⌥⇧⌘")
+    #expect("\(a)" == "⌃⌥⇧⌘")
   }
 
   // MARK: Private

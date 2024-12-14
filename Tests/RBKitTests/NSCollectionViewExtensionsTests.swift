@@ -7,7 +7,7 @@ import Testing
 // MARK: - NSCollectionViewTests
 
 @MainActor
-struct NSCollectionViewTests {
+struct NSCollectionViewExtensionsTests {
 
   @Test func test1() {
     let sut = MockCollectionView()

@@ -7,8 +7,8 @@ public struct KeyValueObservedChange<Value> {
   // MARK: Lifecycle
 
   public init(
-    kind: NSKeyValueChange, newValue: Value?, oldValue: Value?, indexes: IndexSet?, isPrior: Bool
-  ) {
+    kind: NSKeyValueChange, newValue: Value?, oldValue: Value?, indexes: IndexSet?, isPrior: Bool)
+  {
     self.kind = kind
     self.newValue = newValue
     self.oldValue = oldValue
@@ -46,12 +46,12 @@ public struct KeyValueObservedChange<Value> {
 
 // MARK: Hashable
 
-extension KeyValueObservedChange: Hashable where Value: Hashable {}
+extension KeyValueObservedChange: Hashable where Value: Hashable { }
 
 // MARK: Equatable
 
-extension KeyValueObservedChange: Equatable where Value: Equatable {}
+extension KeyValueObservedChange: Equatable where Value: Equatable { }
 
 // MARK: Sendable
 
-extension KeyValueObservedChange: Sendable where Value: Sendable {}
+extension KeyValueObservedChange: Sendable where Value: Sendable { }

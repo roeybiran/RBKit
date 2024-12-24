@@ -7,8 +7,8 @@ extension NSViewController {
     asPopoverRelativeTo positioningRect: NSRect,
     of positioningView: NSView,
     preferredEdge: NSRectEdge,
-    behavior: NSPopover.Behavior
-  ) {
+    behavior: NSPopover.Behavior)
+  {
     if let presentor = viewController.presentingViewController {
       presentor.dismiss(viewController)
     } else {
@@ -45,6 +45,6 @@ extension NSViewController {
       viewController
     }
 
-    func updateNSViewController(_: NSViewController, context _: Context) {}
+    func updateNSViewController(_: NSViewController, context _: Context) { }
   }
 }

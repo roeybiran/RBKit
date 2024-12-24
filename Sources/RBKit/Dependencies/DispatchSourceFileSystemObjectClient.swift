@@ -10,8 +10,7 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
     @Sendable (
       _ path: UnsafePointer<CChar>,
       _ mask: DispatchSource.FileSystemEvent,
-      _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void
-    ) -> Void
+      _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void) -> Void
 }
 
 // MARK: DependencyKey
@@ -23,18 +22,19 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
 // https://github.com/pointfreeco/episode-code-samples/blob/2d7472cc6f33f4c290ca42e26485f04d9fc3bdd2/0275-shared-state-pt8/swift-composable-architecture/Sources/ComposableArchitecture/PersistenceKey.swift#L137
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {
-  public static let liveValue: Self = .init(make: { path, mask, handler in
-    let source =
-      DispatchSource
-      .makeFileSystemObjectSource(
-        fileDescriptor: open(path, O_EVTONLY),
-        eventMask: mask,
-        queue: nil)
-    source.setEventHandler {
-      handler(source.data)
-    }
-    source.resume()
-  })
+  public static let liveValue = Self(
+    make: { path, mask, handler in
+      let source =
+        DispatchSource
+          .makeFileSystemObjectSource(
+            fileDescriptor: open(path, O_EVTONLY),
+            eventMask: mask,
+            queue: nil)
+      source.setEventHandler {
+        handler(source.data)
+      }
+      source.resume()
+    })
 
   public static let testValue = Self()
 }

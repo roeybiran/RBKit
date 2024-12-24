@@ -51,8 +51,7 @@ extension UserDefaultsClient: DependencyKey {
     setBool: { UserDefaults.standard.set($0, forKey: $1) },
     setURL: { UserDefaults.standard.set($0, forKey: $1) },
     removeObject: { UserDefaults.standard.removeObject(forKey: $0) },
-    register: { UserDefaults.standard.register(defaults: $0) }
-  )
+    register: { UserDefaults.standard.register(defaults: $0) })
 
   public static let testValue = Self()
 }

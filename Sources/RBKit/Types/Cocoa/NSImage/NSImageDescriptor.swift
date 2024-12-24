@@ -17,11 +17,14 @@ extension NSImage {
     switch descriptor {
     case .name(let name):
       NSImage(named: name)
+
     case .systemSymbol(let systemSymbolName, let accessibilityDescription):
       NSImage(
         systemSymbolName: systemSymbolName, accessibilityDescription: accessibilityDescription)
+
     case .contentType(let contentType):
       workspace.icon(for: contentType)
+
     case .path(let path):
       workspace.icon(forFile: path)
     }

@@ -10,6 +10,7 @@ public struct CGWindowClient: Sendable {
     @Sendable (_ options: CGWindowListOption, _ referenceWindow: CGWindowID) -> [CGWindowValue] = {
       _, _ in []
     }
+
   // https://github.com/nonstrict-hq/ScreenCaptureKit-Recording-example/blob/main/Sources/sckrecording/main.swift
   public var preflightScreenCaptureAccess: @Sendable () -> Bool = { false }
   public var requestScreenCaptureAccess: @Sendable () -> Bool = { false }

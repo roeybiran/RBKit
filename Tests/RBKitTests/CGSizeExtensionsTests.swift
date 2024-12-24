@@ -1,54 +1,61 @@
-import XCTest
+import Foundation
+import Testing
 @testable import RBKit
 
-final class CGSizeClampTests: XCTestCase {
-  func testClampSmallerSize() {
+@Suite
+struct CGSizeClampTests {
+  @Test
+  func clampSmallerSize() {
     let originalSize = CGSize(width: 100, height: 50)
     let maxSize = CGSize(width: 200, height: 100)
 
     let clampedSize = originalSize.clamp(to: maxSize)
 
-    XCTAssertEqual(clampedSize.width, 100)
-    XCTAssertEqual(clampedSize.height, 50)
+    #expect(clampedSize.width == 100)
+    #expect(clampedSize.height == 50)
   }
 
-  func testClampLargerSize() {
+  @Test
+  func clampLargerSize() {
     let originalSize = CGSize(width: 400, height: 300)
     let maxSize = CGSize(width: 200, height: 150)
 
     let clampedSize = originalSize.clamp(to: maxSize)
 
-    XCTAssertEqual(clampedSize.width, 200)
-    XCTAssertEqual(clampedSize.height, 150)
+    #expect(clampedSize.width == 200)
+    #expect(clampedSize.height == 150)
   }
 
-  func testClampWithAspectRatioMaintained() {
+  @Test
+  func clampWithAspectRatioMaintained() {
     let originalSize = CGSize(width: 400, height: 200)
     let maxSize = CGSize(width: 200, height: 200)
 
     let clampedSize = originalSize.clamp(to: maxSize)
 
-    XCTAssertEqual(clampedSize.width, 200)
-    XCTAssertEqual(clampedSize.height, 100)
+    #expect(clampedSize.width == 200)
+    #expect(clampedSize.height == 100)
   }
 
-  func testClampWithZeroDimensions() {
+  @Test
+  func clampWithZeroDimensions() {
     let originalSize = CGSize(width: 0, height: 0)
     let maxSize = CGSize(width: 200, height: 200)
 
     let clampedSize = originalSize.clamp(to: maxSize)
 
-    XCTAssertEqual(clampedSize.width, 0)
-    XCTAssertEqual(clampedSize.height, 0)
+    #expect(clampedSize.width == 0)
+    #expect(clampedSize.height == 0)
   }
 
-  func testClampWithNegativeDimensions() {
+  @Test
+  func clampWithNegativeDimensions() {
     let originalSize = CGSize(width: -100, height: -50)
     let maxSize = CGSize(width: 200, height: 200)
 
     let clampedSize = originalSize.clamp(to: maxSize)
 
-    XCTAssertEqual(clampedSize.width, -100)
-    XCTAssertEqual(clampedSize.height, -50)
+    #expect(clampedSize.width == -100)
+    #expect(clampedSize.height == -50)
   }
 }

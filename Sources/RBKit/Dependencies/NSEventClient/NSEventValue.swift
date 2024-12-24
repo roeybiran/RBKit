@@ -175,8 +175,7 @@ public struct NSEventValue {
     character: String,
     code: Int,
     modifierFlags: NSEvent.ModifierFlags,
-    specialKey: NSEvent.SpecialKey? = nil
-  )
+    specialKey: NSEvent.SpecialKey? = nil)
     -> Self
   {
     Self(
@@ -202,40 +201,41 @@ extension NSEventValue {
     windowNumber = nsEvent.windowNumber
     locationInWindow = nsEvent.locationInWindow
     modifierFlags = nsEvent.modifierFlags
-    characters = nsEvent.characters  // NSInternalInconsistencyException
-    charactersIgnoringModifiers = nsEvent.charactersIgnoringModifiers  // NSInternalInconsistencyException
-    isARepeat = nsEvent.isARepeat  // NSInternalInconsistencyException
-    keyCode = nsEvent.keyCode  // NSInternalInconsistencyException
+    characters = nsEvent.characters // NSInternalInconsistencyException
+    charactersIgnoringModifiers = nsEvent.charactersIgnoringModifiers // NSInternalInconsistencyException
+    isARepeat = nsEvent.isARepeat // NSInternalInconsistencyException
+    keyCode = nsEvent.keyCode // NSInternalInconsistencyException
     specialKey = nsEvent.specialKey
   }
 }
 
 // MARK: Equatable
 
-extension NSEventValue: Equatable {}
+extension NSEventValue: Equatable { }
+
+// MARK: Sendable
 
 extension NSEventValue: Sendable { }
 
 #if DEBUG
-  extension NSEventValue {
-    public static func mock(
-      _ keyCode: UInt16?,
-      _ modifierFlags: NSEvent.ModifierFlags = [],
-      _ type: NSEvent.EventType = .keyDown
-    )
-      -> Self
-    {
-      Self(
-        type: type,
-        locationInWindow: .zero,
-        timestamp: .zero,
-        windowNumber: .zero,
-        modifierFlags: modifierFlags,
-        characters: nil,
-        charactersIgnoringModifiers: nil,
-        keyCode: keyCode ?? 0,
-        specialKey: nil,
-        isARepeat: false)
-    }
+extension NSEventValue {
+  public static func mock(
+    _ keyCode: UInt16?,
+    _ modifierFlags: NSEvent.ModifierFlags = [],
+    _ type: NSEvent.EventType = .keyDown)
+    -> Self
+  {
+    Self(
+      type: type,
+      locationInWindow: .zero,
+      timestamp: .zero,
+      windowNumber: .zero,
+      modifierFlags: modifierFlags,
+      characters: nil,
+      charactersIgnoringModifiers: nil,
+      keyCode: keyCode ?? 0,
+      specialKey: nil,
+      isARepeat: false)
   }
+}
 #endif

@@ -7,7 +7,7 @@ open class DockVisualEffectView: NSVisualEffectView {
     material = .fullScreenUI
   }
 
-  public required init?(coder: NSCoder) {
+  public required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 }

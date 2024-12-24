@@ -19,8 +19,8 @@ extension NSRunningApplication {
       _processIdentifier: pid_t = 0,
       _launchDate: Date? = nil,
       _icon _: NSImage? = nil,
-      _executableArchitecture: Int = 0
-    ) {
+      _executableArchitecture: Int = 0)
+    {
       self._isTerminated = _isTerminated
       self._isFinishedLaunching = _isFinishedLaunching
       self._isHidden = _isHidden

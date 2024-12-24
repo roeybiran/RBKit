@@ -2,17 +2,20 @@ import Carbon
 import Dependencies
 import DependenciesMacros
 
+// MARK: - CGEventClient
+
 @DependencyClient
 public struct CGEventClient: Sendable {
   public var flags: @Sendable (_ event: CGEvent) -> CGEventFlags = { _ in [] }
   public var getIntegerValue: @Sendable (_ event: CGEvent, _ field: CGEventField) -> Int64 = { _, _ in 0 }
 }
 
+// MARK: DependencyKey
+
 extension CGEventClient: DependencyKey {
   public static let liveValue = Self(
     flags: { $0.flags },
-    getIntegerValue: { $0.getIntegerValueField($1) }
-  )
+    getIntegerValue: { $0.getIntegerValueField($1) })
 
   public static let testValue = Self()
 }

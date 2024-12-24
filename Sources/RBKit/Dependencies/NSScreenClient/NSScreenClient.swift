@@ -22,7 +22,7 @@ public struct NSScreenClient: Sendable {
 
 // MARK: DependencyKey
 
-extension NSScreenClient: DependencyKey {}
+extension NSScreenClient: DependencyKey { }
 
 extension DependencyValues {
   public var screenClient: NSScreenClient {

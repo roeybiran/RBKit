@@ -25,7 +25,7 @@ public struct NSWorkspaceClient: Sendable {
   @DependencyEndpoint(method: "menuBarOwningApplication")
   public var menuBarOwningApplicationObservation:
     @Sendable (_ options: NSKeyValueObservingOptions)
-      -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
+    -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in .finished }
 
   public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
 
@@ -68,8 +68,8 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>
-  ) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable {
+    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
+  {
     let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
     let observation = workspace.observe(keyPath, options: options) { _, change in
       continuation.yield(KeyValueObservedChange(change))

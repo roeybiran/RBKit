@@ -12,8 +12,7 @@ public struct RandomNumberClient: Sendable {
 
 extension RandomNumberClient: DependencyKey {
   public static let liveValue = Self(
-    generate: { Double.random(in: $0) }
-  )
+    generate: { Double.random(in: $0) })
   public static let testValue = Self()
 }
 

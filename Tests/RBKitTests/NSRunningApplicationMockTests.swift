@@ -1,10 +1,11 @@
-import Testing
 import AppKit
+import Testing
 
 @testable import RBKit
 
 struct NSRunningApplicationMockTests {
-  @Test func test() {
+  @Test
+  func test() {
     let app = NSRunningApplication.Mock()
     #expect(app.activationPolicy == .regular)
     app._activationPolicy = .prohibited

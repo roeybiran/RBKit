@@ -5,8 +5,8 @@ public func XCTAssertNoDifference<T: Equatable>(
   _ expression2: T,
   showDiffInFileMerge: Bool,
   file: StaticString = #file,
-  line: UInt = #line
-) {
+  line: UInt = #line)
+{
   let areEqual = expression1 == expression2
   if areEqual { return }
 

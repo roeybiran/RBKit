@@ -9,6 +9,6 @@ extension [NSAttributedString.Key: Any] {
 
   @MainActor public static let textHighlightingFontStyle: Self = [
     .font: NSFont.systemFont(ofSize: NSFont.systemFontSize, weight: .bold),
-    .underlineStyle: NSUnderlineStyle.single.rawValue,  // we have to use rawValue here!
+    .underlineStyle: NSUnderlineStyle.single.rawValue, // we have to use rawValue here!
   ]
 }

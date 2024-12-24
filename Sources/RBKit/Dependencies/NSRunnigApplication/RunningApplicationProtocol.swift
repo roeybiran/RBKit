@@ -56,39 +56,38 @@ extension RunningApplicationProtocol {
 }
 
 #if DEBUG
-  extension RunningApplicationProtocol {
-    public static func mock(
-      isTerminated: Bool = false,
-      isFinishedLaunching: Bool = true,
-      isHidden: Bool = false,
-      isActive: Bool = false,
-      ownsMenuBar: Bool = false,
-      activationPolicy: NSApplication.ActivationPolicy = .regular,
-      localizedName: String? = nil,
-      bundleIdentifier: String? = nil,
-      bundleURL: URL? = nil,
-      executableURL: URL? = nil,
-      processIdentifier: pid_t = 0,
-      launchDate: Date? = nil,
-      executableArchitecture: Int = 0
-    )
-      -> Self
-    {
-      Self(
-        isTerminated: isTerminated,
-        isFinishedLaunching: isFinishedLaunching,
-        isHidden: isHidden,
-        isActive: isActive,
-        ownsMenuBar: ownsMenuBar,
-        activationPolicy: activationPolicy,
-        localizedName: localizedName,
-        bundleIdentifier: bundleIdentifier,
-        bundleURL: bundleURL,
-        executableURL: executableURL,
-        processIdentifier: processIdentifier,
-        launchDate: launchDate,
-        executableArchitecture: executableArchitecture)
-    }
+extension RunningApplicationProtocol {
+  public static func mock(
+    isTerminated: Bool = false,
+    isFinishedLaunching: Bool = true,
+    isHidden: Bool = false,
+    isActive: Bool = false,
+    ownsMenuBar: Bool = false,
+    activationPolicy: NSApplication.ActivationPolicy = .regular,
+    localizedName: String? = nil,
+    bundleIdentifier: String? = nil,
+    bundleURL: URL? = nil,
+    executableURL: URL? = nil,
+    processIdentifier: pid_t = 0,
+    launchDate: Date? = nil,
+    executableArchitecture: Int = 0)
+    -> Self
+  {
+    Self(
+      isTerminated: isTerminated,
+      isFinishedLaunching: isFinishedLaunching,
+      isHidden: isHidden,
+      isActive: isActive,
+      ownsMenuBar: ownsMenuBar,
+      activationPolicy: activationPolicy,
+      localizedName: localizedName,
+      bundleIdentifier: bundleIdentifier,
+      bundleURL: bundleURL,
+      executableURL: executableURL,
+      processIdentifier: processIdentifier,
+      launchDate: launchDate,
+      executableArchitecture: executableArchitecture)
   }
+}
 
 #endif

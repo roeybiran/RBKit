@@ -1,15 +1,16 @@
-import CustomDump
 import AppKit
+import CustomDump
 import Testing
 
 @testable import RBKit
 
-// MARK: - NSCollectionViewTests
+// MARK: - NSCollectionViewExtensionsTests
 
 @MainActor
 struct NSCollectionViewExtensionsTests {
 
-  @Test func test1() {
+  @Test
+  func test1() {
     let sut = MockCollectionView()
     sut.register(supplementary: MockViewElement.self)
 
@@ -21,7 +22,8 @@ struct NSCollectionViewExtensionsTests {
     #expect(c0[2] as! NSUserInterfaceItemIdentifier == .init(rawValue: "MockViewElement"))
   }
 
-  @Test func test2() {
+  @Test
+  func test2() {
     let sut = MockCollectionView()
     sut.register(item: MockViewItem.self)
 
@@ -32,7 +34,8 @@ struct NSCollectionViewExtensionsTests {
     #expect(c0[1] as! NSUserInterfaceItemIdentifier == .init(rawValue: "MockViewItem"))
   }
 
-  @Test func test3() {
+  @Test
+  func test3() {
     let sut = MockCollectionView()
     _ = sut.makeSupplementaryView(ofKind: MockViewElement.self, for: [0])
 
@@ -44,7 +47,8 @@ struct NSCollectionViewExtensionsTests {
     #expect(c0[2] as! IndexPath == [0])
   }
 
-  @Test func test4() {
+  @Test
+  func test4() {
     let sut = MockCollectionView()
     _ = sut.makeItem(of: MockViewElement.self, for: [0, 0])
 
@@ -65,22 +69,21 @@ private class MockCollectionView: NSCollectionView {
   override func register(
     _ viewClass: AnyClass?,
     forSupplementaryViewOfKind kind: NSCollectionView.SupplementaryElementKind,
-    withIdentifier identifier: NSUserInterfaceItemIdentifier
-  ) {
+    withIdentifier identifier: NSUserInterfaceItemIdentifier)
+  {
     calls.append([viewClass as Any, kind, identifier])
   }
 
   override func register(
-    _ itemClass: AnyClass?, forItemWithIdentifier identifier: NSUserInterfaceItemIdentifier
-  ) {
+    _ itemClass: AnyClass?, forItemWithIdentifier identifier: NSUserInterfaceItemIdentifier)
+  {
     calls.append([itemClass as Any, identifier])
   }
 
   override func makeSupplementaryView(
     ofKind elementKind: NSCollectionView.SupplementaryElementKind,
     withIdentifier identifier: NSUserInterfaceItemIdentifier,
-    for indexPath: IndexPath
-  )
+    for indexPath: IndexPath)
     -> NSView
   {
     calls.append([elementKind, identifier, indexPath])
@@ -90,8 +93,7 @@ private class MockCollectionView: NSCollectionView {
 
   override func makeItem(
     withIdentifier identifier: NSUserInterfaceItemIdentifier,
-    for indexPath: IndexPath
-  )
+    for indexPath: IndexPath)
     -> NSCollectionViewItem
   {
     calls.append([identifier, indexPath])
@@ -101,8 +103,8 @@ private class MockCollectionView: NSCollectionView {
 
 // MARK: - MockViewItem
 
-class MockViewItem: NSCollectionViewItem {}
+class MockViewItem: NSCollectionViewItem { }
 
 // MARK: - MockViewElement
 
-class MockViewElement: NSView, NSCollectionViewElement {}
+class MockViewElement: NSView, NSCollectionViewElement { }

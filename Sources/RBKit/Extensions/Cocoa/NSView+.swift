@@ -68,6 +68,6 @@ extension NSView {
       view
     }
 
-    func updateNSView(_: NSView, context _: Context) {}
+    func updateNSView(_: NSView, context _: Context) { }
   }
 }

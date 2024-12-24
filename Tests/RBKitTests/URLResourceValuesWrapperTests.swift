@@ -5,7 +5,8 @@ import Testing
 @testable import RBKit
 
 struct URLResourceValuesWrapperTests {
-  @Test func test_init() {
+  @Test
+  func test_init() {
     let a = URLResourceValuesWrapper(.init())
 
     #expect(a.allValues.isEmpty)

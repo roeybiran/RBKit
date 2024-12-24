@@ -1,12 +1,12 @@
 import AppKit
 
 extension NSStatusItem {
-  @MainActor public static func main(
+  @MainActor
+  public static func main(
     menu: NSMenu = NSMenu(),
     length: CGFloat = NSStatusItem.variableLength,
     statusBar: NSStatusBar = .system,
-    imageName: String = "StatusItem"
-  )
+    imageName: String = "StatusItem")
     -> NSStatusItem
   {
     let statusItem = statusBar.statusItem(withLength: length)
@@ -15,9 +15,9 @@ extension NSStatusItem {
     statusItem.button?.target = statusItem
     statusItem.menu = menu
     #if DEBUG
-      statusItem.button?.title = "DEV"
+    statusItem.button?.title = "DEV"
     #elseif PROFILE
-      statusItem.button?.title = "PRF"
+    statusItem.button?.title = "PRF"
     #endif
     return statusItem
   }

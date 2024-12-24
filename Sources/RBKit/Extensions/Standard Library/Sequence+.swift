@@ -9,9 +9,10 @@ extension Sequence {
     Array(self)
   }
 
-  public func dictionary<T: Hashable>(groupingBy closure: (Element) throws -> T) rethrows -> [T:
-    [Element]]
-  {
+  public func dictionary<T: Hashable>(groupingBy closure: (Element) throws -> T) rethrows -> [
+    T:
+      [Element]
+  ] {
     try Dictionary(grouping: self, by: closure)
   }
 }

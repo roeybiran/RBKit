@@ -28,9 +28,8 @@ public struct NSRunningApplicationClient: Sendable {
     @Sendable (
       _ app: NSRunningApplication,
       _ fromApp: NSRunningApplication,
-      _ options: NSApplication.ActivationOptions
-    )
-      -> Bool = { _, _, _ in false }
+      _ options: NSApplication.ActivationOptions)
+    -> Bool = { _, _, _ in false }
 
   // MARK: - Hiding and unhiding applications
 

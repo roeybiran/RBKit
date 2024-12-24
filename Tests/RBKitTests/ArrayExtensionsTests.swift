@@ -5,7 +5,8 @@ import Testing
 @testable import RBKit
 
 struct ArrayExtensionsTests {
-  @Test func test_concat() {
+  @Test
+  func test_concat() {
     let a = ["a"].concat(["b"])
     #expect(a == ["a", "b"])
 
@@ -13,7 +14,8 @@ struct ArrayExtensionsTests {
     #expect(b == ["a", "b"])
   }
 
-  @Test func test_subscript_safe_get() {
+  @Test
+  func test_subscript_safe_get() {
     var a = ["a", "b", "c"]
 
     #expect(a[safe: 3] == nil)

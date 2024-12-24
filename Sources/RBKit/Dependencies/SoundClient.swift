@@ -2,7 +2,7 @@ import AppKit.NSSound
 import Dependencies
 import DependenciesMacros
 
-// MARK: - NSSoundClient
+// MARK: - SoundClient
 
 @DependencyClient
 public struct SoundClient: Sendable {
@@ -13,8 +13,7 @@ public struct SoundClient: Sendable {
 
 extension SoundClient: DependencyKey {
   public static let liveValue = SoundClient(
-    beep: { NSSound.beep() }
-  )
+    beep: { NSSound.beep() })
   public static let testValue = SoundClient()
 }
 

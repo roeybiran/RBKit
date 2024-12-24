@@ -20,12 +20,14 @@ public struct NSApplicationClient: Sendable {
   public var runModal: @MainActor @Sendable (_ window: NSWindow) -> NSApplication.ModalResponse = {
     _ in .OK
   }
+
   public var stopModal: @MainActor @Sendable () -> Void
 
-  //
+  ///
   public var activationPolicy: @MainActor @Sendable () -> NSApplication.ActivationPolicy = {
     .prohibited
   }
+
   public var setActivationPolicy:
     @MainActor @Sendable (_ activationPolicy: NSApplication.ActivationPolicy) -> Bool = { _ in false
     }
@@ -55,8 +57,7 @@ extension NSApplicationClient: DependencyKey {
     runModal: { NSApplication.shared.runModal(for: $0) },
     stopModal: { NSApplication.shared.stopModal() },
     activationPolicy: { NSApplication.shared.activationPolicy() },
-    setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) }
-  )
+    setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) })
 
   public static let testValue = Self()
 }

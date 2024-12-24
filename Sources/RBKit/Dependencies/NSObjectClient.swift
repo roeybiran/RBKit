@@ -12,14 +12,12 @@ public struct NSObjectClient: Sendable {
       _ observer: NSObject,
       _ keyPath: String,
       _ options: NSKeyValueObservingOptions,
-      _ context: UnsafeMutableRawPointer?
-    ) -> Void
+      _ context: UnsafeMutableRawPointer?) -> Void
   public var removeObserver:
     @Sendable (
       _ observee: NSObject, _ observer: NSObject, _ keyPath: String,
-      _ context: UnsafeMutableRawPointer?
-    )
-      -> Void
+      _ context: UnsafeMutableRawPointer?)
+    -> Void
 }
 
 // MARK: DependencyKey

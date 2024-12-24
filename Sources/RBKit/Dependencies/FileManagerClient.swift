@@ -9,21 +9,18 @@ public struct FileManagerClient: Sendable {
   public var urls:
     @Sendable (
       _ directory: FileManager.SearchPathDirectory,
-      _ domainMask: FileManager.SearchPathDomainMask
-    ) -> [URL] = { _, _ in [] }
+      _ domainMask: FileManager.SearchPathDomainMask) -> [URL] = { _, _ in [] }
   public var contentsOfDirectory:
     @Sendable (
       _ url: URL,
       _ keys: [URLResourceKey]?,
-      _ options: FileManager.DirectoryEnumerationOptions
-    ) throws -> [URL]
+      _ options: FileManager.DirectoryEnumerationOptions) throws -> [URL]
   public var createDirectory:
     @Sendable (
       _ atURL: URL,
       _ withIntermediateDirectories: Bool,
-      _ attributes: [FileAttributeKey: Any]?
-    ) throws
-      -> Void
+      _ attributes: [FileAttributeKey: Any]?) throws
+    -> Void
 }
 
 // MARK: DependencyKey

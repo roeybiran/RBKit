@@ -16,8 +16,6 @@ public struct SecureEventInputClient: Sendable {
 
 extension SecureEventInputClient: DependencyKey {
 
-  // MARK: Public
-
   public static let liveValue = Self(
     updates: { interval in
       .init { continuation in
@@ -29,8 +27,7 @@ extension SecureEventInputClient: DependencyKey {
         }
       }
     },
-    isEnabled: { IsSecureEventInputEnabled() }
-  )
+    isEnabled: { IsSecureEventInputEnabled() })
 
   public static let testValue = Self()
 }

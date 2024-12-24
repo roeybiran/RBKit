@@ -13,8 +13,7 @@ extension NSCollectionView {
 
   public func makeSupplementaryView<T: NSView & NSCollectionViewElement>(
     ofKind elementKind: T.Type,
-    for indexPath: IndexPath
-  )
+    for indexPath: IndexPath)
     -> T?
   {
     makeSupplementaryView(
@@ -24,8 +23,9 @@ extension NSCollectionView {
   }
 
   public func makeItem<T: NSCollectionViewElement & UserInterfaceItemIdentifiable>(
-    of _: T.Type, for indexPath: IndexPath
-  ) -> T? {
+    of _: T.Type, for indexPath: IndexPath)
+    -> T?
+  {
     makeItem(withIdentifier: T.userInterfaceIdentifier, for: indexPath) as? T
   }
 }

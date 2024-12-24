@@ -119,8 +119,8 @@ public struct URLResourceValuesWrapper {
     fileAllocatedSize: Int? = nil,
     totalFileSize: Int? = nil,
     totalFileAllocatedSize: Int? = nil,
-    isAliasFile: Bool? = nil
-  ) {
+    isAliasFile: Bool? = nil)
+  {
     self.allValues = allValues
     self.name = name
     self.localizedName = localizedName

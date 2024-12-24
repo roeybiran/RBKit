@@ -7,4 +7,4 @@ public enum Either<Left, Right> {
 
 // MARK: Equatable
 
-extension Either: Equatable where Left: Equatable, Right: Equatable {}
+extension Either: Equatable where Left: Equatable, Right: Equatable { }

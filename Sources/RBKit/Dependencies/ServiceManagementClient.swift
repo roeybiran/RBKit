@@ -31,8 +31,8 @@ extension ServiceManagementClient: DependencyKey {
         status: { .init(rawValue: SMAppService.mainApp.status.rawValue) })
     } else {
       return .init(
-        register: {},
-        unregister: {},
+        register: { },
+        unregister: { },
         status: { .notFound })
     }
   }()

@@ -4,7 +4,7 @@ import Foundation
 // https://blog.eidinger.info/use-new-url-related-apis-from-ios-16-in-lower-versions
 // https://alejandromp.com/blog/backport-swiftui-modifiers
 
-@available(macOS, obsoleted: 13.0, message: "")
+@available(macOS, deprecated: 13.0, message: "")
 extension URL {
 
   // MARK: Lifecycle

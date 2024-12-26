@@ -7,22 +7,9 @@ import Foundation
 @available(macOS, deprecated: 13.0, message: "")
 extension URL {
 
-  // MARK: Lifecycle
-
-  public init(
-    filePath path: String, directoryHint: URL._DirectoryHint = .inferFromPath,
-    relativeTo base: URL? = nil)
-  {
-    if #available(macOS 13.0, *) {
-      self = URL(filePath: path, directoryHint: directoryHint.directoryHint(), relativeTo: base)
-    } else {
-      self = URL(fileURLWithPath: path, isDirectory: directoryHint == .isDirectory)
-    }
-  }
-
   // MARK: Public
 
-  public enum _DirectoryHint {
+  public enum BackportedDirectoryHint {
     case isDirectory
     case notDirectory
     case checkFileSystem
@@ -39,8 +26,19 @@ extension URL {
     }
   }
 
-  public func appending(
-    component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath)
+  public static func filePath(
+    _ path: String, directoryHint: URL.BackportedDirectoryHint = .inferFromPath,
+    relativeTo base: URL? = nil) -> Self
+  {
+    if #available(macOS 13.0, *) {
+      return URL(filePath: path, directoryHint: directoryHint.directoryHint(), relativeTo: base)
+    } else {
+      return URL(fileURLWithPath: path, isDirectory: directoryHint == .isDirectory)
+    }
+  }
+
+  public func backported_appending(
+    component: some StringProtocol, directoryHint: URL.BackportedDirectoryHint = .inferFromPath)
     -> URL
   {
     if #available(macOS 13.0, *) {
@@ -50,8 +48,8 @@ extension URL {
     }
   }
 
-  public mutating func append(
-    component: some StringProtocol, directoryHint: URL._DirectoryHint = .inferFromPath)
+  public mutating func backported_append(
+    component: some StringProtocol, directoryHint: URL.BackportedDirectoryHint = .inferFromPath)
   {
     if #available(macOS 13.0, *) {
       append(component: component, directoryHint: directoryHint.directoryHint())
@@ -60,7 +58,7 @@ extension URL {
     }
   }
 
-  public func appending_(queryItems: [URLQueryItem]) -> URL {
+  public func backported_appending(queryItems: [URLQueryItem]) -> URL {
     if #available(macOS 13.0, *) {
       appending(queryItems: queryItems)
     } else {
@@ -68,7 +66,7 @@ extension URL {
     }
   }
 
-  public func host_(percentEncoded: Bool = true) -> String? {
+  public func backported_host(percentEncoded: Bool = true) -> String? {
     if #available(macOS 13.0, *) {
       host(percentEncoded: percentEncoded)
     } else {

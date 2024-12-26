@@ -419,7 +419,7 @@ struct RBKitTests {
 
   @Test
   func test__appending_queryItems() {
-    let actual = URL(fileURLWithPath: "/Users/roey/file.txt")._appending(queryItems: [
+    let actual = URL(fileURLWithPath: "/Users/roey/file.txt").backported_appending(queryItems: [
       .init(name: "id", value: "foo"),
     ])
     let expected = URL(string: "file:///Users/roey/file.txt?id=foo")
@@ -428,10 +428,10 @@ struct RBKitTests {
 
   @Test
   func test__directoryHint() {
-    #expect(URL._DirectoryHint.isDirectory.directoryHint() == .isDirectory)
-    #expect(URL._DirectoryHint.notDirectory.directoryHint() == .notDirectory)
-    #expect(URL._DirectoryHint.checkFileSystem.directoryHint() == .checkFileSystem)
-    #expect(URL._DirectoryHint.inferFromPath.directoryHint() == .inferFromPath)
+    #expect(URL.BackportedDirectoryHint.isDirectory.directoryHint() == .isDirectory)
+    #expect(URL.BackportedDirectoryHint.notDirectory.directoryHint() == .notDirectory)
+    #expect(URL.BackportedDirectoryHint.checkFileSystem.directoryHint() == .checkFileSystem)
+    #expect(URL.BackportedDirectoryHint.inferFromPath.directoryHint() == .inferFromPath)
   }
 
   @Test

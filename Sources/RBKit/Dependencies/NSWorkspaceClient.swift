@@ -12,6 +12,8 @@ import UniformTypeIdentifiers
 public struct NSWorkspaceClient: Sendable {
   public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
+  public var activateFileViewerSelecting: @Sendable (_ fileURLs: [URL]) -> Void
+
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
 
   public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
@@ -48,6 +50,7 @@ extension NSWorkspaceClient: DependencyKey {
 
   public static let liveValue = Self(
     open: { NSWorkspace.shared.open($0) },
+    activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
     urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
     iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
     iconFor: { NSWorkspace.shared.icon(for: $0) },

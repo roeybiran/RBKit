@@ -10,11 +10,13 @@ import UniformTypeIdentifiers
 
 @DependencyClient
 public struct NSWorkspaceClient: Sendable {
+  public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
+
+  public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
+
   public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
 
   public var iconFor: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
-
-  public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
 
@@ -45,9 +47,10 @@ extension NSWorkspaceClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
+    open: { NSWorkspace.shared.open($0) },
+    urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
     iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
     iconFor: { NSWorkspace.shared.icon(for: $0) },
-    open: { NSWorkspace.shared.open($0) },
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },

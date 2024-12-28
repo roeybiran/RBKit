@@ -1,4 +1,5 @@
 import Foundation
+import UniformTypeIdentifiers
 
 public struct URLResourceValuesWrapper {
 
@@ -119,7 +120,9 @@ public struct URLResourceValuesWrapper {
     fileAllocatedSize: Int? = nil,
     totalFileSize: Int? = nil,
     totalFileAllocatedSize: Int? = nil,
-    isAliasFile: Bool? = nil)
+    isAliasFile: Bool? = nil,
+    contentType: UTType? = nil
+  )
   {
     self.allValues = allValues
     self.name = name
@@ -237,6 +240,7 @@ public struct URLResourceValuesWrapper {
     self.totalFileSize = totalFileSize
     self.totalFileAllocatedSize = totalFileAllocatedSize
     self.isAliasFile = isAliasFile
+    self.contentType = contentType
   }
 
   public init(_ resourceValues: URLResourceValues) {
@@ -267,7 +271,9 @@ public struct URLResourceValuesWrapper {
     localizedLabel = resourceValues.localizedLabel
     fileResourceIdentifier = resourceValues.fileResourceIdentifier
     volumeIdentifier = resourceValues.volumeIdentifier
-    //    self.fileIdentifier = resourceValues.fileIdentifier
+    if #available(macOS 13.3, *) {
+      fileIdentifier = resourceValues.fileIdentifier
+    }
     fileContentIdentifier = resourceValues.fileContentIdentifier
     preferredIOBlockSize = resourceValues.preferredIOBlockSize
     isReadable = resourceValues.isReadable
@@ -288,7 +294,9 @@ public struct URLResourceValuesWrapper {
     isSparse = resourceValues.isSparse
     mayShareFileContent = resourceValues.mayShareFileContent
     fileResourceType = resourceValues.fileResourceType
-    //    self.directoryEntryCount = resourceValues.directoryEntryCount
+    if #available(macOS 14.0, *) {
+      directoryEntryCount = resourceValues.directoryEntryCount
+    }
     volumeLocalizedFormatDescription = resourceValues.volumeLocalizedFormatDescription
     volumeTotalCapacity = resourceValues.volumeTotalCapacity
     volumeAvailableCapacity = resourceValues.volumeAvailableCapacity
@@ -332,9 +340,11 @@ public struct URLResourceValuesWrapper {
     volumeSupportsExclusiveRenaming = resourceValues.volumeSupportsExclusiveRenaming
     volumeSupportsImmutableFiles = resourceValues.volumeSupportsImmutableFiles
     volumeSupportsAccessPermissions = resourceValues.volumeSupportsAccessPermissions
-    //    self.volumeTypeName = resourceValues.volumeTypeName
-    //    self.volumeSubtype = resourceValues.volumeSubtype
-    //    self.volumeMountFromLocation = resourceValues.volumeMountFromLocation
+    if #available(macOS 13.3, *) {
+      volumeTypeName = resourceValues.volumeTypeName
+      volumeSubtype = resourceValues.volumeSubtype
+      volumeMountFromLocation = resourceValues.volumeMountFromLocation
+    }
     isUbiquitousItem = resourceValues.isUbiquitousItem
     ubiquitousItemHasUnresolvedConflicts = resourceValues.ubiquitousItemHasUnresolvedConflicts
     ubiquitousItemIsDownloading = resourceValues.ubiquitousItemIsDownloading
@@ -348,17 +358,16 @@ public struct URLResourceValuesWrapper {
     ubiquitousItemIsExcludedFromSync = resourceValues.ubiquitousItemIsExcludedFromSync
     ubiquitousItemIsShared = resourceValues.ubiquitousItemIsShared
     ubiquitousSharedItemCurrentUserRole = resourceValues.ubiquitousSharedItemCurrentUserRole
-    ubiquitousSharedItemCurrentUserPermissions =
-      resourceValues.ubiquitousSharedItemCurrentUserPermissions
+    ubiquitousSharedItemCurrentUserPermissions = resourceValues.ubiquitousSharedItemCurrentUserPermissions
     ubiquitousSharedItemOwnerNameComponents = resourceValues.ubiquitousSharedItemOwnerNameComponents
-    ubiquitousSharedItemMostRecentEditorNameComponents =
-      resourceValues.ubiquitousSharedItemMostRecentEditorNameComponents
+    ubiquitousSharedItemMostRecentEditorNameComponents = resourceValues.ubiquitousSharedItemMostRecentEditorNameComponents
     fileProtection = resourceValues.fileProtection
     fileSize = resourceValues.fileSize
     fileAllocatedSize = resourceValues.fileAllocatedSize
     totalFileSize = resourceValues.totalFileSize
     totalFileAllocatedSize = resourceValues.totalFileAllocatedSize
     isAliasFile = resourceValues.isAliasFile
+    contentType = resourceValues.contentType
   }
 
   // MARK: Public
@@ -478,5 +487,6 @@ public struct URLResourceValuesWrapper {
   public var totalFileSize: Int?
   public var totalFileAllocatedSize: Int?
   public var isAliasFile: Bool?
+  public var contentType: UTType?
 
 }

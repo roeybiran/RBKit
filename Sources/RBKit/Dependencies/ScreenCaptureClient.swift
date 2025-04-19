@@ -15,7 +15,7 @@ public struct ScreenCaptureClient: Sendable {
 
 @available(macOS 12.3, *)
 extension ScreenCaptureClient: DependencyKey {
-  public static let liveValue: Self = .init(
+  public static let liveValue = Self(
     current: { try await SCShareableContent.current },
     requestAccess: {
       _ = try? await SCShareableContent.current

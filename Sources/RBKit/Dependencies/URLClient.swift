@@ -16,7 +16,7 @@ public struct URLClient: Sendable {
 // MARK: DependencyKey
 
 extension URLClient: DependencyKey {
-  public static let liveValue: Self = .init(
+  public static let liveValue = Self(
     resolvingSymlinksInPath: { $0.resolvingSymlinksInPath() },
     resourceValues: { url, keys in .init(try url.resourceValues(forKeys: keys)) })
 

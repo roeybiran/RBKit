@@ -17,8 +17,7 @@ extension NSMenu {
     let nib = NSNib(nibNamed: nibName, bundle: bundle)
     var objects: NSArray?
     nib?.instantiate(withOwner: NSApplication.shared.delegate, topLevelObjects: &objects)
-    let menu = ((objects as? [Any])?.first(where: { $0 is NSMenu }) as? NSMenu) ?? .init()
-    return menu
+    return ((objects as? [Any])?.first(where: { $0 is NSMenu }) as? NSMenu) ?? .init()
   }
 
   // MARK: Internal

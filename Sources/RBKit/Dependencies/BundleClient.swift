@@ -7,7 +7,8 @@ import Foundation
 @DependencyClient
 public struct BundleClient: Sendable {
   public var main: @Sendable () -> Bundle = { .init() }
-  public var create: @Sendable (_ url: URL) -> Bundle?
+  public var initWithURL: @Sendable (_ url: URL) -> Bundle?
+  public var initWithPath: @Sendable (_ path: String) -> Bundle?
   public var bundleIdentifier: @Sendable (_ bundle: Bundle) -> String?
   public var infoDictionary: @Sendable (_ bundle: Bundle) -> [String: Any]?
   public var object: @Sendable (_ inBundle: Bundle, _ forInfoDictionaryKey: String) -> Any?
@@ -18,7 +19,8 @@ public struct BundleClient: Sendable {
 extension BundleClient: DependencyKey {
   public static let liveValue = BundleClient(
     main: { .main },
-    create: { Bundle(url: $0) },
+    initWithURL: { Bundle(url: $0) },
+    initWithPath: { Bundle(path: $0) },
     bundleIdentifier: { $0.bundleIdentifier },
     infoDictionary: { $0.infoDictionary },
     object: { $0.object(forInfoDictionaryKey: $1) })

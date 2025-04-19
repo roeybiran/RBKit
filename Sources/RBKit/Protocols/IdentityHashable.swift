@@ -10,7 +10,7 @@ public protocol IdentityHashable: Hashable {
 }
 
 extension IdentityHashable {
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
     lhs.value.id == rhs.value.id
   }
 

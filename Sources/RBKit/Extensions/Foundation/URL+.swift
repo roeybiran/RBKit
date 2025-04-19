@@ -28,7 +28,8 @@ extension URL {
 
   public static func filePath(
     _ path: String, directoryHint: URL.BackportedDirectoryHint = .inferFromPath,
-    relativeTo base: URL? = nil) -> Self
+    relativeTo base: URL? = nil)
+    -> Self
   {
     if #available(macOS 13.0, *) {
       return URL(filePath: path, directoryHint: directoryHint.directoryHint(), relativeTo: base)

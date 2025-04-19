@@ -1,5 +1,5 @@
-import XCTest
 import UniformTypeIdentifiers
+import XCTest
 @testable import RBKit
 
 final class URLResourceValuesWrapperTests: XCTestCase {
@@ -133,8 +133,7 @@ final class URLResourceValuesWrapperTests: XCTestCase {
       totalFileSize: 4096,
       totalFileAllocatedSize: 8192,
       isAliasFile: true,
-      contentType: contentType
-    )
+      contentType: contentType)
 
     // Then
     XCTAssertFalse(wrapper.allValues.isEmpty)
@@ -377,7 +376,7 @@ final class URLResourceValuesWrapperTests: XCTestCase {
       .totalFileSizeKey,
       .totalFileAllocatedSizeKey,
       .isAliasFileKey,
-      .contentTypeKey
+      .contentTypeKey,
     ])
 
     // When

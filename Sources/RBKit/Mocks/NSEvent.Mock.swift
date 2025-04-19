@@ -318,7 +318,7 @@ extension NSEvent {
           _ in fatalError()
       }
 
-    static nonisolated(unsafe) public var _mouseLocation: NSPoint = .zero
+    static nonisolated(unsafe) public var _mouseLocation = NSPoint.zero
 
     static nonisolated(unsafe) public var _modifierFlags: NSEvent.ModifierFlags = []
 
@@ -345,7 +345,7 @@ extension NSEvent {
     static nonisolated(unsafe) public var _removeMonitor:
       @Sendable (_ eventMonitor: Any) -> Void = { _ in fatalError() }
 
-    public var _type: NSEvent.EventType = .keyDown
+    public var _type = NSEvent.EventType.keyDown
 
     public var _modifierFlags: NSEvent.ModifierFlags = []
 
@@ -365,7 +365,7 @@ extension NSEvent {
 
     public var _pressure: Float = 0
 
-    public var _locationInWindow: NSPoint = .zero
+    public var _locationInWindow = NSPoint.zero
 
     public var _deltaX: CGFloat = 0
 
@@ -379,7 +379,7 @@ extension NSEvent {
 
     public var _scrollingDeltaY: CGFloat = 0
 
-    public var _momentumPhase: NSEvent.Phase = .began
+    public var _momentumPhase = NSEvent.Phase.began
 
     public var _isDirectionInvertedFromDevice = false
 
@@ -400,7 +400,7 @@ extension NSEvent {
 
     public var _trackingArea: NSTrackingArea? = nil
 
-    public var _subtype: NSEvent.EventSubtype = .mouseEvent
+    public var _subtype = NSEvent.EventSubtype.mouseEvent
 
     public var _data1 = 0
 
@@ -420,9 +420,9 @@ extension NSEvent {
 
     public var _absoluteZ = 0
 
-    public var _buttonMask: NSEvent.ButtonMask = .penTip
+    public var _buttonMask = NSEvent.ButtonMask.penTip
 
-    public var _tilt: NSPoint = .zero
+    public var _tilt = NSPoint.zero
 
     public var _tangentialPressure: Float = 0
 
@@ -444,7 +444,7 @@ extension NSEvent {
 
     public var _capabilityMask = 0
 
-    public var _pointingDeviceType: NSEvent.PointingDeviceType = .cursor
+    public var _pointingDeviceType = NSEvent.PointingDeviceType.cursor
 
     public var _isEnteringProximity = false
 
@@ -459,15 +459,15 @@ extension NSEvent {
     public var _coalescedTouches: @Sendable (_ touch: NSTouch) -> [NSTouch] = { _ in fatalError()
     }
 
-    public var _phase: NSEvent.Phase = .began
+    public var _phase = NSEvent.Phase.began
 
     public var _stage = 0
 
     public var _stageTransition: CGFloat = 0
 
-    public var _associatedEventsMask: NSEvent.EventTypeMask = .appKitDefined
+    public var _associatedEventsMask = NSEvent.EventTypeMask.appKitDefined
 
-    public var _pressureBehavior: NSEvent.PressureBehavior = .primaryAccelerator
+    public var _pressureBehavior = NSEvent.PressureBehavior.primaryAccelerator
 
     public var _trackSwipeEvent:
       @Sendable (

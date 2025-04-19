@@ -10,13 +10,14 @@ public struct FileManagerClient: Sendable {
     _ directory: FileManager.SearchPathDirectory,
     _ domain: FileManager.SearchPathDomainMask,
     _ appropriateFor: URL?,
-    _ create: Bool
-  ) throws -> URL
+    _ create: Bool)
+    throws -> URL
 
   public var urls:
     @Sendable (
       _ directory: FileManager.SearchPathDirectory,
-      _ domainMask: FileManager.SearchPathDomainMask) -> [URL] = { _, _ in [] }
+      _ domainMask: FileManager.SearchPathDomainMask)
+    -> [URL] = { _, _ in [] }
 
   public var contentsOfDirectory:
     @Sendable (
@@ -25,17 +26,14 @@ public struct FileManagerClient: Sendable {
       _ options: FileManager.DirectoryEnumerationOptions) throws -> [URL]
 
   public var enumerator:
-  @Sendable (
-    _ url: URL,
-    _ resourceKeys: [URLResourceKey]?,
-    _ options: FileManager.DirectoryEnumerationOptions,
-    _ errorHandler: (
-      (
-        URL,
-        Error
-      ) -> Bool
-    )?
-  ) -> FileManager.DirectoryEnumerator?
+    @Sendable (
+      _ url: URL,
+      _ resourceKeys: [URLResourceKey]?,
+      _ options: FileManager.DirectoryEnumerationOptions,
+      _ errorHandler: (
+        (
+          URL,
+          Error) -> Bool)?) -> FileManager.DirectoryEnumerator?
 
   public var createDirectory:
     @Sendable (

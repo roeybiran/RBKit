@@ -1,22 +1,30 @@
 import SwiftUI
 
 public struct HelpButton: NSViewRepresentable {
-  var tooltip: String
-  var action: () -> Void
+
+  // MARK: Lifecycle
 
   public init(tooltip: String = "Help", action: @escaping () -> Void) {
     self.tooltip = tooltip
     self.action = action
   }
 
+  // MARK: Public
+
   public class Coordinator: NSObject {
-    let action: () -> Void
+
+    // MARK: Lifecycle
 
     init(action: @escaping () -> Void) {
       self.action = action
     }
 
-    @objc func buttonClicked() {
+    // MARK: Internal
+
+    let action: () -> Void
+
+    @objc
+    func buttonClicked() {
       action()
     }
   }
@@ -32,7 +40,13 @@ public struct HelpButton: NSViewRepresentable {
     return button
   }
 
-  public func updateNSView(_ nsView: NSButton, context: Context) { }
+  public func updateNSView(_: NSButton, context _: Context) { }
+
+  // MARK: Internal
+
+  var tooltip: String
+  var action: () -> Void
+
 }
 
 #Preview {

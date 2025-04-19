@@ -74,7 +74,8 @@ extension NSWorkspaceClient: DependencyKey {
   private static func toStream<Value>(
     workspace: NSWorkspace,
     options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>) -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
+    keyPath: KeyPath<NSWorkspace, Value>)
+    -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
   {
     let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
     let observation = workspace.observe(keyPath, options: options) { _, change in

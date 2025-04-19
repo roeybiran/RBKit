@@ -13,7 +13,8 @@ public struct NotificationCenterClient: Sendable {
       _ observer: Any,
       _ selector: Selector,
       _ name: Notification.Name?,
-      _ object: Any?) -> Void
+      _ object: Any?)
+    -> Void
 
   /// Posting notifications
   public var post: @Sendable (_ notification: Notification) -> Void

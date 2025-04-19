@@ -23,7 +23,7 @@ public struct NSObjectClient: Sendable {
 // MARK: DependencyKey
 
 extension NSObjectClient: DependencyKey {
-  public static let liveValue: Self = .init(
+  public static let liveValue = Self(
     addObserver: { observee, observer, keyPath, options, context in
       observee.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
     },

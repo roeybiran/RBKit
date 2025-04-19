@@ -15,7 +15,7 @@ public struct KeyValueObservation {
 // MARK: Hashable
 
 extension KeyValueObservation: Hashable {
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
     lhs.value == rhs.value
   }
 

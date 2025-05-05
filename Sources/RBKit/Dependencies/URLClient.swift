@@ -11,14 +11,23 @@ public struct URLClient: Sendable {
     @Sendable (_ url: URL, _ keys: Set<URLResourceKey>) throws -> URLResourceValuesWrapper = {
       _, _ in .init()
     }
+  public var applicationSupportDirectory: @Sendable () -> URL = { .init(filePath: "/") }
 }
 
 // MARK: DependencyKey
 
 extension URLClient: DependencyKey {
   public static let liveValue = Self(
-    resolvingSymlinksInPath: { $0.resolvingSymlinksInPath() },
-    resourceValues: { url, keys in .init(try url.resourceValues(forKeys: keys)) })
+    resolvingSymlinksInPath: {
+      $0.resolvingSymlinksInPath()
+    },
+    resourceValues: { url, keys in
+      .init(try url.resourceValues(forKeys: keys))
+    },
+    applicationSupportDirectory: {
+      URL.applicationSupportDirectory
+    }
+  )
 
   public static let testValue = Self()
 }

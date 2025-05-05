@@ -2,13 +2,12 @@ import AppKit
 
 extension NSMenu {
 
+  // MARK: Lifecycle
+
   public convenience init(_ title: String, @MenuBuilder builder: () -> [NSMenuItem] = { [] }) {
     self.init(title: title)
     items = builder()
   }
-}
-
-extension NSMenu {
 
   // MARK: Public
 

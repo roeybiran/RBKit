@@ -14,82 +14,6 @@ extension NSApplication.ActivationPolicy: Codable { }
 @MainActor
 struct RBKitTests {
 
-  // MARK: Internal
-
-  struct MockNode: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode]()
-
-    init(_ title: String, children: [MockNode] = [MockNode]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
-  struct MockNode2: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode2]()
-
-    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
-  // MARK: - TreeNodeProtocol
-
-  static let testNode = MockNode(
-    "1",
-    children: [
-      MockNode(
-        "1.1",
-        children: [
-          MockNode("1.1.1"),
-          MockNode("1.1.2"),
-        ]),
-      MockNode(
-        "1.2",
-        children: [
-          MockNode(
-            "1.2.1",
-            children: [
-              MockNode(
-                "1.2.1.1",
-                children: [
-                  MockNode("1.2.1.1.1"),
-                ]),
-              MockNode("1.2.1.2"),
-            ]),
-          MockNode("1.2.2"),
-        ]),
-    ])
-
-  static let testNode2 = MockNode2(
-    "1",
-    children: [
-      MockNode2(
-        "1.1",
-        children: [
-          MockNode2("1.1.1"),
-          MockNode2("1.1.2"),
-        ]),
-      MockNode2(
-        "1.2",
-        children: [
-          MockNode2(
-            "1.2.1",
-            children: [
-              MockNode2(
-                "1.2.1.1",
-                children: [
-                  MockNode2("1.2.1.1.1"),
-                ]),
-              MockNode2("1.2.1.2"),
-            ]),
-          MockNode2("1.2.2"),
-        ]),
-    ])
-
   // MARK: - Collection Extensions
 
   @Test
@@ -387,7 +311,15 @@ struct RBKitTests {
 
       var executableArchitecture: Int
     }
-    let app = _App()
+
+    // MARK: - TargetAppTests
+
+
+    let app = NSRunningApplication.Mock()
+    app._processIdentifier = 0
+    app._bundleIdentifier = "com.foo.bar"
+    app._localizedName = "Foo"
+    app._bundleURL = URL(fileURLWithPath: "file://apps/foo")
     let a = RunningApp(nsRunningApplication: app)
     let b = RunningApp(
       isTerminated: app.isTerminated,
@@ -404,34 +336,6 @@ struct RBKitTests {
       launchDate: app.launchDate,
       executableArchitecture: app.executableArchitecture)
     expectNoDifference(a, b)
-  }
-
-  // MARK: - URL Extensions Tests
-
-  @Test
-  func test_appending_queryItems() {
-    let actual = URL(fileURLWithPath: "/Users/roey/file.txt").appending(queryItems: [
-      .init(name: "id", value: "foo"),
-    ])
-    let expected = URL(string: "file:///Users/roey/file.txt?id=foo")
-    #expect(actual == expected)
-  }
-
-  @Test
-  func test__appending_queryItems() {
-    let actual = URL(fileURLWithPath: "/Users/roey/file.txt").backported_appending(queryItems: [
-      .init(name: "id", value: "foo"),
-    ])
-    let expected = URL(string: "file:///Users/roey/file.txt?id=foo")
-    #expect(actual == expected)
-  }
-
-  @Test
-  func test__directoryHint() {
-    #expect(URL.BackportedDirectoryHint.isDirectory.directoryHint() == .isDirectory)
-    #expect(URL.BackportedDirectoryHint.notDirectory.directoryHint() == .notDirectory)
-    #expect(URL.BackportedDirectoryHint.checkFileSystem.directoryHint() == .checkFileSystem)
-    #expect(URL.BackportedDirectoryHint.inferFromPath.directoryHint() == .inferFromPath)
   }
 
   @Test
@@ -469,157 +373,6 @@ struct RBKitTests {
     #expect(a != b)
   }
 
-  @Test
-  func test_descendants() {
-    expectNoDifference(
-      Self.testNode.descendants,
-      [
-        MockNode(
-          "1.1",
-          children: [
-            MockNode("1.1.1"),
-            MockNode("1.1.2"),
-          ]),
-        MockNode(
-          "1.2",
-          children: [
-            MockNode(
-              "1.2.1",
-              children: [
-                MockNode(
-                  "1.2.1.1",
-                  children: [
-                    MockNode("1.2.1.1.1"),
-                  ]),
-                MockNode("1.2.1.2"),
-              ]),
-            MockNode("1.2.2"),
-          ]),
-        MockNode("1.1.1"),
-        MockNode("1.1.2"),
-        MockNode(
-          "1.2.1",
-          children: [
-            MockNode(
-              "1.2.1.1",
-              children: [
-                MockNode("1.2.1.1.1"),
-              ]),
-            MockNode("1.2.1.2"),
-          ]),
-        MockNode("1.2.2"),
-        MockNode(
-          "1.2.1.1",
-          children: [
-            MockNode("1.2.1.1.1"),
-          ]),
-        MockNode("1.2.1.2"),
-        MockNode("1.2.1.1.1"),
-      ])
-  }
-
-  @Test
-  func test_firstNode() {
-    #expect(Self.testNode.first(where: { $0.title == "1.2.1.2" }) != nil)
-    #expect(Self.testNode.first(where: { $0.title == "zzzzzzzz" }) == nil)
-  }
-
-  @Test
-  func test_map() {
-    expectNoDifference(
-      Self.testNode.map { MockNode2($0.title) },
-      Self.testNode2)
-  }
-
-  @Test
-  func test_subscript_singleMemberArray_get() throws {
-    let a = MockNode(
-      "a",
-      children: [
-        MockNode("b"),
-        MockNode("c"),
-      ])
-    let b = MockNode("c")
-    #expect(a[[1]] == b)
-  }
-
-  @Test
-  func test_subscript_singleMemberArray_set() throws {
-    var a = MockNode(
-      "a",
-      children: [
-        MockNode("b"),
-        MockNode("c"),
-      ])
-    a[[1]] = MockNode("z")
-    let b = MockNode("z")
-    #expect(a[[1]] == b)
-  }
-
-  @Test
-  func test_subscript_array_get() throws {
-    let a = MockNode(
-      "a",
-      children: [
-        MockNode(
-          "b",
-          children: [
-            MockNode("y"),
-          ]),
-        MockNode("c"),
-      ])
-    #expect(a[[0, 0]] == MockNode("y"))
-    #expect(a[[1]] == MockNode("c"))
-  }
-
-  @Test
-  func test_subscript_array_set() throws {
-    var a = MockNode(
-      "a",
-      children: [
-        MockNode("b"),
-        MockNode(
-          "c",
-          children: [
-            MockNode("y"),
-          ]),
-      ])
-    a[[1, 0]] = MockNode("z")
-    let b = MockNode("z")
-    #expect(a[[1, 0]] == b)
-  }
-
-  @Test
-  func test_subscript_variadic_get() throws {
-    let a = MockNode(
-      "a",
-      children: [
-        MockNode(
-          "b",
-          children: [
-            MockNode("y"),
-          ]),
-        MockNode("c"),
-      ])
-    #expect(a[[0, 0]] == MockNode("y"))
-  }
-
-  @Test
-  func test_subscript_variadic_set() throws {
-    var a = MockNode(
-      "a",
-      children: [
-        MockNode("b"),
-        MockNode(
-          "c",
-          children: [
-            MockNode("y"),
-          ]),
-      ])
-    a[1, 0] = MockNode("z")
-    let b = MockNode("z")
-    #expect(a[1, 0] == b)
-  }
 
   // MARK: - Sequence extensions
 
@@ -810,16 +563,4 @@ struct RBKitTests {
     let a = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
     #expect("\(a)" == "⌃⌥⇧⌘")
   }
-
-  // MARK: Private
-
-  // MARK: - TargetAppTests
-
-  private class _App: NSRunningApplication {
-    override var processIdentifier: pid_t { 0 }
-    override var bundleIdentifier: String? { "com.foo.bar" }
-    override var localizedName: String? { "Foo" }
-    override var bundleURL: URL? { URL(fileURLWithPath: "file://apps/foo") }
-  }
-
 }

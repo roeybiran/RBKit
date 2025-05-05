@@ -14,19 +14,25 @@ extension TreeNodeProtocol {
   }
 
   /// Apply `transform` on `self` and recursively on all of its descendants.
-  public func map<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
+  public func recursiveMap<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
     var transformed = try transform(self)
-    transformed.children = try children.map { try $0.map(transform) }
+    transformed.children = try children.map { try $0.recursiveMap(transform) }
     return transformed
   }
 
-  public func first(where predicate: (Self) -> Bool) -> Self? {
+  public func recursiveCompactMap<T: TreeNodeProtocol>(_ transform: (Self) throws -> T?) rethrows -> T? {
+    guard var transformed = try transform(self) else { return nil }
+    transformed.children = try children.compactMap { try $0.recursiveCompactMap(transform) }
+    return transformed
+  }
+
+  public func recursiveFirst(where predicate: (Self) -> Bool) -> Self? {
     if predicate(self) {
       return self
     }
 
     for child in children {
-      if let match = child.first(where: predicate) {
+      if let match = child.recursiveFirst(where: predicate) {
         return match
       }
     }
@@ -65,3 +71,31 @@ extension TreeNodeProtocol {
     }
   }
 }
+
+extension Array where Element: TreeNodeProtocol {
+  public func recursiveMap<T: TreeNodeProtocol>(_ transform: (Element) throws -> T) rethrows -> [T] {
+    try map {
+      try $0.recursiveMap(transform)
+    }
+  }
+
+  public func recursiveCompactMap<T: TreeNodeProtocol>(_ transform: (Element) throws -> T?) rethrows -> [T] {
+    try compactMap {
+      try $0.recursiveCompactMap(transform)
+    }
+  }
+
+  public func recursiveFirst(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+    for child in self {
+      if try predicate(child) {
+        return child
+      }
+
+      if let found = try child.children.recursiveFirst(where: predicate) {
+        return found
+      }
+    }
+    return nil
+  }
+}
+

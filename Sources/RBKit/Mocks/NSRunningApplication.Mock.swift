@@ -1,7 +1,7 @@
 import AppKit
 
 extension NSRunningApplication {
-  open class Mock: NSRunningApplication {
+  open class Mock: NSRunningApplication, @unchecked Sendable {
 
     // MARK: Lifecycle
 

@@ -8,14 +8,14 @@ import Foundation
 public struct NSObjectClient: Sendable {
   public var addObserver:
     @Sendable (
-      _ observee: NSObject,
+      _ observed: NSObject,
       _ observer: NSObject,
       _ keyPath: String,
       _ options: NSKeyValueObservingOptions,
       _ context: UnsafeMutableRawPointer?) -> Void
   public var removeObserver:
     @Sendable (
-      _ observee: NSObject, _ observer: NSObject, _ keyPath: String,
+      _ observed: NSObject, _ observer: NSObject, _ keyPath: String,
       _ context: UnsafeMutableRawPointer?)
     -> Void
 }
@@ -24,11 +24,11 @@ public struct NSObjectClient: Sendable {
 
 extension NSObjectClient: DependencyKey {
   public static let liveValue = Self(
-    addObserver: { observee, observer, keyPath, options, context in
-      observee.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
+    addObserver: { observed, observer, keyPath, options, context in
+      observed.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
     },
-    removeObserver: { observee, observer, keyPath, context in
-      observee.removeObserver(observer, forKeyPath: keyPath, context: context)
+    removeObserver: { observed, observer, keyPath, context in
+      observed.removeObserver(observer, forKeyPath: keyPath, context: context)
     })
 
   public static let testValue = Self()

@@ -21,7 +21,7 @@ extension SecureEventInputClient: DependencyKey {
       .init { continuation in
         Task {
           while !Task.isCancelled {
-            try? await Task.sleep(forSeconds: interval)
+            try? await Task.sleep(for: .seconds(interval))
             continuation.yield(IsSecureEventInputEnabled())
           }
         }

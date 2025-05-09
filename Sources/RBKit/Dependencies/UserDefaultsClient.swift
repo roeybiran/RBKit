@@ -65,11 +65,15 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { suite.set($0, forKey: $1) },
     removeObject: { suite.removeObject(forKey: $0) },
     register: { suite.register(defaults: $0) },
-    observeString: { keyValueStream(observed: suite, keyPath: $0) },
-    observeBool: { keyValueStream(observed: suite, keyPath: $0) },
-    observeInt: { keyValueStream(observed: suite, keyPath: $0) },
-    observeDouble: { keyValueStream(observed: suite, keyPath: $0) },
+    observeString: { wrap($0) },
+    observeBool: { wrap($0) },
+    observeInt: { wrap($0) },
+    observeDouble: { wrap($0) },
   )
+
+  private static func wrap<T: Sendable>(_ value: KeyPath<UserDefaults, T>) -> Stream<T> {
+    UncheckedSendable(keyValueStream(observed: suite, keyPath: value).map(\.change)).eraseToStream()
+  }
 
   public static let testValue = Self()
 }

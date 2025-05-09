@@ -31,11 +31,13 @@ public struct UserDefaultsClient: Sendable {
   public var register: @Sendable (_ defaults: [String: Any]) -> Void
 
   @DependencyEndpoint(method: "observe")
+  public var observeString: @Sendable (KeyPath<UserDefaults, String>) -> Stream<String> = { _ in .finished }
+  @DependencyEndpoint(method: "observe")
+  public var observeBool: @Sendable (KeyPath<UserDefaults, Bool>) -> Stream<Bool> = { _ in .finished }
+  @DependencyEndpoint(method: "observe")
   public var observeInt: @Sendable (KeyPath<UserDefaults, Int>) -> Stream<Int> = { _ in .finished }
   @DependencyEndpoint(method: "observe")
   public var observeDouble: @Sendable (KeyPath<UserDefaults, Double>) -> Stream<Double> = { _ in .finished }
-  @DependencyEndpoint(method: "observe")
-  public var observeBool: @Sendable (KeyPath<UserDefaults, Bool>) -> Stream<Bool> = { _ in .finished }
 
   private static nonisolated(unsafe) let suite = UserDefaults.standard
 
@@ -78,9 +80,10 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { suite.set($0, forKey: $1) },
     removeObject: { suite.removeObject(forKey: $0) },
     register: { suite.register(defaults: $0) },
+    observeString: { wrap(keyPath: $0) },
+    observeBool: { wrap(keyPath: $0) },
     observeInt: { wrap(keyPath: $0) },
     observeDouble: { wrap(keyPath: $0) },
-    observeBool: { wrap(keyPath: $0) }
   )
 
   public static let testValue = Self()

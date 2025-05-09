@@ -237,15 +237,15 @@ struct TreeNodeProtocolTests {
     ]
 
     // Test finding a root node
-    let foundRoot = try nodes.recursiveFirst(where: { $0.title == "b" })
+    let foundRoot = nodes.recursiveFirst(where: { $0.title == "b" })
     #expect(foundRoot?.title == "b")
 
     // Test finding a child node
-    let foundChild = try nodes.recursiveFirst(where: { $0.title == "a.1" })
+    let foundChild = nodes.recursiveFirst(where: { $0.title == "a.1" })
     #expect(foundChild?.title == "a.1")
 
     // Test not finding a node
-    let notFound = try nodes.recursiveFirst(where: { $0.title == "c" })
+    let notFound = nodes.recursiveFirst(where: { $0.title == "c" })
     #expect(notFound == nil)
   }
 

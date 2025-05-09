@@ -40,21 +40,6 @@ public struct UserDefaultsClient: Sendable {
   public var observeDouble: @Sendable (KeyPath<UserDefaults, Double>) -> Stream<Double> = { _ in .finished }
 
   private static nonisolated(unsafe) let suite = UserDefaults.standard
-
-  private static func wrap<T: Sendable>(
-    keyPath: KeyPath<UserDefaults, T>,
-    options: NSKeyValueObservingOptions = [.initial, .new])
-  -> AsyncStream<KeyValueObservedChange<T>>
-  {
-    let (stream, cont) = AsyncStream.makeStream(of: KeyValueObservedChange<T>.self)
-    let observation = suite.observe(keyPath, options: options) {  _, change in
-      cont.yield(KeyValueObservedChange(change))
-    }
-    cont.onTermination = { _ in
-      observation.invalidate()
-    }
-    return stream
-  }
 }
 
 // MARK: DependencyKey
@@ -80,10 +65,10 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { suite.set($0, forKey: $1) },
     removeObject: { suite.removeObject(forKey: $0) },
     register: { suite.register(defaults: $0) },
-    observeString: { wrap(keyPath: $0) },
-    observeBool: { wrap(keyPath: $0) },
-    observeInt: { wrap(keyPath: $0) },
-    observeDouble: { wrap(keyPath: $0) },
+    observeString: { keyValueStream(observed: suite, keyPath: $0) },
+    observeBool: { keyValueStream(observed: suite, keyPath: $0) },
+    observeInt: { keyValueStream(observed: suite, keyPath: $0) },
+    observeDouble: { keyValueStream(observed: suite, keyPath: $0) },
   )
 
   public static let testValue = Self()
@@ -95,3 +80,4 @@ extension DependencyValues {
     set { self[UserDefaultsClient.self] = newValue }
   }
 }
+

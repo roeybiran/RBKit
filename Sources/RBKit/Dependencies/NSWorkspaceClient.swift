@@ -58,7 +58,13 @@ extension NSWorkspaceClient: DependencyKey {
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
     menuBarOwningApplicationObservation: {
-      toStream(workspace: .shared, options: $0, keyPath: \.menuBarOwningApplication)
+      UncheckedSendable(
+        keyValueStream(
+          observed: NSWorkspace.shared,
+          keyPath: \.menuBarOwningApplication,
+          options: $0
+        ).map(\.change)
+      ).eraseToStream()
     },
     accessibilityDisplayShouldReduceMotion: {
       NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
@@ -68,25 +74,6 @@ extension NSWorkspaceClient: DependencyKey {
     })
 
   public static let testValue = NSWorkspaceClient()
-
-  // MARK: Private
-
-  private static func toStream<Value>(
-    workspace: NSWorkspace,
-    options: NSKeyValueObservingOptions,
-    keyPath: KeyPath<NSWorkspace, Value>)
-    -> AsyncStream<KeyValueObservedChange<Value>> where Value: Sendable
-  {
-    let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<Value>.self)
-    let observation = workspace.observe(keyPath, options: options) { _, change in
-      continuation.yield(KeyValueObservedChange(change))
-    }
-    continuation.onTermination = { _ in
-      observation.invalidate()
-    }
-    return stream
-  }
-
 }
 
 extension DependencyValues {

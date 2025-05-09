@@ -17,4 +17,3 @@ public func keyValueStream<A: NSObject, T: Sendable>(
   }
   return stream
 }
-

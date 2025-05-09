@@ -23,13 +23,7 @@ extension NSMenuItem {
   // MARK: - special system menus
 
   public static func settingsMenuItem() -> NSMenuItem {
-    let title: String
-    if #available(macOS 13, *) {
-      title = "Settings"
-    } else {
-      title = "Preferences"
-    }
-    return NSMenuItem("\(title)…", keyEquivalent: ",")
+    NSMenuItem("Settings…", keyEquivalent: ",")
   }
 
   @MainActor

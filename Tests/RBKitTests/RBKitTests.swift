@@ -314,7 +314,6 @@ struct RBKitTests {
 
     // MARK: - TargetAppTests
 
-
     let app = NSRunningApplication.Mock()
     app._processIdentifier = 0
     app._bundleIdentifier = "com.foo.bar"
@@ -372,7 +371,6 @@ struct RBKitTests {
     #expect(a.hashValue == a.id.hashValue)
     #expect(a != b)
   }
-
 
   // MARK: - Sequence extensions
 

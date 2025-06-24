@@ -98,4 +98,3 @@ extension Array where Element: TreeNodeProtocol {
     return nil
   }
 }
-

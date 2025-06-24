@@ -46,29 +46,35 @@ public struct NSWorkspaceClient: Sendable {
 
 extension NSWorkspaceClient: DependencyKey {
 
-  // MARK: Public
-
   public static let liveValue = Self(
     open: { NSWorkspace.shared.open($0) },
+
     activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
+
     urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
+
     iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
+
     iconFor: { NSWorkspace.shared.icon(for: $0) },
+
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
+
     runningApplications: { NSWorkspace.shared.runningApplications },
+
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
+
     menuBarOwningApplicationObservation: {
       UncheckedSendable(
         keyValueStream(
           observed: NSWorkspace.shared,
           keyPath: \.menuBarOwningApplication,
-          options: $0
-        ).map(\.change)
-      ).eraseToStream()
+          options: $0).map(\.change)).eraseToStream()
     },
+
     accessibilityDisplayShouldReduceMotion: {
       NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
     },
+
     notifications: {
       NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1).eraseToStream()
     })

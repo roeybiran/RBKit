@@ -1,5 +1,6 @@
 import Foundation
 
+@available(swift, deprecated: 6.2, message: "use expect(processExitsWith:)")
 public func runtimeAssert(
   _ condition: @autoclosure () -> Bool,
   _ message: @autoclosure () -> String = String(),
@@ -13,6 +14,7 @@ public func runtimeAssert(
   #endif
 }
 
+@available(swift, deprecated: 6.2, message: "use expect(processExitsWith:)")
 public func runtimeAssertionFailure(
   _ message: @autoclosure () -> String = String(),
   file: StaticString = #file,

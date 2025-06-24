@@ -1,10 +1,10 @@
-import Testing
 import AppKit
+import Testing
 @testable import RBKit
 
 @Test
 func testAttachmentCharacter() {
-    // Test that the attachment character is not empty
+  // Test that the attachment character is not empty
   guard let unicode = Unicode.Scalar(NSTextAttachment.character) else {
     Issue.record()
     return

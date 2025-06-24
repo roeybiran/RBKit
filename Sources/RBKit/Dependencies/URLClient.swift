@@ -11,6 +11,7 @@ public struct URLClient: Sendable {
     @Sendable (_ url: URL, _ keys: Set<URLResourceKey>) throws -> URLResourceValuesWrapper = {
       _, _ in .init()
     }
+
   public var applicationSupportDirectory: @Sendable () -> URL = { .init(filePath: "/") }
 }
 
@@ -26,8 +27,7 @@ extension URLClient: DependencyKey {
     },
     applicationSupportDirectory: {
       URL.applicationSupportDirectory
-    }
-  )
+    })
 
   public static let testValue = Self()
 }

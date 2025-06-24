@@ -6,7 +6,7 @@ public func keyValueStream<A: NSObject, T: Sendable>(
   observed: A,
   keyPath: KeyPath<A, T>,
   options: NSKeyValueObservingOptions = [.initial, .new])
--> AsyncStream<KeyValueStream<A, T>>
+  -> AsyncStream<KeyValueStream<A, T>>
 {
   let (stream, cont) = AsyncStream.makeStream(of: KeyValueStream<A, T>.self)
   let observation = observed.observe(keyPath, options: options) { object, change in

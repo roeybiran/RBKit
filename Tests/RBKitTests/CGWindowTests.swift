@@ -5,6 +5,7 @@ import Testing
 
 @testable import RBKit
 
+@Suite
 final class CGWindowTests {
 
   // MARK: Lifecycle

@@ -1,8 +1,82 @@
-import Testing
 import CustomDump
+import Testing
 @testable import RBKit
 
 struct TreeNodeProtocolTests {
+  struct MockNode: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [MockNode]()
+
+    init(_ title: String, children: [MockNode] = [MockNode]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  struct MockNode2: TreeNodeProtocol, Equatable {
+    let title: String
+    var children = [MockNode2]()
+
+    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
+      self.title = title
+      self.children = children
+    }
+  }
+
+  // MARK: - TreeNodeProtocol
+
+  static let testNode = MockNode(
+    "1",
+    children: [
+      MockNode(
+        "1.1",
+        children: [
+          MockNode("1.1.1"),
+          MockNode("1.1.2"),
+        ]),
+      MockNode(
+        "1.2",
+        children: [
+          MockNode(
+            "1.2.1",
+            children: [
+              MockNode(
+                "1.2.1.1",
+                children: [
+                  MockNode("1.2.1.1.1"),
+                ]),
+              MockNode("1.2.1.2"),
+            ]),
+          MockNode("1.2.2"),
+        ]),
+    ])
+
+  static let testNode2 = MockNode2(
+    "1",
+    children: [
+      MockNode2(
+        "1.1",
+        children: [
+          MockNode2("1.1.1"),
+          MockNode2("1.1.2"),
+        ]),
+      MockNode2(
+        "1.2",
+        children: [
+          MockNode2(
+            "1.2.1",
+            children: [
+              MockNode2(
+                "1.2.1.1",
+                children: [
+                  MockNode2("1.2.1.1.1"),
+                ]),
+              MockNode2("1.2.1.2"),
+            ]),
+          MockNode2("1.2.2"),
+        ]),
+    ])
+
   @Test
   func descendants() {
     expectNoDifference(
@@ -88,7 +162,7 @@ struct TreeNodeProtocolTests {
             MockNode2("1.1.2"),
           ]),
         MockNode2(
-          "1.2")
+          "1.2"),
       ])
 
     expectNoDifference(result, expected)
@@ -194,14 +268,14 @@ struct TreeNodeProtocolTests {
   func array_recursiveMap() {
     let nodes = [
       MockNode("a", children: [MockNode("a.1")]),
-      MockNode("b", children: [MockNode("b.1")])
+      MockNode("b", children: [MockNode("b.1")]),
     ]
 
     let result = nodes.recursiveMap { MockNode2($0.title) }
 
     let expected = [
       MockNode2("a", children: [MockNode2("a.1")]),
-      MockNode2("b", children: [MockNode2("b.1")])
+      MockNode2("b", children: [MockNode2("b.1")]),
     ]
 
     expectNoDifference(result, expected)
@@ -211,7 +285,7 @@ struct TreeNodeProtocolTests {
   func array_recursiveCompactMap() {
     let nodes = [
       MockNode("a", children: [MockNode("a.1")]),
-      MockNode("b", children: [MockNode("b.1")])
+      MockNode("b", children: [MockNode("b.1")]),
     ]
 
     let result = nodes.recursiveCompactMap { node -> MockNode2? in
@@ -223,7 +297,7 @@ struct TreeNodeProtocolTests {
     }
 
     let expected = [
-      MockNode2("a", children: [MockNode2("a.1")])
+      MockNode2("a", children: [MockNode2("a.1")]),
     ]
 
     expectNoDifference(result, expected)
@@ -233,7 +307,7 @@ struct TreeNodeProtocolTests {
   func array_recursiveFirst() throws {
     let nodes = [
       MockNode("a", children: [MockNode("a.1")]),
-      MockNode("b", children: [MockNode("b.1")])
+      MockNode("b", children: [MockNode("b.1")]),
     ]
 
     // Test finding a root node
@@ -249,80 +323,4 @@ struct TreeNodeProtocolTests {
     #expect(notFound == nil)
   }
 
-
-  struct MockNode: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode]()
-
-    init(_ title: String, children: [MockNode] = [MockNode]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
-  struct MockNode2: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode2]()
-
-    init(_ title: String, children: [MockNode2] = [MockNode2]()) {
-      self.title = title
-      self.children = children
-    }
-  }
-
-  // MARK: - TreeNodeProtocol
-
-  static let testNode = MockNode(
-    "1",
-    children: [
-      MockNode(
-        "1.1",
-        children: [
-          MockNode("1.1.1"),
-          MockNode("1.1.2"),
-        ]),
-      MockNode(
-        "1.2",
-        children: [
-          MockNode(
-            "1.2.1",
-            children: [
-              MockNode(
-                "1.2.1.1",
-                children: [
-                  MockNode("1.2.1.1.1"),
-                ]),
-              MockNode("1.2.1.2"),
-            ]),
-          MockNode("1.2.2"),
-        ]),
-    ])
-
-  static let testNode2 = MockNode2(
-    "1",
-    children: [
-      MockNode2(
-        "1.1",
-        children: [
-          MockNode2("1.1.1"),
-          MockNode2("1.1.2"),
-        ]),
-      MockNode2(
-        "1.2",
-        children: [
-          MockNode2(
-            "1.2.1",
-            children: [
-              MockNode2(
-                "1.2.1.1",
-                children: [
-                  MockNode2("1.2.1.1.1"),
-                ]),
-              MockNode2("1.2.1.2"),
-            ]),
-          MockNode2("1.2.2"),
-        ]),
-    ])
 }
-
-

@@ -2,12 +2,16 @@ import AppKit
 
 extension FileManager.DirectoryEnumerator {
   open class Mock: FileManager.DirectoryEnumerator {
-    public var files: [Any]
-    public var index = 0
+
+    // MARK: Lifecycle
 
     public init(files: [Any] = []) {
       self.files = files
     }
+
+    // MARK: Open
+
+    open override var allObjects: [Any] { files }
 
     open override func nextObject() -> Any? {
       guard index < files.count else { return nil }
@@ -15,6 +19,10 @@ extension FileManager.DirectoryEnumerator {
       return files[index]
     }
 
-    open override var allObjects: [Any] { files }
+    // MARK: Public
+
+    public var files: [Any]
+    public var index = 0
+
   }
 }

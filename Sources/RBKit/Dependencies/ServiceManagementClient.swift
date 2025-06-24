@@ -23,12 +23,10 @@ public struct ServiceManagementClient: Sendable {
 // MARK: DependencyKey
 
 extension ServiceManagementClient: DependencyKey {
-  public static let liveValue: Self = {
-    .init(
-      register: { try SMAppService.mainApp.register() },
-      unregister: { try SMAppService.mainApp.unregister() },
-      status: { .init(rawValue: SMAppService.mainApp.status.rawValue) })
-  }()
+  public static let liveValue = Self(
+    register: { try SMAppService.mainApp.register() },
+    unregister: { try SMAppService.mainApp.unregister() },
+    status: { .init(rawValue: SMAppService.mainApp.status.rawValue) })
 
   public static let testValue = Self()
 }

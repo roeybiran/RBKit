@@ -6,6 +6,9 @@ import Foundation
 
 @DependencyClient
 public struct UserDefaultsClient: Sendable {
+
+  // MARK: Public
+
   public typealias Stream<T> = AsyncStream<KeyValueObservedChange<T>>
 
   public var object: @Sendable (_ forKey: String) -> Any?
@@ -39,12 +42,17 @@ public struct UserDefaultsClient: Sendable {
   @DependencyEndpoint(method: "observe")
   public var observeDouble: @Sendable (KeyPath<UserDefaults, Double>) -> Stream<Double> = { _ in .finished }
 
+  // MARK: Private
+
   private static nonisolated(unsafe) let suite = UserDefaults.standard
 }
 
 // MARK: DependencyKey
 
 extension UserDefaultsClient: DependencyKey {
+
+  // MARK: Public
+
   public static let liveValue = Self(
     object: { suite.object(forKey: $0) },
     url: { suite.url(forKey: $0) },
@@ -68,14 +76,16 @@ extension UserDefaultsClient: DependencyKey {
     observeString: { wrap($0) },
     observeBool: { wrap($0) },
     observeInt: { wrap($0) },
-    observeDouble: { wrap($0) },
-  )
+    observeDouble: { wrap($0) })
+
+  public static let testValue = Self()
+
+  // MARK: Private
 
   private static func wrap<T: Sendable>(_ value: KeyPath<UserDefaults, T>) -> Stream<T> {
     UncheckedSendable(keyValueStream(observed: suite, keyPath: value).map(\.change)).eraseToStream()
   }
 
-  public static let testValue = Self()
 }
 
 extension DependencyValues {
@@ -84,4 +94,3 @@ extension DependencyValues {
     set { self[UserDefaultsClient.self] = newValue }
   }
 }
-

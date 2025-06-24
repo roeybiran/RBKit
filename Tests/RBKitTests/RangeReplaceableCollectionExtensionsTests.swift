@@ -2,6 +2,7 @@ import Testing
 
 @testable import RBKit
 
+@Suite
 struct RangeReplaceableCollectionExtensionsTests {
   @Test
   func test_append() {

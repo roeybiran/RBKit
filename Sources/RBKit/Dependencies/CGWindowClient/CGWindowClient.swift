@@ -21,9 +21,10 @@ public struct CGWindowClient: Sendable {
 
 extension CGWindowClient: DependencyKey {
   public static let liveValue = Self(
-    copyWindowInfo: { CGWindowListCopyWindowInfo($0, $1) },
-    preflightScreenCaptureAccess: { CGPreflightScreenCaptureAccess() },
-    requestScreenCaptureAccess: { CGRequestScreenCaptureAccess() })
+    copyWindowInfo: CGWindowListCopyWindowInfo,
+    preflightScreenCaptureAccess: CGPreflightScreenCaptureAccess,
+    requestScreenCaptureAccess: CGRequestScreenCaptureAccess
+  )
 
   public static let testValue = Self()
 }

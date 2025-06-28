@@ -7,22 +7,17 @@ import DependenciesMacros
 @DependencyClient
 public struct NSRunningApplicationClient: Sendable {
   // MARK: - Getting running application instances
-
-  public var make: @Sendable (_ pid: pid_t) -> NSRunningApplication?
-
+  public var initWithPID: @Sendable (_ pid: pid_t) -> NSRunningApplication?
   public var runningApplications:
     @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
-
-  public var current: @Sendable () -> NSRunningApplication = { .init() }
+  public var current:  @Sendable () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
-
   @DependencyEndpoint(method: "activate")
   public var activate:
     @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
       _, _ in false
     }
-
   @DependencyEndpoint(method: "activate")
   public var activateFromApplication:
     @Sendable (
@@ -32,15 +27,12 @@ public struct NSRunningApplicationClient: Sendable {
     -> Bool = { _, _, _ in false }
 
   // MARK: - Hiding and unhiding applications
-
   public var hide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
-
+  public var hide2: (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
   public var unhide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
   // MARK: - Terminating applications
-
   public var forceTerminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
-
   public var terminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 }
 
@@ -48,11 +40,9 @@ public struct NSRunningApplicationClient: Sendable {
 
 extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
-    make: { NSRunningApplication(processIdentifier: $0) },
-    runningApplications: { NSRunningApplication.runningApplications(withBundleIdentifier: $0) },
-    current: {
-      NSRunningApplication.current
-    },
+    initWithPID: NSRunningApplication.init(processIdentifier:),
+    runningApplications: NSRunningApplication.runningApplications(withBundleIdentifier:),
+    current: { NSRunningApplication.current },
     activate: { app, options in
       app.activate(options: options)
     },
@@ -64,6 +54,7 @@ extension NSRunningApplicationClient: DependencyKey {
       }
     },
     hide: { $0.hide() },
+    hide2: NSRunningApplication.hide,
     unhide: { $0.unhide() },
     forceTerminate: { $0.forceTerminate() },
     terminate: { $0.terminate() })

@@ -2,6 +2,7 @@ import Foundation
 
 // MARK: - KeyValueObservedChange
 
+/// Wrapper around NSKeyValueChange
 public struct KeyValueObservedChange<Value> {
 
   // MARK: Lifecycle

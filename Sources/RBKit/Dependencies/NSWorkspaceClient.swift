@@ -78,7 +78,7 @@ extension NSWorkspaceClient: DependencyKey {
 }
 
 extension NSWorkspaceClient {
-  func runningApplicationsStream(options: NSKeyValueObservingOptions = [.initial, .new]) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> {
+  public func runningApplicationsStream(options: NSKeyValueObservingOptions = [.initial, .new]) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> {
     let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<[NSRunningApplication]>.self)
     let observation = runningApplicationsObservation(\.runningApplications, options) { object, change in
       continuation.yield(KeyValueObservedChange(change))

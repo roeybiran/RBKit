@@ -7,9 +7,8 @@ import DependenciesMacros
 @DependencyClient
 public struct NSRunningApplicationClient: Sendable {
   // MARK: - Getting running application instances
-  public var initWithPID: @Sendable (_ pid: pid_t) -> NSRunningApplication?
-  public var runningApplications:
-    @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
+  public var initWithPID: (_ pid: pid_t) -> NSRunningApplication?
+  public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
   public var current:  @Sendable () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
@@ -27,9 +26,14 @@ public struct NSRunningApplicationClient: Sendable {
     -> Bool = { _, _, _ in false }
 
   // MARK: - Hiding and unhiding applications
-  public var hide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
-  public var hide2: (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
+  public var hide: (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
   public var unhide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
+
+  // MARK: - Application information
+  public var boolObservation: (_ app: NSRunningApplication) -> (
+    _ keyPath: KeyPath<NSRunningApplication, Bool>,
+    _ options: NSKeyValueObservingOptions,
+    _ changeHandler: @escaping (NSRunningApplication, NSKeyValueObservedChange<Bool>) -> Void) -> NSKeyValueObservation = { _ in { _, _, _ in NSObject().observe(\.hash, changeHandler: { _, _ in }) } }
 
   // MARK: - Terminating applications
   public var forceTerminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
@@ -42,7 +46,8 @@ extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
     initWithPID: NSRunningApplication.init(processIdentifier:),
     runningApplications: NSRunningApplication.runningApplications(withBundleIdentifier:),
-    current: { NSRunningApplication.current },
+    current: { NSRunningApplication.current
+    },
     activate: { app, options in
       app.activate(options: options)
     },
@@ -53,13 +58,27 @@ extension NSRunningApplicationClient: DependencyKey {
         app.activate(options: options)
       }
     },
-    hide: { $0.hide() },
-    hide2: NSRunningApplication.hide,
+    hide: NSRunningApplication.hide,
     unhide: { $0.unhide() },
+    boolObservation: NSRunningApplication.observe,
     forceTerminate: { $0.forceTerminate() },
     terminate: { $0.terminate() })
 
   public static let testValue = NSRunningApplicationClient()
+}
+
+extension NSRunningApplicationClient {
+  public func isFinishedLaunchingStream(app: NSRunningApplication, options: NSKeyValueObservingOptions = [.initial, .new]) -> AsyncStream<(NSRunningApplication, Bool)> {
+    let (stream, continuation) = AsyncStream.makeStream(of: (NSRunningApplication, Bool).self)
+    let observation = boolObservation(app: app)(\.isFinishedLaunching, options) { object, change in
+      guard let newValue = change.newValue else { return }
+      continuation.yield((object, newValue))
+    }
+    continuation.onTermination = { _ in
+      observation.invalidate()
+    }
+    return stream
+  }
 }
 
 extension DependencyValues {

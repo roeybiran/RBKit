@@ -5,6 +5,18 @@ extension NSRunningApplication {
 
     // MARK: Lifecycle
 
+    public var _addObserver: (
+      _ observer: NSObject,
+      _ keyPath: String,
+      _ options: NSKeyValueObservingOptions,
+      _ context: UnsafeMutableRawPointer?
+    ) -> Void = { _, _, _, _ in }
+
+    open override func addObserver(_ observer: NSObject, forKeyPath keyPath: String, options: NSKeyValueObservingOptions = [], context: UnsafeMutableRawPointer?) {
+      _addObserver(observer, keyPath, options, context)
+      super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
+    }
+
     public init(
       _isTerminated: Bool = false,
       _isFinishedLaunching: Bool = true,
@@ -55,19 +67,60 @@ extension NSRunningApplication {
 
     // MARK: Public
 
-    public var _isTerminated: Bool
-    public var _isFinishedLaunching: Bool
-    public var _isHidden: Bool
+    public var _isTerminated: Bool {
+      willSet {
+        willChangeValue(forKey: #keyPath(NSRunningApplication.isTerminated))
+      }
+      didSet {
+        didChangeValue(forKey: #keyPath(NSRunningApplication.isTerminated))
+      }
+    }
+
+    public var _isFinishedLaunching: Bool {
+      willSet {
+        willChangeValue(forKey: #keyPath(NSRunningApplication.isFinishedLaunching))
+      }
+      didSet {
+        didChangeValue(forKey: #keyPath(NSRunningApplication.isFinishedLaunching))
+      }
+    }
+
+    public var _isHidden: Bool {
+      willSet {
+        willChangeValue(forKey: #keyPath(NSRunningApplication.isHidden))
+      }
+      didSet {
+        didChangeValue(forKey: #keyPath(NSRunningApplication.isHidden))
+      }
+    }
+
     public var _isActive: Bool
+
     public var _ownsMenuBar: Bool
-    public var _activationPolicy: NSApplication.ActivationPolicy
+
+    public var _activationPolicy: NSApplication.ActivationPolicy {
+      willSet {
+        willChangeValue(forKey: #keyPath(NSRunningApplication.activationPolicy))
+      }
+      didSet {
+        didChangeValue(forKey: #keyPath(NSRunningApplication.activationPolicy))
+      }
+    }
+
     public var _localizedName: String?
+
     public var _bundleIdentifier: String?
+
     public var _bundleURL: URL?
+
     public var _executableURL: URL?
+
     public var _processIdentifier: pid_t
+
     public var _launchDate: Date?
+
     public var _icon: NSImage?
+
     public var _executableArchitecture: Int
   }
 }

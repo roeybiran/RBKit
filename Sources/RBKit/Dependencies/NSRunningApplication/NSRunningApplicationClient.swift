@@ -1,3 +1,4 @@
+@preconcurrency
 import AppKit.NSApplication
 import Dependencies
 import DependenciesMacros
@@ -9,12 +10,12 @@ public struct NSRunningApplicationClient: Sendable {
   // MARK: - Getting running application instances
   public var initWithPID: (_ pid: pid_t) -> NSRunningApplication?
   public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
-  public var current:  @Sendable () -> NSRunningApplication = { .init() }
+  public var current: () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
   @DependencyEndpoint(method: "activate")
   public var activate:
-    @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
+    (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
       _, _ in false
     }
   @DependencyEndpoint(method: "activate")
@@ -46,11 +47,8 @@ extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
     initWithPID: NSRunningApplication.init(processIdentifier:),
     runningApplications: NSRunningApplication.runningApplications(withBundleIdentifier:),
-    current: { NSRunningApplication.current
-    },
-    activate: { app, options in
-      app.activate(options: options)
-    },
+    current: { NSRunningApplication.current },
+    activate: { $0.activate(options: $1) },
     activateFromApplication: { app, fromApp, options in
       if #available(macOS 14.0, *) {
         app.activate(from: fromApp, options: options)
@@ -65,20 +63,6 @@ extension NSRunningApplicationClient: DependencyKey {
     terminate: { $0.terminate() })
 
   public static let testValue = NSRunningApplicationClient()
-}
-
-extension NSRunningApplicationClient {
-  public func isFinishedLaunchingStream(app: NSRunningApplication, options: NSKeyValueObservingOptions = [.initial, .new]) -> AsyncStream<(NSRunningApplication, Bool)> {
-    let (stream, continuation) = AsyncStream.makeStream(of: (NSRunningApplication, Bool).self)
-    let observation = boolObservation(app: app)(\.isFinishedLaunching, options) { object, change in
-      guard let newValue = change.newValue else { return }
-      continuation.yield((object, newValue))
-    }
-    continuation.onTermination = { _ in
-      observation.invalidate()
-    }
-    return stream
-  }
 }
 
 extension DependencyValues {

@@ -1,3 +1,4 @@
+@preconcurrency
 import AppKit.NSWorkspace
 import Dependencies
 import DependenciesMacros
@@ -14,7 +15,7 @@ public struct NSWorkspaceClient: Sendable {
   public var activateFileViewerSelecting: @Sendable (_ fileURLs: [URL]) -> Void
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
   public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
-  public var iconFor: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
+  public var iconForContentType: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
@@ -23,13 +24,13 @@ public struct NSWorkspaceClient: Sendable {
 
   @DependencyEndpoint(method: "observe")
   public var NSRunningApplicationArrayObservation: (
-    _ keyPath: KeyPath<NSWorkspace, [NSRunningApplication]>,
+    KeyPath<NSWorkspace, [NSRunningApplication]>,
     _ options: NSKeyValueObservingOptions,
     _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(\.hash, changeHandler: { _, _ in }) }
 
   @DependencyEndpoint(method: "observe")
   public var optionalNSRunningApplicationObservation: (
-    _ keyPath: KeyPath<NSWorkspace, NSRunningApplication?>,
+    KeyPath<NSWorkspace, NSRunningApplication?>,
     _ options: NSKeyValueObservingOptions,
     _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(\.hash, changeHandler: { _, _ in }) }
 }
@@ -37,13 +38,12 @@ public struct NSWorkspaceClient: Sendable {
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
-
   public static let liveValue = Self(
-    open: { NSWorkspace.shared.open($0) },
-    activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
-    urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
-    iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
-    iconFor: { NSWorkspace.shared.icon(for: $0) },
+    open: NSWorkspace.shared.open,
+    activateFileViewerSelecting: NSWorkspace.shared.activateFileViewerSelecting,
+    urlForApplication: NSWorkspace.shared.urlForApplication,
+    iconForFile: NSWorkspace.shared.icon(forFile:),
+    iconForContentType: NSWorkspace.shared.icon,
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },

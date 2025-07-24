@@ -17,7 +17,7 @@ public struct CGEventClientLive: CGEventClientProtocol {
       eventsOfInterest: eventsOfInterest,
       callback: { proxy, type, event, refcon in
         guard let refcon else { return nil }
-        let box = Unmanaged<Box>.fromOpaque(refcon).takeUnretainedValue()
+        let box = Unmanaged<BoxedEventHandler>.fromOpaque(refcon).takeUnretainedValue()
         return box.eventHandler(proxy, type, event)
       },
       userInfo: userInfo

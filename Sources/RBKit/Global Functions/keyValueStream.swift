@@ -1,6 +1,6 @@
 import Foundation
 
-public typealias KeyValueStream<A, T> = (object: A, change: KeyValueObservedChange<T>)
+public typealias KeyValueStream<A, T> = (object: A, change: NSKeyValueObservedChange<T>)
 
 public func keyValueStream<A: NSObject, T: Sendable>(
   observed: A,
@@ -10,7 +10,7 @@ public func keyValueStream<A: NSObject, T: Sendable>(
 {
   let (stream, cont) = AsyncStream.makeStream(of: KeyValueStream<A, T>.self)
   let observation = observed.observe(keyPath, options: options) { object, change in
-    cont.yield((object: object, change: KeyValueObservedChange(change)))
+    cont.yield((object: object, change: change))
   }
   cont.onTermination = { _ in
     observation.invalidate()

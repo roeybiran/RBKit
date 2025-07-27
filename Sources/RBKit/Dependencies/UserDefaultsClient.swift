@@ -9,7 +9,7 @@ public struct UserDefaultsClient: Sendable {
 
   // MARK: Public
 
-  public typealias Stream<T> = AsyncStream<KeyValueObservedChange<T>>
+  public typealias Stream<T> = AsyncStream<NSKeyValueObservedChange<T>>
 
   public var object: @Sendable (_ forKey: String) -> Any?
   public var url: @Sendable (_ forKey: String) -> URL?
@@ -83,7 +83,8 @@ extension UserDefaultsClient: DependencyKey {
   // MARK: Private
 
   private static func wrap<T: Sendable>(_ value: KeyPath<UserDefaults, T>) -> Stream<T> {
-    UncheckedSendable(keyValueStream(observed: suite, keyPath: value).map(\.change)).eraseToStream()
+//    keyValueStream(observed: suite, keyPath: value)
+    return .finished
   }
 
 }

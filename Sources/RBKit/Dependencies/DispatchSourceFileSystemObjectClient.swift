@@ -13,18 +13,24 @@ import Foundation
 
 @DependencyClient
 public struct DispatchSourceFileSystemObjectClient: Sendable {
-  public var makeFileSystemObjectSource: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?) -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSourceFileSystemObjectMock() }
+  public var make: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?) -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSourceFileSystemObjectMock() }
+  public var setEventHandler: @Sendable (_ object: any DispatchSourceFileSystemObject, _ qos: DispatchQoS, _ flags: DispatchWorkItemFlags, _ handler: DispatchSource.DispatchSourceHandler?) -> Void = { _, _, _, _ in }
+  public var resume: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
+  public var cancel: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
+  public var data: @Sendable (_ object: any DispatchSourceFileSystemObject) -> DispatchSource.FileSystemEvent = { _ in .write }
+  public var handle: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Int32 = { _ in 0 }
 
   public func pathMonitor(path: String, mask: DispatchSource.FileSystemEvent, queue: DispatchQueue?) -> AsyncStream<DispatchSource.FileSystemEvent> {
     let (stream, continuation) = AsyncStream.makeStream(of: DispatchSource.FileSystemEvent.self)
-    let source = makeFileSystemObjectSource(fileDescriptor: open(path, O_EVTONLY), eventMask: mask, queue: queue)
-    source.setEventHandler  {
-      continuation.yield(source.data)
+    let source = make(fileDescriptor: open(path, O_EVTONLY), eventMask: mask, queue: queue)
+    setEventHandler(object: source, qos: .unspecified, flags: []) {
+      continuation.yield(data(object: source))
     }
-    source.resume()
+    resume(object: source)
     continuation.onTermination = { _ in
-      source.cancel()
-      close(source.handle)
+      cancel(object: source)
+      let handle = handle(object: source)
+      close(handle)
     }
     return stream
   }
@@ -33,7 +39,13 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
 // MARK: DependencyKey
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {
-  public static let liveValue = Self(makeFileSystemObjectSource: DispatchSource.makeFileSystemObjectSource)
+  public static let liveValue = Self(
+    make: DispatchSource.makeFileSystemObjectSource,
+    setEventHandler: { $0.setEventHandler(qos: $1, flags: $2, handler: $3) },
+    resume: { $0.resume() },
+    cancel: { $0.cancel() },
+    data: { $0.data },
+    handle: { $0.handle })
   public static let testValue = Self()
 }
 
@@ -44,40 +56,3 @@ extension DependencyValues {
   }
 }
 
-final class DispatchSourceFileSystemObjectMock: NSObject, DispatchSourceFileSystemObject { }
-
-//
-//public struct DispatchSourceFileSystemObjectClient: Sendable {
-//  public var makeFileSystemObjectSource:
-//  @Sendable (
-//    _ path: UnsafePointer<CChar>,
-//    _ mask: DispatchSource.FileSystemEvent,
-//    _ handler: @escaping (_ event: DispatchSource.FileSystemEvent) -> Void) -> Void
-//}
-//
-//// MARK: DependencyKey
-//
-//extension DispatchSourceFileSystemObjectClient: DependencyKey {
-//  public static let liveValue = Self(
-//    make: { path, mask, handler in
-//      let source =
-//      DispatchSource
-//        .makeFileSystemObjectSource(
-//          fileDescriptor: open(path, O_EVTONLY),
-//          eventMask: mask,
-//          queue: nil)
-//      source.setEventHandler {
-//        handler(source.data)
-//      }
-//      source.resume()
-//    })
-//
-//  public static let testValue = Self()
-//}
-//
-//extension DependencyValues {
-//  public var dispatchSourceFileSystemObjectClient: DispatchSourceFileSystemObjectClient {
-//    get { self[DispatchSourceFileSystemObjectClient.self] }
-//    set { self[DispatchSourceFileSystemObjectClient.self] = newValue }
-//  }
-//}

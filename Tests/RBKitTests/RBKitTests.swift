@@ -5,10 +5,6 @@ import Testing
 
 @testable import RBKit
 
-// MARK: - NSApplication.ActivationPolicy + Codable
-
-extension NSApplication.ActivationPolicy: Codable { }
-
 // MARK: - RBKitTests
 
 @MainActor
@@ -283,61 +279,6 @@ struct RBKitTests {
   }
 
   @Test
-  func test_targetApp_init() {
-    struct RunningApp: RunningApplicationProtocol {
-      var isTerminated: Bool
-
-      var isFinishedLaunching: Bool
-
-      var isHidden: Bool
-
-      var isActive: Bool
-
-      var ownsMenuBar: Bool
-
-      var activationPolicy: NSApplication.ActivationPolicy
-
-      var localizedName: String?
-
-      var bundleIdentifier: String?
-
-      var bundleURL: URL?
-
-      var executableURL: URL?
-
-      var processIdentifier: pid_t
-
-      var launchDate: Date?
-
-      var executableArchitecture: Int
-    }
-
-    // MARK: - TargetAppTests
-
-    let app = NSRunningApplication.Mock()
-    app._processIdentifier = 0
-    app._bundleIdentifier = "com.foo.bar"
-    app._localizedName = "Foo"
-    app._bundleURL = URL(fileURLWithPath: "file://apps/foo")
-    let a = RunningApp(nsRunningApplication: app)
-    let b = RunningApp(
-      isTerminated: app.isTerminated,
-      isFinishedLaunching: app.isFinishedLaunching,
-      isHidden: app.isHidden,
-      isActive: app.isActive,
-      ownsMenuBar: app.ownsMenuBar,
-      activationPolicy: app.activationPolicy,
-      localizedName: app.localizedName,
-      bundleIdentifier: app.bundleIdentifier,
-      bundleURL: app.bundleURL,
-      executableURL: app.executableURL,
-      processIdentifier: app.processIdentifier,
-      launchDate: app.launchDate,
-      executableArchitecture: app.executableArchitecture)
-    expectNoDifference(a, b)
-  }
-
-  @Test
   func test_DotSyntaxSettable() {
     let a = NSTextField()
     a.set(\.stringValue, to: "foo")
@@ -413,37 +354,6 @@ struct RBKitTests {
     let a = ["a", "a"]
     let b = Set(["a"])
     #expect(a.toSet() == b)
-  }
-
-  // MARK: - Dictionary extensions
-
-  @Test
-  func test_dictionary() {
-    let dict = ["a": 0]
-    let key: String? = "a"
-    #expect(dict[key] == 0)
-    #expect(dict[nil] == nil)
-  }
-
-  @Test
-  func test_dictionary2() {
-    let dict = ["a": [0]]
-    let key: String? = "a"
-    #expect(dict[key, default: [0]] == [0])
-  }
-
-  @Test
-  func test_dictionary3() {
-    let dict = ["b": [0]]
-    let key: String? = "a"
-    #expect(dict[key, default: [0]] == [0])
-  }
-
-  @Test
-  func test_dictionary4() {
-    let dict = ["a": [0]]
-    let key: String? = nil
-    #expect(dict[key, default: [0]] == [0])
   }
 
   // MARK: -

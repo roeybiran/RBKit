@@ -9,7 +9,7 @@ public struct UserDefaultsClient: Sendable {
 
   // MARK: Public
 
-  public typealias Stream<T> = AsyncStream<NSKeyValueObservedChange<T>>
+  public typealias Stream<T> = AsyncStream<(object: UserDefaults, change: NSKeyValueObservedChange<T>)>
 
   public var object: @Sendable (_ forKey: String) -> Any?
   public var url: @Sendable (_ forKey: String) -> URL?
@@ -73,20 +73,12 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { suite.set($0, forKey: $1) },
     removeObject: { suite.removeObject(forKey: $0) },
     register: { suite.register(defaults: $0) },
-    observeString: { wrap($0) },
-    observeBool: { wrap($0) },
-    observeInt: { wrap($0) },
-    observeDouble: { wrap($0) })
+    observeString: { keyValueStream(observed: suite, keyPath: $0) },
+    observeBool: { keyValueStream(observed: suite, keyPath: $0) },
+    observeInt: { keyValueStream(observed: suite, keyPath: $0) },
+    observeDouble: { keyValueStream(observed: suite, keyPath: $0) })
 
   public static let testValue = Self()
-
-  // MARK: Private
-
-  private static func wrap<T: Sendable>(_ value: KeyPath<UserDefaults, T>) -> Stream<T> {
-//    keyValueStream(observed: suite, keyPath: value)
-    return .finished
-  }
-
 }
 
 extension DependencyValues {

@@ -44,7 +44,7 @@ public struct UserDefaultsClient: Sendable {
 
   // MARK: Private
 
-  private static nonisolated(unsafe) let suite = UserDefaults.standard
+  public static nonisolated(unsafe) var suite = UserDefaults.standard
 }
 
 // MARK: DependencyKey

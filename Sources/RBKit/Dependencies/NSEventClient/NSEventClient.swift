@@ -39,7 +39,8 @@ extension NSEventClient: DependencyKey {
             matching: mask,
             handler: { nsEvent in
               continuation.yield(nsEvent)
-            })
+            }
+          )
       continuation.onTermination = { _ in
         guard let monitor else { return }
         NSEvent.removeMonitor(monitor)
@@ -55,14 +56,16 @@ extension NSEventClient: DependencyKey {
             handler: { nsEvent in
               continuation.yield(nsEvent)
               return handler(nsEvent)
-            })
+            }
+          )
       continuation.onTermination = { _ in
         guard let monitor else { return }
         NSEvent.removeMonitor(monitor)
       }
       return stream
     },
-    specialKey: { $0.specialKey })
+    specialKey: { $0.specialKey }
+  )
 
   public static let testValue = Self()
 }

@@ -69,33 +69,32 @@ private class MockCollectionView: NSCollectionView {
   override func register(
     _ viewClass: AnyClass?,
     forSupplementaryViewOfKind kind: NSCollectionView.SupplementaryElementKind,
-    withIdentifier identifier: NSUserInterfaceItemIdentifier)
-  {
+    withIdentifier identifier: NSUserInterfaceItemIdentifier
+  ) {
     calls.append([viewClass as Any, kind, identifier])
   }
 
   override func register(
-    _ itemClass: AnyClass?, forItemWithIdentifier identifier: NSUserInterfaceItemIdentifier)
-  {
+    _ itemClass: AnyClass?, forItemWithIdentifier identifier: NSUserInterfaceItemIdentifier
+  ) {
     calls.append([itemClass as Any, identifier])
   }
 
   override func makeSupplementaryView(
     ofKind elementKind: NSCollectionView.SupplementaryElementKind,
     withIdentifier identifier: NSUserInterfaceItemIdentifier,
-    for indexPath: IndexPath)
-    -> NSView
-  {
+    for indexPath: IndexPath
+  ) -> NSView {
     calls.append([elementKind, identifier, indexPath])
     return super.makeSupplementaryView(
-      ofKind: elementKind, withIdentifier: identifier, for: indexPath)
+      ofKind: elementKind, withIdentifier: identifier, for: indexPath
+    )
   }
 
   override func makeItem(
     withIdentifier identifier: NSUserInterfaceItemIdentifier,
-    for indexPath: IndexPath)
-    -> NSCollectionViewItem
-  {
+    for indexPath: IndexPath
+  ) -> NSCollectionViewItem {
     calls.append([identifier, indexPath])
     return MockViewItem()
   }

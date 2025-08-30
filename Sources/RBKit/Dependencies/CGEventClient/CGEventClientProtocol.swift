@@ -10,7 +10,7 @@ public protocol CGEventClientProtocol {
     eventsOfInterest: CGEventMask,
     userInfo: UnsafeMutableRawPointer?
   ) -> MachPort?
-  
+
   func getEnabled(tap: MachPort) -> Bool
   func setEnabled(tap: MachPort, isEnabled: Bool)
   func flags(event: CGEvent) -> CGEventFlags

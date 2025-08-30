@@ -4,7 +4,8 @@ extension NSCollectionView {
   public func register(supplementary view: NSView.Type) {
     register(
       view, forSupplementaryViewOfKind: view.supplementaryViewKind,
-      withIdentifier: view.userInterfaceIdentifier)
+      withIdentifier: view.userInterfaceIdentifier
+    )
   }
 
   public func register(item: NSCollectionViewItem.Type) {
@@ -13,19 +14,18 @@ extension NSCollectionView {
 
   public func makeSupplementaryView<T: NSView & NSCollectionViewElement>(
     ofKind elementKind: T.Type,
-    for indexPath: IndexPath)
-    -> T?
-  {
+    for indexPath: IndexPath
+  ) -> T? {
     makeSupplementaryView(
       ofKind: elementKind.supplementaryViewKind,
       withIdentifier: elementKind.userInterfaceIdentifier,
-      for: indexPath) as? T
+      for: indexPath
+    ) as? T
   }
 
   public func makeItem<T: NSCollectionViewElement & UserInterfaceItemIdentifiable>(
-    of _: T.Type, for indexPath: IndexPath)
-    -> T?
-  {
+    of _: T.Type, for indexPath: IndexPath
+  ) -> T? {
     makeItem(withIdentifier: T.userInterfaceIdentifier, for: indexPath) as? T
   }
 }

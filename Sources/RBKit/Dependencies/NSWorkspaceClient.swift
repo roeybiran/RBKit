@@ -20,19 +20,31 @@ public struct NSWorkspaceClient: Sendable {
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
   public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
-  public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> NotificationCenter.Notifications = { NotificationCenter().notifications(named: $0, object: $1) }
+  public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> NotificationCenter
+    .Notifications = { NotificationCenter().notifications(
+      named: $0,
+      object: $1
+    ) }
 
   @DependencyEndpoint(method: "observe")
   public var NSRunningApplicationArrayObservation: (
     KeyPath<NSWorkspace, [NSRunningApplication]>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(\.hash, changeHandler: { _, _ in }) }
+    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void
+  ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
+    \.hash,
+    changeHandler: { _, _ in }
+  ) }
 
   @DependencyEndpoint(method: "observe")
   public var optionalNSRunningApplicationObservation: (
     KeyPath<NSWorkspace, NSRunningApplication?>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(\.hash, changeHandler: { _, _ in }) }
+    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void
+  ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
+    \.hash,
+    changeHandler: { _, _ in }
+  ) }
 }
 
 // MARK: DependencyKey

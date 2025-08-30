@@ -2,12 +2,12 @@ import QuartzCore
 
 extension CASpringAnimation {
   public static func defaultSpring(
-    keyPath: String, perceptualDuration: CFTimeInterval = 0.3, bounce: CGFloat = 0.3)
-    -> CASpringAnimation
-  {
+    keyPath: String, perceptualDuration: CFTimeInterval = 0.3, bounce: CGFloat = 0.3
+  ) -> CASpringAnimation {
     if #available(macOS 14.0, *) {
       let springAnimation = CASpringAnimation(
-        perceptualDuration: perceptualDuration, bounce: bounce)
+        perceptualDuration: perceptualDuration, bounce: bounce
+      )
       springAnimation.keyPath = keyPath
       return springAnimation
     } else {

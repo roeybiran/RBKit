@@ -1,8 +1,11 @@
 import Carbon
 
 public struct CFMachPortClientLive: CFMachPortClient {
-  public init() {}
-  
+  public init() { }
+
+  public typealias MachPort = CFMachPort
+  public typealias RunLoopSource = CFRunLoopSource
+
   public func invalidate(machPort: CFMachPort) {
     CFMachPortInvalidate(machPort)
   }
@@ -11,6 +14,4 @@ public struct CFMachPortClientLive: CFMachPortClient {
     CFMachPortCreateRunLoopSource(kCFAllocatorDefault, port, order)
   }
 
-  public typealias MachPort = CFMachPort
-  public typealias RunLoopSource = CFRunLoopSource
 }

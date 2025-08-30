@@ -4,23 +4,25 @@ import Testing
 
 struct TreeNodeProtocolTests {
   struct MockNode: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode]()
-
     init(_ title: String, children: [MockNode] = [MockNode]()) {
       self.title = title
       self.children = children
     }
+
+    let title: String
+    var children = [MockNode]()
+
   }
 
   struct MockNode2: TreeNodeProtocol, Equatable {
-    let title: String
-    var children = [MockNode2]()
-
     init(_ title: String, children: [MockNode2] = [MockNode2]()) {
       self.title = title
       self.children = children
     }
+
+    let title: String
+    var children = [MockNode2]()
+
   }
 
   // MARK: - TreeNodeProtocol
@@ -33,7 +35,8 @@ struct TreeNodeProtocolTests {
         children: [
           MockNode("1.1.1"),
           MockNode("1.1.2"),
-        ]),
+        ]
+      ),
       MockNode(
         "1.2",
         children: [
@@ -43,13 +46,17 @@ struct TreeNodeProtocolTests {
               MockNode(
                 "1.2.1.1",
                 children: [
-                  MockNode("1.2.1.1.1"),
-                ]),
+                  MockNode("1.2.1.1.1")
+                ]
+              ),
               MockNode("1.2.1.2"),
-            ]),
+            ]
+          ),
           MockNode("1.2.2"),
-        ]),
-    ])
+        ]
+      ),
+    ]
+  )
 
   static let testNode2 = MockNode2(
     "1",
@@ -59,7 +66,8 @@ struct TreeNodeProtocolTests {
         children: [
           MockNode2("1.1.1"),
           MockNode2("1.1.2"),
-        ]),
+        ]
+      ),
       MockNode2(
         "1.2",
         children: [
@@ -69,13 +77,17 @@ struct TreeNodeProtocolTests {
               MockNode2(
                 "1.2.1.1",
                 children: [
-                  MockNode2("1.2.1.1.1"),
-                ]),
+                  MockNode2("1.2.1.1.1")
+                ]
+              ),
               MockNode2("1.2.1.2"),
-            ]),
+            ]
+          ),
           MockNode2("1.2.2"),
-        ]),
-    ])
+        ]
+      ),
+    ]
+  )
 
   @Test
   func descendants() {
@@ -87,7 +99,8 @@ struct TreeNodeProtocolTests {
           children: [
             MockNode("1.1.1"),
             MockNode("1.1.2"),
-          ]),
+          ]
+        ),
         MockNode(
           "1.2",
           children: [
@@ -97,12 +110,15 @@ struct TreeNodeProtocolTests {
                 MockNode(
                   "1.2.1.1",
                   children: [
-                    MockNode("1.2.1.1.1"),
-                  ]),
+                    MockNode("1.2.1.1.1")
+                  ]
+                ),
                 MockNode("1.2.1.2"),
-              ]),
+              ]
+            ),
             MockNode("1.2.2"),
-          ]),
+          ]
+        ),
         MockNode("1.1.1"),
         MockNode("1.1.2"),
         MockNode(
@@ -111,19 +127,23 @@ struct TreeNodeProtocolTests {
             MockNode(
               "1.2.1.1",
               children: [
-                MockNode("1.2.1.1.1"),
-              ]),
+                MockNode("1.2.1.1.1")
+              ]
+            ),
             MockNode("1.2.1.2"),
-          ]),
+          ]
+        ),
         MockNode("1.2.2"),
         MockNode(
           "1.2.1.1",
           children: [
-            MockNode("1.2.1.1.1"),
-          ]),
+            MockNode("1.2.1.1.1")
+          ]
+        ),
         MockNode("1.2.1.2"),
         MockNode("1.2.1.1.1"),
-      ])
+      ]
+    )
   }
 
   @Test
@@ -160,10 +180,13 @@ struct TreeNodeProtocolTests {
           children: [
             MockNode2("1.1.1"),
             MockNode2("1.1.2"),
-          ]),
+          ]
+        ),
         MockNode2(
-          "1.2"),
-      ])
+          "1.2"
+        ),
+      ]
+    )
 
     expectNoDifference(result, expected)
 
@@ -181,7 +204,8 @@ struct TreeNodeProtocolTests {
       children: [
         MockNode("b"),
         MockNode("c"),
-      ])
+      ]
+    )
     let b = MockNode("c")
     #expect(a[[1]] == b)
   }
@@ -193,7 +217,8 @@ struct TreeNodeProtocolTests {
       children: [
         MockNode("b"),
         MockNode("c"),
-      ])
+      ]
+    )
     a[[1]] = MockNode("z")
     let b = MockNode("z")
     #expect(a[[1]] == b)
@@ -207,10 +232,12 @@ struct TreeNodeProtocolTests {
         MockNode(
           "b",
           children: [
-            MockNode("y"),
-          ]),
+            MockNode("y")
+          ]
+        ),
         MockNode("c"),
-      ])
+      ]
+    )
     #expect(a[[0, 0]] == MockNode("y"))
     #expect(a[[1]] == MockNode("c"))
   }
@@ -224,9 +251,11 @@ struct TreeNodeProtocolTests {
         MockNode(
           "c",
           children: [
-            MockNode("y"),
-          ]),
-      ])
+            MockNode("y")
+          ]
+        ),
+      ]
+    )
     a[[1, 0]] = MockNode("z")
     let b = MockNode("z")
     #expect(a[[1, 0]] == b)
@@ -240,10 +269,12 @@ struct TreeNodeProtocolTests {
         MockNode(
           "b",
           children: [
-            MockNode("y"),
-          ]),
+            MockNode("y")
+          ]
+        ),
         MockNode("c"),
-      ])
+      ]
+    )
     #expect(a[[0, 0]] == MockNode("y"))
   }
 
@@ -256,9 +287,11 @@ struct TreeNodeProtocolTests {
         MockNode(
           "c",
           children: [
-            MockNode("y"),
-          ]),
-      ])
+            MockNode("y")
+          ]
+        ),
+      ]
+    )
     a[1, 0] = MockNode("z")
     let b = MockNode("z")
     #expect(a[1, 0] == b)
@@ -297,7 +330,7 @@ struct TreeNodeProtocolTests {
     }
 
     let expected = [
-      MockNode2("a", children: [MockNode2("a.1")]),
+      MockNode2("a", children: [MockNode2("a.1")])
     ]
 
     expectNoDifference(result, expected)

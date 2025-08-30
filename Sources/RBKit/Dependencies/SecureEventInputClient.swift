@@ -27,7 +27,8 @@ extension SecureEventInputClient: DependencyKey {
         }
       }
     },
-    isEnabled: { IsSecureEventInputEnabled() })
+    isEnabled: { IsSecureEventInputEnabled() }
+  )
 
   public static let testValue = Self()
 }

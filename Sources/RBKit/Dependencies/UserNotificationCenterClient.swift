@@ -20,7 +20,8 @@ extension UserNotificationCenterClient: DependencyKey {
     },
     add: {
       try await UNUserNotificationCenter.current().add($0)
-    })
+    }
+  )
 
   public static let testValue = UserNotificationCenterClient()
 }

@@ -8,8 +8,8 @@ extension NSMenuItem {
     _ title: String,
     action: Selector? = nil,
     keyEquivalent: String = "",
-    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
-  {
+    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
+  ) {
     self.init(title: title, action: action, keyEquivalent: keyEquivalent)
     let children = builder()
     if !children.isEmpty {

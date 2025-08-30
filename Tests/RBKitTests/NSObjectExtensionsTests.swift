@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct NSObjectExtensionsTests {
   @Test
-  func test_NSObject_UIIdentifier() {
+  func NSObject_UIIdentifier() {
     #expect(NSObject.userInterfaceIdentifier == "NSObject")
     #expect(NSView.userInterfaceIdentifier == "NSView")
     class MainCell: NSTableCellView { }
@@ -15,7 +15,7 @@ struct NSObjectExtensionsTests {
   }
 
   @Test
-  func test_NSObject_dotSyntaxSettable() {
+  func NSObject_dotSyntaxSettable() {
     let view = NSView()
     #expect(view.identifier == nil)
     view.set(\.identifier, to: "foo")

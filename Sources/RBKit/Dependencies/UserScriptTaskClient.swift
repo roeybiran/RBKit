@@ -15,7 +15,8 @@ public struct UserScriptTaskClient: Sendable {
 extension UserScriptTaskClient: DependencyKey {
   public static let liveValue = Self(
     create: { try NSUserScriptTask(url: $0) },
-    execute: { try await $0.execute() })
+    execute: { try await $0.execute() }
+  )
 
   public static let testValue = Self()
 }

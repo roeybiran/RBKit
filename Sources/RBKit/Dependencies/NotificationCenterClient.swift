@@ -13,8 +13,8 @@ public struct NotificationCenterClient: Sendable {
       _ observer: Any,
       _ selector: Selector,
       _ name: Notification.Name?,
-      _ object: Any?)
-    -> Void
+      _ object: Any?
+    ) -> Void
 
   /// Posting notifications
   public var post: @Sendable (_ notification: Notification) -> Void
@@ -38,7 +38,8 @@ extension NotificationCenterClient: DependencyKey {
     post: { NotificationCenter.default.post($0) },
     notifications: {
       NotificationCenter.default.notifications(named: $0, object: $1).eraseToStream()
-    })
+    }
+  )
 
   public static let testValue = Self()
 }

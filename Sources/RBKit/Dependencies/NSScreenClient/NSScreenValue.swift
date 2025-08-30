@@ -28,8 +28,8 @@ public struct NSScreenValue {
     minimumRefreshInterval: TimeInterval,
     maximumRefreshInterval: TimeInterval,
     displayUpdateGranularity: TimeInterval,
-    lastDisplayUpdateTimestamp: TimeInterval)
-  {
+    lastDisplayUpdateTimestamp: TimeInterval
+  ) {
     self.depth = depth
     self.frame = frame
     self.localizedName = localizedName
@@ -137,9 +137,8 @@ extension NSScreenValue {
     minimumRefreshInterval: TimeInterval = 0,
     maximumRefreshInterval: TimeInterval = 0,
     displayUpdateGranularity: TimeInterval = 0,
-    lastDisplayUpdateTimestamp: TimeInterval = 0)
-    -> Self
-  {
+    lastDisplayUpdateTimestamp: TimeInterval = 0
+  ) -> Self {
     .init(
       depth: depth,
       frame: frame,
@@ -158,7 +157,8 @@ extension NSScreenValue {
       minimumRefreshInterval: minimumRefreshInterval,
       maximumRefreshInterval: maximumRefreshInterval,
       displayUpdateGranularity: displayUpdateGranularity,
-      lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp)
+      lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp
+    )
   }
 }
 #endif

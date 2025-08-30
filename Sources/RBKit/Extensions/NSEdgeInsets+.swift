@@ -6,7 +6,8 @@ extension NSEdgeInsets {
       top: constant,
       left: constant,
       bottom: constant,
-      right: constant)
+      right: constant
+    )
   }
 
   public init(horizontal: CGFloat, vertical: CGFloat) {
@@ -14,6 +15,7 @@ extension NSEdgeInsets {
       top: vertical,
       left: horizontal,
       bottom: vertical,
-      right: horizontal)
+      right: horizontal
+    )
   }
 }

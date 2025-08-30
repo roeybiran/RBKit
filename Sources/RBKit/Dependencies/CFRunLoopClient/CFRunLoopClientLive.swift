@@ -1,8 +1,10 @@
 import Carbon
 
 public struct CFRunLoopClientLive: CFRunLoopClientProtocol {
-  public init() {}
-  
+  public init() { }
+
+  public typealias RunLoopSource = CFRunLoopSource
+
   public func add(source: CFRunLoopSource, to runLoop: CFRunLoop, mode: CFRunLoopMode) {
     CFRunLoopAddSource(runLoop, source, mode)
   }
@@ -11,5 +13,4 @@ public struct CFRunLoopClientLive: CFRunLoopClientProtocol {
     CFRunLoopRemoveSource(runLoop, source, mode)
   }
 
-  public typealias RunLoopSource = CFRunLoopSource
 }

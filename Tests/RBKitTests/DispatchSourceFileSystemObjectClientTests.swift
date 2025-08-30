@@ -1,6 +1,6 @@
-import Testing
 import Dependencies
 import Foundation
+import Testing
 @testable import RBKit
 
 @Suite
@@ -8,7 +8,7 @@ struct DispatchSourceFileSystemObjectClientTests {
   @Test
   func pathMonitor_withMockSource_shouldCallAllRequiredMethods() async throws {
     withDependencies {
-      $0.dispatchSourceFileSystemObjectClient.make = { fd, mask, queue in
+      $0.dispatchSourceFileSystemObjectClient.make = { _, _, _ in
         DispatchSourceFileSystemObjectMock()
       }
       $0.dispatchSourceFileSystemObjectClient.cancel = { _ in }
@@ -20,7 +20,7 @@ struct DispatchSourceFileSystemObjectClientTests {
       }
     } operation: {
       @Dependency(\.dispatchSourceFileSystemObjectClient) var client
-      
+
       let task = Task {
         for await event in client.pathMonitor(path: NSTemporaryDirectory(), mask: .write, queue: nil) {
           #expect(event == .write)
@@ -28,7 +28,6 @@ struct DispatchSourceFileSystemObjectClientTests {
         }
       }
       task.cancel()
-      
     }
   }
 }

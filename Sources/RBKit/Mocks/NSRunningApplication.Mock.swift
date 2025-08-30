@@ -5,18 +5,6 @@ extension NSRunningApplication {
 
     // MARK: Lifecycle
 
-    public var _addObserver: (
-      _ observer: NSObject,
-      _ keyPath: String,
-      _ options: NSKeyValueObservingOptions,
-      _ context: UnsafeMutableRawPointer?
-    ) -> Void = { _, _, _, _ in }
-
-    open override func addObserver(_ observer: NSObject, forKeyPath keyPath: String, options: NSKeyValueObservingOptions = [], context: UnsafeMutableRawPointer?) {
-      _addObserver(observer, keyPath, options, context)
-      super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
-    }
-
     public init(
       _isTerminated: Bool = false,
       _isFinishedLaunching: Bool = true,
@@ -31,8 +19,8 @@ extension NSRunningApplication {
       _processIdentifier: pid_t = 0,
       _launchDate: Date? = nil,
       _icon _: NSImage? = nil,
-      _executableArchitecture: Int = 0)
-    {
+      _executableArchitecture: Int = 0
+    ) {
       self._isTerminated = _isTerminated
       self._isFinishedLaunching = _isFinishedLaunching
       self._isHidden = _isHidden
@@ -65,7 +53,44 @@ extension NSRunningApplication {
     override open var icon: NSImage? { _icon }
     override open var executableArchitecture: Int { _executableArchitecture }
 
+    open override func addObserver(
+      _ observer: NSObject,
+      forKeyPath keyPath: String,
+      options: NSKeyValueObservingOptions = [],
+      context: UnsafeMutableRawPointer?
+    ) {
+      _addObserver(observer, keyPath, options, context)
+      super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
+    }
+
     // MARK: Public
+
+    public var _addObserver: (
+      _ observer: NSObject,
+      _ keyPath: String,
+      _ options: NSKeyValueObservingOptions,
+      _ context: UnsafeMutableRawPointer?
+    ) -> Void = { _, _, _, _ in }
+
+    public var _isActive: Bool
+
+    public var _ownsMenuBar: Bool
+
+    public var _localizedName: String?
+
+    public var _bundleIdentifier: String?
+
+    public var _bundleURL: URL?
+
+    public var _executableURL: URL?
+
+    public var _processIdentifier: pid_t
+
+    public var _launchDate: Date?
+
+    public var _icon: NSImage?
+
+    public var _executableArchitecture: Int
 
     public var _isTerminated: Bool {
       willSet {
@@ -94,10 +119,6 @@ extension NSRunningApplication {
       }
     }
 
-    public var _isActive: Bool
-
-    public var _ownsMenuBar: Bool
-
     public var _activationPolicy: NSApplication.ActivationPolicy {
       willSet {
         willChangeValue(forKey: #keyPath(NSRunningApplication.activationPolicy))
@@ -107,20 +128,5 @@ extension NSRunningApplication {
       }
     }
 
-    public var _localizedName: String?
-
-    public var _bundleIdentifier: String?
-
-    public var _bundleURL: URL?
-
-    public var _executableURL: URL?
-
-    public var _processIdentifier: pid_t
-
-    public var _launchDate: Date?
-
-    public var _icon: NSImage?
-
-    public var _executableArchitecture: Int
   }
 }

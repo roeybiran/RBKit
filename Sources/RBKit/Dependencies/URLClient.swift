@@ -27,7 +27,8 @@ extension URLClient: DependencyKey {
     },
     applicationSupportDirectory: {
       URL.applicationSupportDirectory
-    })
+    }
+  )
 
   public static let testValue = Self()
 }

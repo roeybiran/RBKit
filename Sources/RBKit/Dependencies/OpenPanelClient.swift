@@ -22,7 +22,8 @@ extension OpenPanelClient: DependencyKey {
       for: .applicationDirectory,
       in: .systemDomainMask,
       appropriateFor: nil,
-      create: false)
+      create: false
+    )
 
     let result = panel.runModal()
     return (result, panel.urls)

@@ -133,7 +133,8 @@ final class URLResourceValuesWrapperTests: XCTestCase {
       totalFileSize: 4096,
       totalFileAllocatedSize: 8192,
       isAliasFile: true,
-      contentType: contentType)
+      contentType: contentType
+    )
 
     // Then
     XCTAssertFalse(wrapper.allValues.isEmpty)

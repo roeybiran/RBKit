@@ -44,89 +44,90 @@ final class CGWindowTests {
       ownerName: nil,
       name: nil,
       isOnscreen: nil,
-      backingLocationVideoMemory: nil)
+      backingLocationVideoMemory: nil
+    )
     #expect(a == b)
   }
 
   @Test
-  func test_withoutWindowNumber() async throws {
+  func withoutWindowNumber() async throws {
     dict[kCGWindowNumber] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutWindowStoreType() async throws {
+  func withoutWindowStoreType() async throws {
     dict[kCGWindowStoreType] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutWindowLayer() async throws {
+  func withoutWindowLayer() async throws {
     dict[kCGWindowLayer] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutBounds() async throws {
+  func withoutBounds() async throws {
     dict[kCGWindowBounds] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withOnlyX() async throws {
+  func withOnlyX() async throws {
     dict[kCGWindowBounds] = ["X": CGFloat()]
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withOnlyY() async throws {
+  func withOnlyY() async throws {
     dict[kCGWindowBounds] = ["Y": CGFloat()]
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withOnlyW() async throws {
+  func withOnlyW() async throws {
     dict[kCGWindowBounds] = ["Width": CGFloat()]
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withOnlyH() async throws {
+  func withOnlyH() async throws {
     dict[kCGWindowBounds] = ["Height": CGFloat()]
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutSharingState() async throws {
+  func withoutSharingState() async throws {
     dict[kCGWindowSharingState] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutAlpha() async throws {
+  func withoutAlpha() async throws {
     dict[kCGWindowAlpha] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutOwnerPID() async throws {
+  func withoutOwnerPID() async throws {
     dict[kCGWindowOwnerPID] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)
   }
 
   @Test
-  func test_withoutMemUsage() async throws {
+  func withoutMemUsage() async throws {
     dict[kCGWindowMemoryUsage] = nil
     let a = CGWindowValue(dict)
     #expect(a == nil)

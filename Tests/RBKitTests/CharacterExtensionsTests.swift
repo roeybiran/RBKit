@@ -3,11 +3,8 @@ import Testing
 @testable import RBKit
 
 @Test
-func testAttachmentCharacter() {
+func attachmentCharacter() throws {
   // Test that the attachment character is not empty
-  guard let unicode = Unicode.Scalar(NSTextAttachment.character) else {
-    Issue.record()
-    return
-  }
+  let unicode = try #require(Unicode.Scalar(NSTextAttachment.character))
   #expect(Character.attachment == Character(unicode))
 }

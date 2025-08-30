@@ -13,7 +13,7 @@ struct RBKitTests {
   // MARK: - Collection Extensions
 
   @Test
-  func test_safe_subscript() {
+  func safe_subscript() {
     let a = [1, 2, 3]
     #expect(a[safe: 3] == nil)
     #expect(a[safe: 2] != nil)
@@ -26,13 +26,13 @@ struct RBKitTests {
   }
 
   @Test
-  func test_itemAt() {
+  func itemAt() {
     let a = [1, 2, 3]
     #expect(a.item(at: 1) == 2)
   }
 
   @Test
-  func test_itemOptionallyAt() {
+  func itemOptionallyAt() {
     let a = [1, 2, 3]
     #expect(a.item(optionallyAt: 1) == 2)
   }
@@ -45,21 +45,21 @@ struct RBKitTests {
   }
 
   @Test
-  func test_replaceEmpty2() {
+  func replaceEmpty2() {
     let a = [1]
     let b = a.replaceEmpty(with: [0])
     #expect(b == [1])
   }
 
   @Test
-  func test_replaceEmptyWithOptional() {
+  func replaceEmptyWithOptional() {
     let a = [Int]()
     let b = a.replaceEmpty(with: nil)
     #expect(b == nil)
   }
 
   @Test
-  func test_replaceEmptyWithOptional2() {
+  func replaceEmptyWithOptional2() {
     let a = [1]
     let b = a.replaceEmpty(with: nil)
     #expect(b == [1])
@@ -68,7 +68,7 @@ struct RBKitTests {
   // MARK: - NSEventValue
 
   @Test
-  func test_keyEventInitFromNSEvent_withKeyDown_shouldCreateEvent() {
+  func keyEventInitFromNSEvent_withKeyDown_shouldCreateEvent() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .keyDown,
@@ -80,7 +80,9 @@ struct RBKitTests {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126))!)
+        keyCode: UInt16(126)
+      )!
+    )
     let expected = NSEventValue(
       type: .keyDown,
       locationInWindow: .zero,
@@ -91,13 +93,14 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(126),
       specialKey: .downArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
 
     expectNoDifference(actual, expected)
   }
 
   @Test
-  func test_keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
+  func keyEventInitFromNSEvent_withKeyUp_shouldCreateEvent() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .keyUp,
@@ -109,7 +112,9 @@ struct RBKitTests {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126))!)
+        keyCode: UInt16(126)
+      )!
+    )
     let expected = NSEventValue(
       type: .keyUp,
       locationInWindow: .zero,
@@ -120,13 +125,14 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(126),
       specialKey: .downArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
 
     expectNoDifference(actual, expected)
   }
 
   @Test
-  func test_keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
+  func keyEventInitFromNSEvent_withNonKeyEvent_shouldBeNil() {
     let actual = NSEventValue(
       nsEvent: NSEvent.keyEvent(
         with: .flagsChanged,
@@ -138,12 +144,14 @@ struct RBKitTests {
         characters: NSEvent.SpecialKey.downArrow.character,
         charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
         isARepeat: false,
-        keyCode: UInt16(126))!)
+        keyCode: UInt16(126)
+      )!
+    )
     expectNoDifference(actual, nil)
   }
 
   @Test
-  func test_keyEventUpArrow() {
+  func keyEventUpArrow() {
     let actual = NSEventValue.upArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -155,12 +163,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.upArrow.character,
       keyCode: UInt16(126),
       specialKey: .upArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventRightArrow() {
+  func keyEventRightArrow() {
     let actual = NSEventValue.rightArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -172,12 +181,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.rightArrow.character,
       keyCode: UInt16(124),
       specialKey: .rightArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventDownArrow() {
+  func keyEventDownArrow() {
     let actual = NSEventValue.downArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -189,12 +199,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.downArrow.character,
       keyCode: UInt16(125),
       specialKey: .downArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventLeftArrow() {
+  func keyEventLeftArrow() {
     let actual = NSEventValue.leftArrow()
     let expected = NSEventValue(
       type: .keyDown,
@@ -206,12 +217,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.leftArrow.character,
       keyCode: UInt16(123),
       specialKey: .leftArrow,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventPageUp() {
+  func keyEventPageUp() {
     let actual = NSEventValue.pageUp()
     let expected = NSEventValue(
       type: .keyDown,
@@ -223,12 +235,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.pageUp.character,
       keyCode: UInt16(116),
       specialKey: .pageUp,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventPageDown() {
+  func keyEventPageDown() {
     let actual = NSEventValue.pageDown()
     let expected = NSEventValue(
       type: .keyDown,
@@ -240,12 +253,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.pageDown.character,
       keyCode: UInt16(121),
       specialKey: .pageDown,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventHome() {
+  func keyEventHome() {
     let actual = NSEventValue.home()
     let expected = NSEventValue(
       type: .keyDown,
@@ -257,12 +271,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.home.character,
       keyCode: UInt16(115),
       specialKey: .home,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_keyEventEnd() {
+  func keyEventEnd() {
     let actual = NSEventValue.end()
     let expected = NSEventValue(
       type: .keyDown,
@@ -274,12 +289,13 @@ struct RBKitTests {
       charactersIgnoringModifiers: NSEvent.SpecialKey.end.character,
       keyCode: UInt16(119),
       specialKey: .end,
-      isARepeat: false)
+      isARepeat: false
+    )
     #expect(actual == expected)
   }
 
   @Test
-  func test_DotSyntaxSettable() {
+  func DotSyntaxSettable() {
     let a = NSTextField()
     a.set(\.stringValue, to: "foo")
     #expect(a.stringValue == "foo")
@@ -288,7 +304,7 @@ struct RBKitTests {
   // MARK: - IdentifiedHash
 
   @Test
-  func test_identifiedHash() {
+  func identifiedHash() {
     struct IdentifiedHash: IdentityHashable {
       let value: Foo
 
@@ -316,7 +332,7 @@ struct RBKitTests {
   // MARK: - Sequence extensions
 
   @Test
-  func test_sortByKeyPath() {
+  func sortByKeyPath() {
     struct Foo: Equatable {
       let id: Int
       let kind: String
@@ -327,7 +343,7 @@ struct RBKitTests {
   }
 
   @Test
-  func test_grouping() {
+  func grouping() {
     struct Foo: Equatable {
       let name: String
       let kind: String
@@ -339,7 +355,8 @@ struct RBKitTests {
         [
           "Book": [a[0]],
           "Library": [a[1]],
-        ])
+        ]
+    )
   }
 
   @Test
@@ -367,7 +384,7 @@ struct RBKitTests {
   // MARK: - Cocoa
 
   @Test
-  func test_makeCell() {
+  func makeCell() {
     let tv = NSTableView()
     class Foo: NSView { }
     let cell1 = tv.makeView(ofType: Foo.self)
@@ -377,7 +394,7 @@ struct RBKitTests {
   // MARK: - Quartz Core
 
   @Test
-  func test_cornerMasks() {
+  func cornerMasks() {
     #expect(CACornerMask.topLeft == .layerMinXMaxYCorner)
     #expect(CACornerMask.topRight == .layerMaxXMaxYCorner)
     #expect(CACornerMask.bottomRight == .layerMaxXMinYCorner)
@@ -397,7 +414,7 @@ struct RBKitTests {
   }
 
   @Test
-  func test_NSDirectionalEdgeInsets2() {
+  func NSDirectionalEdgeInsets2() {
     let sut = NSDirectionalEdgeInsets(top: 1)
     #expect(sut.top == 1)
     #expect(sut.bottom == 0)
@@ -437,7 +454,7 @@ struct RBKitTests {
   // MARK: - NSEvent.ModifierFlags
 
   @Test
-  func test_NSEventModifierFlags_initWithCarbon() throws {
+  func NSEventModifierFlags_initWithCarbon() throws {
     #expect(NSEvent.ModifierFlags(carbon: cmdKey) == .command)
 
     var mods = 0
@@ -459,7 +476,7 @@ struct RBKitTests {
   }
 
   @Test
-  func test_hotKeyApplicable() throws {
+  func hotKeyApplicable() throws {
     let a = NSEvent.ModifierFlags([
       .command, .shift, .control, .option, .function, .capsLock, .numericPad,
     ])
@@ -467,7 +484,7 @@ struct RBKitTests {
   }
 
   @Test
-  func test_description() throws {
+  func description() throws {
     let a = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
     #expect("\(a)" == "⌃⌥⇧⌘")
   }

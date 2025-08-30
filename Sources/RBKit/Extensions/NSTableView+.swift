@@ -8,9 +8,8 @@ extension NSTableView {
   public func makeView<T: NSView>(
     ofType _: T.Type,
     withIdentifier identifier: NSUserInterfaceItemIdentifier = "\(T.self)",
-    owner: Any? = nil)
-    -> T
-  {
+    owner: Any? = nil
+  ) -> T {
     if let existingCell = makeView(withIdentifier: identifier, owner: owner) as? T {
       return existingCell
     } else {

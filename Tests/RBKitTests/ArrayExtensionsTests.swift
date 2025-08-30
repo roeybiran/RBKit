@@ -15,7 +15,7 @@ struct ArrayExtensionsTests {
   }
 
   @Test
-  func test_subscript_safe_get() {
+  func subscript_safe_get() {
     var a = ["a", "b", "c"]
 
     #expect(a[safe: 3] == nil)

@@ -79,11 +79,12 @@ extension NSEvent {
     override open var pressureBehavior: NSEvent.PressureBehavior { _pressureBehavior }
 
     override open class func startPeriodicEvents(
-      afterDelay delay: TimeInterval, withPeriod period: TimeInterval)
-    {
+      afterDelay delay: TimeInterval, withPeriod period: TimeInterval
+    ) {
       _startPeriodicEvents(
         delay,
-        period)
+        period
+      )
     }
 
     override open class func stopPeriodicEvents() { _stopPeriodicEvents() }
@@ -96,9 +97,8 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       eventNumber eNum: Int,
       clickCount cNum: Int,
-      pressure: Float)
-      -> NSEvent?
-    {
+      pressure: Float
+    ) -> NSEvent? {
       _mouseEvent(type, location, flags, time, wNum, unusedPassNil, eNum, cNum, pressure)
     }
 
@@ -112,9 +112,8 @@ extension NSEvent {
       characters keys: String,
       charactersIgnoringModifiers ukeys: String,
       isARepeat flag: Bool,
-      keyCode code: UInt16)
-      -> NSEvent?
-    {
+      keyCode code: UInt16
+    ) -> NSEvent? {
       _keyEvent(
         type,
         location,
@@ -125,7 +124,8 @@ extension NSEvent {
         keys,
         ukeys,
         flag,
-        code)
+        code
+      )
     }
 
     override open class func enterExitEvent(
@@ -137,9 +137,8 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       eventNumber eNum: Int,
       trackingNumber tNum: Int,
-      userData data: UnsafeMutableRawPointer?)
-      -> NSEvent?
-    {
+      userData data: UnsafeMutableRawPointer?
+    ) -> NSEvent? {
       _enterExitEvent(
         type,
         location,
@@ -149,7 +148,8 @@ extension NSEvent {
         unusedPassNil,
         eNum,
         tNum,
-        data)
+        data
+      )
     }
 
     override open class func otherEvent(
@@ -161,9 +161,8 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       subtype: Int16,
       data1 d1: Int,
-      data2 d2: Int)
-      -> NSEvent?
-    {
+      data2 d2: Int
+    ) -> NSEvent? {
       _otherEvent(
         type,
         location,
@@ -173,22 +172,21 @@ extension NSEvent {
         unusedPassNil,
         subtype,
         d1,
-        d2)
+        d2
+      )
     }
 
     override open class func addGlobalMonitorForEvents(
       matching mask: NSEvent.EventTypeMask,
-      handler block: @escaping (NSEvent) -> Void)
-      -> Any?
-    {
+      handler block: @escaping (NSEvent) -> Void
+    ) -> Any? {
       _addGlobalMonitorForEvents(mask, block)
     }
 
     override open class func addLocalMonitorForEvents(
       matching mask: NSEvent.EventTypeMask,
-      handler block: @escaping (NSEvent) -> NSEvent?)
-      -> Any?
-    {
+      handler block: @escaping (NSEvent) -> NSEvent?
+    ) -> Any? {
       _addLocalMonitorForEvents(mask, block)
     }
 
@@ -196,9 +194,8 @@ extension NSEvent {
 
     override open func characters(
       byApplyingModifiers modifiers: NSEvent
-        .ModifierFlags)
-      -> String?
-    { _charactersbyApplyingModifiers(modifiers) }
+        .ModifierFlags
+    ) -> String? { _charactersbyApplyingModifiers(modifiers) }
     override open func touches(matching phase: NSTouch.Phase, in view: NSView?) -> Set<NSTouch> {
       _touches(phase, view)
     }
@@ -217,8 +214,9 @@ extension NSEvent {
         CGFloat,
         NSEvent.Phase,
         Bool,
-        UnsafeMutablePointer<ObjCBool>) -> Void)
-    {
+        UnsafeMutablePointer<ObjCBool>
+      ) -> Void
+    ) {
       _trackSwipeEvent(options, minDampenThreshold, maxDampenThreshold, trackingHandler)
     }
 
@@ -243,8 +241,8 @@ extension NSEvent {
         _ unusedPassNil: NSGraphicsContext?,
         _ eNum: Int,
         _ cNum: Int,
-        _ pressure: Float)
-      -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError() }
+        _ pressure: Float
+      ) -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _keyEvent:
       @Sendable (
@@ -257,8 +255,8 @@ extension NSEvent {
         _ keys: String,
         _ ukeys: String,
         _ flag: Bool,
-        _ code: UInt16)
-      -> NSEvent? = {
+        _ code: UInt16
+      ) -> NSEvent? = {
         _,
           _,
           _,
@@ -282,8 +280,8 @@ extension NSEvent {
         _ unusedPassNil: NSGraphicsContext?,
         _ eNum: Int,
         _ tNum: Int,
-        _ data: UnsafeMutableRawPointer?)
-      -> NSEvent? = {
+        _ data: UnsafeMutableRawPointer?
+      ) -> NSEvent? = {
         _,
           _,
           _,
@@ -305,8 +303,8 @@ extension NSEvent {
         _ context: NSGraphicsContext?,
         _ subtype: Int16,
         _ d1: Int,
-        _ d2: Int)
-      -> NSEvent? = {
+        _ d2: Int
+      ) -> NSEvent? = {
         _,
           _,
           _,
@@ -333,14 +331,14 @@ extension NSEvent {
     static nonisolated(unsafe) public var _addGlobalMonitorForEvents:
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
-        _ block: @escaping (NSEvent) -> Void)
-      -> Any? = { _, _ in fatalError() }
+        _ block: @escaping (NSEvent) -> Void
+      ) -> Any? = { _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _addLocalMonitorForEvents:
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
-        _ block: @escaping (NSEvent) -> NSEvent?)
-      -> Any? = { _, _ in fatalError() }
+        _ block: @escaping (NSEvent) -> NSEvent?
+      ) -> Any? = { _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _removeMonitor:
       @Sendable (_ eventMonitor: Any) -> Void = { _ in fatalError() }
@@ -474,8 +472,8 @@ extension NSEvent {
         _ options: NSEvent.SwipeTrackingOptions,
         _ minDampenThreshold: CGFloat,
         _ maxDampenThreshold: CGFloat,
-        _ trackingHandler: (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void)
-      -> Void = { _, _, _, _ in fatalError() }
+        _ trackingHandler: (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void
+      ) -> Void = { _, _, _, _ in fatalError() }
 
   }
 }

@@ -11,7 +11,10 @@ public struct CGWindowClient: Sendable {
   public var preflightScreenCaptureAccess: @Sendable () -> Bool = { false }
   public var requestScreenCaptureAccess: @Sendable () -> Bool = { false }
 
-  public func list(options: CGWindowListOption = [.excludeDesktopElements], referenceWindow: CGWindowID = kCGNullWindowID) -> [CGWindowValue] {
+  public func list(
+    options: CGWindowListOption = [.excludeDesktopElements],
+    referenceWindow: CGWindowID = kCGNullWindowID
+  ) -> [CGWindowValue] {
     let info = copyWindowInfo(options: options, referenceWindow: referenceWindow) as? [[CFString: Any]]
     return info?.compactMap(CGWindowValue.init) ?? []
   }

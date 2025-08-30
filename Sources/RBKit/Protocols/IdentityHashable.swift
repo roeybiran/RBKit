@@ -2,11 +2,12 @@
 
 @dynamicMemberLookup
 public protocol IdentityHashable: Hashable {
+  init(_ value: Value)
+
   associatedtype Value: Identifiable
 
   var value: Value { get }
 
-  init(_ value: Value)
 }
 
 extension IdentityHashable {

@@ -13,7 +13,8 @@ public struct URLSessionClient: Sendable {
 
 extension URLSessionClient: DependencyKey {
   public static let liveValue = Self(
-    data: { try await URLSession.shared.data(for: $0) })
+    data: { try await URLSession.shared.data(for: $0) }
+  )
   public static let testValue = Self()
 }
 

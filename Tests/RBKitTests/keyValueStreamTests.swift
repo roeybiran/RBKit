@@ -15,7 +15,7 @@ struct KeyValueStreamTests {
       let sut = Obj()
 
       Task {
-        for await (obj, change) in keyValueStream(observed: sut, keyPath: \.name) {
+        for await(obj, change) in keyValueStream(observed: sut, keyPath: \.name) {
           #expect(obj === sut)
           #expect(change.newValue == "john")
           c()

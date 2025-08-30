@@ -17,8 +17,8 @@ extension NSStackView {
     spacing: CGFloat = 8,
     edgeInsets: NSEdgeInsets = .init(.zero),
     distribution: NSStackView.Distribution = .fill,
-    @StackViewBuilder arrangedSubviews: () -> [NSView])
-  {
+    @StackViewBuilder arrangedSubviews: () -> [NSView]
+  ) {
     self.init()
     self.orientation = orientation
     self.alignment = alignment ?? (orientation == .horizontal ? .centerY : .centerX)

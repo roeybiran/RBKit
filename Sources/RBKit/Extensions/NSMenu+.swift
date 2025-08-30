@@ -25,7 +25,8 @@ extension NSMenu {
   @MainActor static let standardMenuBar = NSMenu(APP_NAME) {
     NSMenuItem(APP_NAME) {
       NSMenuItem(
-        "About \(APP_NAME)", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)))
+        "About \(APP_NAME)", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:))
+      )
       NSMenuItem.separator()
       NSMenuItem.settingsMenuItem()
       NSMenuItem.separator()
@@ -34,8 +35,9 @@ extension NSMenu {
       NSMenuItem("Hide \(APP_NAME)", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
       NSMenuItem(
         "Hide Others", action: #selector(NSApplication.hideOtherApplications(_:)),
-        keyEquivalent: "h")
-        .set(\.keyEquivalentModifierMask, to: [.option, .command])
+        keyEquivalent: "h"
+      )
+      .set(\.keyEquivalentModifierMask, to: [.option, .command])
       NSMenuItem("Show All", action: #selector(NSApplication.unhideAllApplications(_:)))
       NSMenuItem.separator()
       NSMenuItem("Quit \(APP_NAME)", action: #selector(NSApplication.terminate), keyEquivalent: "q")
@@ -43,7 +45,8 @@ extension NSMenu {
     NSMenuItem("File") {
       NSMenuItem("New", action: #selector(NSDocumentController.newDocument(_:)), keyEquivalent: "n")
       NSMenuItem(
-        "Open…", action: #selector(NSDocumentController.openDocument(_:)), keyEquivalent: "o")
+        "Open…", action: #selector(NSDocumentController.openDocument(_:)), keyEquivalent: "o"
+      )
       NSMenuItem("Open Recent") {
         NSMenuItem("Clear Menu", action: #selector(NSDocumentController.clearRecentDocuments(_:)))
       }
@@ -52,7 +55,8 @@ extension NSMenu {
       NSMenuItem("Save", action: #selector(NSDocument.save(_:)), keyEquivalent: "s")
       NSMenuItem("Save As…", action: #selector(NSDocument.saveAs(_:)), keyEquivalent: "S")
       NSMenuItem(
-        "Revert to Saved", action: #selector(NSDocument.revertToSaved(_:)), keyEquivalent: "R")
+        "Revert to Saved", action: #selector(NSDocument.revertToSaved(_:)), keyEquivalent: "R"
+      )
       NSMenuItem.separator()
       NSMenuItem("Page Setup…", action: #selector(NSDocument.runPageLayout(_:)), keyEquivalent: "P")
       NSMenuItem("Print…", action: #selector(NSDocument.printDocument(_:)), keyEquivalent: "p")
@@ -66,67 +70,83 @@ extension NSMenu {
       NSMenuItem("Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
       NSMenuItem(
         "Paste and Match Style", action: #selector(NSTextView.pasteAsPlainText(_:)),
-        keyEquivalent: "v")
-        .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
+        keyEquivalent: "v"
+      )
+      .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
       NSMenuItem("Delete", action: #selector(NSText.delete(_:)))
       NSMenuItem("Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
       NSMenuItem.separator()
       NSMenuItem("Find") {
         NSMenuItem(
-          "Find…", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "f")
-          .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
+          "Find…", action: #selector(NSResponder.performTextFinderAction(_:)), keyEquivalent: "f"
+        )
+        .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
         NSMenuItem(
           "Find and Replace…", action: #selector(NSResponder.performTextFinderAction(_:)),
-          keyEquivalent: "f")
-          .set(\.keyEquivalentModifierMask, to: [.option, .command])
-          .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
+          keyEquivalent: "f"
+        )
+        .set(\.keyEquivalentModifierMask, to: [.option, .command])
+        .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
         NSMenuItem(
           "Find Next", action: #selector(NSResponder.performTextFinderAction(_:)),
-          keyEquivalent: "g")
-          .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
+          keyEquivalent: "g"
+        )
+        .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
         NSMenuItem(
           "Find Previous", action: #selector(NSResponder.performTextFinderAction(_:)),
-          keyEquivalent: "G")
-          .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
+          keyEquivalent: "G"
+        )
+        .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
         NSMenuItem(
           "Use Selection for Find",
           action: #selector(NSResponder.performTextFinderAction(_:)),
-          keyEquivalent: "e")
-          .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
+          keyEquivalent: "e"
+        )
+        .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
         NSMenuItem(
           "Jump to Selection",
           action: #selector(NSStandardKeyBindingResponding.centerSelectionInVisibleArea(_:)),
-          keyEquivalent: "j")
+          keyEquivalent: "j"
+        )
       }
       NSMenuItem("Spelling and Grammar") {
         NSMenuItem(
           "Show Spelling and Grammar", action: #selector(NSText.showGuessPanel(_:)),
-          keyEquivalent: ":")
+          keyEquivalent: ":"
+        )
         NSMenuItem(
-          "Check Document Now", action: #selector(NSText.checkSpelling(_:)), keyEquivalent: ";")
+          "Check Document Now", action: #selector(NSText.checkSpelling(_:)), keyEquivalent: ";"
+        )
         NSMenuItem.separator()
         NSMenuItem(
           "Check Spelling While Typing",
-          action: #selector(NSTextView.toggleContinuousSpellChecking(_:)))
+          action: #selector(NSTextView.toggleContinuousSpellChecking(_:))
+        )
         NSMenuItem(
-          "Check Grammar With Spelling", action: #selector(NSTextView.toggleGrammarChecking(_:)))
+          "Check Grammar With Spelling", action: #selector(NSTextView.toggleGrammarChecking(_:))
+        )
         NSMenuItem(
           "Correct Spelling Automatically",
-          action: #selector(NSTextView.toggleAutomaticSpellingCorrection(_:)))
+          action: #selector(NSTextView.toggleAutomaticSpellingCorrection(_:))
+        )
       }
       NSMenuItem("Substitutions") {
         NSMenuItem(
-          "Show Substitutions", action: #selector(NSTextView.orderFrontSubstitutionsPanel(_:)))
+          "Show Substitutions", action: #selector(NSTextView.orderFrontSubstitutionsPanel(_:))
+        )
         NSMenuItem.separator()
         NSMenuItem("Smart Copy/Paste", action: #selector(NSTextView.toggleSmartInsertDelete(_:)))
         NSMenuItem(
-          "Smart Quotes", action: #selector(NSTextView.toggleAutomaticQuoteSubstitution(_:)))
+          "Smart Quotes", action: #selector(NSTextView.toggleAutomaticQuoteSubstitution(_:))
+        )
         NSMenuItem(
-          "Smart Dashes", action: #selector(NSTextView.toggleAutomaticDashSubstitution(_:)))
+          "Smart Dashes", action: #selector(NSTextView.toggleAutomaticDashSubstitution(_:))
+        )
         NSMenuItem("Smart Links", action: #selector(NSTextView.toggleAutomaticLinkDetection(_:)))
         NSMenuItem("Data Detectors", action: #selector(NSTextView.toggleAutomaticDataDetection(_:)))
         NSMenuItem(
-          "Text Replacement", action: #selector(NSTextView.toggleAutomaticTextReplacement(_:)))
+          "Text Replacement", action: #selector(NSTextView.toggleAutomaticTextReplacement(_:))
+        )
       }
       NSMenuItem("Transformations") {
         NSMenuItem("Make Upper Case", action: #selector(NSResponder.uppercaseWord(_:)))
@@ -141,7 +161,8 @@ extension NSMenu {
     NSMenuItem("Format") {
       NSMenuItem("Font") {
         NSMenuItem(
-          "Show Fonts", action: #selector(NSFontManager.orderFrontFontPanel(_:)), keyEquivalent: "t")
+          "Show Fonts", action: #selector(NSFontManager.orderFrontFontPanel(_:)), keyEquivalent: "t"
+        )
         NSMenuItem("Bold", action: #selector(NSFontManager.addFontTrait(_:)), keyEquivalent: "b")
           .set(\.tag, to: 2)
         NSMenuItem("Italic", action: #selector(NSFontManager.addFontTrait(_:)), keyEquivalent: "i")
@@ -174,7 +195,8 @@ extension NSMenu {
         NSMenuItem.separator()
         NSMenuItem(
           "Show Colors", action: #selector(NSApplication.orderFrontColorPanel(_:)),
-          keyEquivalent: "C")
+          keyEquivalent: "C"
+        )
         NSMenuItem.separator()
         NSMenuItem("Copy Style", action: #selector(NSText.copyFont(_:)), keyEquivalent: "c")
           .set(\.keyEquivalentModifierMask, to: [.option, .command])
@@ -191,24 +213,30 @@ extension NSMenu {
           NSMenuItem("Paragraph")
             .set(\.isEnabled, to: false)
           NSMenuItem(
-            "\tDefault", action: #selector(NSResponder.makeBaseWritingDirectionNatural(_:)))
+            "\tDefault", action: #selector(NSResponder.makeBaseWritingDirectionNatural(_:))
+          )
           NSMenuItem(
             "\tLeft to Right",
-            action: #selector(NSResponder.makeBaseWritingDirectionLeftToRight(_:)))
+            action: #selector(NSResponder.makeBaseWritingDirectionLeftToRight(_:))
+          )
           NSMenuItem(
             "\tRight to Left",
-            action: #selector(NSResponder.makeBaseWritingDirectionRightToLeft(_:)))
+            action: #selector(NSResponder.makeBaseWritingDirectionRightToLeft(_:))
+          )
           NSMenuItem.separator()
           NSMenuItem("Selection")
             .set(\.isEnabled, to: false)
           NSMenuItem(
-            "\tDefault", action: #selector(NSResponder.makeTextWritingDirectionNatural(_:)))
+            "\tDefault", action: #selector(NSResponder.makeTextWritingDirectionNatural(_:))
+          )
           NSMenuItem(
             "\tLeft to Right",
-            action: #selector(NSResponder.makeTextWritingDirectionLeftToRight(_:)))
+            action: #selector(NSResponder.makeTextWritingDirectionLeftToRight(_:))
+          )
           NSMenuItem(
             "\tRight to Left",
-            action: #selector(NSResponder.makeTextWritingDirectionRightToLeft(_:)))
+            action: #selector(NSResponder.makeTextWritingDirectionRightToLeft(_:))
+          )
         }
         NSMenuItem.separator()
         NSMenuItem("Show Ruler", action: #selector(NSText.toggleRuler(_:)))
@@ -220,18 +248,22 @@ extension NSMenu {
     }
     NSMenuItem("View") {
       NSMenuItem(
-        "Show Toolbar", action: #selector(NSWindow.toggleToolbarShown(_:)), keyEquivalent: "t")
-        .set(\.keyEquivalentModifierMask, to: [.option, .command])
+        "Show Toolbar", action: #selector(NSWindow.toggleToolbarShown(_:)), keyEquivalent: "t"
+      )
+      .set(\.keyEquivalentModifierMask, to: [.option, .command])
       NSMenuItem(
-        "Customize Toolbar…", action: #selector(NSWindow.runToolbarCustomizationPalette(_:)))
+        "Customize Toolbar…", action: #selector(NSWindow.runToolbarCustomizationPalette(_:))
+      )
       NSMenuItem.separator()
       NSMenuItem(
         "Show Sidebar", action: #selector(NSSplitViewController.toggleSidebar(_:)),
-        keyEquivalent: "s")
-        .set(\.keyEquivalentModifierMask, to: [.control, .command])
+        keyEquivalent: "s"
+      )
+      .set(\.keyEquivalentModifierMask, to: [.control, .command])
       NSMenuItem(
-        "Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f")
-        .set(\.keyEquivalentModifierMask, to: [.control, .command])
+        "Enter Full Screen", action: #selector(NSWindow.toggleFullScreen(_:)), keyEquivalent: "f"
+      )
+      .set(\.keyEquivalentModifierMask, to: [.control, .command])
     }
     NSMenuItem.windowMenu {
       NSMenuItem("Minimize", action: #selector(NSWindow.performMiniaturize(_:)), keyEquivalent: "m")
@@ -241,7 +273,8 @@ extension NSMenu {
     }
     NSMenuItem.helpMenu {
       NSMenuItem(
-        "\(APP_NAME) Help", action: #selector(NSApplication.showHelp(_:)), keyEquivalent: "?")
+        "\(APP_NAME) Help", action: #selector(NSApplication.showHelp(_:)), keyEquivalent: "?"
+      )
     }
   }
 

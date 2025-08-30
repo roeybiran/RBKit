@@ -1,8 +1,14 @@
 import Carbon
 
 public final class RunLoopSourceMock {
-  public let id: String
+
+  // MARK: Lifecycle
+
   public init(id: String) {
     self.id = id
   }
+
+  // MARK: Public
+
+  public let id: String
 }

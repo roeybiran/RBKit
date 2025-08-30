@@ -13,14 +13,24 @@ import Foundation
 
 @DependencyClient
 public struct DispatchSourceFileSystemObjectClient: Sendable {
-  public var make: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?) -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSourceFileSystemObjectMock() }
-  public var setEventHandler: @Sendable (_ object: any DispatchSourceFileSystemObject, _ qos: DispatchQoS, _ flags: DispatchWorkItemFlags, _ handler: DispatchSource.DispatchSourceHandler?) -> Void = { _, _, _, _ in }
+  public var make: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?)
+    -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSourceFileSystemObjectMock() }
+  public var setEventHandler: @Sendable (
+    _ object: any DispatchSourceFileSystemObject,
+    _ qos: DispatchQoS,
+    _ flags: DispatchWorkItemFlags,
+    _ handler: DispatchSource.DispatchSourceHandler?
+  ) -> Void = { _, _, _, _ in }
   public var resume: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
   public var cancel: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
   public var data: @Sendable (_ object: any DispatchSourceFileSystemObject) -> DispatchSource.FileSystemEvent = { _ in .write }
   public var handle: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Int32 = { _ in 0 }
 
-  public func pathMonitor(path: String, mask: DispatchSource.FileSystemEvent, queue: DispatchQueue?) -> AsyncStream<DispatchSource.FileSystemEvent> {
+  public func pathMonitor(
+    path: String,
+    mask: DispatchSource.FileSystemEvent,
+    queue: DispatchQueue?
+  ) -> AsyncStream<DispatchSource.FileSystemEvent> {
     let (stream, continuation) = AsyncStream.makeStream(of: DispatchSource.FileSystemEvent.self)
     let source = make(fileDescriptor: open(path, O_EVTONLY), eventMask: mask, queue: queue)
     setEventHandler(object: source, qos: .unspecified, flags: []) {
@@ -45,7 +55,8 @@ extension DispatchSourceFileSystemObjectClient: DependencyKey {
     resume: { $0.resume() },
     cancel: { $0.cancel() },
     data: { $0.data },
-    handle: { $0.handle })
+    handle: { $0.handle }
+  )
   public static let testValue = Self()
 }
 
@@ -55,4 +66,3 @@ extension DependencyValues {
     set { self[DispatchSourceFileSystemObjectClient.self] = newValue }
   }
 }
-

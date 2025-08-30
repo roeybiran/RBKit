@@ -10,20 +10,21 @@ public struct FileManagerClient: Sendable {
     _ directory: FileManager.SearchPathDirectory,
     _ domain: FileManager.SearchPathDomainMask,
     _ appropriateFor: URL?,
-    _ create: Bool)
-    throws -> URL
+    _ create: Bool
+  ) throws -> URL
 
   public var urls:
     @Sendable (
       _ directory: FileManager.SearchPathDirectory,
-      _ domainMask: FileManager.SearchPathDomainMask)
-    -> [URL] = { _, _ in [] }
+      _ domainMask: FileManager.SearchPathDomainMask
+    ) -> [URL] = { _, _ in [] }
 
   public var contentsOfDirectory:
     @Sendable (
       _ url: URL,
       _ keys: [URLResourceKey]?,
-      _ options: FileManager.DirectoryEnumerationOptions) throws -> [URL]
+      _ options: FileManager.DirectoryEnumerationOptions
+    ) throws -> [URL]
 
   public var enumerator:
     @Sendable (
@@ -33,14 +34,17 @@ public struct FileManagerClient: Sendable {
       _ errorHandler: (
         (
           URL,
-          Error) -> Bool)?) -> FileManager.DirectoryEnumerator?
+          Error
+        ) -> Bool
+      )?
+    ) -> FileManager.DirectoryEnumerator?
 
   public var createDirectory:
     @Sendable (
       _ atURL: URL,
       _ withIntermediateDirectories: Bool,
-      _ attributes: [FileAttributeKey: Any]?) throws
-    -> Void
+      _ attributes: [FileAttributeKey: Any]?
+    ) throws -> Void
 }
 
 // MARK: DependencyKey
@@ -51,15 +55,18 @@ extension FileManagerClient: DependencyKey {
     urls: { FileManager.default.urls(for: $0, in: $1) },
     contentsOfDirectory: {
       try FileManager.default.contentsOfDirectory(
-        at: $0, includingPropertiesForKeys: $1, options: $2)
+        at: $0, includingPropertiesForKeys: $1, options: $2
+      )
     },
     enumerator: {
       FileManager.default.enumerator(at: $0, includingPropertiesForKeys: $1, options: $2, errorHandler: $3)
     },
     createDirectory: {
       try FileManager.default.createDirectory(
-        at: $0, withIntermediateDirectories: $1, attributes: $2)
-    })
+        at: $0, withIntermediateDirectories: $1, attributes: $2
+      )
+    }
+  )
   public static let testValue = FileManagerClient()
 }
 

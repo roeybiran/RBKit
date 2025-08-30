@@ -1,8 +1,15 @@
 import Carbon
 
 public struct CGEventClientLive: CGEventClientProtocol {
-  public init() {}
-  
+
+  // MARK: Lifecycle
+
+  public init() { }
+
+  // MARK: Public
+
+  public typealias MachPort = CFMachPort
+
   public func createEventTap(
     tap: CGEventTapLocation,
     place: CGEventTapPlacement,
@@ -40,5 +47,4 @@ public struct CGEventClientLive: CGEventClientProtocol {
     event.getIntegerValueField(field)
   }
 
-  public typealias MachPort = CFMachPort
 }

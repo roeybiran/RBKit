@@ -23,7 +23,8 @@ extension BundleClient: DependencyKey {
     initWithPath: { Bundle(path: $0) },
     bundleIdentifier: { $0.bundleIdentifier },
     infoDictionary: { $0.infoDictionary },
-    object: { $0.object(forInfoDictionaryKey: $1) })
+    object: { $0.object(forInfoDictionaryKey: $1) }
+  )
   public static let testValue = BundleClient()
 }
 

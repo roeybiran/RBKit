@@ -20,7 +20,8 @@ extension NSImage {
 
     case .systemSymbol(let systemSymbolName, let accessibilityDescription):
       NSImage(
-        systemSymbolName: systemSymbolName, accessibilityDescription: accessibilityDescription)
+        systemSymbolName: systemSymbolName, accessibilityDescription: accessibilityDescription
+      )
 
     case .contentType(let contentType):
       workspace.icon(for: contentType)

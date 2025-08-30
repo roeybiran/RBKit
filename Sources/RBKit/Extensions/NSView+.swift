@@ -55,7 +55,8 @@ extension NSView {
         characters: event.characters ?? "",
         charactersIgnoringModifiers: event.charactersIgnoringModifiers ?? "",
         isARepeat: event.isARepeat,
-        keyCode: event.keyCode)
+        keyCode: event.keyCode
+      )
     else {
       return
     }
@@ -66,9 +67,8 @@ extension NSView {
   public func constraints(
     for type: ConstraintType,
     of otherView: NSView,
-    offset: Offset = .uniform(0))
-    -> [NSLayoutConstraint]
-  {
+    offset: Offset = .uniform(0)
+  ) -> [NSLayoutConstraint] {
     let verticalOffset: CGFloat
     let horizontalOffset: CGFloat
     switch offset {

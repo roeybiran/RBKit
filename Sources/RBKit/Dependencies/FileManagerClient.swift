@@ -45,27 +45,23 @@ public struct FileManagerClient: Sendable {
       _ withIntermediateDirectories: Bool,
       _ attributes: [FileAttributeKey: Any]?
     ) throws -> Void
+  
+  public var fileExists:
+    @Sendable (
+      _ atPath: String
+    ) -> Bool = { _ in false }
 }
 
 // MARK: DependencyKey
 
 extension FileManagerClient: DependencyKey {
   public static let liveValue = FileManagerClient(
-    url: { try FileManager.default.url(for: $0, in: $1, appropriateFor: $2, create: $3) },
-    urls: { FileManager.default.urls(for: $0, in: $1) },
-    contentsOfDirectory: {
-      try FileManager.default.contentsOfDirectory(
-        at: $0, includingPropertiesForKeys: $1, options: $2
-      )
-    },
-    enumerator: {
-      FileManager.default.enumerator(at: $0, includingPropertiesForKeys: $1, options: $2, errorHandler: $3)
-    },
-    createDirectory: {
-      try FileManager.default.createDirectory(
-        at: $0, withIntermediateDirectories: $1, attributes: $2
-      )
-    }
+    url: FileManager.default.url(for:in:appropriateFor:create:),
+    urls: FileManager.default.urls(for:in:),
+    contentsOfDirectory: FileManager.default.contentsOfDirectory(at:includingPropertiesForKeys:options:),
+    enumerator: FileManager.default.enumerator(at:includingPropertiesForKeys:options:errorHandler:),
+    createDirectory: FileManager.default.createDirectory(at:withIntermediateDirectories:attributes:),
+    fileExists: FileManager.default.fileExists(atPath:)
   )
   public static let testValue = FileManagerClient()
 }

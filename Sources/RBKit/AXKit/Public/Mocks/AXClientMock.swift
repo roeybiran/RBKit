@@ -88,6 +88,7 @@ public final class AXClientMock: AXClient {
   public var _getWindow: (UIElement, inout CGWindowID) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
 
   // MARK: - Process Trust
+  
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
     _isProcessTrustedWithOptions(options)
   }
@@ -97,6 +98,7 @@ public final class AXClientMock: AXClient {
   }
 
   // MARK: - AXUIElement
+
   public func getTypeID() -> CFTypeID {
     _getTypeID()
   }
@@ -186,6 +188,7 @@ public final class AXClientMock: AXClient {
   }
 
   // MARK: - AXObserver
+
   public func observerGetTypeID() -> CFTypeID {
     _observerGetTypeID()
   }
@@ -211,6 +214,7 @@ public final class AXClientMock: AXClient {
   }
 
   // MARK: - AXValue
+
   public func getAXValueTypeID() -> CFTypeID {
     _getAXValueTypeID()
   }
@@ -228,6 +232,7 @@ public final class AXClientMock: AXClient {
   }
 
   // MARK: - CFRunLoopSource
+
   public func addRunLoopSource(runLoop: CFRunLoop!, source: RunLoopSource!, mode: CFRunLoopMode!) {
     _addRunLoopSource(runLoop, source, mode)
   }
@@ -237,6 +242,7 @@ public final class AXClientMock: AXClient {
   }
 
   // MARK: - Private APIs
+
   public func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError {
     _getWindow(axUiElement, &wid)
   }

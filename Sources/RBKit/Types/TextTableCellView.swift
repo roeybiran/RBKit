@@ -19,7 +19,7 @@ open class TextTableCellView: NSTableCellView {
 
   // MARK: Public
 
-  public override var textField: NSTextField? {
+  open override var textField: NSTextField? {
     get { _textField }
     set { _textField = newValue }
   }

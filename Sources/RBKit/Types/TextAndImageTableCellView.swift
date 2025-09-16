@@ -17,7 +17,7 @@ open class TextAndImageTableCellView: TextTableCellView {
 
   // MARK: Public
 
-  public override var imageView: NSImageView? {
+  open override var imageView: NSImageView? {
     get { _imageView }
     set { _imageView = newValue }
   }
@@ -25,5 +25,4 @@ open class TextAndImageTableCellView: TextTableCellView {
   // MARK: Private
 
   private var _imageView: NSImageView?
-
 }

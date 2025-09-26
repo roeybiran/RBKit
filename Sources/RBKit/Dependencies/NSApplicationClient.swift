@@ -11,8 +11,13 @@ public struct NSApplicationClient: Sendable {
 
   /// Activating and Deactivating the App
   public var activate: @Sendable @MainActor () -> Void
+  
+  @DependencyEndpoint(method: "activate")
+  public var activateIgnoringOtherApps: @Sendable @MainActor (_ ignoringOtherApps: Bool) -> Void
+
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationTo: @Sendable @MainActor (_ to: NSRunningApplication) -> Void
+
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationToApplicationWithBundleIdentifier:
     @Sendable @MainActor (_ toApplicationWithBundleIdentifier: String) -> Void
@@ -46,6 +51,7 @@ extension NSApplicationClient: DependencyKey {
         NSApplication.shared.activate(ignoringOtherApps: false)
       }
     },
+    activateIgnoringOtherApps: NSApplication.shared.activate(ignoringOtherApps:),
     yieldActivationTo: { app in
       if #available(macOS 14.0, *) {
         NSApplication.shared.yieldActivation(to: app)

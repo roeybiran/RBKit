@@ -1,4 +1,4 @@
-import AppKit.NSApplication
+@preconcurrency import AppKit.NSApplication
 import Dependencies
 import DependenciesMacros
 
@@ -10,6 +10,7 @@ public struct NSApplicationClient: Sendable {
   public var terminate: @Sendable @MainActor (_ sender: Any?) -> Void
 
   /// Activating and Deactivating the App
+  public var activate: @Sendable @MainActor () -> Void
   @DependencyEndpoint(method: "yieldActivation")
   public var yieldActivationTo: @Sendable @MainActor (_ to: NSRunningApplication) -> Void
   @DependencyEndpoint(method: "yieldActivation")
@@ -37,8 +38,13 @@ public struct NSApplicationClient: Sendable {
 
 extension NSApplicationClient: DependencyKey {
   public static let liveValue = Self(
-    terminate: { sender in
-      NSApplication.shared.terminate(sender)
+    terminate: NSApplication.shared.terminate,
+    activate: {
+      if #available(macOS 14.0, *) {
+        NSApplication.shared.activate()
+      } else {
+        NSApplication.shared.activate(ignoringOtherApps: false)
+      }
     },
     yieldActivationTo: { app in
       if #available(macOS 14.0, *) {
@@ -54,10 +60,10 @@ extension NSApplicationClient: DependencyKey {
         // Fallback on earlier versions
       }
     },
-    runModal: { NSApplication.shared.runModal(for: $0) },
-    stopModal: { NSApplication.shared.stopModal() },
-    activationPolicy: { NSApplication.shared.activationPolicy() },
-    setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) }
+    runModal: NSApplication.shared.runModal(for:),
+    stopModal: NSApplication.shared.stopModal,
+    activationPolicy: NSApplication.shared.activationPolicy,
+    setActivationPolicy: NSApplication.shared.setActivationPolicy
   )
 
   public static let testValue = Self()

@@ -6,7 +6,7 @@ open class TextTableCellView: NSTableCellView {
 
   public override init(frame frameRect: NSRect) {
     super.init(frame: frameRect)
-    identifier = "\(Self.self)"
+    identifier = .init("\(Self.self)")
     _textField = NSTextField(labelWithString: "")
     _textField?.textColor = .controlTextColor
     _textField?.backgroundColor = .controlColor
@@ -17,7 +17,7 @@ open class TextTableCellView: NSTableCellView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: Public
+  // MARK: Open
 
   open override var textField: NSTextField? {
     get { _textField }

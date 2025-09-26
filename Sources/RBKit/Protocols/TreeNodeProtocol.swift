@@ -10,7 +10,10 @@ public protocol TreeNodeProtocol {
 extension TreeNodeProtocol {
   /// Recursively returns children of self in a breadth-first order.
   public var descendants: [Self] {
-    children.concat(children.reduce(into: []) { $0.append(contentsOf: $1.descendants) })
+    let descendantChildren = children.reduce(into: [Self]()) { result, child in
+      result.append(contentsOf: child.descendants)
+    }
+    return children + descendantChildren
   }
 
   /// Apply `transform` on `self` and recursively on all of its descendants.

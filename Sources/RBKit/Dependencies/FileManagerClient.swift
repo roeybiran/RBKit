@@ -45,7 +45,7 @@ public struct FileManagerClient: Sendable {
       _ withIntermediateDirectories: Bool,
       _ attributes: [FileAttributeKey: Any]?
     ) throws -> Void
-  
+
   public var fileExists:
     @Sendable (
       _ atPath: String

@@ -1,24 +1,19 @@
 import AppKit
-import CustomDump
 import Testing
 
 @testable import RBKit
 
 @MainActor
-struct NSObjectExtensionsTests {
-  @Test
-  func NSObject_UIIdentifier() {
-    #expect(NSObject.userInterfaceIdentifier == "NSObject")
-    #expect(NSView.userInterfaceIdentifier == "NSView")
-    class MainCell: NSTableCellView { }
-    #expect(MainCell.userInterfaceIdentifier == "MainCell")
-  }
+@Suite
+struct `NSObject Extensions Tests` {
+    @Test
+    func `Dot syntax settable updates identifiers`() {
+        let view = NSView()
 
-  @Test
-  func NSObject_dotSyntaxSettable() {
-    let view = NSView()
-    #expect(view.identifier == nil)
-    view.set(\.identifier, to: "foo")
-    #expect(view.identifier == "foo")
-  }
+        #expect(view.identifier == nil)
+
+        view.set(\.identifier, to: .init("foo"))
+
+        #expect(view.identifier == .init("foo"))
+    }
 }

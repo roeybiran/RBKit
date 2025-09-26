@@ -3,14 +3,18 @@ import Testing
 
 @testable import RBKit
 
-struct NSRunningApplicationMockTests {
-  @Test
-  func test() {
-    let app = NSRunningApplication.Mock()
-    #expect(app.activationPolicy == .regular)
-    app._activationPolicy = .prohibited
-    #expect(app.activationPolicy == .prohibited)
-    #expect(app.isHidden == false)
-    #expect(NSRunningApplication.Mock(_isHidden: true).isHidden == true)
-  }
+@Suite
+struct `NSRunningApplication Mock Tests` {
+    @Test
+    func `Mock tracks activation policy and visibility`() {
+        let application = NSRunningApplication.Mock()
+
+        #expect(application.activationPolicy == .regular)
+
+        application._activationPolicy = .prohibited
+
+        #expect(application.activationPolicy == .prohibited)
+        #expect(application.isHidden == false)
+        #expect(NSRunningApplication.Mock(_isHidden: true).isHidden == true)
+    }
 }

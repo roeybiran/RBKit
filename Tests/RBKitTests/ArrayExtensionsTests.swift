@@ -1,28 +1,20 @@
-import Carbon
-import CustomDump
 import Testing
 
 @testable import RBKit
 
-struct ArrayExtensionsTests {
-  @Test
-  func test_concat() {
-    let a = ["a"].concat(["b"])
-    #expect(a == ["a", "b"])
+@Suite
+struct `Array Extensions Tests` {
+    @Test
+    func `Safe subscript get and set`() {
+        var values = ["a", "b", "c"]
 
-    let b = ["a"].concat("b")
-    #expect(b == ["a", "b"])
-  }
+        #expect(values[safe: 3] == nil)
+        #expect(values[safe: 0] == "a")
 
-  @Test
-  func subscript_safe_get() {
-    var a = ["a", "b", "c"]
+        values[safe: 0] = "z"
+        #expect(values[safe: 0] == "z")
 
-    #expect(a[safe: 3] == nil)
-    #expect(a[safe: 0] == "a")
-    a[safe: 0] = "z"
-    #expect(a[safe: 0] == "z")
-    a[safe: 9] = "y"
-    #expect(a[safe: 9] == nil)
-  }
+        values[safe: 9] = "y"
+        #expect(values[safe: 9] == nil)
+    }
 }

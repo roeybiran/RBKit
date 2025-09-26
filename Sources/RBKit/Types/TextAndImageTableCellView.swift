@@ -6,7 +6,7 @@ open class TextAndImageTableCellView: TextTableCellView {
 
   public override init(frame frameRect: NSRect) {
     super.init(frame: frameRect)
-    identifier = "\(Self.self)"
+    identifier = .init("\(Self.self)")
     _imageView = NSImageView()
     addSubview(_imageView!)
   }
@@ -15,7 +15,7 @@ open class TextAndImageTableCellView: TextTableCellView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: Public
+  // MARK: Open
 
   open override var imageView: NSImageView? {
     get { _imageView }

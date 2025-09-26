@@ -1,61 +1,62 @@
 import Foundation
 import Testing
+
 @testable import RBKit
 
 @Suite
-struct CGSizeClampTests {
-  @Test
-  func clampSmallerSize() {
-    let originalSize = CGSize(width: 100, height: 50)
-    let maxSize = CGSize(width: 200, height: 100)
+struct `CGSize Clamp Tests` {
+    @Test
+    func `Clamp keeps smaller sizes`() {
+        let original = CGSize(width: 100, height: 50)
+        let maximum = CGSize(width: 200, height: 100)
 
-    let clampedSize = originalSize.clamp(to: maxSize)
+        let clamped = original.clamp(to: maximum)
 
-    #expect(clampedSize.width == 100)
-    #expect(clampedSize.height == 50)
-  }
+        #expect(clamped.width == 100)
+        #expect(clamped.height == 50)
+    }
 
-  @Test
-  func clampLargerSize() {
-    let originalSize = CGSize(width: 400, height: 300)
-    let maxSize = CGSize(width: 200, height: 150)
+    @Test
+    func `Clamp trims oversized dimensions`() {
+        let original = CGSize(width: 400, height: 300)
+        let maximum = CGSize(width: 200, height: 150)
 
-    let clampedSize = originalSize.clamp(to: maxSize)
+        let clamped = original.clamp(to: maximum)
 
-    #expect(clampedSize.width == 200)
-    #expect(clampedSize.height == 150)
-  }
+        #expect(clamped.width == 200)
+        #expect(clamped.height == 150)
+    }
 
-  @Test
-  func clampWithAspectRatioMaintained() {
-    let originalSize = CGSize(width: 400, height: 200)
-    let maxSize = CGSize(width: 200, height: 200)
+    @Test
+    func `Clamp preserves aspect ratio`() {
+        let original = CGSize(width: 400, height: 200)
+        let maximum = CGSize(width: 200, height: 200)
 
-    let clampedSize = originalSize.clamp(to: maxSize)
+        let clamped = original.clamp(to: maximum)
 
-    #expect(clampedSize.width == 200)
-    #expect(clampedSize.height == 100)
-  }
+        #expect(clamped.width == 200)
+        #expect(clamped.height == 100)
+    }
 
-  @Test
-  func clampWithZeroDimensions() {
-    let originalSize = CGSize(width: 0, height: 0)
-    let maxSize = CGSize(width: 200, height: 200)
+    @Test
+    func `Clamp leaves zero dimensions unchanged`() {
+        let original = CGSize(width: 0, height: 0)
+        let maximum = CGSize(width: 200, height: 200)
 
-    let clampedSize = originalSize.clamp(to: maxSize)
+        let clamped = original.clamp(to: maximum)
 
-    #expect(clampedSize.width == 0)
-    #expect(clampedSize.height == 0)
-  }
+        #expect(clamped.width == 0)
+        #expect(clamped.height == 0)
+    }
 
-  @Test
-  func clampWithNegativeDimensions() {
-    let originalSize = CGSize(width: -100, height: -50)
-    let maxSize = CGSize(width: 200, height: 200)
+    @Test
+    func `Clamp leaves negative dimensions unchanged`() {
+        let original = CGSize(width: -100, height: -50)
+        let maximum = CGSize(width: 200, height: 200)
 
-    let clampedSize = originalSize.clamp(to: maxSize)
+        let clamped = original.clamp(to: maximum)
 
-    #expect(clampedSize.width == -100)
-    #expect(clampedSize.height == -50)
-  }
+        #expect(clamped.width == -100)
+        #expect(clamped.height == -50)
+    }
 }

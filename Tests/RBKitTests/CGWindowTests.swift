@@ -6,131 +6,140 @@ import Testing
 @testable import RBKit
 
 @Suite
-final class CGWindowTests {
+struct `CG Window Tests` {
+    @Test
+    func `Init succeeds with complete dictionary`() {
+        let dictionary = makeWindowDictionary()
+        let value = CGWindowValue(dictionary)
+        let expected = CGWindowValue(
+            number: 0,
+            storeType: 0,
+            layer: 0,
+            bounds: .zero,
+            sharingState: 0,
+            alpha: 0,
+            ownerPID: 0,
+            memoryUsage: 0,
+            ownerName: nil,
+            name: nil,
+            isOnscreen: nil,
+            backingLocationVideoMemory: nil
+        )
 
-  // MARK: Lifecycle
+        #expect(value == expected)
+    }
 
-  init() {
-    dict[kCGWindowNumber] = CGWindowID()
-    dict[kCGWindowStoreType] = 0
-    dict[kCGWindowLayer] = Int32()
-    dict[kCGWindowBounds] = ["X": 0.0, "Y": 0.0, "Width": 0.0, "Height": 0.0] as CFDictionary
-    dict[kCGWindowSharingState] = 0
-    dict[kCGWindowAlpha] = CGFloat()
-    dict[kCGWindowOwnerPID] = pid_t()
-    dict[kCGWindowMemoryUsage] = 0
-  }
+    @Test
+    func `Missing window number returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowNumber] = nil
 
-  deinit {
-    dict = [:]
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  // MARK: Internal
+    @Test
+    func `Missing store type returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowStoreType] = nil
 
-  var dict = [CFString: Any]()
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func test_init() async throws {
-    let a = CGWindowValue(dict)
-    let b = CGWindowValue(
-      number: 0,
-      storeType: 0,
-      layer: 0,
-      bounds: .zero,
-      sharingState: 0,
-      alpha: 0,
-      ownerPID: 0,
-      memoryUsage: 0,
-      ownerName: nil,
-      name: nil,
-      isOnscreen: nil,
-      backingLocationVideoMemory: nil
-    )
-    #expect(a == b)
-  }
+    @Test
+    func `Missing layer returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowLayer] = nil
 
-  @Test
-  func withoutWindowNumber() async throws {
-    dict[kCGWindowNumber] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withoutWindowStoreType() async throws {
-    dict[kCGWindowStoreType] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Missing bounds returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowBounds] = nil
 
-  @Test
-  func withoutWindowLayer() async throws {
-    dict[kCGWindowLayer] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withoutBounds() async throws {
-    dict[kCGWindowBounds] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Bounds missing X value returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowBounds] = ["X": CGFloat()]
 
-  @Test
-  func withOnlyX() async throws {
-    dict[kCGWindowBounds] = ["X": CGFloat()]
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withOnlyY() async throws {
-    dict[kCGWindowBounds] = ["Y": CGFloat()]
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Bounds missing Y value returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowBounds] = ["Y": CGFloat()]
 
-  @Test
-  func withOnlyW() async throws {
-    dict[kCGWindowBounds] = ["Width": CGFloat()]
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withOnlyH() async throws {
-    dict[kCGWindowBounds] = ["Height": CGFloat()]
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Bounds missing width returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowBounds] = ["Width": CGFloat()]
 
-  @Test
-  func withoutSharingState() async throws {
-    dict[kCGWindowSharingState] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withoutAlpha() async throws {
-    dict[kCGWindowAlpha] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Bounds missing height returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowBounds] = ["Height": CGFloat()]
 
-  @Test
-  func withoutOwnerPID() async throws {
-    dict[kCGWindowOwnerPID] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+        #expect(CGWindowValue(dictionary) == nil)
+    }
 
-  @Test
-  func withoutMemUsage() async throws {
-    dict[kCGWindowMemoryUsage] = nil
-    let a = CGWindowValue(dict)
-    #expect(a == nil)
-  }
+    @Test
+    func `Missing sharing state returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowSharingState] = nil
 
+        #expect(CGWindowValue(dictionary) == nil)
+    }
+
+    @Test
+    func `Missing alpha returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowAlpha] = nil
+
+        #expect(CGWindowValue(dictionary) == nil)
+    }
+
+    @Test
+    func `Missing owner pid returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowOwnerPID] = nil
+
+        #expect(CGWindowValue(dictionary) == nil)
+    }
+
+    @Test
+    func `Missing memory usage returns nil`() {
+        var dictionary = makeWindowDictionary()
+        dictionary[kCGWindowMemoryUsage] = nil
+
+        #expect(CGWindowValue(dictionary) == nil)
+    }
+
+    private func makeWindowDictionary() -> [CFString: Any] {
+        var dictionary = [CFString: Any]()
+        dictionary[kCGWindowNumber] = CGWindowID()
+        dictionary[kCGWindowStoreType] = 0
+        dictionary[kCGWindowLayer] = Int32()
+        dictionary[kCGWindowBounds] = [
+            "X": 0.0,
+            "Y": 0.0,
+            "Width": 0.0,
+            "Height": 0.0,
+        ] as CFDictionary
+        dictionary[kCGWindowSharingState] = 0
+        dictionary[kCGWindowAlpha] = CGFloat()
+        dictionary[kCGWindowOwnerPID] = pid_t()
+        dictionary[kCGWindowMemoryUsage] = 0
+        return dictionary
+    }
 }

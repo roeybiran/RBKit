@@ -18,7 +18,6 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump", from: "1.0.0"),
     .package(url: "https://github.com/airbnb/swift", from: "1.0.0"),
   ],
   targets: [
@@ -41,8 +40,8 @@ let package = Package(
       name: "RBKitTests",
       dependencies: [
         "RBKit",
-        .product(name: "CustomDump", package: "swift-custom-dump"),
       ]
     ),
   ]
 )
+

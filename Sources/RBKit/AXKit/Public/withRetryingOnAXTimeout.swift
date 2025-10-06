@@ -1,6 +1,3 @@
-import Foundation
-import Dependencies
-
 // https://github.com/lwouis/alt-tab-macos/blob/master/src/api-wrappers/AXUIElement.swift
 nonisolated public func withRetryingOnAXTimeout<T>(
   retryingEvery interval: Duration = .seconds(0.25),

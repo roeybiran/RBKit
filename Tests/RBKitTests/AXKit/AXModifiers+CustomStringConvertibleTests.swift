@@ -2,7 +2,7 @@ import Carbon
 import Testing
 @testable import AXKit
 
-struct AXKitTests {
+struct `AXMenuItemModifiers+CustomStringConvertible Tests` {
   // MARK: - AXMenuItemModifiers+CustomStringConvertibleTests
 
   @Test

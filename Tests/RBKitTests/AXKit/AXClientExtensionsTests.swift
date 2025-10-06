@@ -1,16 +1,9 @@
-import Carbon
+import Foundation
+import ApplicationServices
 import Testing
 @testable import AXKit
 
-private class MockAXValue: NSObject {
-  let type: AXValueType
-  
-  init(type: AXValueType) {
-    self.type = type
-    super.init()
-  }
-}
-
+@Suite(.serialized)
 struct AXClientExtensionsTests {
 
   @Test
@@ -135,6 +128,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let result: String = try sut.attributeValue(element: element, for: attribute)
       #expect(result == "testValue")
@@ -148,6 +142,7 @@ struct AXClientExtensionsTests {
     let attribute = Attribute<String>("testAttribute")
 
     sut._attributeValue = { _, _, _ in .failure }
+    sut._getAXValueTypeID = { 0 }
 
     #expect(throws: AXClientError.self) {
       let _: String = try sut.attributeValue(element: element, for: attribute)
@@ -164,6 +159,7 @@ struct AXClientExtensionsTests {
       value.pointee = 42 as CFTypeRef
       return .success
     }
+    sut._getAXValueTypeID = { 0 }
 
     #expect(throws: AXClientError.self) {
       let _: String = try sut.attributeValue(element: element, for: attribute)
@@ -210,8 +206,7 @@ struct AXClientExtensionsTests {
       }
 
       let values = try sut.attributeValues(element: element, attribute: "testAttribute", index: 0, maxValues: 5)
-      #expect(values != nil)
-      #expect((values as? [String])?.count == 2)
+      #expect((values as? [String]) == ["value1", "value2"])
     }
   }
 
@@ -722,6 +717,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
       #expect(result1 == "value1")
@@ -741,6 +737,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
       #expect(result1 == nil)
@@ -764,6 +761,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2, result3) = try sut.attributeValue(element: element, for: attr1, attr2, attr3)
       #expect(result1 == "value1")
@@ -789,6 +787,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2, result3, result4) = try sut.attributeValue(element: element, for: attr1, attr2, attr3, attr4)
       #expect(result1 == "value1")
@@ -816,6 +815,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2, result3, result4, result5) = try sut.attributeValue(
         element: element,
@@ -844,7 +844,6 @@ struct AXClientExtensionsTests {
       let attr5 = Attribute<String>("e")
       let attr6 = Attribute<String>("f")
 
-
       sut._attributeValueMultiple = { _, attributes, _, values in
         let _ = attributes as! [String]
         let v = Array(repeating: "mockUIElement", count: 6)
@@ -852,6 +851,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2, result3, result4, result5, result6) = try sut.attributeValue(
         element: element,
@@ -903,13 +903,10 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
-
       sut._getAXValueTypeID = {
         CFGetTypeID(UIElementValueMock(type: .axError) as AnyObject)
       }
-
       sut._getAXValueType = { $0.type }
-
       sut._getAXValueValue = { value, type, ptr in
         switch type {
         case .cgPoint:
@@ -979,6 +976,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2, result3, result4, result5, result6, result7, result8) = try sut.attributeValue(
         element: element,
@@ -1015,6 +1013,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: true)
       #expect(result1 == "value1")
@@ -1036,6 +1035,7 @@ struct AXClientExtensionsTests {
         c()
         return .success
       }
+      sut._getAXValueTypeID = { 0 }
 
       let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: false)
       #expect(result1 == "value1")
@@ -1414,3 +1414,4 @@ struct AXClientExtensionsTests {
     #expect(sut.focusedApplication == Attribute<AXClientMock.UIElement>(.focusedApplication))
   }
 }
+

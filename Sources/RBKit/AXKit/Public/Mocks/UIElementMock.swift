@@ -2,7 +2,7 @@ import Quartz
 
 open class UIElementMock: Hashable {
   public let id: String
-  public var attributes = [String: Any]()
+  public var attributes = [String: Any?]()
 
   public init(
     id: String = "", 

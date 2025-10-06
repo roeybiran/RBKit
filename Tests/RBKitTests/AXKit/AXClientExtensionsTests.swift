@@ -25,7 +25,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func isProcessTrusted_withPromptTrue_preflightFalse_shouldCallPromptAndReturnResult() async {
+  func `isProcessTrusted, with usePrompt == true, preflight == false, should call prompt and return result`() async {
     await confirmation { c in
       let sut = AXClientMock()
       sut._isProcessTrusted = { false }
@@ -41,7 +41,7 @@ struct `AXClientExtensions Tests` {
   }
   
   @Test
-  func isProcessTrusted_withPromptFalse_preflightTrue_shouldReturnPreflightOnly() async {
+  func `isProcessTrusted, with usePrompt == false, preflight == true, should return preflight only`() async {
     await confirmation { c in
       let sut = AXClientMock()
       sut._isProcessTrusted = {
@@ -59,7 +59,7 @@ struct `AXClientExtensions Tests` {
   }
   
   @Test
-  func isProcessTrusted_withPromptFalse_preflightFalse_shouldReturnPreflightOnly() async {
+  func `isProcessTrusted, with usePrompt == false, preflight == false, should return preflight only`() async {
     await confirmation { c in
       let sut = AXClientMock()
       sut._isProcessTrusted = {
@@ -77,7 +77,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeNames_withValidElement_shouldReturnNames() async throws {
+  func `attributeNames, with valid element, should return names`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -94,7 +94,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeNames_withAXError_shouldThrow() async {
+  func `attributeNames, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeNames = { _, _ in .failure }
@@ -105,7 +105,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeNames_withCastingFailure_shouldReturnEmptyArray() async throws {
+  func `attributeNames, with casting failure, should return empty array`() async throws {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeNames = { _, ptr in
@@ -117,7 +117,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_withSingleAttribute_shouldReturnValue() async throws {
+  func `attributeValue, with single attribute, should return value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -136,7 +136,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_withSingleAttributeAndError_shouldThrow() async {
+  func `attributeValue, with single attribute and error, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     let attribute = Attribute<String>("testAttribute")
@@ -150,7 +150,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_withSingleAttributeAndCastFailure_shouldThrow() async {
+  func `attributeValue, with single attribute and cast failure, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     let attribute = Attribute<String>("testAttribute")
@@ -168,7 +168,7 @@ struct `AXClientExtensions Tests` {
 
 
   @Test
-  func getAttributeValueCount_withValidAttribute_shouldReturnCount() async throws {
+  func `getAttributeValueCount, with valid attribute, should return count`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -184,7 +184,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func getAttributeValueCount_withAXError_shouldThrow() async {
+  func `getAttributeValueCount, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getAttributeValueCount = { _, _, _ in .failure }
@@ -195,7 +195,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValues_withValidParameters_shouldReturnValues() async throws {
+  func `attributeValues, with valid parameters, should return values`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -211,7 +211,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValues_withAXError_shouldThrow() async {
+  func `attributeValues, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeValues = { _, _, _, _, _ in .failure }
@@ -222,7 +222,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func isAttributeSettable_withValidAttribute_shouldReturnBool() async throws {
+  func `isAttributeSettable, with valid attribute, should return bool`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -238,7 +238,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func isAttributeSettable_withAXError_shouldThrow() async {
+  func `isAttributeSettable, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._isAttributeSettable = { _, _, _ in .failure }
@@ -249,7 +249,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withValidValue_shouldSetValue() async throws {
+  func `setAttributeValue, with valid value, should set value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -263,7 +263,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withAXError_shouldThrow() async {
+  func `setAttributeValue, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._setAttributeValue = { _, _, _ in .failure }
@@ -274,7 +274,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withCFRange_shouldEncodeToAXValue() async throws {
+  func `setAttributeValue, with CFRange, should encode to AXValue`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -297,7 +297,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withCGPoint_shouldEncodeToAXValue() async throws {
+  func `setAttributeValue, with CGPoint, should encode to AXValue`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -320,7 +320,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withCGRect_shouldEncodeToAXValue() async throws {
+  func `setAttributeValue, with CGRect, should encode to AXValue`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -343,7 +343,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_withCGSize_shouldEncodeToAXValue() async throws {
+  func `setAttributeValue, with CGSize, should encode to AXValue`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -366,7 +366,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func actionNames_withValidElement_shouldReturnNames() async throws {
+  func `actionNames, with valid element, should return names`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -382,7 +382,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func actionNames_withAXError_shouldThrow() async {
+  func `actionNames, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._actionNames = { _, _ in .failure }
@@ -393,7 +393,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func actionDescription_withValidAction_shouldReturnDescription() async throws {
+  func `actionDescription, with valid action, should return description`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -410,7 +410,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func actionDescription_withAXError_shouldThrow() async {
+  func `actionDescription, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     let action = Action.press
@@ -422,7 +422,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func performAction_withValidAction_shouldPerformAction() async throws {
+  func `performAction, with valid action, should perform action`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -436,7 +436,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func performAction_withAXError_shouldThrow() async {
+  func `performAction, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._performAction = { _, _ in .failure }
@@ -447,7 +447,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func elementAtPosition_withValidCoordinates_shouldReturnElement() async throws {
+  func `elementAtPosition, with valid coordinates, should return element`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let application = UIElementMock()
@@ -463,7 +463,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func elementAtPosition_withAXError_shouldThrow() async {
+  func `elementAtPosition, with AXError, should throw`() async {
     let sut = AXClientMock()
     let application = UIElementMock()
     sut._elementAtPosition = { _, _, _, _ in .failure }
@@ -474,7 +474,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func getPid_withValidElement_shouldReturnPid() async throws {
+  func `getPid, with valid element, should return pid`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -490,7 +490,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func getPid_withAXError_shouldThrow() async {
+  func `getPid, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getPid = { _, _ in .failure }
@@ -501,7 +501,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func createObserver_withValidPid_shouldReturnObserver() async throws {
+  func `createObserver, with valid pid, should return observer`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let pid: pid_t = 12345
@@ -518,7 +518,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func createObserver_withAXError_shouldThrow() async {
+  func `createObserver, with AXError, should throw`() async {
     let sut = AXClientMock()
     sut._observerCreate = { _, _, _ in .failure }
 
@@ -528,7 +528,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func createObserver_withSuccessButNilObserver_shouldThrowUnknown() async {
+  func `createObserver, with success but nil observer, should throw unknown`() async {
     let sut = AXClientMock()
     sut._observerCreate = { _, _, outObserver in
       outObserver.pointee = nil  // Success but nil observer
@@ -541,7 +541,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func getWindowID_withValidElement_shouldReturnWindowID() async throws {
+  func `getWindowID, with valid element, should return window ID`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -560,7 +560,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func getWindowID_withAXError_shouldThrow() async {
+  func `getWindowID, with AXError, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getWindow = { _, _ in .failure }
@@ -571,7 +571,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_twoAttributes_multiAttributeValuesFailure_shouldThrow() async {
+  func `attributeValue, two attributes, multi attribute values failure, should throw`() async {
     let sut = AXClientMock()
     let element = UIElementMock()
     
@@ -585,7 +585,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_CFRange_createAXValueFailure_shouldFallbackToRawValue() async throws {
+  func `setAttributeValue, CFRange, create AXValue failure, should fallback to raw value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -608,7 +608,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_CGPoint_createAXValueFailure_shouldFallbackToRawValue() async throws {
+  func `setAttributeValue, CGPoint, create AXValue failure, should fallback to raw value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -629,7 +629,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_CGRect_createAXValueFailure_shouldFallbackToRawValue() async throws {
+  func `setAttributeValue, CGRect, create AXValue failure, should fallback to raw value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -650,7 +650,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func setAttributeValue_CGSize_createAXValueFailure_shouldFallbackToRawValue() async throws {
+  func `setAttributeValue, CGSize, create AXValue failure, should fallback to raw value`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -671,7 +671,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func addNotification_withValidParameters_shouldAddNotification() async throws {
+  func `addNotification, with valid parameters, should add notification`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let observer = ObserverMock()
@@ -689,7 +689,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func addNotification_withAXError_shouldThrow() async {
+  func `addNotification, with AXError, should throw`() async {
     let sut = AXClientMock()
     let observer = ObserverMock()
     let element = UIElementMock()
@@ -702,7 +702,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with2Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 2 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -726,7 +726,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with2Attributes_andCastingFailure_shouldReturnArrayFilledWithNils() async throws {
+  func `attributeValue, with 2 attributes and casting failure, should return array filled with nils`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -746,7 +746,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with3Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 3 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -771,7 +771,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with4Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 4 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -798,7 +798,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with5Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 5 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -833,7 +833,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with6Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 6 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -872,7 +872,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with7Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 7 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -956,7 +956,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_with8Attributes_shouldReturnTuple() async throws {
+  func `attributeValue, with 8 attributes, should return tuple`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -1000,7 +1000,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_withStopOnErrorTrue_shouldPassCorrectOptions() async throws {
+  func `attributeValue, with stopOnError == true, should pass correct options`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -1022,7 +1022,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func attributeValue_withStopOnErrorFalse_shouldPassCorrectOptions() async throws {
+  func `attributeValue, with stopOnError == false, should pass correct options`() async throws {
     try await confirmation { c in
       let sut = AXClientMock()
       let element = UIElementMock()
@@ -1046,7 +1046,7 @@ struct `AXClientExtensions Tests` {
   // MARK: - observer
 
   @Test
-  func startObserver_withObserver_shouldReturnAsyncStream() async {
+  func `startObserver, with observer, should return async stream`() async {
     let sut = AXClientMock()
     let observer = ObserverMock()
 
@@ -1067,349 +1067,349 @@ struct `AXClientExtensions Tests` {
   // MARK: - computed vars
 
   @Test
-  func computedAttributeAMPMField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute AMPMField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.AMPMField == Attribute<AXClientMock.UIElement>(.AMPMField))
   }
 
   @Test
-  func computedAttributeCancelButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute cancelButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.cancelButton == Attribute<AXClientMock.UIElement>(.cancelButton))
   }
 
   @Test
-  func computedAttributeChildren_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute children, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.children == Attribute<[AXClientMock.UIElement]>(.children))
   }
 
   @Test
-  func computedAttributeCloseButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute closeButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.closeButton == Attribute<AXClientMock.UIElement>(.closeButton))
   }
 
   @Test
-  func computedAttributeColumns_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute columns, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.columns == Attribute<[AXClientMock.UIElement]>(.columns))
   }
 
   @Test
-  func computedAttributeContents_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute contents, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.contents == Attribute<[AXClientMock.UIElement]>(.contents))
   }
 
   @Test
-  func computedAttributeDayField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute dayField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.dayField == Attribute<AXClientMock.UIElement>(.dayField))
   }
 
   @Test
-  func computedAttributeDecrementButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute decrementButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.decrementButton == Attribute<AXClientMock.UIElement>(.decrementButton))
   }
 
   @Test
-  func computedAttributeDefaultButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute defaultButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.defaultButton == Attribute<AXClientMock.UIElement>(.defaultButton))
   }
 
   @Test
-  func computedAttributeDisclosedByRow_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute disclosedByRow, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.disclosedByRow == Attribute<AXClientMock.UIElement>(.disclosedByRow))
   }
 
   @Test
-  func computedAttributeDisclosedRows_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute disclosedRows, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.disclosedRows == Attribute<[AXClientMock.UIElement]>(.disclosedRows))
   }
 
   @Test
-  func computedAttributeExtrasMenuBar_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute extrasMenuBar, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.extrasMenuBar == Attribute<AXClientMock.UIElement>(.extrasMenuBar))
   }
 
   @Test
-  func computedAttributeFocusedUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute focusedUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.focusedUIElement == Attribute<AXClientMock.UIElement>(.focusedUIElement))
   }
 
   @Test
-  func computedAttributeFocusedWindow_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute focusedWindow, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.focusedWindow == Attribute<AXClientMock.UIElement>(.focusedWindow))
   }
 
   @Test
-  func computedAttributeFullScreenButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute fullScreenButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.fullScreenButton == Attribute<AXClientMock.UIElement>(.fullScreenButton))
   }
 
   @Test
-  func computedAttributeGrowArea_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute growArea, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.growArea == Attribute<AXClientMock.UIElement>(.growArea))
   }
 
   @Test
-  func computedAttributeHeader_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute header, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.header == Attribute<AXClientMock.UIElement>(.header))
   }
 
   @Test
-  func computedAttributeHorizontalScrollBar_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute horizontalScrollBar, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.horizontalScrollBar == Attribute<AXClientMock.UIElement>(.horizontalScrollBar))
   }
 
   @Test
-  func computedAttributeHourField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute hourField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.hourField == Attribute<AXClientMock.UIElement>(.hourField))
   }
 
   @Test
-  func computedAttributeIncrementButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute incrementButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.incrementButton == Attribute<AXClientMock.UIElement>(.incrementButton))
   }
 
   @Test
-  func computedAttributeIncrementor_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute incrementor, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.incrementor == Attribute<AXClientMock.UIElement>(.incrementor))
   }
 
   @Test
-  func computedAttributeLabelUIElements_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute labelUIElements, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.labelUIElements == Attribute<[AXClientMock.UIElement]>(.labelUIElements))
   }
 
   @Test
-  func computedAttributeLinkedUIElements_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute linkedUIElements, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.linkedUIElements == Attribute<[AXClientMock.UIElement]>(.linkedUIElements))
   }
 
   @Test
-  func computedAttributeMainWindow_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute mainWindow, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.mainWindow == Attribute<AXClientMock.UIElement>(.mainWindow))
   }
 
   @Test
-  func computedAttributeMarkerUIElements_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute markerUIElements, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.markerUIElements == Attribute<AXClientMock.UIElement>(.markerUIElements))
   }
 
   @Test
-  func computedAttributeMatteContentUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute matteContentUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.matteContentUIElement == Attribute<AXClientMock.UIElement>(.matteContentUIElement))
   }
 
   @Test
-  func computedAttributeMenuBar_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute menuBar, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.menuBar == Attribute<AXClientMock.UIElement>(.menuBar))
   }
 
   @Test
-  func computedAttributeMenuItemPrimaryUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute menuItemPrimaryUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.menuItemPrimaryUIElement == Attribute<AXClientMock.UIElement>(.menuItemPrimaryUIElement))
   }
 
   @Test
-  func computedAttributeMinimizeButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute minimizeButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.minimizeButton == Attribute<AXClientMock.UIElement>(.minimizeButton))
   }
 
   @Test
-  func computedAttributeMinuteField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute minuteField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.minuteField == Attribute<AXClientMock.UIElement>(.minuteField))
   }
 
   @Test
-  func computedAttributeMonthField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute monthField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.monthField == Attribute<AXClientMock.UIElement>(.monthField))
   }
 
   @Test
-  func computedAttributeNextContents_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute nextContents, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.nextContents == Attribute<[AXClientMock.UIElement]>(.nextContents))
   }
 
   @Test
-  func computedAttributeOverflowButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute overflowButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.overflowButton == Attribute<AXClientMock.UIElement>(.overflowButton))
   }
 
   @Test
-  func computedAttributeParent_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute parent, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.parent == Attribute<AXClientMock.UIElement>(.parent))
   }
 
   @Test
-  func computedAttributePreviousContents_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute previousContents, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.previousContents == Attribute<[AXClientMock.UIElement]>(.previousContents))
   }
 
   @Test
-  func computedAttributeProxy_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute proxy, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.proxy == Attribute<AXClientMock.UIElement>(.proxy))
   }
 
   @Test
-  func computedAttributeRows_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute rows, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.rows == Attribute<[AXClientMock.UIElement]>(.rows))
   }
 
   @Test
-  func computedAttributeSecondField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute secondField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.secondField == Attribute<AXClientMock.UIElement>(.secondField))
   }
 
   @Test
-  func computedAttributeSelectedChildren_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute selectedChildren, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.selectedChildren == Attribute<[AXClientMock.UIElement]>(.selectedChildren))
   }
 
   @Test
-  func computedAttributeSelectedColumns_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute selectedColumns, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.selectedColumns == Attribute<[AXClientMock.UIElement]>(.selectedColumns))
   }
 
   @Test
-  func computedAttributeSelectedRows_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute selectedRows, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.selectedRows == Attribute<[AXClientMock.UIElement]>(.selectedRows))
   }
 
   @Test
-  func computedAttributeSharedFocusElements_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute sharedFocusElements, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.sharedFocusElements == Attribute<[AXClientMock.UIElement]>(.sharedFocusElements))
   }
 
   @Test
-  func computedAttributeSharedTextUIElements_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute sharedTextUIElements, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.sharedTextUIElements == Attribute<[AXClientMock.UIElement]>(.sharedTextUIElements))
   }
 
   @Test
-  func computedAttributeShownMenuUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute shownMenuUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.shownMenuUIElement == Attribute<AXClientMock.UIElement>(.shownMenuUIElement))
   }
 
   @Test
-  func computedAttributeSplitters_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute splitters, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.splitters == Attribute<[AXClientMock.UIElement]>(.splitters))
   }
 
   @Test
-  func computedAttributeTabs_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute tabs, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.tabs == Attribute<[AXClientMock.UIElement]>(.tabs))
   }
 
   @Test
-  func computedAttributeTitleUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute titleUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.titleUIElement == Attribute<AXClientMock.UIElement>(.titleUIElement))
   }
 
   @Test
-  func computedAttributeToolbarButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute toolbarButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.toolbarButton == Attribute<AXClientMock.UIElement>(.toolbarButton))
   }
 
   @Test
-  func computedAttributeTopLevelUIElement_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute topLevelUIElement, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.topLevelUIElement == Attribute<AXClientMock.UIElement>(.topLevelUIElement))
   }
 
   @Test
-  func computedAttributeVerticalScrollBar_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute verticalScrollBar, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.verticalScrollBar == Attribute<AXClientMock.UIElement>(.verticalScrollBar))
   }
 
   @Test
-  func computedAttributeVisibleChildren_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute visibleChildren, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.visibleChildren == Attribute<[AXClientMock.UIElement]>(.visibleChildren))
   }
 
   @Test
-  func computedAttributeVisibleColumns_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute visibleColumns, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.visibleColumns == Attribute<[AXClientMock.UIElement]>(.visibleColumns))
   }
 
   @Test
-  func computedAttributeVisibleRows_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute visibleRows, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.visibleRows == Attribute<[AXClientMock.UIElement]>(.visibleRows))
   }
 
   @Test
-  func computedAttributeWindow_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute window, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.window == Attribute<AXClientMock.UIElement>(.window))
   }
 
   @Test
-  func computedAttributeWindows_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute windows, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.windows == Attribute<[AXClientMock.UIElement]>(.windows))
   }
 
   @Test
-  func computedAttributeYearField_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute yearField, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.yearField == Attribute<AXClientMock.UIElement>(.yearField))
   }
 
   @Test
-  func computedAttributeZoomButton_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute zoomButton, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.zoomButton == Attribute<AXClientMock.UIElement>(.zoomButton))
   }
 
   @Test
-  func computedAttributeFocusedApplication_always_shouldReturnCorrectAttribute() {
+  func `computedAttribute focusedApplication, always, should return correct attribute`() {
     let sut = AXClientMock()
     #expect(sut.focusedApplication == Attribute<AXClientMock.UIElement>(.focusedApplication))
   }

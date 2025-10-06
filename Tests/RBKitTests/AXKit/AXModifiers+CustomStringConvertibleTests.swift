@@ -2,78 +2,78 @@ import Carbon
 import Testing
 @testable import AXKit
 
+@Suite
 struct `AXMenuItemModifiers+CustomStringConvertible Tests` {
-  // MARK: - AXMenuItemModifiers+CustomStringConvertibleTests
 
   @Test
-  func description_withCommand_shouldBeCmd() {
+  func `description, with command only, should be ⌘`() {
     let mods = "\(AXMenuItemModifiers([]))"
     #expect(mods == "⌘")
   }
 
   @Test
-  func description_withOpt_shouldBeOptCmd() {
+  func `description, with option, should be ⌥⌘`() {
     let mods = "\(AXMenuItemModifiers([.option]))"
     #expect(mods == "⌥⌘")
   }
 
   @Test
-  func description_withCtrl_shouldBeCtrlCmd() {
+  func `description, with control, should be ⌃⌘`() {
     let mods = "\(AXMenuItemModifiers([.control]))"
     #expect(mods == "⌃⌘")
   }
 
   @Test
-  func description_withShift_shouldBeShift() {
+  func `description, with shift, should be ⇧⌘`() {
     let mods = "\(AXMenuItemModifiers([.shift]))"
     #expect(mods == "⇧⌘")
   }
 
   @Test
-  func description_withCtrlOptShift_shouldBeCtrlOptShift() {
+  func `description, with control + option + shift + noCommand, should be ⌃⌥⇧`() {
     let mods = "\(AXMenuItemModifiers([.shift, .control, .option, .noCommand].shuffled()))"
     #expect(mods == "⌃⌥⇧")
   }
 
   @Test
-  func description_withCtrlOpt_shouldBeCtrlOpt() {
+  func `description, with control + option + noCommand, should be ⌃⌥`() {
     let mods = "\(AXMenuItemModifiers([.control, .option, .noCommand].shuffled()))"
     #expect(mods == "⌃⌥")
   }
 
   @Test
-  func description_withCtrlShift_shouldBeCtrlShift() {
+  func `description, with control + shift + noCommand, should be ⌃⇧`() {
     let mods = "\(AXMenuItemModifiers([.control, .shift, .noCommand].shuffled()))"
     #expect(mods == "⌃⇧")
   }
 
   @Test
-  func description_withOptShift_shouldBeOptShift() {
+  func `description, with option + shift + noCommand, should be ⌥⇧`() {
     let mods = "\(AXMenuItemModifiers([.option, .shift, .noCommand].shuffled()))"
     #expect(mods == "⌥⇧")
   }
 
   @Test
-  func description_withBeCtrlOptShiftCmd_shouldBeCtrlOptShiftCmd() {
+  func `description, with control + option + shift + command, should be ⌃⌥⇧⌘`() {
     let mods = "\(AXMenuItemModifiers([.shift, .control, .option].shuffled()))"
     #expect(mods == "⌃⌥⇧⌘")
   }
 
   @Test
-  func description_withSingleModifierNoCommand_shouldSingleModifierNoCommand() {
+  func `description, with single modifier + noCommand, should show single modifier without command`() {
     for item in [(AXMenuItemModifiers.control, "⌃"), (.shift, "⇧"), (.option, "⌥")] {
       #expect("\(item.0.union(.noCommand))" == item.1)
     }
   }
 
   @Test
-  func description_withNoCommand_shouldBeEmpty() {
+  func `description, with noCommand only, should be empty`() {
     let mods = "\(AXMenuItemModifiers([.noCommand]))"
     #expect(mods == "")
   }
 
   @Test
-  func description_with0x18_shouldBeFn() {
+  func `description, with raw value 0x18, should be 🌐`() {
     let mods = "\(AXMenuItemModifiers(rawValue: 0x18))"
     #expect(mods == "🌐")
   }

@@ -3,10 +3,11 @@ import Foundation
 import Dependencies
 @testable import AXKit
 
-struct withRetryingOnAXTimeoutTests {
+@Suite
+struct `withRetryingOnAXTimeout Tests` {
 
   @Test
-  func withRetryingOnAXTimeout_withSuccessOnFirstTry_shouldReturnValue() async throws {
+  func `withRetryingOnAXTimeout, with success on first try, should return value`() async throws {
     try await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -18,7 +19,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withSuccessAfterOneRetry_shouldReturnValue() async throws {
+  func `withRetryingOnAXTimeout, with success after one retry, should return value`() async throws {
     try await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -36,7 +37,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withSuccessAfterMultipleRetries_shouldReturnValue() async throws {
+  func `withRetryingOnAXTimeout, with success after multiple retries, should return value`() async throws {
     try await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -54,7 +55,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withTimeout_shouldThrowCannotComplete() async throws {
+  func `withRetryingOnAXTimeout, when timeout is exceeded, should throw .cannotComplete`() async throws {
     await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -70,7 +71,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withOtherError_shouldThrowImmediately() async throws {
+  func `withRetryingOnAXTimeout, with non-.cannotComplete error, should throw immediately`() async throws {
     await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -86,7 +87,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withCannotCompleteThenOtherError_shouldThrowOtherError() async throws {
+  func `withRetryingOnAXTimeout, with .cannotComplete then other error, should throw other error`() async throws {
     await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -105,7 +106,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withCustomRetryInterval_shouldUseInterval() async throws {
+  func `withRetryingOnAXTimeout, with custom retry interval, should use interval`() async throws {
     try await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {
@@ -123,7 +124,7 @@ struct withRetryingOnAXTimeoutTests {
   }
 
   @Test
-  func withRetryingOnAXTimeout_withNonThrowingClosure_shouldReturnValue() async throws {
+  func `withRetryingOnAXTimeout, with non-throwing closure, should return value`() async throws {
     try await withDependencies {
       $0.continuousClock = ImmediateClock()
     } operation: {

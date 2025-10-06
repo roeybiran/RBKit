@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import AXKit
 
+@Suite
 struct `Attribute Tests` {
   @Test
   func `alternateUIVisible == AXAlternateUIVisible`() {

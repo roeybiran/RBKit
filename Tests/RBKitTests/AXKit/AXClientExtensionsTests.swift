@@ -3,11 +3,11 @@ import ApplicationServices
 import Testing
 @testable import AXKit
 
-@Suite(.serialized)
-struct AXClientExtensionsTests {
+@Suite
+struct `AXClientExtensions Tests` {
 
   @Test
-  func isProcessTrusted_withPromptTrue_preflightTrue_shouldReturnPreflightWithoutPrompt() async {
+  func `isProcessTrusted, with usePrompt == true, preflight == true, should return preflight value without prompt`() async {
     await confirmation { c in
       let sut = AXClientMock()
       sut._isProcessTrusted = {

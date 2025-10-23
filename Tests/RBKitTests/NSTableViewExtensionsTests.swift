@@ -5,9 +5,9 @@ import Testing
 
 @MainActor
 @Suite
-struct `NSTableView Extensions Tests` {
+struct `NSTableView Tests` {
     @Test
-    func `Make view uses type name as identifier`() {
+    func `makeView ofType:, should use type name as identifier`() async throws {
         let tableView = NSTableView()
 
         final class FooView: NSView {}

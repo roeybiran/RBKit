@@ -6,7 +6,7 @@ import Testing
 @Suite
 struct `DockVisualEffectView Tests` {
     @Test
-    func `Defaults use dock appearance`() {
+    func `init, should use dock appearance defaults`() async throws {
         let view = DockVisualEffectView()
 
         #expect(view.blendingMode == .behindWindow)

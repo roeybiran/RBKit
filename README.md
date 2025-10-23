@@ -1,3 +1,3 @@
 # RBKit
 
-A helper library for developing Mac apps using Cocoa and Swift.
+Utilities for developing Mac apps with Swift.

@@ -4,9 +4,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `Key Value Stream Tests` {
+struct `keyValueStream Tests` {
     @Test
-    func `Stream emits key path changes`() async throws {
+    func `keyValueStream, with keyPath, should emit changes`() async throws {
         await confirmation { confirm in
             class ObservedObject: NSObject {
                 @objc dynamic var name = ""

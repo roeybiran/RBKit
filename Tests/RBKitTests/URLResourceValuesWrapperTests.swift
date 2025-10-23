@@ -4,9 +4,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `URLResourceValues Wrapper Tests` {
+struct `URLResourceValuesWrapper Tests` {
     @Test
-    func `Memberwise init assigns every property`() {
+    func `init, with memberwise values, should assign every property`() async throws {
         let allValues: [URLResourceKey: Any] = [.isDirectoryKey: true]
         let fileResourceIdentifier = NSString("id")
         let volumeIdentifier = NSString("vol-id")
@@ -256,7 +256,7 @@ struct `URLResourceValues Wrapper Tests` {
     }
 
     @Test
-    func `Init from URL resource values surfaces values`() throws {
+    func `init, with URLResourceValues, should surface values`() async throws {
         let tempDir = FileManager.default.temporaryDirectory
         let fileURL = tempDir.appendingPathComponent("test.txt")
         try "test content".write(to: fileURL, atomically: true, encoding: .utf8)

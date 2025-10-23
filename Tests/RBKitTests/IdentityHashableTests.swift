@@ -3,9 +3,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `Identity Hashable Tests` {
+struct `IdentityHashable Tests` {
     @Test
-    func `Equality and hash use identity`() {
+    func `conformance, should use identity for equality and hashing`() async throws {
         struct Identified: IdentityHashable {
             let value: Foo
 

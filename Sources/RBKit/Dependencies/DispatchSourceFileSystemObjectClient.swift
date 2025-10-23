@@ -1,6 +1,7 @@
 import Dependencies
 import DependenciesMacros
 import Foundation
+import System
 
 // MARK: - DispatchSourceFileSystemObjectClient
 
@@ -25,14 +26,25 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
   public var cancel: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
   public var data: @Sendable (_ object: any DispatchSourceFileSystemObject) -> DispatchSource.FileSystemEvent = { _ in .write }
   public var handle: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Int32 = { _ in 0 }
+}
 
+extension DispatchSourceFileSystemObjectClient {
   public func pathMonitor(
-    path: String,
+    path: FilePath,
     mask: DispatchSource.FileSystemEvent,
     queue: DispatchQueue?
-  ) -> AsyncStream<DispatchSource.FileSystemEvent> {
-    let (stream, continuation) = AsyncStream.makeStream(of: DispatchSource.FileSystemEvent.self)
-    let source = make(fileDescriptor: open(path, O_EVTONLY), eventMask: mask, queue: queue)
+  ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Error> {
+    let (stream, continuation) = AsyncThrowingStream.makeStream(of: DispatchSource.FileSystemEvent.self, throwing: Error.self)
+
+    let fileDescriptor: FileDescriptor
+    do {
+      fileDescriptor = try FileDescriptor.open(path, .readOnly, options: [.eventOnly])
+    } catch {
+      continuation.finish(throwing: error)
+      return stream
+    }
+
+    let source = make(fileDescriptor: fileDescriptor.rawValue, eventMask: mask, queue: queue)
     setEventHandler(object: source, qos: .unspecified, flags: []) {
       continuation.yield(data(object: source))
     }
@@ -40,8 +52,10 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
     continuation.onTermination = { _ in
       cancel(object: source)
       let handle = handle(object: source)
-      close(handle)
+      let fileDescriptor = FileDescriptor(rawValue: handle)
+      try? fileDescriptor.close()
     }
+
     return stream
   }
 }

@@ -3,9 +3,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `Sequence Extensions Tests` {
+struct `Sequence Tests` {
     @Test
-    func `Sorted by key path returns ascending order`() {
+    func `sorted by:, with keyPath, should return ascending order`() async throws {
         struct Book: Equatable {
             let id: Int
             let kind: String
@@ -18,7 +18,7 @@ struct `Sequence Extensions Tests` {
     }
 
     @Test
-    func `Dictionary grouping produces buckets`() {
+    func `dictionary groupingBy:, should produce buckets`() async throws {
         struct Book: Equatable {
             let name: String
             let kind: String
@@ -34,14 +34,14 @@ struct `Sequence Extensions Tests` {
     }
 
     @Test
-    func `Set converts to array`() {
+    func `toArray, with Set, should convert to array`() async throws {
         let set = Set<String>()
 
         #expect(set.toArray() == [String]())
     }
 
     @Test
-    func `Array converts to set`() {
+    func `toSet, with Array, should convert to set`() async throws {
         let values = ["a", "a"]
 
         #expect(values.toSet() == Set(["a"]))

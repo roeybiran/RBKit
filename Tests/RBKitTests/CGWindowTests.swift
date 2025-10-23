@@ -6,9 +6,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `CG Window Tests` {
+struct `CGWindowValue Tests` {
     @Test
-    func `Init succeeds with complete dictionary`() {
+    func `init, with complete dictionary, should create value`() async throws {
         let dictionary = makeWindowDictionary()
         let value = CGWindowValue(dictionary)
         let expected = CGWindowValue(
@@ -30,7 +30,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing window number returns nil`() {
+    func `init, with missing window number, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowNumber] = nil
 
@@ -38,7 +38,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing store type returns nil`() {
+    func `init, with missing store type, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowStoreType] = nil
 
@@ -46,7 +46,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing layer returns nil`() {
+    func `init, with missing layer, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowLayer] = nil
 
@@ -54,7 +54,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing bounds returns nil`() {
+    func `init, with missing bounds, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowBounds] = nil
 
@@ -62,7 +62,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Bounds missing X value returns nil`() {
+    func `init, with bounds missing X value, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowBounds] = ["X": CGFloat()]
 
@@ -70,7 +70,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Bounds missing Y value returns nil`() {
+    func `init, with bounds missing Y value, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowBounds] = ["Y": CGFloat()]
 
@@ -78,7 +78,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Bounds missing width returns nil`() {
+    func `init, with bounds missing width, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowBounds] = ["Width": CGFloat()]
 
@@ -86,7 +86,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Bounds missing height returns nil`() {
+    func `init, with bounds missing height, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowBounds] = ["Height": CGFloat()]
 
@@ -94,7 +94,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing sharing state returns nil`() {
+    func `init, with missing sharing state, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowSharingState] = nil
 
@@ -102,7 +102,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing alpha returns nil`() {
+    func `init, with missing alpha, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowAlpha] = nil
 
@@ -110,7 +110,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing owner pid returns nil`() {
+    func `init, with missing owner pid, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowOwnerPID] = nil
 
@@ -118,7 +118,7 @@ struct `CG Window Tests` {
     }
 
     @Test
-    func `Missing memory usage returns nil`() {
+    func `init, with missing memory usage, should return nil`() async throws {
         var dictionary = makeWindowDictionary()
         dictionary[kCGWindowMemoryUsage] = nil
 

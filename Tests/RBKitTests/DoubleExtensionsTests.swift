@@ -4,9 +4,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `Double Extensions Tests` {
+struct `Double Tests` {
     @Test
-    func `Radians converts degrees to radians`() {
+    func `radians, should convert degrees to radians`() async throws {
         let radians = Double(360).radians
 
         #expect(radians == 2 * .pi)

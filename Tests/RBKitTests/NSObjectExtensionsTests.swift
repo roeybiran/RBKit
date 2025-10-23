@@ -5,9 +5,9 @@ import Testing
 
 @MainActor
 @Suite
-struct `NSObject Extensions Tests` {
+struct `NSObject Tests` {
     @Test
-    func `Dot syntax settable updates identifiers`() {
+    func `set, with keyPath, should update value`() async throws {
         let view = NSView()
 
         #expect(view.identifier == nil)

@@ -5,9 +5,9 @@ import Testing
 
 @MainActor
 @Suite
-struct `NSEvent Value Tests` {
+struct `NSEventValue Tests` {
     @Test
-    func `Init creates value for key down events`() {
+    func `init nsEvent:, with keyDown event, should create value`() async throws {
         let event = NSEvent.keyEvent(
             with: .keyDown,
             location: .zero,
@@ -38,7 +38,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Init creates value for key up events`() {
+    func `init nsEvent:, with keyUp event, should create value`() async throws {
         let event = NSEvent.keyEvent(
             with: .keyUp,
             location: .zero,
@@ -69,7 +69,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Init ignores non key events`() {
+    func `init nsEvent:, with non-key event, should return nil`() async throws {
         let event = NSEvent.keyEvent(
             with: .flagsChanged,
             location: .zero,
@@ -87,7 +87,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds up arrow key`() {
+    func `upArrow, should create up arrow key event`() async throws {
         let actual = NSEventValue.upArrow()
         let expected = NSEventValue(
             type: .keyDown,
@@ -106,7 +106,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds right arrow key`() {
+    func `rightArrow, should create right arrow key event`() async throws {
         let actual = NSEventValue.rightArrow()
         let expected = NSEventValue(
             type: .keyDown,
@@ -125,7 +125,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds down arrow key`() {
+    func `downArrow, should create down arrow key event`() async throws {
         let actual = NSEventValue.downArrow()
         let expected = NSEventValue(
             type: .keyDown,
@@ -144,7 +144,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds left arrow key`() {
+    func `leftArrow, should create left arrow key event`() async throws {
         let actual = NSEventValue.leftArrow()
         let expected = NSEventValue(
             type: .keyDown,
@@ -163,7 +163,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds page up key`() {
+    func `pageUp, should create page up key event`() async throws {
         let actual = NSEventValue.pageUp()
         let expected = NSEventValue(
             type: .keyDown,
@@ -182,7 +182,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds page down key`() {
+    func `pageDown, should create page down key event`() async throws {
         let actual = NSEventValue.pageDown()
         let expected = NSEventValue(
             type: .keyDown,
@@ -201,7 +201,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds home key`() {
+    func `home, should create home key event`() async throws {
         let actual = NSEventValue.home()
         let expected = NSEventValue(
             type: .keyDown,
@@ -220,7 +220,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Factory builds end key`() {
+    func `end, should create end key event`() async throws {
         let actual = NSEventValue.end()
         let expected = NSEventValue(
             type: .keyDown,
@@ -239,7 +239,7 @@ struct `NSEvent Value Tests` {
     }
 
     @Test
-    func `Dot syntax settable updates key path`() {
+    func `set, with keyPath, should update value`() async throws {
         let field = NSTextField()
         field.set(\.stringValue, to: "foo")
 

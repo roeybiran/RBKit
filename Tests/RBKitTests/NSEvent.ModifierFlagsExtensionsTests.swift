@@ -5,9 +5,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `NSEvent.ModifierFlags Extensions Tests` {
+struct `NSEvent.ModifierFlags Tests` {
     @Test
-    func `Init with carbon flags`() throws {
+    func `init carbon:, with carbon flags, should convert to ModifierFlags`() async throws {
         #expect(NSEvent.ModifierFlags(carbon: cmdKey) == .command)
 
         var modifiers = 0
@@ -20,7 +20,7 @@ struct `NSEvent.ModifierFlags Extensions Tests` {
     }
 
     @Test
-    func `Carbonized flag round trip`() throws {
+    func `carbonized, should convert to carbon flags`() async throws {
         var modifiers = 0
         modifiers |= cmdKey
         modifiers |= shiftKey
@@ -31,7 +31,7 @@ struct `NSEvent.ModifierFlags Extensions Tests` {
     }
 
     @Test
-    func `Hot key applicable drops unsupported modifiers`() throws {
+    func `hotkeyApplicable, with unsupported modifiers, should drop them`() async throws {
         let modifiers = NSEvent.ModifierFlags([
             .command,
             .shift,
@@ -46,7 +46,7 @@ struct `NSEvent.ModifierFlags Extensions Tests` {
     }
 
     @Test
-    func `Description renders symbols`() throws {
+    func `description, should render symbols in correct order`() async throws {
         let modifiers = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
 
         #expect("\(modifiers)" == "⌃⌥⇧⌘")

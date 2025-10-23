@@ -3,7 +3,7 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `Tree Node Protocol Tests` {
+struct `TreeNodeProtocol Tests` {
     struct MockNode: TreeNodeProtocol, Equatable {
         init(_ title: String, children: [MockNode] = []) {
             self.title = title
@@ -87,7 +87,7 @@ struct `Tree Node Protocol Tests` {
     )
 
     @Test
-    func `Descendants list nodes depth first`() {
+    func `descendants, should list nodes depth first`() async throws {
         #expect(
             Self.mockTree.descendants == [
                 MockNode(
@@ -143,22 +143,22 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Recursive first finds matching node`() {
+    func `recursiveFirst where:, with matching node, should find it`() async throws {
         #expect(Self.mockTree.recursiveFirst(where: { $0.title == "1.2.1.2" }) != nil)
     }
 
     @Test
-    func `Recursive first returns nil when missing`() {
+    func `recursiveFirst where:, with no match, should return nil`() async throws {
         #expect(Self.mockTree.recursiveFirst(where: { $0.title == "zzzzzzzz" }) == nil)
     }
 
     @Test
-    func `Recursive map transforms hierarchy`() {
+    func `recursiveMap, should transform hierarchy`() async throws {
         #expect(Self.mockTree.recursiveMap { MockNode2($0.title) } == Self.mockTree2)
     }
 
     @Test
-    func `Recursive compact map skips nil results`() {
+    func `recursiveCompactMap, with nil results, should skip them`() async throws {
         let result = Self.mockTree.recursiveCompactMap { node -> MockNode2? in
             if node.title == "1" || node.title.starts(with: "1.1") || node.title == "1.2" {
                 return MockNode2(node.title)
@@ -191,7 +191,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Single index subscript returns child`() {
+    func `subscript, with single index, should return child`() async throws {
         let node = MockNode(
             "a",
             children: [
@@ -204,7 +204,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Single index subscript updates child`() {
+    func `subscript, with single index, should update child`() async throws {
         var node = MockNode(
             "a",
             children: [
@@ -218,7 +218,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Array index subscript returns nested child`() {
+    func `subscript, with array index, should return nested child`() async throws {
         let node = MockNode(
             "a",
             children: [
@@ -237,7 +237,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Array index subscript updates nested child`() {
+    func `subscript, with array index, should update nested child`() async throws {
         var node = MockNode(
             "a",
             children: [
@@ -256,7 +256,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Variadic subscript returns nested child`() {
+    func `subscript, with variadic indices, should return nested child`() async throws {
         let node = MockNode(
             "a",
             children: [
@@ -274,7 +274,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Variadic subscript updates nested child`() {
+    func `subscript, with variadic indices, should update nested child`() async throws {
         var node = MockNode(
             "a",
             children: [
@@ -293,7 +293,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Array recursive map transforms nodes`() {
+    func `recursiveMap, with Array, should transform nodes`() async throws {
         let nodes = [
             MockNode("a", children: [MockNode("a.1")]),
             MockNode("b", children: [MockNode("b.1")]),
@@ -310,7 +310,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Array recursive compact map filters nodes`() {
+    func `recursiveCompactMap, with Array, should filter nodes`() async throws {
         let nodes = [
             MockNode("a", children: [MockNode("a.1")]),
             MockNode("b", children: [MockNode("b.1")]),
@@ -331,7 +331,7 @@ struct `Tree Node Protocol Tests` {
     }
 
     @Test
-    func `Array recursive first matches nodes`() {
+    func `recursiveFirst where:, with Array, should match nodes`() async throws {
         let nodes = [
             MockNode("a", children: [MockNode("a.1")]),
             MockNode("b", children: [MockNode("b.1")]),

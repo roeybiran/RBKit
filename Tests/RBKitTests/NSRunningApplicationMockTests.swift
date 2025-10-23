@@ -4,9 +4,9 @@ import Testing
 @testable import RBKit
 
 @Suite
-struct `NSRunningApplication Mock Tests` {
+struct `NSRunningApplication.Mock Tests` {
     @Test
-    func `Mock tracks activation policy and visibility`() {
+    func `init, should track activation policy and visibility`() async throws {
         let application = NSRunningApplication.Mock()
 
         #expect(application.activationPolicy == .regular)

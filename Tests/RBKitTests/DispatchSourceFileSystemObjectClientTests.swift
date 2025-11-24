@@ -2,6 +2,7 @@ import Dependencies
 import Foundation
 import System
 import Testing
+import RBKitTestSupport
 
 @testable import RBKit
 

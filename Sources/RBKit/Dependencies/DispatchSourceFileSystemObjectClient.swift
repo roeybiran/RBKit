@@ -15,7 +15,10 @@ import System
 @DependencyClient
 public struct DispatchSourceFileSystemObjectClient: Sendable {
   public var make: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?)
-    -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSourceFileSystemObjectMock() }
+    -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSource.makeFileSystemObjectSource(
+      fileDescriptor: 0,
+      eventMask: []
+    ) }
   public var setEventHandler: @Sendable (
     _ object: any DispatchSourceFileSystemObject,
     _ qos: DispatchQoS,

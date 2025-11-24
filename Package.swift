@@ -5,15 +5,17 @@ import PackageDescription
 
 let package = Package(
   name: "RBKit",
-  platforms: [.macOS(.v13)],
+  platforms: [.macOS(.v14)],
   products: [
     // Products define the executables and libraries a package produces, and make them visible to other packages.
     .library(
       name: "RBKit",
-      targets: ["RBKit"]),
+      targets: ["RBKit"]
+    ),
     .library(
       name: "RBKitTestSupport",
-      targets: ["RBKitTestSupport"]),
+      targets: ["RBKitTestSupport"]
+    ),
   ],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
@@ -35,13 +37,14 @@ let package = Package(
     ),
     .target(
       name: "RBKitTestSupport",
-      dependencies: []),
+      dependencies: []
+    ),
     .testTarget(
       name: "RBKitTests",
       dependencies: [
         "RBKit",
+        "RBKitTestSupport",
       ]
     ),
   ]
 )
-

@@ -55,11 +55,7 @@ extension NSRunningApplicationClient: DependencyKey {
     current: { NSRunningApplication.current },
     activate: { $0.activate(options: $1) },
     activateFromApplication: { app, fromApp, options in
-      if #available(macOS 14.0, *) {
-        app.activate(from: fromApp, options: options)
-      } else {
-        app.activate(options: options)
-      }
+      app.activate(from: fromApp, options: options)
     },
     hide: NSRunningApplication.hide,
     unhide: { $0.unhide() },

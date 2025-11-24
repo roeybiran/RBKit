@@ -270,9 +270,7 @@ public struct URLResourceValuesWrapper {
     localizedLabel = resourceValues.localizedLabel
     fileResourceIdentifier = resourceValues.fileResourceIdentifier
     volumeIdentifier = resourceValues.volumeIdentifier
-    if #available(macOS 13.3, *) {
-      fileIdentifier = resourceValues.fileIdentifier
-    }
+    fileIdentifier = resourceValues.fileIdentifier
     fileContentIdentifier = resourceValues.fileContentIdentifier
     preferredIOBlockSize = resourceValues.preferredIOBlockSize
     isReadable = resourceValues.isReadable
@@ -293,9 +291,7 @@ public struct URLResourceValuesWrapper {
     isSparse = resourceValues.isSparse
     mayShareFileContent = resourceValues.mayShareFileContent
     fileResourceType = resourceValues.fileResourceType
-    if #available(macOS 14.0, *) {
-      directoryEntryCount = resourceValues.directoryEntryCount
-    }
+    directoryEntryCount = resourceValues.directoryEntryCount
     volumeLocalizedFormatDescription = resourceValues.volumeLocalizedFormatDescription
     volumeTotalCapacity = resourceValues.volumeTotalCapacity
     volumeAvailableCapacity = resourceValues.volumeAvailableCapacity
@@ -339,11 +335,9 @@ public struct URLResourceValuesWrapper {
     volumeSupportsExclusiveRenaming = resourceValues.volumeSupportsExclusiveRenaming
     volumeSupportsImmutableFiles = resourceValues.volumeSupportsImmutableFiles
     volumeSupportsAccessPermissions = resourceValues.volumeSupportsAccessPermissions
-    if #available(macOS 13.3, *) {
-      volumeTypeName = resourceValues.volumeTypeName
-      volumeSubtype = resourceValues.volumeSubtype
-      volumeMountFromLocation = resourceValues.volumeMountFromLocation
-    }
+    volumeTypeName = resourceValues.volumeTypeName
+    volumeSubtype = resourceValues.volumeSubtype
+    volumeMountFromLocation = resourceValues.volumeMountFromLocation
     isUbiquitousItem = resourceValues.isUbiquitousItem
     ubiquitousItemHasUnresolvedConflicts = resourceValues.ubiquitousItemHasUnresolvedConflicts
     ubiquitousItemIsDownloading = resourceValues.ubiquitousItemIsDownloading

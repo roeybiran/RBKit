@@ -1,5 +1,6 @@
 import AppKit
 
+@MainActor
 extension NSMenuItem {
 
   // MARK: Lifecycle
@@ -26,7 +27,6 @@ extension NSMenuItem {
     NSMenuItem("Settings…", keyEquivalent: ",")
   }
 
-  @MainActor
   public static func servicesMenu() -> NSMenuItem {
     let title = "Services"
     let menuItem = NSMenuItem(title)
@@ -35,7 +35,6 @@ extension NSMenuItem {
     return menuItem
   }
 
-  @MainActor
   public static func windowMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
     -> NSMenuItem
   {
@@ -50,7 +49,6 @@ extension NSMenuItem {
     return menuItem
   }
 
-  @MainActor
   public static func helpMenu(@MenuBuilder builder: (() -> [NSMenuItem]) = { [] })
     -> NSMenuItem
   {
@@ -63,13 +61,5 @@ extension NSMenuItem {
       menuItem.submenu?.items = children
     }
     return menuItem
-  }
-
-  public static func _sectionHeader(title: String) -> NSMenuItem {
-    if #available(macOS 14.0, *) {
-      NSMenuItem.sectionHeader(title: title)
-    } else {
-      NSMenuItem(title: title, action: nil, keyEquivalent: "").set(\.isEnabled, to: false)
-    }
   }
 }

@@ -11,7 +11,7 @@ public struct NSApplicationClient: Sendable {
 
   /// Activating and Deactivating the App
   public var activate: @Sendable @MainActor () -> Void
-  
+
   @DependencyEndpoint(method: "activate")
   public var activateIgnoringOtherApps: @Sendable @MainActor (_ ignoringOtherApps: Bool) -> Void
 
@@ -44,29 +44,11 @@ public struct NSApplicationClient: Sendable {
 extension NSApplicationClient: DependencyKey {
   public static let liveValue = Self(
     terminate: NSApplication.shared.terminate,
-    activate: {
-      if #available(macOS 14.0, *) {
-        NSApplication.shared.activate()
-      } else {
-        NSApplication.shared.activate(ignoringOtherApps: false)
-      }
-    },
+    activate: NSApplication.shared.activate,
     activateIgnoringOtherApps: NSApplication.shared.activate(ignoringOtherApps:),
-    yieldActivationTo: { app in
-      if #available(macOS 14.0, *) {
-        NSApplication.shared.yieldActivation(to: app)
-      } else {
-        // Fallback on earlier versions
-      }
-    },
-    yieldActivationToApplicationWithBundleIdentifier: { bundleID in
-      if #available(macOS 14.0, *) {
-        NSApplication.shared.yieldActivation(toApplicationWithBundleIdentifier: bundleID)
-      } else {
-        // Fallback on earlier versions
-      }
-    },
-    runModal: NSApplication.shared.runModal(for:),
+    yieldActivationTo: NSApplication.shared.yieldActivation,
+    yieldActivationToApplicationWithBundleIdentifier: NSApplication.shared.yieldActivation,
+    runModal: NSApplication.shared.runModal,
     stopModal: NSApplication.shared.stopModal,
     activationPolicy: NSApplication.shared.activationPolicy,
     setActivationPolicy: NSApplication.shared.setActivationPolicy

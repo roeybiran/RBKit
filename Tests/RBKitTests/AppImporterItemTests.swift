@@ -65,6 +65,52 @@ struct `AppImporterItem Tests` {
     #expect(item.id == bundleID)
   }
 
+  // MARK: - RawRepresentable Tests
+
+  @Test
+  func `rawValue equals bundleID`() {
+    let bundleID = "com.example.app"
+    let item = AppImporterItem(bundleID: bundleID, bundleURL: nil)
+
+    #expect(item.rawValue == bundleID)
+  }
+
+  @Test
+  func `init(rawValue:) creates item with bundleID`() {
+    let bundleID = "com.example.app"
+    let expectedURL = URL(fileURLWithPath: "/Applications/Test.app")
+
+    let item = withDependencies {
+      $0.nsWorkspaceClient.urlForApplication = { bundleIdentifier in
+        if bundleIdentifier == bundleID {
+          return expectedURL
+        } else {
+          Issue.record()
+          return nil
+        }
+      }
+    } operation: {
+      AppImporterItem(rawValue: bundleID)
+    }
+
+    #expect(item.bundleID == bundleID)
+    #expect(item.bundleURL == expectedURL)
+  }
+
+  @Test
+  func `init(rawValue:) with invalid bundleID creates item with nil URL`() {
+    let bundleID = "com.nonexistent.app"
+
+    let item = withDependencies {
+      $0.nsWorkspaceClient.urlForApplication = { _ in nil }
+    } operation: {
+      AppImporterItem(rawValue: bundleID)
+    }
+
+    #expect(item.bundleID == bundleID)
+    #expect(item.bundleURL == nil)
+  }
+
   // MARK: - init(bundleID:) Tests
 
   @Test

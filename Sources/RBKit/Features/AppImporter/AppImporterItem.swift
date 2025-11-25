@@ -4,9 +4,13 @@ import Foundation
 
 // MARK: - AppImporterItem
 
-public struct AppImporterItem: Equatable, Identifiable, Sendable {
+public struct AppImporterItem: Equatable, Identifiable, Sendable, RawRepresentable {
 
   // MARK: Lifecycle
+
+  public init(rawValue: String) {
+    self.init(bundleID: rawValue)
+  }
 
   init(
     bundleID: String,
@@ -43,9 +47,11 @@ public struct AppImporterItem: Equatable, Identifiable, Sendable {
 
   public var id: String { bundleID }
 
+  public var rawValue: String { bundleID }
+
   // MARK: Internal
 
-  var image: NSImage {
+  public var image: NSImage {
     if let path {
       NSWorkspace.shared.icon(forFile: path)
     } else {

@@ -50,6 +50,11 @@ public struct FileManagerClient: Sendable {
     @Sendable (
       _ atPath: String
     ) -> Bool = { _ in false }
+
+  public var displayName:
+    @Sendable (
+      _ atPath: String
+    ) -> String = { _ in "" }
 }
 
 // MARK: DependencyKey
@@ -61,7 +66,8 @@ extension FileManagerClient: DependencyKey {
     contentsOfDirectory: FileManager.default.contentsOfDirectory(at:includingPropertiesForKeys:options:),
     enumerator: FileManager.default.enumerator(at:includingPropertiesForKeys:options:errorHandler:),
     createDirectory: FileManager.default.createDirectory(at:withIntermediateDirectories:attributes:),
-    fileExists: FileManager.default.fileExists(atPath:)
+    fileExists: FileManager.default.fileExists(atPath:),
+    displayName: FileManager.default.displayName(atPath:)
   )
   public static let testValue = FileManagerClient()
 }

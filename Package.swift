@@ -32,12 +32,12 @@ let package = Package(
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
       ],
       swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
+        .enableExperimentalFeature("StrictConcurrency"),
+        .enableUpcomingFeature("InferSendableFromCaptures")
       ]
     ),
     .target(
       name: "RBKitTestSupport",
-      dependencies: []
     ),
     .testTarget(
       name: "RBKitTests",

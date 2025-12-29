@@ -33,11 +33,11 @@ let package = Package(
       ],
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency"),
-        .enableUpcomingFeature("InferSendableFromCaptures")
+        .enableUpcomingFeature("InferSendableFromCaptures"),
       ]
     ),
     .target(
-      name: "RBKitTestSupport",
+      name: "RBKitTestSupport"
     ),
     .testTarget(
       name: "RBKitTests",

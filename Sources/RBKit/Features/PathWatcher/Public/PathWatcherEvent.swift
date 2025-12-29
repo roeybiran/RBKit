@@ -5,6 +5,14 @@ import Foundation
 public struct PathWatcherEvent: Sendable, Identifiable {
   public typealias ID = FSEventStreamEventId
 
+  public let path: String
+  public let flag: Flag
+  public let id: FSEventStreamEventId
+}
+
+// MARK: PathWatcherEvent.Flag
+
+extension PathWatcherEvent {
   public struct Flag: OptionSet, Hashable, Sendable, CustomDebugStringConvertible {
 
     // MARK: Lifecycle
@@ -78,10 +86,6 @@ public struct PathWatcherEvent: Sendable, Identifiable {
       .joined(separator: ", ")
     }
   }
-
-  public let path: String
-  public let flag: Flag
-  public let id: FSEventStreamEventId
 
 }
 

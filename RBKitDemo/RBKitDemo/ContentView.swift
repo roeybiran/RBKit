@@ -1,5 +1,5 @@
-import RBKit
 import Dependencies
+import RBKit
 import SwiftUI
 
 struct ContentView: View {
@@ -16,17 +16,17 @@ struct ContentView: View {
     .task {
       do {
         for try await event in pathWatcher.events(
-          paths: ["/Users/roey.biran/Desktop/test"],
+          paths: ["/Users/roey.biran/Library/Application Support/com.apple.sharedfilelist/"],
           latency: 1,
           queue: nil,
           sinceWhen: nil,
-          flags: .fileEvents
+          flags: [.fileEvents]
         ) {
-          print (event)
+          for e in event {
+            print(e.path, e.flag)
+          }
         }
-      } catch {
-
-      }
+      } catch { }
     }
   }
 }

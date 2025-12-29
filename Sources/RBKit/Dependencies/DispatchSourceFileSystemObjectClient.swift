@@ -31,37 +31,6 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
   public var handle: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Int32 = { _ in 0 }
 }
 
-extension DispatchSourceFileSystemObjectClient {
-  public func pathMonitor(
-    path: FilePath,
-    mask: DispatchSource.FileSystemEvent,
-    queue: DispatchQueue?
-  ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Error> {
-    let (stream, continuation) = AsyncThrowingStream.makeStream(of: DispatchSource.FileSystemEvent.self, throwing: Error.self)
-
-    let fileDescriptor: FileDescriptor
-    do {
-      fileDescriptor = try FileDescriptor.open(path, .readOnly, options: [.eventOnly])
-    } catch {
-      continuation.finish(throwing: error)
-      return stream
-    }
-
-    let source = make(fileDescriptor: fileDescriptor.rawValue, eventMask: mask, queue: queue)
-    setEventHandler(object: source, qos: .unspecified, flags: []) {
-      continuation.yield(data(object: source))
-    }
-    resume(object: source)
-    continuation.onTermination = { _ in
-      cancel(object: source)
-      let handle = handle(object: source)
-      let fileDescriptor = FileDescriptor(rawValue: handle)
-      try? fileDescriptor.close()
-    }
-
-    return stream
-  }
-}
 
 // MARK: DependencyKey
 

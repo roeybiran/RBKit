@@ -6,24 +6,19 @@ import Testing
 
 typealias TestFrecencyStore = FrecencyStore<String>
 
-let testURL = URL(filePath: "/Users/roey/app_support/com.foo.bar/recents.json")
-
-func makeTestJSON(date: Double = Date.now.timeIntervalSince1970) -> Data {
-  "{ \"items\": { \"a\": { \"id\": \"a\", \"visits\": [\(date)], \"count\": 1, \"_reduced\": false } }, \"queries\": {} }"
-    .data(using: .utf8)!
-}
-
 // MARK: - TestError
 
 struct TestError: Error { }
 
 // MARK: - FrecencyStoreTests
 
-struct FrecencyStoreTests {
+@Suite
+struct `FrecencyStore Tests` {
   @Test
   func getURL() async throws {
-    var called_urls = false
-    var called_createDirectory = false
+    nonisolated(unsafe) var called_urls = false
+    nonisolated(unsafe) var called_createDirectory = false
+
     _ = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in
         called_urls = true
@@ -192,4 +187,11 @@ struct FrecencyStoreTests {
     #expect(sut.score(for: "a") == 100)
   }
 
+}
+
+let testURL = URL(filePath: "/Users/roey/app_support/com.foo.bar/recents.json")
+
+func makeTestJSON(date: Double = Date.now.timeIntervalSince1970) -> Data {
+  "{ \"items\": { \"a\": { \"id\": \"a\", \"visits\": [\(date)], \"count\": 1, \"_reduced\": false } }, \"queries\": {} }"
+    .data(using: .utf8)!
 }

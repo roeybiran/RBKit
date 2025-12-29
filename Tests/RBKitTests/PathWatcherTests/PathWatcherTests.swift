@@ -1,8 +1,8 @@
 import Dependencies
 import Foundation
+import RBKitTestSupport
 import System
 import Testing
-import RBKitTestSupport
 
 @testable import RBKit
 
@@ -76,9 +76,10 @@ struct `PathWatcher Tests` {
     @Test
     func `pathMonitor, with non-existing path, should throw`() async throws {
         nonisolated(unsafe) var openCalled = false
+
         struct TestError: Error {}
 
-        try await withDependencies {
+        await withDependencies {
             $0.fileDescriptorClient.open = { _, _, _ in
                 openCalled = true
                 throw TestError()
@@ -88,19 +89,14 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let nonExistingPath = FilePath("/non/existing/path")
-            var didThrow = false
 
-            do {
-                for try await _ in client.pathMonitor(nonExistingPath, .write, nil) {
-                    Issue.record("Should have thrown for non-existing path")
-                    break
-                }
-            } catch {
-                didThrow = true
+            await #expect(throws: TestError.self) {
+                for try await _ in client.pathMonitor(nonExistingPath, .write, nil) {}
             }
 
+            try? await Task.sleep(for: .milliseconds(10))
+
             #expect(openCalled)
-            #expect(didThrow)
         }
     }
 
@@ -137,7 +133,7 @@ struct `PathWatcher Tests` {
 
             let task = Task {
                 let tempPath = FilePath(NSTemporaryDirectory())
-                for try await _ in client.pathMonitor(tempPath, .write, nil) { }
+                for try await _ in client.pathMonitor(tempPath, .write, nil) {}
             }
 
             try await Task.sleep(for: .milliseconds(10))
@@ -152,26 +148,26 @@ struct `PathWatcher Tests` {
 
     @Test
     func `events, with successful stream creation, should yield events`() async throws {
-        var capturedCallback: FSEventStreamCallback?
-        var capturedContext: FSEventStreamContext?
-        var capturedPaths: CFArray?
-        var capturedSinceWhen: FSEventStreamEventId?
-        var capturedLatency: CFTimeInterval?
-        var capturedFlags: FSEventStreamCreateFlags?
+        nonisolated(unsafe) var capturedCallback: FSEventStreamCallback?
+        nonisolated(unsafe) var capturedContext: FSEventStreamContext?
+        nonisolated(unsafe) var capturedPaths: CFArray?
+        nonisolated(unsafe) var capturedSinceWhen: FSEventStreamEventId?
+        nonisolated(unsafe) var capturedLatency: CFTimeInterval?
+        nonisolated(unsafe) var capturedFlags: FSEventStreamCreateFlags?
         nonisolated(unsafe) var setDispatchQueueCalled = false
         nonisolated(unsafe) var setDispatchQueueQueue: DispatchQueue?
         nonisolated(unsafe) var startCalled = false
         nonisolated(unsafe) var stopCalled = false
 
         try await withDependencies {
-            $0.fsEventStreamClient.create = { allocator, callback, context, paths, sinceWhen, latency, flags in
+            $0.fsEventStreamClient.create = {
+                allocator, callback, context, paths, sinceWhen, latency, flags in
                 capturedCallback = callback
                 capturedContext = context.pointee
                 capturedPaths = paths
                 capturedSinceWhen = sinceWhen
                 capturedLatency = latency
                 capturedFlags = flags
-                // Return a mock pointer
                 return OpaquePointer(bitPattern: 1)
             }
             $0.fsEventStreamClient.setDispatchQueue = { ref, queue in
@@ -193,7 +189,9 @@ struct `PathWatcher Tests` {
             let task = Task {
                 var receivedEvents: [[PathWatcherEvent]] = []
                 do {
-                    for try await events in client.events(paths: paths, latency: 0.1, queue: nil, sinceWhen: nil, flags: nil) {
+                    for try await events in client.events(
+                        paths: paths, latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
+                    {
                         receivedEvents.append(events)
                         break
                     }
@@ -211,7 +209,9 @@ struct `PathWatcher Tests` {
             // Simulate the callback being invoked
             if let callback = capturedCallback, let context = capturedContext {
                 let eventPaths = ["/tmp/event"] as CFArray
-                let eventFlags: [FSEventStreamEventFlags] = [FSEventStreamEventFlags(kFSEventStreamEventFlagItemCreated)]
+                let eventFlags: [FSEventStreamEventFlags] = [
+                    FSEventStreamEventFlags(kFSEventStreamEventFlagItemCreated)
+                ]
                 let eventIds: [FSEventStreamEventId] = [1]
 
                 eventFlags.withUnsafeBufferPointer { flagsPtr in
@@ -233,7 +233,14 @@ struct `PathWatcher Tests` {
             task.cancel()
             try await Task.sleep(for: .milliseconds(50))
 
+            #expect(capturedCallback != nil)
+            #expect(capturedContext != nil)
+            #expect(capturedPaths != nil)
+            #expect(capturedSinceWhen != nil)
+            #expect(capturedLatency != nil)
+            #expect(capturedFlags != nil)
             #expect(setDispatchQueueCalled)
+            #expect(setDispatchQueueQueue != nil)
             #expect(startCalled)
             #expect(stopCalled)
         }
@@ -251,7 +258,9 @@ struct `PathWatcher Tests` {
             var thrownError: PathWatcherError?
 
             do {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil) {
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
+                {
                     Issue.record("Should have thrown for stream creation failure")
                     break
                 }
@@ -284,7 +293,9 @@ struct `PathWatcher Tests` {
             var thrownError: PathWatcherError?
 
             do {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil) {
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
+                {
                     Issue.record("Should have thrown for stream start failure")
                     break
                 }
@@ -322,7 +333,9 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil) { }
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
+                {}
             }
 
             try await Task.sleep(for: .milliseconds(10))
@@ -352,7 +365,9 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: customQueue, sinceWhen: nil, flags: nil) { }
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: customQueue, sinceWhen: nil, flags: nil)
+                {}
             }
 
             try await Task.sleep(for: .milliseconds(10))
@@ -380,7 +395,10 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: customSinceWhen, flags: nil) { }
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: customSinceWhen,
+                    flags: nil)
+                {}
             }
 
             try await Task.sleep(for: .milliseconds(10))
@@ -408,7 +426,9 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: customFlags) { }
+                for try await _ in client.events(
+                    paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: customFlags)
+                {}
             }
 
             try await Task.sleep(for: .milliseconds(10))

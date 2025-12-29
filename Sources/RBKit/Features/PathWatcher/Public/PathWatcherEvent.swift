@@ -1,25 +1,25 @@
 import Foundation
 
-public struct FSEvent: Sendable, Identifiable {
+// MARK: - PathWatcherEvent
+
+public struct PathWatcherEvent: Sendable, Identifiable {
   public let path: String
   public let flag: Flag
   public let id: ID
 
+  // MARK: - PathWatcherEventFlag
+  
   public struct Flag: OptionSet, Hashable, Sendable, CustomDebugStringConvertible {
-    // MARK: Lifecycle
-
     public init(rawValue: FSEventStreamEventFlags) {
       self.rawValue = rawValue
     }
-
+    
     public init(rawValue: Int) {
       self.rawValue = FSEventStreamEventFlags(truncatingIfNeeded: rawValue)
     }
-
-    // MARK: Public
-
+    
     public let rawValue: FSEventStreamEventFlags
-
+    
     public static let none = Self(rawValue: kFSEventStreamEventFlagNone)
     public static let mustScanSubDirs = Self(rawValue: kFSEventStreamEventFlagMustScanSubDirs)
     public static let userDropped = Self(rawValue: kFSEventStreamEventFlagUserDropped)
@@ -44,10 +44,10 @@ public struct FSEvent: Sendable, Identifiable {
     public static let itemIsHardlink = Self(rawValue: kFSEventStreamEventFlagItemIsHardlink)
     public static let itemIsLastHardlink = Self(rawValue: kFSEventStreamEventFlagItemIsLastHardlink)
     public static let itemCloned = Self(rawValue: kFSEventStreamEventFlagItemCloned)
-
+    
     public var debugDescription: String {
       [
-        (Self.none, "none"),
+        (Flag.none, "none"),
         (.mustScanSubDirs, "mustScanSubDirs"),
         (.userDropped, "userDropped"),
         (.kernelDropped, "kernelDropped"),
@@ -77,26 +77,23 @@ public struct FSEvent: Sendable, Identifiable {
         .joined(separator: ", ")
     }
   }
-
+  
   public struct ID: RawRepresentable, Hashable, Sendable, CustomStringConvertible {
-    // MARK: Lifecycle
-
     public init(rawValue: FSEventStreamEventId) {
       self.rawValue = rawValue
     }
-
+    
     public init(_ value: UInt) {
       rawValue = FSEventStreamEventId(UInt32(truncatingIfNeeded: value))
     }
-
-    // MARK: Public
-
+    
     public let rawValue: FSEventStreamEventId
-
+    
     public var description: String {
       "\(rawValue)"
     }
-
+    
     public static let now = Self(kFSEventStreamEventIdSinceNow)
   }
 }
+

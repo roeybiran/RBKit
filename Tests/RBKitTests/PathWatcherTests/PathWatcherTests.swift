@@ -52,6 +52,11 @@ struct `PathWatcher Tests` {
                     }
 
                     return stream
+                },
+                events: { _, _, _, _, _ in
+                    AsyncThrowingStream { continuation in
+                        continuation.finish()
+                    }
                 }
             )
         } operation: {
@@ -145,6 +150,11 @@ struct `PathWatcher Tests` {
                     }
 
                     return stream
+                },
+                events: { _, _, _, _, _ in
+                    AsyncThrowingStream { continuation in
+                        continuation.finish()
+                    }
                 }
             )
         } operation: {

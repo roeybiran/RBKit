@@ -5,9 +5,8 @@ import Testing
 
 struct FrecencyItemTests {
 
-  // MARK: Internal
-
-  @Test func item_init() throws {
+  @Test
+  func item_init() throws {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
@@ -20,7 +19,8 @@ struct FrecencyItemTests {
     #expect(false == a._reduced)
   }
 
-  @Test func item_init2() throws {
+  @Test
+  func item_init2() throws {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
@@ -32,7 +32,8 @@ struct FrecencyItemTests {
     #expect(false == a._reduced)
   }
 
-  @Test func debugDescription() throws {
+  @Test
+  func debugDescription() throws {
     let a = FrecencyItem<String>(
       id: "a",
       visits: [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]

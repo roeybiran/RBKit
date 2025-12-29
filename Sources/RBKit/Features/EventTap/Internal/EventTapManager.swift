@@ -1,5 +1,4 @@
 import Carbon
-import RBKit
 
 /// EventTapManager
 /// ## See Also:

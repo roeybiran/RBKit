@@ -49,8 +49,6 @@ public struct AppImporterItem: Equatable, Identifiable, Sendable, RawRepresentab
 
   public var rawValue: String { bundleID }
 
-  // MARK: Internal
-
   public var image: NSImage {
     if let path {
       NSWorkspace.shared.icon(forFile: path)

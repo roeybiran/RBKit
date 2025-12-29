@@ -1,7 +1,6 @@
 import Carbon
 import Dependencies
 import DependenciesMacros
-import RBKit
 
 // MARK: - EventTapManagerClient
 

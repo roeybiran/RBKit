@@ -1,1 +1,1 @@
-public typealias FrecencyID = Hashable & Codable & Sendable
+public typealias FrecencyID = Codable & Hashable & Sendable

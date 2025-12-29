@@ -31,7 +31,6 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
   public var handle: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Int32 = { _ in 0 }
 }
 
-
 // MARK: DependencyKey
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {

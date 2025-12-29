@@ -19,4 +19,3 @@ extension String {
     return n == count
   }
 }
-

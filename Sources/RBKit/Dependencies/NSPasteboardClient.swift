@@ -27,4 +27,3 @@ extension DependencyValues {
     set { self[NSPasteboardClient.self] = newValue }
   }
 }
-

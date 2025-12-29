@@ -1,10 +1,22 @@
 import Foundation
 
+// MARK: - FrecencyItem
+
 public struct FrecencyItem<ID: FrecencyID>: Hashable, Codable, Sendable {
+
+  // MARK: Lifecycle
+
+  public init(id: ID, visits: [Date], count: Int) {
+    self.id = id
+    self.visits = visits
+    self.count = count
+  }
+
+  // MARK: Public
+
   public let id: ID
   public var visits: [Date]
   public var count: Int
-  var _reduced = false
 
   public func score(referencing date: Date = .now, in calendar: Calendar = .current) -> Double {
     let score = visits.map { self.score(for: $0, referenceDate: date, referenceCalendar: calendar) }
@@ -12,11 +24,11 @@ public struct FrecencyItem<ID: FrecencyID>: Hashable, Codable, Sendable {
     return Double(count) * score / Double(visits.count)
   }
 
-  public init(id: ID, visits: [Date], count: Int) {
-    self.id = id
-    self.visits = visits
-    self.count = count
-  }
+  // MARK: Internal
+
+  var _reduced = false
+
+  // MARK: Private
 
   private func score(for targetDate: Date, referenceDate: Date, referenceCalendar: Calendar)
     -> Double
@@ -56,15 +68,15 @@ extension FrecencyItem {
   public init(id: ID, visits: [Date] = []) {
     self.id = id
     self.visits = visits
-    self.count = visits.count
-    self._reduced = false
+    count = visits.count
+    _reduced = false
   }
 }
 
 #if DEBUG
-  extension FrecencyItem: CustomDebugStringConvertible {
-    public var debugDescription: String {
-      "ID: \(id), SCORE: \(score()), COUNT: \(count), VISITS: \(visits)})"
-    }
+extension FrecencyItem: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    "ID: \(id), SCORE: \(score()), COUNT: \(count), VISITS: \(visits)})"
   }
+}
 #endif

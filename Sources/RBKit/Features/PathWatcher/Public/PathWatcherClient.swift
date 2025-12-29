@@ -26,15 +26,18 @@ public struct PathWatcherClient: Sendable {
 
 public typealias FSEventAsyncStream = AsyncThrowingStream<[PathWatcherEvent], any Swift.Error>
 
-// MARK: DependencyKey
+// MARK: - PathWatcherClient + DependencyKey
 
 extension PathWatcherClient: DependencyKey {
   public static let liveValue = Self(
     pathMonitor: { path, mask, queue in
-      let fileDescriptorClient = FileDescriptorClient.liveValue
-      let dispatchSourceFileSystemObjectClient = DispatchSourceFileSystemObjectClient.liveValue
+      @Dependency(\.fileDescriptorClient) var fileDescriptorClient
+      @Dependency(\.dispatchSourceFileSystemObjectClient) var dispatchSourceFileSystemObjectClient
 
-      let (stream, continuation) = AsyncThrowingStream.makeStream(of: DispatchSource.FileSystemEvent.self, throwing: (any Swift.Error).self)
+      let (stream, continuation) = AsyncThrowingStream.makeStream(
+        of: DispatchSource.FileSystemEvent.self,
+        throwing: (any Swift.Error).self
+      )
 
       let fileDescriptor: FileDescriptor
       do {
@@ -44,7 +47,11 @@ extension PathWatcherClient: DependencyKey {
         return stream
       }
 
-      let source = dispatchSourceFileSystemObjectClient.make(fileDescriptor: fileDescriptor.rawValue, eventMask: mask, queue: queue)
+      let source = dispatchSourceFileSystemObjectClient.make(
+        fileDescriptor: fileDescriptor.rawValue,
+        eventMask: mask,
+        queue: queue
+      )
       dispatchSourceFileSystemObjectClient.setEventHandler(object: source, qos: .unspecified, flags: []) {
         continuation.yield(dispatchSourceFileSystemObjectClient.data(object: source))
       }
@@ -78,7 +85,8 @@ extension PathWatcherClient: DependencyKey {
         info: Unmanaged.passRetained(wrapper).toOpaque(),
         retain: nil,
         release: nil,
-        copyDescription: nil)
+        copyDescription: nil
+      )
 
       guard
         let ref = fsEventStreamClient.create(
@@ -104,16 +112,19 @@ extension PathWatcherClient: DependencyKey {
                 PathWatcherEvent(
                   path: eventPaths[i],
                   flag: PathWatcherEvent.Flag(rawValue: flags[i]),
-                  id: PathWatcherEvent.ID(rawValue: ids[i])))
+                  id: ids[i]
+                )
+              )
             }
 
             wrapper.eventHandler(events)
           },
           &context,
           paths as CFArray,
-          defaultSinceWhen.rawValue,
+          defaultSinceWhen,
           latency as CFTimeInterval,
-          defaultFlags.union(.useCFTypes).rawValue)
+          defaultFlags.union(.useCFTypes).rawValue
+        )
       else {
         continuation.finish(throwing: PathWatcherError.streamCreationFailed)
         return stream
@@ -145,10 +156,15 @@ extension DependencyValues {
 }
 
 final class EventHandlerWrapper {
-  let eventHandler: (_ events: [PathWatcherEvent]) -> Void
+
+  // MARK: Lifecycle
 
   init(eventHandler: @escaping ([PathWatcherEvent]) -> Void) {
     self.eventHandler = eventHandler
   }
-}
 
+  // MARK: Internal
+
+  let eventHandler: (_ events: [PathWatcherEvent]) -> Void
+
+}

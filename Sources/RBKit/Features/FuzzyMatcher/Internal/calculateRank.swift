@@ -8,7 +8,8 @@ func calculateRank(lhs: String, rhs: String) -> Score {
 
   var matrix = [[Int]](
     repeating: [Int](repeating: 0, count: m),
-    count: n)
+    count: n
+  )
 
   var first = [Int](repeating: m, count: n)
   var last = [Int](repeating: 0, count: n)

@@ -15,11 +15,11 @@ public struct FSEventStreamClient: Sendable {
     _ latency: CFTimeInterval,
     _ flags: FSEventStreamCreateFlags
   ) -> FSEventStreamRef? = { _, _, _, _, _, _, _ in nil }
-  
+
   public var setDispatchQueue: @Sendable (_ streamRef: FSEventStreamRef, _ queue: DispatchQueue?) -> Void = { _, _ in }
-  
+
   public var start: @Sendable (_ streamRef: FSEventStreamRef) -> Bool = { _ in false }
-  
+
   public var stop: @Sendable (_ streamRef: FSEventStreamRef) -> Void = { _ in }
 }
 
@@ -32,7 +32,7 @@ extension FSEventStreamClient: DependencyKey {
     start: FSEventStreamStart,
     stop: FSEventStreamStop
   )
-  
+
   public static let testValue = Self()
 }
 
@@ -42,4 +42,3 @@ extension DependencyValues {
     set { self[FSEventStreamClient.self] = newValue }
   }
 }
-

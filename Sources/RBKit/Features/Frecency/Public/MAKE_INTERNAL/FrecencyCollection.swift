@@ -1,8 +1,16 @@
 import Foundation
 
+// MARK: - FrecencyCollection
+
 public struct FrecencyCollection<T: FrecencyID> {
+
+  // MARK: Lifecycle
+
+  public init() { }
+
+  // MARK: Public
+
   public private(set) var items = [T: FrecencyItem<T>]()
-  var queries = [String: [FrecencyItem<T>]]()
 
   public func score(for item: T, referencing date: Date = .now, in calendar: Calendar = .current)
     -> Double
@@ -10,19 +18,23 @@ public struct FrecencyCollection<T: FrecencyID> {
     items[item]?.score(referencing: date, in: calendar) ?? 0
   }
 
-  public mutating func add(entry: T, query: String? = nil, timestamp: Date = .now) {
+  public mutating func add(entry: T, query _: String? = nil, timestamp: Date = .now) {
     items = items.merging([entry: FrecencyItem(id: entry, visits: [timestamp], count: 1)]) {
       current, new in
       FrecencyItem(
         id: new.id, visits: (current.visits + new.visits).suffix(.frecencySamplingLimit),
-        count: current.count + new.count)
+        count: current.count + new.count
+      )
     }
     // if let query {
     //   queries[query, default: []].append(item)
     // }
   }
 
-  public init() {}
+  // MARK: Internal
+
+  var queries = [String: [FrecencyItem<T>]]()
+
 }
 
 extension FrecencyCollection {
@@ -31,12 +43,12 @@ extension FrecencyCollection {
   }
 
   public init(items: [FrecencyItem<T>] = []) {
-    items.forEach { self.items[$0.id] = $0 }
+    for item in items { self.items[item.id] = item }
   }
 }
 
-extension FrecencyCollection: Hashable {}
+extension FrecencyCollection: Hashable { }
 
-extension FrecencyCollection: Codable {}
+extension FrecencyCollection: Codable { }
 
-extension FrecencyCollection: Sendable {}
+extension FrecencyCollection: Sendable { }

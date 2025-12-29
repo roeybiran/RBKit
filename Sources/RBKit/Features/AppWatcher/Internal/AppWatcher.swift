@@ -2,7 +2,6 @@ import AppKit
 import Dependencies
 import DependenciesMacros
 import Foundation
-import RBKit
 
 // https://developer.apple.com/documentation/foundation/nskeyvalueobservedchange/newvalue
 // "newValue and oldValue will only be non-nil if .new/.old is passed to observe(). In general, get the most up to date value by accessing it directly on the observed object instead."

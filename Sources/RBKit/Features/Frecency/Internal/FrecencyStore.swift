@@ -4,10 +4,46 @@ import os
 
 let logger = Logger()
 
+// MARK: - FrecencyStore
+
 struct FrecencyStore<Key: FrecencyID>: Sendable {
+
+  // MARK: Internal
+
   @Dependency(\.diskClient) var diskClient
 
   var url: URL?
+
+  private(set) var items = FrecencyCollection<Key>()
+
+  static func defaultURL() -> URL? {
+    @Dependency(\.bundleClient) var bundleClient
+    @Dependency(\.urlClient) var urlClient
+    @Dependency(\.fileManagerClient) var fileManagerClient
+
+    let applicationSupportDirectory = urlClient.applicationSupportDirectory()
+
+    guard let selfBundleId = bundleClient.bundleIdentifier(bundle: bundleClient.main()) else {
+      logger.log("Failed to get self bundle identifier")
+      return nil
+    }
+
+    let parentDir = applicationSupportDirectory.appending(
+      component: selfBundleId, directoryHint: .isDirectory
+    )
+
+    do {
+      try fileManagerClient.createDirectory(
+        atURL: parentDir, withIntermediateDirectories: true, attributes: nil
+      )
+    } catch {
+      logger.log("Failed to create the application support directory, error: \(error)")
+      return nil
+    }
+
+    return parentDir.appending(component: "recents", directoryHint: .notDirectory)
+      .appendingPathExtension("json")
+  }
 
   mutating func load() throws {
     guard let url else { return }
@@ -31,34 +67,7 @@ struct FrecencyStore<Key: FrecencyID>: Sendable {
 
   // MARK: Private
 
-  private(set) var items = FrecencyCollection<Key>()
   private let decoder = JSONDecoder()
   private let encoder = JSONEncoder()
 
-  static func defaultURL() -> URL? {
-    @Dependency(\.bundleClient) var bundleClient
-    @Dependency(\.urlClient) var urlClient
-    @Dependency(\.fileManagerClient) var fileManagerClient
-
-    let applicationSupportDirectory = urlClient.applicationSupportDirectory()
-
-    guard let selfBundleId = bundleClient.bundleIdentifier(bundle: bundleClient.main()) else {
-      logger.log("Failed to get self bundle identifier")
-      return nil
-    }
-
-    let parentDir = applicationSupportDirectory.appending(
-      component: selfBundleId, directoryHint: .isDirectory)
-
-    do {
-      try fileManagerClient.createDirectory(
-        atURL: parentDir, withIntermediateDirectories: true, attributes: nil)
-    } catch {
-      logger.log("Failed to create the application support directory, error: \(error)")
-      return nil
-    }
-
-    return parentDir.appending(component: "recents", directoryHint: .notDirectory)
-      .appendingPathExtension("json")
-  }
 }

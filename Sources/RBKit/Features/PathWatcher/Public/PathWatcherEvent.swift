@@ -3,23 +3,22 @@ import Foundation
 // MARK: - PathWatcherEvent
 
 public struct PathWatcherEvent: Sendable, Identifiable {
-  public let path: String
-  public let flag: Flag
-  public let id: ID
+  public typealias ID = FSEventStreamEventId
 
-  // MARK: - PathWatcherEventFlag
-  
   public struct Flag: OptionSet, Hashable, Sendable, CustomDebugStringConvertible {
+
+    // MARK: Lifecycle
+
     public init(rawValue: FSEventStreamEventFlags) {
       self.rawValue = rawValue
     }
-    
+
     public init(rawValue: Int) {
       self.rawValue = FSEventStreamEventFlags(truncatingIfNeeded: rawValue)
     }
-    
-    public let rawValue: FSEventStreamEventFlags
-    
+
+    // MARK: Public
+
     public static let none = Self(rawValue: kFSEventStreamEventFlagNone)
     public static let mustScanSubDirs = Self(rawValue: kFSEventStreamEventFlagMustScanSubDirs)
     public static let userDropped = Self(rawValue: kFSEventStreamEventFlagUserDropped)
@@ -44,7 +43,9 @@ public struct PathWatcherEvent: Sendable, Identifiable {
     public static let itemIsHardlink = Self(rawValue: kFSEventStreamEventFlagItemIsHardlink)
     public static let itemIsLastHardlink = Self(rawValue: kFSEventStreamEventFlagItemIsLastHardlink)
     public static let itemCloned = Self(rawValue: kFSEventStreamEventFlagItemCloned)
-    
+
+    public let rawValue: FSEventStreamEventFlags
+
     public var debugDescription: String {
       [
         (Flag.none, "none"),
@@ -72,28 +73,18 @@ public struct PathWatcherEvent: Sendable, Identifiable {
         (.itemIsLastHardlink, "itemIsLastHardlink"),
         (.itemCloned, "itemCloned"),
       ]
-        .filter { contains($0.0) }
-        .map { $0.1 }
-        .joined(separator: ", ")
+      .filter { contains($0.0) }
+      .map { $0.1 }
+      .joined(separator: ", ")
     }
   }
-  
-  public struct ID: RawRepresentable, Hashable, Sendable, CustomStringConvertible {
-    public init(rawValue: FSEventStreamEventId) {
-      self.rawValue = rawValue
-    }
-    
-    public init(_ value: UInt) {
-      rawValue = FSEventStreamEventId(UInt32(truncatingIfNeeded: value))
-    }
-    
-    public let rawValue: FSEventStreamEventId
-    
-    public var description: String {
-      "\(rawValue)"
-    }
-    
-    public static let now = Self(kFSEventStreamEventIdSinceNow)
-  }
+
+  public let path: String
+  public let flag: Flag
+  public let id: FSEventStreamEventId
+
 }
 
+extension PathWatcherEvent.ID {
+  public static let now = Self(kFSEventStreamEventIdSinceNow)
+}

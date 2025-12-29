@@ -13,10 +13,15 @@ func makeTestJSON(date: Double = Date.now.timeIntervalSince1970) -> Data {
     .data(using: .utf8)!
 }
 
-struct TestError: Error {}
+// MARK: - TestError
+
+struct TestError: Error { }
+
+// MARK: - FrecencyStoreTests
 
 struct FrecencyStoreTests {
-  @Test func getURL() async throws {
+  @Test
+  func getURL() async throws {
     var called_urls = false
     var called_createDirectory = false
     _ = withDependencies {
@@ -40,7 +45,8 @@ struct FrecencyStoreTests {
     #expect(called_createDirectory)
   }
 
-  @Test func getURL_with_bundleIdentifier_nil() async throws {
+  @Test
+  func getURL_with_bundleIdentifier_nil() async throws {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -54,7 +60,8 @@ struct FrecencyStoreTests {
     #expect(sut == nil)
   }
 
-  @Test func getURL_with_createDirectory_failing() async throws {
+  @Test
+  func getURL_with_createDirectory_failing() async throws {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -68,7 +75,8 @@ struct FrecencyStoreTests {
     #expect(sut == nil)
   }
 
-  @Test func load() async throws {
+  @Test
+  func load() async throws {
     try await confirmation { c in
       var sut = withDependencies {
         $0.diskClient.read = { @Sendable url in
@@ -86,7 +94,8 @@ struct FrecencyStoreTests {
     }
   }
 
-  @Test func load_withoutURL_shouldNoOp() async throws {
+  @Test
+  func load_withoutURL_shouldNoOp() async throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in fatalError("should not get here") }
     } operation: {
@@ -96,7 +105,8 @@ struct FrecencyStoreTests {
     try sut.load()
   }
 
-  @Test func load_with_readError_shouldThrow() async throws {
+  @Test
+  func load_with_readError_shouldThrow() async throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in throw TestError() }
     } operation: {
@@ -106,7 +116,8 @@ struct FrecencyStoreTests {
     #expect(throws: (any Error).self) { try sut.load() }
   }
 
-  @Test func load_with_invalidJson_shouldThrow() async throws {
+  @Test
+  func load_with_invalidJson_shouldThrow() async throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in "foo".data(using: .utf8)! }
     } operation: {
@@ -116,7 +127,8 @@ struct FrecencyStoreTests {
     #expect(throws: (any Error).self) { try sut.load() }
   }
 
-  @Test func save() async throws {
+  @Test
+  func save() async throws {
     try await confirmation { c in
       var sut = withDependencies {
         $0.diskClient.read = { @Sendable _ in makeTestJSON(date: 0) }
@@ -138,7 +150,8 @@ struct FrecencyStoreTests {
     }
   }
 
-  @Test(.disabled()) func save_withJSONEncodingError_shouldNoOp() async throws {
+  @Test(.disabled())
+  func save_withJSONEncodingError_shouldNoOp() async throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in }
     } operation: {
@@ -148,7 +161,8 @@ struct FrecencyStoreTests {
     try sut.save()
   }
 
-  @Test func save_withDiskWriteError_shouldThrow() async throws {
+  @Test
+  func save_withDiskWriteError_shouldThrow() async throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in throw TestError() }
     } operation: {
@@ -158,7 +172,8 @@ struct FrecencyStoreTests {
     #expect(throws: (any Error).self) { try sut.save() }
   }
 
-  @Test func save_withoutURL_shouldNoOp() async throws {
+  @Test
+  func save_withoutURL_shouldNoOp() async throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in fatalError("should not get here") }
     } operation: {
@@ -168,7 +183,8 @@ struct FrecencyStoreTests {
     try sut.save()
   }
 
-  @Test func add() async throws {
+  @Test
+  func add() async throws {
     var sut = TestFrecencyStore(url: testURL)
 
     #expect(sut.score(for: "a") == 0)

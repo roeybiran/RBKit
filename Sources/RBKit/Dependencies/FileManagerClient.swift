@@ -61,13 +61,13 @@ public struct FileManagerClient: Sendable {
 
 extension FileManagerClient: DependencyKey {
   public static let liveValue = FileManagerClient(
-    url: FileManager.default.url(for:in:appropriateFor:create:),
-    urls: FileManager.default.urls(for:in:),
-    contentsOfDirectory: FileManager.default.contentsOfDirectory(at:includingPropertiesForKeys:options:),
-    enumerator: FileManager.default.enumerator(at:includingPropertiesForKeys:options:errorHandler:),
-    createDirectory: FileManager.default.createDirectory(at:withIntermediateDirectories:attributes:),
-    fileExists: FileManager.default.fileExists(atPath:),
-    displayName: FileManager.default.displayName(atPath:)
+    url: { try FileManager.default.url(for: $0, in: $1, appropriateFor: $2, create: $3) },
+    urls: { FileManager.default.urls(for: $0, in: $1) },
+    contentsOfDirectory: { try FileManager.default.contentsOfDirectory(at: $0, includingPropertiesForKeys: $1, options: $2) },
+    enumerator: { FileManager.default.enumerator(at: $0, includingPropertiesForKeys: $1, options: $2, errorHandler: $3) },
+    createDirectory: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: $1, attributes: $2) },
+    fileExists: { FileManager.default.fileExists(atPath: $0) },
+    displayName: { FileManager.default.displayName(atPath: $0) }
   )
   public static let testValue = FileManagerClient()
 }

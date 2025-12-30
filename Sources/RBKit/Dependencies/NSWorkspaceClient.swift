@@ -27,20 +27,20 @@ public struct NSWorkspaceClient: Sendable {
     ) }
 
   @DependencyEndpoint(method: "observe")
-  public var NSRunningApplicationArrayObservation: (
+  public var NSRunningApplicationArrayObservation: @Sendable (
     KeyPath<NSWorkspace, [NSRunningApplication]>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void
+    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void
   ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
     \.hash,
     changeHandler: { _, _ in }
   ) }
 
   @DependencyEndpoint(method: "observe")
-  public var optionalNSRunningApplicationObservation: (
+  public var optionalNSRunningApplicationObservation: @Sendable (
     KeyPath<NSWorkspace, NSRunningApplication?>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void
+    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void
   ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
     \.hash,
     changeHandler: { _, _ in }
@@ -51,18 +51,18 @@ public struct NSWorkspaceClient: Sendable {
 
 extension NSWorkspaceClient: DependencyKey {
   public static let liveValue = Self(
-    open: NSWorkspace.shared.open,
-    activateFileViewerSelecting: NSWorkspace.shared.activateFileViewerSelecting,
-    urlForApplication: NSWorkspace.shared.urlForApplication,
-    iconForFile: NSWorkspace.shared.icon(forFile:),
-    iconForContentType: NSWorkspace.shared.icon,
+    open: { NSWorkspace.shared.open($0) },
+    activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
+    urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
+    iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
+    iconForContentType: { NSWorkspace.shared.icon(for: $0) },
     frontmostApplication: { NSWorkspace.shared.frontmostApplication },
     runningApplications: { NSWorkspace.shared.runningApplications },
     menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
     accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
-    notifications: NSWorkspace.shared.notificationCenter.notifications,
-    NSRunningApplicationArrayObservation: NSWorkspace.shared.observe,
-    optionalNSRunningApplicationObservation: NSWorkspace.shared.observe,
+    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1) },
+    NSRunningApplicationArrayObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
+    optionalNSRunningApplicationObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
   )
 
   public static let testValue = NSWorkspaceClient()

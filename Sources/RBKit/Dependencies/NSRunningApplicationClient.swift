@@ -8,14 +8,14 @@ import DependenciesMacros
 @DependencyClient
 public struct NSRunningApplicationClient: Sendable {
   // MARK: - Getting running application instances
-  public var initWithPID: (_ pid: pid_t) -> NSRunningApplication?
-  public var runningApplications: (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
-  public var current: () -> NSRunningApplication = { .init() }
+  public var initWithPID: @Sendable (_ pid: pid_t) -> NSRunningApplication?
+  public var runningApplications: @Sendable (_ withBundleIdentifier: String) -> [NSRunningApplication] = { _ in [] }
+  public var current: @Sendable () -> NSRunningApplication = { .init() }
 
   // MARK: - Activating applications
   @DependencyEndpoint(method: "activate")
   public var activate:
-    (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
+    @Sendable (_ app: NSRunningApplication, _ options: NSApplication.ActivationOptions) -> Bool = {
       _, _ in false
     }
 
@@ -28,11 +28,11 @@ public struct NSRunningApplicationClient: Sendable {
     ) -> Bool = { _, _, _ in false }
 
   // MARK: - Hiding and unhiding applications
-  public var hide: (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
+  public var hide: @Sendable (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
   public var unhide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
   // MARK: - Application information
-  public var boolObservation: (_ app: NSRunningApplication) -> (
+  public var boolObservation: @Sendable (_ app: NSRunningApplication) -> (
     _ keyPath: KeyPath<NSRunningApplication, Bool>,
     _ options: NSKeyValueObservingOptions,
     _ changeHandler: @escaping (NSRunningApplication, NSKeyValueObservedChange<Bool>) -> Void

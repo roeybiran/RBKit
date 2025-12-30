@@ -3,6 +3,7 @@ import Dependencies
 import Testing
 @testable import RBKit
 
+@MainActor
 @Suite
 struct `EventTapManagerClient glue code tests` {
   @Test

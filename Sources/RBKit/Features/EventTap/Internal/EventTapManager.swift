@@ -18,6 +18,7 @@ import Carbon
 /// - https://github.com/numist/Switch/blob/7d5cda1411c939a5229c80e6b194ae79d6fc41ef/Switch/SWEventTap.m#L175
 /// - https://stackoverflow.com/questions/33294620/how-to-cast-self-to-unsafemutablepointervoid-type-in-swift
 
+@MainActor
 final class EventTapManager<
   EventClient: CGEventClientProtocol,
   MachPortClient: CFMachPortClient,

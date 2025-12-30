@@ -15,7 +15,7 @@ struct ContentView: View {
     .padding()
     .task {
       do {
-        for try await event in pathWatcher.events(
+        for try await event in pathWatcher.watchPathsRecursively(
           paths: ["/Users/roey.biran/Library/Application Support/com.apple.sharedfilelist/"],
           latency: 1,
           queue: nil,

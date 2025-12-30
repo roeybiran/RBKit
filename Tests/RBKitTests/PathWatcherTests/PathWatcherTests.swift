@@ -51,7 +51,7 @@ struct `PathWatcher Tests` {
             let task = Task {
                 do {
                     let tempPath = FilePath(NSTemporaryDirectory())
-                    for try await event in client.pathMonitor(tempPath, .write, nil) {
+                    for try await event in client.watchPath(tempPath, .write, nil) {
                         receivedEvent = event
                         break
                     }
@@ -91,7 +91,7 @@ struct `PathWatcher Tests` {
             let nonExistingPath = FilePath("/non/existing/path")
 
             await #expect(throws: TestError.self) {
-                for try await _ in client.pathMonitor(nonExistingPath, .write, nil) {}
+                for try await _ in client.watchPath(nonExistingPath, .write, nil) {}
             }
 
             try? await Task.sleep(for: .milliseconds(10))
@@ -133,7 +133,7 @@ struct `PathWatcher Tests` {
 
             let task = Task {
                 let tempPath = FilePath(NSTemporaryDirectory())
-                for try await _ in client.pathMonitor(tempPath, .write, nil) {}
+                for try await _ in client.watchPath(tempPath, .write, nil) {}
             }
 
             try await Task.sleep(for: .milliseconds(10))
@@ -189,7 +189,7 @@ struct `PathWatcher Tests` {
             let task = Task {
                 var receivedEvents: [[PathWatcherEvent]] = []
                 do {
-                    for try await events in client.events(
+                    for try await events in client.watchPathsRecursively(
                         paths: paths, latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
                     {
                         receivedEvents.append(events)
@@ -258,7 +258,7 @@ struct `PathWatcher Tests` {
             var thrownError: PathWatcherError?
 
             do {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
                 {
                     Issue.record("Should have thrown for stream creation failure")
@@ -293,7 +293,7 @@ struct `PathWatcher Tests` {
             var thrownError: PathWatcherError?
 
             do {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
                 {
                     Issue.record("Should have thrown for stream start failure")
@@ -333,7 +333,7 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: nil)
                 {}
             }
@@ -365,7 +365,7 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: customQueue, sinceWhen: nil, flags: nil)
                 {}
             }
@@ -395,7 +395,7 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: customSinceWhen,
                     flags: nil)
                 {}
@@ -426,7 +426,7 @@ struct `PathWatcher Tests` {
             @Dependency(\.pathWatcherClient) var client
 
             let task = Task {
-                for try await _ in client.events(
+                for try await _ in client.watchPathsRecursively(
                     paths: ["/tmp"], latency: 0.1, queue: nil, sinceWhen: nil, flags: customFlags)
                 {}
             }

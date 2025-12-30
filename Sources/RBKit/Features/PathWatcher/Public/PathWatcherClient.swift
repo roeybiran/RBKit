@@ -7,30 +7,28 @@ import System
 
 @DependencyClient
 public struct PathWatcherClient: Sendable {
-  public var pathMonitor: @Sendable (
+  @DependencyEndpoint(method: "events")
+  public var watchPath: @Sendable (
     _ path: FilePath,
     _ mask: DispatchSource.FileSystemEvent,
     _ queue: DispatchQueue?
   ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Swift.Error> = { _, _, _ in .finished() }
 
-  public var events: @Sendable (
+  @DependencyEndpoint(method: "events")
+  public var watchPathsRecursively: @Sendable (
     _ paths: [String],
     _ latency: TimeInterval,
     _ queue: DispatchQueue?,
     _ sinceWhen: PathWatcherEvent.ID?,
     _ flags: PathWatcherFlag?
-  ) -> FSEventAsyncStream = { _, _, _, _, _ in .finished() }
+  ) -> AsyncThrowingStream<[PathWatcherEvent], any Swift.Error> = { _, _, _, _, _ in .finished() }
 }
-
-// MARK: - Type Aliases
-
-public typealias FSEventAsyncStream = AsyncThrowingStream<[PathWatcherEvent], any Swift.Error>
 
 // MARK: - PathWatcherClient + DependencyKey
 
 extension PathWatcherClient: DependencyKey {
   public static let liveValue = Self(
-    pathMonitor: { path, mask, queue in
+    watchPath: { path, mask, queue in
       @Dependency(\.fileDescriptorClient) var fileDescriptorClient
       @Dependency(\.dispatchSourceFileSystemObjectClient) var dispatchSourceFileSystemObjectClient
 
@@ -65,7 +63,7 @@ extension PathWatcherClient: DependencyKey {
 
       return stream
     },
-    events: { paths, latency, queue, sinceWhen, flags in
+    watchPathsRecursively: { paths, latency, queue, sinceWhen, flags in
       @Dependency(\.fsEventStreamClient) var fsEventStreamClient
 
       let defaultQueue = queue ?? DispatchQueue(label: "com.roeybiran.FSEventKit.queue", qos: .background)
@@ -90,8 +88,8 @@ extension PathWatcherClient: DependencyKey {
 
       guard
         let ref = fsEventStreamClient.create(
-          nil,
-          { _, info, count, paths, flags, ids in
+          allocator: nil,
+          callback: { _, info, count, paths, flags, ids in
             guard
               let info = info,
               let eventPaths = Unmanaged<CFArray>
@@ -119,26 +117,26 @@ extension PathWatcherClient: DependencyKey {
 
             wrapper.eventHandler(events)
           },
-          &context,
-          paths as CFArray,
-          defaultSinceWhen,
-          latency as CFTimeInterval,
-          defaultFlags.union(.useCFTypes).rawValue
+          context: &context,
+          pathsToWatch: paths as CFArray,
+          sinceWhen: defaultSinceWhen,
+          latency: latency as CFTimeInterval,
+          flags: defaultFlags.union(.useCFTypes).rawValue
         )
       else {
         continuation.finish(throwing: PathWatcherError.streamCreationFailed)
         return stream
       }
 
-      fsEventStreamClient.setDispatchQueue(ref, defaultQueue)
+      fsEventStreamClient.setDispatchQueue(streamRef: ref, queue: defaultQueue)
 
-      guard fsEventStreamClient.start(ref) else {
+      guard fsEventStreamClient.start(streamRef: ref) else {
         continuation.finish(throwing: PathWatcherError.streamStartFailed)
         return stream
       }
 
       continuation.onTermination = { _ in
-        fsEventStreamClient.stop(ref)
+        fsEventStreamClient.stop(streamRef: ref)
       }
 
       return stream

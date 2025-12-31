@@ -16,8 +16,9 @@ public struct URLClient: Sendable {
   public var resolvingBookmarkData: @Sendable (
     _ bookmarkData: Data,
     _ options: URL.BookmarkResolutionOptions,
-    _ relativeTo: URL?
-  ) throws -> (url: URL, isStale: Bool) = { _, _, _ in throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError) }
+    _ relativeTo: URL?,
+    _ bookmarkDataIsStale: inout Bool
+  ) throws -> URL = { _, _, _, _ in throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError) }
 }
 
 // MARK: DependencyKey
@@ -33,15 +34,13 @@ extension URLClient: DependencyKey {
     applicationSupportDirectory: {
       URL.applicationSupportDirectory
     },
-    resolvingBookmarkData: { bookmarkData, options, relativeTo in
-      var isStale = false
-      let url = try URL(
+    resolvingBookmarkData: { bookmarkData, options, relativeTo, isStale in
+      try URL(
         resolvingBookmarkData: bookmarkData,
         options: options,
         relativeTo: relativeTo,
         bookmarkDataIsStale: &isStale
       )
-      return (url: url, isStale: isStale)
     }
   )
 

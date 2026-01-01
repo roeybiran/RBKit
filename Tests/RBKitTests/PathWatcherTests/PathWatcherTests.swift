@@ -9,7 +9,7 @@ import Testing
 @Suite
 struct `PathWatcher Tests` {
     @Test
-    func `PathWatcherEvent init, should set all properties correctly`() {
+    func `init`() {
         let path = "/tmp/test"
         let flag = PathWatcherEvent.Flag.itemCreated
         let id: PathWatcherEvent.ID = 123

@@ -9,6 +9,19 @@ import Testing
 @Suite
 struct `PathWatcher Tests` {
     @Test
+    func `PathWatcherEvent init, should set all properties correctly`() {
+        let path = "/tmp/test"
+        let flag = PathWatcherEvent.Flag.itemCreated
+        let id: PathWatcherEvent.ID = 123
+
+        let event = PathWatcherEvent(path: path, flag: flag, id: id)
+
+        #expect(event.path == path)
+        #expect(event.flag == flag)
+        #expect(event.id == id)
+    }
+
+    @Test
     func `pathMonitor, with existing path, should forward file system events`() async throws {
         nonisolated(unsafe) var openCalled = false
         nonisolated(unsafe) var closeCalled = false

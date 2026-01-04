@@ -15,9 +15,6 @@ public protocol AXClient: Sendable {
 
   typealias ObserverCallback = (Observer, UIElement, CFString) -> Void
   typealias ObserverCallbackWithInfo = (Observer, UIElement, CFString, CFDictionary) -> Void
-  typealias SpecializedBox = Box<ObserverCallback, ObserverCallbackWithInfo>
-
-  var box: SpecializedBox { get }
 
   // Process Trust
   func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool
@@ -78,10 +75,6 @@ public protocol AXClient: Sendable {
   func createAXValue(_ theType: AXValueType, _ valuePtr: UnsafeRawPointer) -> UIElementValue?
   func getAXValueType(_ value: UIElementValue) -> AXValueType
   func getAXValueValue(_ value: UIElementValue, _ theType: AXValueType, _ valuePtr: UnsafeMutableRawPointer) -> Bool
-
-  // TODO: CFRunLoopClient?
-  func addRunLoopSource(runLoop: CFRunLoop!, source: RunLoopSource!, mode: CFRunLoopMode!)
-  func removeRunLoopSource(runLoop: CFRunLoop!, source: RunLoopSource!, mode: CFRunLoopMode!)
 
   // Private APIs
   func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError

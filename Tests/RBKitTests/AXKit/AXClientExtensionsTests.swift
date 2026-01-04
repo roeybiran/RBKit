@@ -2,16 +2,17 @@ import Foundation
 import ApplicationServices
 import Testing
 @testable import AXKit
+import AXKitTestSupport
 
 @Suite
 struct `AXClientExtensions Tests` {
 
   @Test
   func `isProcessTrusted, with usePrompt == true, preflight == true, should return preflight value without prompt`() async {
-    await confirmation { c in
+    nonisolated(unsafe) var didCall = false
       let sut = AXClientMock()
       sut._isProcessTrusted = {
-        c()
+        didCall = true
         return true
       }
       sut._isProcessTrustedWithOptions = { _ in
@@ -21,76 +22,76 @@ struct `AXClientExtensions Tests` {
       
       let result = sut.isProcessTrusted(usePrompt: true)
       #expect(result == true)
-    }
+      #expect(didCall == true)
   }
 
   @Test
   func `isProcessTrusted, with usePrompt == true, preflight == false, should call prompt and return result`() async {
-    await confirmation { c in
-      let sut = AXClientMock()
-      sut._isProcessTrusted = { false }
-      sut._isProcessTrustedWithOptions = { options in
-        #expect(options != nil)
-        c()
-        return true
-      }
-      
-      let result = sut.isProcessTrusted(usePrompt: true)
-      #expect(result == true)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    sut._isProcessTrusted = { false }
+    sut._isProcessTrustedWithOptions = { options in
+      #expect(options != nil)
+      didCall = true
+      return true
     }
+    
+    let result = sut.isProcessTrusted(usePrompt: true)
+    #expect(result == true)
+    #expect(didCall == true)
   }
   
   @Test
   func `isProcessTrusted, with usePrompt == false, preflight == true, should return preflight only`() async {
-    await confirmation { c in
-      let sut = AXClientMock()
-      sut._isProcessTrusted = {
-        c()
-        return true
-      }
-      sut._isProcessTrustedWithOptions = { _ in
-        #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
-        return false
-      }
-      
-      let result = sut.isProcessTrusted(usePrompt: false)
-      #expect(result == true)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    sut._isProcessTrusted = {
+      didCall = true
+      return true
     }
+    sut._isProcessTrustedWithOptions = { _ in
+      #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
+      return false
+    }
+    
+    let result = sut.isProcessTrusted(usePrompt: false)
+    #expect(result == true)
+    #expect(didCall == true)
   }
   
   @Test
   func `isProcessTrusted, with usePrompt == false, preflight == false, should return preflight only`() async {
-    await confirmation { c in
-      let sut = AXClientMock()
-      sut._isProcessTrusted = {
-        c()
-        return false
-      }
-      sut._isProcessTrustedWithOptions = { _ in
-        #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
-        return false
-      }
-      
-      let result = sut.isProcessTrusted(usePrompt: false)
-      #expect(result == false)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    sut._isProcessTrusted = {
+      didCall = true
+      return false
     }
+    sut._isProcessTrustedWithOptions = { _ in
+      #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
+      return false
+    }
+    
+    let result = sut.isProcessTrusted(usePrompt: false)
+    #expect(result == false)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeNames, with valid element, should return names`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._attributeNames = { receivedElement, names in
-        #expect(receivedElement === element)
-        names.pointee = ["attr1", "attr2"] as CFArray
-        c()
-        return .success
-      }
-
-      let names = try sut.attributeNames(element: element)
-      #expect(names == ["attr1", "attr2"])
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._attributeNames = { receivedElement, names in
+      #expect(receivedElement === element)
+      names.pointee = ["attr1", "attr2"] as CFArray
+      didCall = true
+      return .success
     }
+
+    let names = try sut.attributeNames(element: element)
+    #expect(names == ["attr1", "attr2"])
+    #expect(didCall == true)
   }
 
   @Test
@@ -118,21 +119,21 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `attributeValue, with single attribute, should return value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attribute = Attribute<String>("testAttribute")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attribute = Attribute<String>("testAttribute")
 
-      sut._attributeValue = { _, _, value in
-        value.pointee = "testValue" as CFTypeRef
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let result: String = try sut.attributeValue(element: element, for: attribute)
-      #expect(result == "testValue")
+    sut._attributeValue = { _, _, value in
+      value.pointee = "testValue" as CFTypeRef
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let result: String = try sut.attributeValue(element: element, for: attribute)
+    #expect(result == "testValue")
+    #expect(didCall == true)
   }
 
   @Test
@@ -169,18 +170,18 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `getAttributeValueCount, with valid attribute, should return count`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._getAttributeValueCount = { _, _, count in
-        count.pointee = 10
-        c()
-        return .success
-      }
-
-      let count = try sut.getAttributeValueCount(element: element, attribute: "testAttribute")
-      #expect(count == 10)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._getAttributeValueCount = { _, _, count in
+      count.pointee = 10
+      didCall = true
+      return .success
     }
+
+    let count = try sut.getAttributeValueCount(element: element, attribute: "testAttribute")
+    #expect(count == 10)
+    #expect(didCall == true)
   }
 
   @Test
@@ -196,18 +197,18 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `attributeValues, with valid parameters, should return values`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._attributeValues = { _, _, _, _, values in
-        values.pointee = ["value1", "value2"] as CFArray
-        c()
-        return .success
-      }
-
-      let values = try sut.attributeValues(element: element, attribute: "testAttribute", index: 0, maxValues: 5)
-      #expect((values as? [String]) == ["value1", "value2"])
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._attributeValues = { _, _, _, _, values in
+      values.pointee = ["value1", "value2"] as CFArray
+      didCall = true
+      return .success
     }
+
+    let values = try sut.attributeValues(element: element, attribute: "testAttribute", index: 0, maxValues: 5)
+    #expect((values as? [String]) == ["value1", "value2"])
+    #expect(didCall == true)
   }
 
   @Test
@@ -223,18 +224,18 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `isAttributeSettable, with valid attribute, should return bool`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._isAttributeSettable = { _, _, settable in
-        settable.pointee = DarwinBoolean(true)
-        c()
-        return .success
-      }
-
-      let settable = try sut.isAttributeSettable(element: element, attribute: Attribute<String>("testAttribute"))
-      #expect(settable == true)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._isAttributeSettable = { _, _, settable in
+      settable.pointee = DarwinBoolean(true)
+      didCall = true
+      return .success
     }
+
+    let settable = try sut.isAttributeSettable(element: element, attribute: Attribute<String>("testAttribute"))
+    #expect(settable == true)
+    #expect(didCall == true)
   }
 
   @Test
@@ -250,16 +251,16 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `setAttributeValue, with valid value, should set value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._setAttributeValue = { _, _, _ in
-        c()
-        return .success
-      }
-
-      try sut.setAttributeValue(element: element, attribute: Attribute<String>("testAttribute"), value: "testValue")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._setAttributeValue = { _, _, _ in
+      didCall = true
+      return .success
     }
+
+    try sut.setAttributeValue(element: element, attribute: Attribute<String>("testAttribute"), value: "testValue")
+    #expect(didCall == true)
   }
 
   @Test
@@ -275,110 +276,110 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `setAttributeValue, with CFRange, should encode to AXValue`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let testRange = CFRange(location: 10, length: 20)
-      let expectedAXValue = UIElementValueMock(type: .cfRange)
-      
-      sut._createAXValue = { type, _ in
-        #expect(type == .cfRange)
-        return expectedAXValue
-      }
-      
-      sut._setAttributeValue = { _, _, value in
-        #expect(value === expectedAXValue)
-        c()
-        return .success
-      }
-
-      try sut.setAttributeValue(element: element, attribute: Attribute<CFRange>("testAttribute"), value: testRange)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let testRange = CFRange(location: 10, length: 20)
+    let expectedAXValue = UIElementValueMock(type: .cfRange)
+    
+    sut._createAXValue = { type, _ in
+      #expect(type == .cfRange)
+      return expectedAXValue
     }
+    
+    sut._setAttributeValue = { _, _, value in
+      #expect(value === expectedAXValue)
+      didCall = true
+      return .success
+    }
+
+    try sut.setAttributeValue(element: element, attribute: Attribute<CFRange>("testAttribute"), value: testRange)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, with CGPoint, should encode to AXValue`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let testPoint = CGPoint(x: 100.0, y: 200.0)
-      let expectedAXValue = UIElementValueMock(type: .cgPoint)
-      
-      sut._createAXValue = { type, _ in
-        #expect(type == .cgPoint)
-        return expectedAXValue
-      }
-      
-      sut._setAttributeValue = { _, _, value in
-        #expect(value === expectedAXValue)
-        c()
-        return .success
-      }
-
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGPoint>("testAttribute"), value: testPoint)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let testPoint = CGPoint(x: 100.0, y: 200.0)
+    let expectedAXValue = UIElementValueMock(type: .cgPoint)
+    
+    sut._createAXValue = { type, _ in
+      #expect(type == .cgPoint)
+      return expectedAXValue
     }
+    
+    sut._setAttributeValue = { _, _, value in
+      #expect(value === expectedAXValue)
+      didCall = true
+      return .success
+    }
+
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGPoint>("testAttribute"), value: testPoint)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, with CGRect, should encode to AXValue`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let testRect = CGRect(x: 10.0, y: 20.0, width: 300.0, height: 400.0)
-      let expectedAXValue = UIElementValueMock(type: .cgRect)
-      
-      sut._createAXValue = { type, _ in
-        #expect(type == .cgRect)
-        return expectedAXValue
-      }
-      
-      sut._setAttributeValue = { _, _, value in
-        #expect(value === expectedAXValue)
-        c()
-        return .success
-      }
-
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGRect>("testAttribute"), value: testRect)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let testRect = CGRect(x: 10.0, y: 20.0, width: 300.0, height: 400.0)
+    let expectedAXValue = UIElementValueMock(type: .cgRect)
+    
+    sut._createAXValue = { type, _ in
+      #expect(type == .cgRect)
+      return expectedAXValue
     }
+    
+    sut._setAttributeValue = { _, _, value in
+      #expect(value === expectedAXValue)
+      didCall = true
+      return .success
+    }
+
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGRect>("testAttribute"), value: testRect)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, with CGSize, should encode to AXValue`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let testSize = CGSize(width: 500.0, height: 600.0)
-      let expectedAXValue = UIElementValueMock(type: .cgSize)
-      
-      sut._createAXValue = { type, _ in
-        #expect(type == .cgSize)
-        return expectedAXValue
-      }
-      
-      sut._setAttributeValue = { _, _, value in
-        #expect(value === expectedAXValue)
-        c()
-        return .success
-      }
-
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGSize>("testAttribute"), value: testSize)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let testSize = CGSize(width: 500.0, height: 600.0)
+    let expectedAXValue = UIElementValueMock(type: .cgSize)
+    
+    sut._createAXValue = { type, _ in
+      #expect(type == .cgSize)
+      return expectedAXValue
     }
+    
+    sut._setAttributeValue = { _, _, value in
+      #expect(value === expectedAXValue)
+      didCall = true
+      return .success
+    }
+
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGSize>("testAttribute"), value: testSize)
+    #expect(didCall == true)
   }
 
   @Test
   func `actionNames, with valid element, should return names`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._actionNames = { _, names in
-        names.pointee = ["action1", "action2"] as CFArray
-        c()
-        return .success
-      }
-
-      let names = try sut.actionNames(element: element)
-      #expect(names == ["action1", "action2"])
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._actionNames = { _, names in
+      names.pointee = ["action1", "action2"] as CFArray
+      didCall = true
+      return .success
     }
+
+    let names = try sut.actionNames(element: element)
+    #expect(names == ["action1", "action2"])
+    #expect(didCall == true)
   }
 
   @Test
@@ -394,19 +395,19 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `actionDescription, with valid action, should return description`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let action = Action.press
-      sut._actionDescription = { _, _, description in
-        description.pointee = "Press Description" as CFString
-        c()
-        return .success
-      }
-
-      let description = try sut.actionDescription(element: element, action: action)
-      #expect(description == "Press Description")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let action = Action.press
+    sut._actionDescription = { _, _, description in
+      description.pointee = "Press Description" as CFString
+      didCall = true
+      return .success
     }
+
+    let description = try sut.actionDescription(element: element, action: action)
+    #expect(description == "Press Description")
+    #expect(didCall == true)
   }
 
   @Test
@@ -423,16 +424,16 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `performAction, with valid action, should perform action`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._performAction = { _, _ in
-        c()
-        return .success
-      }
-
-      try sut.performAction(element: element, action: Action.press)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._performAction = { _, _ in
+      didCall = true
+      return .success
     }
+
+    try sut.performAction(element: element, action: Action.press)
+    #expect(didCall == true)
   }
 
   @Test
@@ -448,18 +449,18 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `elementAtPosition, with valid coordinates, should return element`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let application = UIElementMock()
-      sut._elementAtPosition = { _, _, _, element in
-        element.pointee = UIElementMock()
-        c()
-        return .success
-      }
-
-      let element = try sut.elementAtPosition(application: application, x: 100.0, y: 200.0)
-      #expect(element === element)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let application = UIElementMock()
+    sut._elementAtPosition = { _, _, _, element in
+      element.pointee = UIElementMock()
+      didCall = true
+      return .success
     }
+
+    let element = try sut.elementAtPosition(application: application, x: 100.0, y: 200.0)
+    #expect(element != nil)
+    #expect(didCall == true)
   }
 
   @Test
@@ -475,18 +476,18 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `getPid, with valid element, should return pid`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      sut._getPid = { _, pid in
-        pid.pointee = 98765
-        c()
-        return .success
-      }
-
-      let pid = try sut.getPid(element: element)
-      #expect(pid == 98765)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._getPid = { _, pid in
+      pid.pointee = 98765
+      didCall = true
+      return .success
     }
+
+    let pid = try sut.getPid(element: element)
+    #expect(pid == 98765)
+    #expect(didCall == true)
   }
 
   @Test
@@ -500,63 +501,24 @@ struct `AXClientExtensions Tests` {
     }
   }
 
-  @Test
-  func `createObserver, with valid pid, should return observer`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let pid: pid_t = 12345
-      let expectedObserver = ObserverMock(id: "test-observer-123")
-      sut._observerCreate = { _, _, outObserver in
-        outObserver.pointee = expectedObserver
-        c()
-        return .success
-      }
-
-      let observer = try sut.createObserver(application: pid)
-      #expect(observer == expectedObserver)
-    }
-  }
-
-  @Test
-  func `createObserver, with AXError, should throw`() async {
-    let sut = AXClientMock()
-    sut._observerCreate = { _, _, _ in .failure }
-
-    #expect(throws: AXClientError.self) {
-      try sut.createObserver(application: 12345)
-    }
-  }
-
-  @Test
-  func `createObserver, with success but nil observer, should throw unknown`() async {
-    let sut = AXClientMock()
-    sut._observerCreate = { _, _, outObserver in
-      outObserver.pointee = nil  // Success but nil observer
-      return .success
-    }
-
-    #expect(throws: AXClientError.unknown) {
-      try sut.createObserver(application: 12345)
-    }
-  }
 
   @Test
   func `getWindowID, with valid element, should return window ID`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let expectedWindowID: CGWindowID = 12345
-      
-      sut._getWindow = { receivedElement, windowIDPtr in
-        #expect(receivedElement === element)
-        windowIDPtr = expectedWindowID
-        c()
-        return .success
-      }
-
-      let windowID = try sut.getWindowID(of: element)
-      #expect(windowID == expectedWindowID)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let expectedWindowID: CGWindowID = 12345
+    
+    sut._getWindow = { receivedElement, windowIDPtr in
+      #expect(receivedElement === element)
+      windowIDPtr = expectedWindowID
+      didCall = true
+      return .success
     }
+
+    let windowID = try sut.getWindowID(of: element)
+    #expect(windowID == expectedWindowID)
+    #expect(didCall == true)
   }
 
   @Test
@@ -586,323 +548,293 @@ struct `AXClientExtensions Tests` {
 
   @Test
   func `setAttributeValue, CFRange, create AXValue failure, should fallback to raw value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let range = CFRange(location: 0, length: 10)
-      
-      sut._createAXValue = { _, _ in nil }
-      sut._setAttributeValue = { receivedElement, attribute, value in
-        #expect(receivedElement === element)
-        #expect(attribute == AttributeName.selectedTextRange.rawValue as CFString)
-        // When createAXValue fails, encode should fall back to raw value
-        let receivedRange = value as? CFRange
-        #expect(receivedRange?.location == range.location)
-        #expect(receivedRange?.length == range.length)
-        c()
-        return .success
-      }
-      
-      try sut.setAttributeValue(element: element, attribute: Attribute<CFRange>(.selectedTextRange), value: range)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let range = CFRange(location: 0, length: 10)
+    
+    sut._createAXValue = { _, _ in nil }
+    sut._setAttributeValue = { receivedElement, attribute, value in
+      #expect(receivedElement === element)
+      #expect(attribute == AttributeName.selectedTextRange.rawValue as CFString)
+      // When createAXValue fails, encode should fall back to raw value
+      let receivedRange = value as? CFRange
+      #expect(receivedRange?.location == range.location)
+      #expect(receivedRange?.length == range.length)
+      didCall = true
+      return .success
     }
+    
+    try sut.setAttributeValue(element: element, attribute: Attribute<CFRange>(.selectedTextRange), value: range)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, CGPoint, create AXValue failure, should fallback to raw value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let point = CGPoint(x: 100, y: 200)
-      
-      sut._createAXValue = { _, _ in nil }
-      sut._setAttributeValue = { receivedElement, attribute, value in
-        #expect(receivedElement === element)
-        #expect(attribute == AttributeName.position.rawValue as CFString)
-        // When createAXValue fails, encode should fall back to raw value
-        #expect(value as? CGPoint == point)
-        c()
-        return .success
-      }
-      
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGPoint>(.position), value: point)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let point = CGPoint(x: 100, y: 200)
+    
+    sut._createAXValue = { _, _ in nil }
+    sut._setAttributeValue = { receivedElement, attribute, value in
+      #expect(receivedElement === element)
+      #expect(attribute == AttributeName.position.rawValue as CFString)
+      // When createAXValue fails, encode should fall back to raw value
+      #expect(value as? CGPoint == point)
+      didCall = true
+      return .success
     }
+    
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGPoint>(.position), value: point)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, CGRect, create AXValue failure, should fallback to raw value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let rect = CGRect(x: 10, y: 20, width: 100, height: 200)
-      
-      sut._createAXValue = { _, _ in nil }
-      sut._setAttributeValue = { receivedElement, attribute, value in
-        #expect(receivedElement === element)
-        #expect(attribute == AttributeName.frame.rawValue as CFString)
-        // When createAXValue fails, encode should fall back to raw value
-        #expect(value as? CGRect == rect)
-        c()
-        return .success
-      }
-      
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGRect>(.frame), value: rect)
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let rect = CGRect(x: 10, y: 20, width: 100, height: 200)
+    
+    sut._createAXValue = { _, _ in nil }
+    sut._setAttributeValue = { receivedElement, attribute, value in
+      #expect(receivedElement === element)
+      #expect(attribute == AttributeName.frame.rawValue as CFString)
+      // When createAXValue fails, encode should fall back to raw value
+      #expect(value as? CGRect == rect)
+      didCall = true
+      return .success
     }
+    
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGRect>(.frame), value: rect)
+    #expect(didCall == true)
   }
 
   @Test
   func `setAttributeValue, CGSize, create AXValue failure, should fallback to raw value`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let size = CGSize(width: 300, height: 400)
-      
-      sut._createAXValue = { _, _ in nil }
-      sut._setAttributeValue = { receivedElement, attribute, value in
-        #expect(receivedElement === element)
-        #expect(attribute == AttributeName.size.rawValue as CFString)
-        // When createAXValue fails, encode should fall back to raw value
-        #expect(value as? CGSize == size)
-        c()
-        return .success
-      }
-      
-      try sut.setAttributeValue(element: element, attribute: Attribute<CGSize>(.size), value: size)
-    }
-  }
-
-  @Test
-  func `addNotification, with valid parameters, should add notification`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let observer = ObserverMock()
-      let element = UIElementMock()
-      let notification = AXNotification.titleChanged
-
-      sut._observerAddNotification = { _, _, receivedNotification in
-        #expect(receivedNotification == notification.rawValue as CFString)
-        c()
-        return .success
-      }
-
-      try sut.addNotification(observer: observer, element: element, notification: notification)
-    }
-  }
-
-  @Test
-  func `addNotification, with AXError, should throw`() async {
+    nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
-    let observer = ObserverMock()
     let element = UIElementMock()
-    let notification = AXNotification.titleChanged
-    sut._observerAddNotification = { _, _, _ in .failure }
-
-    #expect(throws: AXClientError.self) {
-      try sut.addNotification(observer: observer, element: element, notification: notification)
+    let size = CGSize(width: 300, height: 400)
+    
+    sut._createAXValue = { _, _ in nil }
+    sut._setAttributeValue = { receivedElement, attribute, value in
+      #expect(receivedElement === element)
+      #expect(attribute == AttributeName.size.rawValue as CFString)
+      // When createAXValue fails, encode should fall back to raw value
+      #expect(value as? CGSize == size)
+      didCall = true
+      return .success
     }
+    
+    try sut.setAttributeValue(element: element, attribute: Attribute<CGSize>(.size), value: size)
+    #expect(didCall == true)
   }
+
 
   @Test
   func `attributeValue, with 2 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.contains("attr1"))
-        #expect(attributeNames.contains("attr2"))
-        values.pointee = ["value1", 42] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.contains("attr1"))
+      #expect(attributeNames.contains("attr2"))
+      values.pointee = ["value1", 42] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 2 attributes and casting failure, should return array filled with nils`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
 
-      sut._attributeValueMultiple = { _, _, _, _ in
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
-      #expect(result1 == nil)
-      #expect(result2 == nil)
+    sut._attributeValueMultiple = { _, _, _, _ in
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
+    #expect(result1 == nil)
+    #expect(result2 == nil)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 3 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
-      let attr3 = Attribute<Bool>("attr3")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
+    let attr3 = Attribute<Bool>("attr3")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.count == 3)
-        values.pointee = ["value1", 42, true] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2, result3) = try sut.attributeValue(element: element, for: attr1, attr2, attr3)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
-      #expect(result3 == true)
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.count == 3)
+      values.pointee = ["value1", 42, true] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2, result3) = try sut.attributeValue(element: element, for: attr1, attr2, attr3)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(result3 == true)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 4 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
-      let attr3 = Attribute<Bool>("attr3")
-      let attr4 = Attribute<Double>("attr4")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
+    let attr3 = Attribute<Bool>("attr3")
+    let attr4 = Attribute<Double>("attr4")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.count == 4)
-        values.pointee = ["value1", 42, true, 3.14] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2, result3, result4) = try sut.attributeValue(element: element, for: attr1, attr2, attr3, attr4)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
-      #expect(result3 == true)
-      #expect(result4 == 3.14)
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.count == 4)
+      values.pointee = ["value1", 42, true, 3.14] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2, result3, result4) = try sut.attributeValue(element: element, for: attr1, attr2, attr3, attr4)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(result3 == true)
+    #expect(result4 == 3.14)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 5 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
-      let attr3 = Attribute<Bool>("attr3")
-      let attr4 = Attribute<Double>("attr4")
-      let attr5 = Attribute<Float>("attr5")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
+    let attr3 = Attribute<Bool>("attr3")
+    let attr4 = Attribute<Double>("attr4")
+    let attr5 = Attribute<Float>("attr5")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.count == 5)
-        values.pointee = ["value1", 42, true, 3.14, Float(2.71)] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2, result3, result4, result5) = try sut.attributeValue(
-        element: element,
-        for: attr1,
-        attr2,
-        attr3,
-        attr4,
-        attr5)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
-      #expect(result3 == true)
-      #expect(result4 == 3.14)
-      #expect(result5 == Float(2.71))
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.count == 5)
+      values.pointee = ["value1", 42, true, 3.14, Float(2.71)] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2, result3, result4, result5) = try sut.attributeValue(
+      element: element,
+      for: attr1,
+      attr2,
+      attr3,
+      attr4,
+      attr5)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(result3 == true)
+    #expect(result4 == 3.14)
+    #expect(result5 == Float(2.71))
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 6 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("a")
-      let attr2 = Attribute<String>("b")
-      let attr3 = Attribute<String>("c")
-      let attr4 = Attribute<String>("d")
-      let attr5 = Attribute<String>("e")
-      let attr6 = Attribute<String>("f")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("a")
+    let attr2 = Attribute<String>("b")
+    let attr3 = Attribute<String>("c")
+    let attr4 = Attribute<String>("d")
+    let attr5 = Attribute<String>("e")
+    let attr6 = Attribute<String>("f")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let _ = attributes as! [String]
-        let v = Array(repeating: "mockUIElement", count: 6)
-        values.pointee = v as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2, result3, result4, result5, result6) = try sut.attributeValue(
-        element: element,
-        for: attr1,
-        attr2,
-        attr3,
-        attr4,
-        attr5,
-        attr6)
-      
-      #expect(result1 == "mockUIElement")
-      #expect(result2 == "mockUIElement")
-      #expect(result3 == "mockUIElement")
-      #expect(result4 == "mockUIElement")
-      #expect(result5 == "mockUIElement")
-      #expect(result6 == "mockUIElement")
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let _ = attributes as! [String]
+      let v = Array(repeating: "mockUIElement", count: 6)
+      values.pointee = v as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2, result3, result4, result5, result6) = try sut.attributeValue(
+      element: element,
+      for: attr1,
+      attr2,
+      attr3,
+      attr4,
+      attr5,
+      attr6)
+    
+    #expect(result1 == "mockUIElement")
+    #expect(result2 == "mockUIElement")
+    #expect(result3 == "mockUIElement")
+    #expect(result4 == "mockUIElement")
+    #expect(result5 == "mockUIElement")
+    #expect(result6 == "mockUIElement")
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 7 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
 
-      let attr1 = Attribute<String>("uiElement")
+    let attr1 = Attribute<String>("uiElement")
 
-      let attr2 = Attribute<CGPoint>("point")
-      let attr3 = Attribute<CGRect>("rect")
-      let attr4 = Attribute<CGSize>("size")
-      let attr5 = Attribute<CFRange>("range")
-      let attr6 = Attribute<AXError>("error")
-      let attr7 = Attribute<Int>("illegal")
+    let attr2 = Attribute<CGPoint>("point")
+    let attr3 = Attribute<CGRect>("rect")
+    let attr4 = Attribute<CGSize>("size")
+    let attr5 = Attribute<CFRange>("range")
+    let attr6 = Attribute<AXError>("error")
+    let attr7 = Attribute<Int>("illegal")
 
-      let _values = [
-        "mockUIElement",
-        UIElementValueMock(type: .cgPoint),
-        UIElementValueMock(type: .cgRect),
-        UIElementValueMock(type: .cgSize),
-        UIElementValueMock(type: .cfRange),
-        UIElementValueMock(type: .axError),
-        UIElementValueMock(type: .illegal)
-      ] as [AnyObject]
+    let _values = [
+      "mockUIElement",
+      UIElementValueMock(type: .cgPoint),
+      UIElementValueMock(type: .cgRect),
+      UIElementValueMock(type: .cgSize),
+      UIElementValueMock(type: .cfRange),
+      UIElementValueMock(type: .axError),
+      UIElementValueMock(type: .illegal)
+    ] as [AnyObject]
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.count == 7)
-        values.pointee = _values as CFArray
-        c()
-        return .success
-      }
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.count == 7)
+      values.pointee = _values as CFArray
+      didCall = true
+      return .success
+    }
       sut._getAXValueTypeID = {
         CFGetTypeID(UIElementValueMock(type: .axError) as AnyObject)
       }
@@ -952,117 +884,97 @@ struct `AXClientExtensions Tests` {
 
       #expect(result6 == .failure)
       #expect(result7 == nil)
-    }
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with 8 attributes, should return tuple`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
-      let attr3 = Attribute<Bool>("attr3")
-      let attr4 = Attribute<Double>("attr4")
-      let attr5 = Attribute<Float>("attr5")
-      let attr6 = Attribute<String>("attr6")
-      let attr7 = Attribute<Int>("attr7")
-      let attr8 = Attribute<Bool>("attr8")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
+    let attr3 = Attribute<Bool>("attr3")
+    let attr4 = Attribute<Double>("attr4")
+    let attr5 = Attribute<Float>("attr5")
+    let attr6 = Attribute<String>("attr6")
+    let attr7 = Attribute<Int>("attr7")
+    let attr8 = Attribute<Bool>("attr8")
 
-      sut._attributeValueMultiple = { _, attributes, _, values in
-        let attributeNames = attributes as! [String]
-        #expect(attributeNames.count == 8)
-        values.pointee = ["value1", 42, true, 3.14, Float(2.71), "value6", 99, false] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2, result3, result4, result5, result6, result7, result8) = try sut.attributeValue(
-        element: element,
-        for: attr1,
-        attr2,
-        attr3,
-        attr4,
-        attr5,
-        attr6,
-        attr7,
-        attr8)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
-      #expect(result3 == true)
-      #expect(result4 == 3.14)
-      #expect(result5 == Float(2.71))
-      #expect(result6 == "value6")
-      #expect(result7 == 99)
-      #expect(result8 == false)
+    sut._attributeValueMultiple = { _, attributes, _, values in
+      let attributeNames = attributes as! [String]
+      #expect(attributeNames.count == 8)
+      values.pointee = ["value1", 42, true, 3.14, Float(2.71), "value6", 99, false] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2, result3, result4, result5, result6, result7, result8) = try sut.attributeValue(
+      element: element,
+      for: attr1,
+      attr2,
+      attr3,
+      attr4,
+      attr5,
+      attr6,
+      attr7,
+      attr8)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(result3 == true)
+    #expect(result4 == 3.14)
+    #expect(result5 == Float(2.71))
+    #expect(result6 == "value6")
+    #expect(result7 == 99)
+    #expect(result8 == false)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with stopOnError == true, should pass correct options`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
 
-      sut._attributeValueMultiple = { _, _, options, values in
-        #expect(options == .stopOnError)
-        values.pointee = ["value1", 42] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: true)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
+    sut._attributeValueMultiple = { _, _, options, values in
+      #expect(options == .stopOnError)
+      values.pointee = ["value1", 42] as CFArray
+      didCall = true
+      return .success
     }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: true)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(didCall == true)
   }
 
   @Test
   func `attributeValue, with stopOnError == false, should pass correct options`() async throws {
-    try await confirmation { c in
-      let sut = AXClientMock()
-      let element = UIElementMock()
-      let attr1 = Attribute<String>("attr1")
-      let attr2 = Attribute<Int>("attr2")
-
-      sut._attributeValueMultiple = { _, _, options, values in
-        #expect(options == [])
-        values.pointee = ["value1", 42] as CFArray
-        c()
-        return .success
-      }
-      sut._getAXValueTypeID = { 0 }
-
-      let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: false)
-      #expect(result1 == "value1")
-      #expect(result2 == 42)
-    }
-  }
-
-  // MARK: - observer
-
-  @Test
-  func `startObserver, with observer, should return async stream`() async {
+    nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
-    let observer = ObserverMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<Int>("attr2")
 
-    sut._observerGetRunLoopSource = { _ in RunLoopSourceMock() }
-    sut._addRunLoopSource = { _, _, _ in }
-    sut._removeRunLoopSource = { _, _, _ in }
-
-    let stream = await sut.start(observer: observer)
-
-    let task = Task {
-      for await _ in stream {
-        break
-      }
+    sut._attributeValueMultiple = { _, _, options, values in
+      #expect(options == [])
+      values.pointee = ["value1", 42] as CFArray
+      didCall = true
+      return .success
     }
-    task.cancel()
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2, stopOnError: false)
+    #expect(result1 == "value1")
+    #expect(result2 == 42)
+    #expect(didCall == true)
   }
+
 
   // MARK: - computed vars
 

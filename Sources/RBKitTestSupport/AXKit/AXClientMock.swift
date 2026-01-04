@@ -1,6 +1,7 @@
 import ApplicationServices
 import Foundation
 import Dependencies
+import AXKit
 
 public final class AXClientMock: AXClient {
 
@@ -8,15 +9,12 @@ public final class AXClientMock: AXClient {
 
   public init() { }
 
-  public let box: SpecializedBox = .init()
-
   // MARK: Public
 
   public typealias UIElement = UIElementMock
   public typealias UIElementValue = UIElementValueMock
   public typealias Observer = ObserverMock
   public typealias RunLoopSource = RunLoopSourceMock
-  public typealias SpecializedBox = Box<ObserverCallback, ObserverCallbackWithInfo>
 
   public var _isProcessTrustedWithOptions: (CFDictionary?) -> Bool = { _ in unimplemented(placeholder: false) }
 
@@ -71,7 +69,7 @@ public final class AXClientMock: AXClient {
 
   public var _observerRemoveNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public var _observerGetRunLoopSource: (Observer) -> RunLoopSourceMock = { _ in unimplemented(placeholder: RunLoopSourceMock()) }
+  public var _observerGetRunLoopSource: (Observer) -> RunLoopSource = { _ in unimplemented(placeholder: RunLoopSourceMock()) }
 
   public var _getAXValueTypeID: () -> CFTypeID = { unimplemented(placeholder: AXValueGetTypeID()) }
 
@@ -80,10 +78,6 @@ public final class AXClientMock: AXClient {
   public var _getAXValueType: (UIElementValue) -> AXValueType = { _ in unimplemented(placeholder: .cgPoint) }
 
   public var _getAXValueValue: (UIElementValue, AXValueType, UnsafeMutableRawPointer) -> Bool = { _, _, _ in unimplemented(placeholder: false) }
-
-  public var _addRunLoopSource: (CFRunLoop, RunLoopSource, CFRunLoopMode) -> Void = { _, _, _ in unimplemented(placeholder: ()) }
-
-  public var _removeRunLoopSource: (CFRunLoop, RunLoopSource, CFRunLoopMode) -> Void = { _, _, _ in unimplemented(placeholder: ()) }
 
   public var _getWindow: (UIElement, inout CGWindowID) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
 
@@ -209,7 +203,7 @@ public final class AXClientMock: AXClient {
     _observerRemoveNotification(observer, element, notification)
   }
 
-  public func observerGetRunLoopSource(observer: Observer) -> RunLoopSourceMock {
+  public func observerGetRunLoopSource(observer: Observer) -> RunLoopSource {
     _observerGetRunLoopSource(observer)
   }
 
@@ -231,19 +225,10 @@ public final class AXClientMock: AXClient {
     _getAXValueValue(value, theType, valuePtr)
   }
 
-  // MARK: - CFRunLoopSource
-
-  public func addRunLoopSource(runLoop: CFRunLoop!, source: RunLoopSource!, mode: CFRunLoopMode!) {
-    _addRunLoopSource(runLoop, source, mode)
-  }
-
-  public func removeRunLoopSource(runLoop: CFRunLoop!, source: RunLoopSource!, mode: CFRunLoopMode!) {
-    _removeRunLoopSource(runLoop, source, mode)
-  }
-
   // MARK: - Private APIs
 
   public func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError {
     _getWindow(axUiElement, &wid)
   }
 }
+

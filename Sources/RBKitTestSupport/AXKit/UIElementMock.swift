@@ -20,3 +20,4 @@ open class UIElementMock: Hashable {
     hasher.combine(id)
   }
 }
+

@@ -13,3 +13,4 @@ open class ObserverMock: Hashable {
     hasher.combine(id)
   }
 }
+

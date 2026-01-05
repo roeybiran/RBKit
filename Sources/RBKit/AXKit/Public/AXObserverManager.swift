@@ -21,6 +21,21 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
     self.runLoopClient = runLoopClient
   }
   
+  public func createObserver(process: pid_t) throws(AXClientError) {
+    var outObserver: AX.Observer?
+    let result = client.observerCreate(application: process, outObserver: &outObserver)
+    guard result == .success else {
+      throw AXClientError(axError: result)
+    }
+    
+    guard let outObserver else {
+      throw AXClientError.unknown
+    }
+    
+    // Create a box for this observer
+    let box = Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>()
+    observers[process] = ObserverData(observer: outObserver, box: box)
+  }
 
   public func add(notification: AXNotification, to process: pid_t, element: AX.UIElement) throws(AXClientError) {
     guard let observerData = observers[process] else {
@@ -28,33 +43,21 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
     }
     let refcon = UnsafeMutableRawPointer(Unmanaged.passUnretained(observerData.box).toOpaque())
     let result = client.observerAddNotification(observer: observerData.observer, element: element, notification: notification.rawValue as CFString, refcon: refcon)
-    guard result == .success else { throw AXClientError(axError: result) }
+    guard result == .success else {
+       throw AXClientError(axError: result)
+    }
   }
 
   public func notifications(for process: pid_t) -> AsyncThrowingStream<(pid_t, AX.UIElement, AXNotification), any Error> {
     let (stream, continuation) = AsyncThrowingStream.makeStream(of: (pid_t, AX.UIElement, AXNotification).self, throwing: (any Error).self)
 
-    var outObserver: AX.Observer?
-    let result = client.observerCreate(application: process, outObserver: &outObserver)
-    guard result == .success else {
-      continuation.finish(throwing: AXClientError(axError: result))
-      return stream
-    }
-
-    guard let outObserver else {
-      continuation.finish(throwing: AXClientError.unknown)
-      return stream
-    }
-    
-    // Create a box for this observer
-    let box = Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>()
-    observers[process] = ObserverData(observer: outObserver, box: box)
     guard let observerData = observers[process] else {
+      assertionFailure()
       continuation.finish(throwing: AXClientError.unknown)
       return stream
     }
     
-    observerData.box.callback = { (observer: AX.Observer, uiElement: AX.UIElement, notification: CFString) in
+    observerData.box.callback = { observer, uiElement, notification in
       let notificationString = notification as String
       guard let axNotification = AXNotification(rawValue: notificationString) else { return }
       continuation.yield((process, uiElement, axNotification))

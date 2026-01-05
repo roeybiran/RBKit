@@ -2,7 +2,6 @@ import Foundation
 import ApplicationServices
 import Testing
 @testable import AXKit
-import AXKitTestSupport
 
 @Suite
 struct `AXClientExtensions Tests` {

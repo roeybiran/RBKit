@@ -1,6 +1,6 @@
 import Carbon
 
-public struct CFMachPortClientLive: CFMachPortClient {
+public struct CFMachPortClientLive: CFMachPortClientProtocol {
   public init() { }
 
   public typealias MachPort = CFMachPort

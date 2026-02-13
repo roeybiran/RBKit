@@ -21,7 +21,7 @@ import Carbon
 @MainActor
 final class EventTapManager<
   EventClient: CGEventClientProtocol,
-  MachPortClient: CFMachPortClient,
+  MachPortClient: CFMachPortClientProtocol,
   RunLoopClient: CFRunLoopClientProtocol
 > where
   EventClient.MachPort == MachPortClient.MachPort,

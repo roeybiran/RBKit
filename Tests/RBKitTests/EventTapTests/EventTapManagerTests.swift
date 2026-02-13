@@ -86,8 +86,8 @@ struct `EventTapManager Tests` {
   }
 
   @Test
-  func `Calls CFMachPortClient.createRunLoopSource once with correct parameters`() async throws {
-    await confirmation("CFMachPortClient.createRunLoopSource called once with correct parameters") { createRunLoopSourceCalled in
+  func `Calls CFMachPortClientProtocol.createRunLoopSource once with correct parameters`() async throws {
+    await confirmation("CFMachPortClientProtocol.createRunLoopSource called once with correct parameters") { createRunLoopSourceCalled in
       let (cgEventMock, cfMachPortMock, _, sut) = makeMockManager()
       let mockMachPort = MachPortMock(id: "TAP")
       let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
@@ -191,8 +191,8 @@ struct `EventTapManager Tests` {
   }
 
   @Test
-  func `Calls CFMachPortClient.invalidate once with correct parameters`() async throws {
-    await confirmation("CFMachPortClient.invalidate called once with correct parameters") { invalidateCalled in
+  func `Calls CFMachPortClientProtocol.invalidate once with correct parameters`() async throws {
+    await confirmation("CFMachPortClientProtocol.invalidate called once with correct parameters") { invalidateCalled in
       let (_, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
       let mockMachPort = MachPortMock(id: "A")
       let mockRunLoopSource = RunLoopSourceMock(id: "B")

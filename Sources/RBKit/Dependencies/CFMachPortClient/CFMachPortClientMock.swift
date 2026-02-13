@@ -1,6 +1,6 @@
 import Carbon
 
-public final class CFMachPortClientMock: CFMachPortClient {
+public final class CFMachPortClientMock: CFMachPortClientProtocol {
 
   // MARK: Lifecycle
 

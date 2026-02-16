@@ -12,7 +12,7 @@ public struct AppImporterItem: Equatable, Identifiable, Sendable, RawRepresentab
     self.init(bundleID: rawValue)
   }
 
-  init(
+  public init(
     bundleID: String,
     bundleURL: URL?,
   ) {

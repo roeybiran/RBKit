@@ -150,18 +150,18 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with single attribute and cast failure, should throw`() async {
-    let sut = AXClientMock()
-    let element = UIElementMock()
-    let attribute = Attribute<String>("testAttribute")
+  func `attributeValue, with single attribute and cast failure, should assert`() async {
+    await #expect(processExitsWith: .failure) {
+      let sut = AXClientMock()
+      let element = UIElementMock()
+      let attribute = Attribute<String>("testAttribute")
 
-    sut._attributeValue = { _, _, value in
-      value.pointee = 42 as CFTypeRef
-      return .success
-    }
-    sut._getAXValueTypeID = { 0 }
+      sut._attributeValue = { _, _, value in
+        value.pointee = 42 as CFTypeRef
+        return .success
+      }
+      sut._getAXValueTypeID = { 0 }
 
-    #expect(throws: AXClientError.self) {
       let _: String = try sut.attributeValue(element: element, for: attribute)
     }
   }
@@ -657,23 +657,20 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 2 attributes and casting failure, should return array filled with nils`() async throws {
-    nonisolated(unsafe) var didCall = false
-    let sut = AXClientMock()
-    let element = UIElementMock()
-    let attr1 = Attribute<String>("attr1")
-    let attr2 = Attribute<Int>("attr2")
+  func `attributeValue, with 2 attributes and missing copied values, should assert`() async {
+    await #expect(processExitsWith: .failure) {
+      let sut = AXClientMock()
+      let element = UIElementMock()
+      let attr1 = Attribute<String>("attr1")
+      let attr2 = Attribute<Int>("attr2")
 
-    sut._attributeValueMultiple = { _, _, _, _ in
-      didCall = true
-      return .success
+      sut._attributeValueMultiple = { _, _, _, _ in
+        .success
+      }
+      sut._getAXValueTypeID = { 0 }
+
+      let _: (String?, Int?) = try sut.attributeValue(element: element, for: attr1, attr2)
     }
-    sut._getAXValueTypeID = { 0 }
-
-    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
-    #expect(result1 == nil)
-    #expect(result2 == nil)
-    #expect(didCall == true)
   }
 
   @Test
@@ -803,42 +800,38 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 7 attributes, should return tuple`() async throws {
-    nonisolated(unsafe) var didCall = false
-    let sut = AXClientMock()
-    let element = UIElementMock()
+  func `attributeValue, with unsupported AXValue type, should assert`() async {
+    await #expect(processExitsWith: .failure) {
+      let sut = AXClientMock()
+      let element = UIElementMock()
 
-    let attr1 = Attribute<String>("uiElement")
+      let attr1 = Attribute<String>("uiElement")
+      let attr2 = Attribute<CGPoint>("point")
+      let attr3 = Attribute<CGRect>("rect")
+      let attr4 = Attribute<CGSize>("size")
+      let attr5 = Attribute<CFRange>("range")
+      let attr6 = Attribute<AXError>("error")
+      let attr7 = Attribute<Int>("illegal")
 
-    let attr2 = Attribute<CGPoint>("point")
-    let attr3 = Attribute<CGRect>("rect")
-    let attr4 = Attribute<CGSize>("size")
-    let attr5 = Attribute<CFRange>("range")
-    let attr6 = Attribute<AXError>("error")
-    let attr7 = Attribute<Int>("illegal")
+      let values = [
+        "mockUIElement",
+        UIElementValueMock(type: .cgPoint),
+        UIElementValueMock(type: .cgRect),
+        UIElementValueMock(type: .cgSize),
+        UIElementValueMock(type: .cfRange),
+        UIElementValueMock(type: .axError),
+        UIElementValueMock(type: .illegal)
+      ] as [AnyObject]
 
-    let _values = [
-      "mockUIElement",
-      UIElementValueMock(type: .cgPoint),
-      UIElementValueMock(type: .cgRect),
-      UIElementValueMock(type: .cgSize),
-      UIElementValueMock(type: .cfRange),
-      UIElementValueMock(type: .axError),
-      UIElementValueMock(type: .illegal)
-    ] as [AnyObject]
-
-    sut._attributeValueMultiple = { _, attributes, _, values in
-      let attributeNames = attributes as! [String]
-      #expect(attributeNames.count == 7)
-      values.pointee = _values as CFArray
-      didCall = true
-      return .success
-    }
+      sut._attributeValueMultiple = { _, _, _, outValues in
+        outValues.pointee = values as CFArray
+        return .success
+      }
       sut._getAXValueTypeID = {
         CFGetTypeID(UIElementValueMock(type: .axError) as AnyObject)
       }
       sut._getAXValueType = { $0.type }
-      sut._getAXValueValue = { value, type, ptr in
+      sut._getAXValueValue = { _, type, ptr in
         switch type {
         case .cgPoint:
           ptr.bindMemory(to: CGPoint.self, capacity: 1).pointee = CGPoint(x: 100, y: 200)
@@ -851,39 +844,24 @@ struct `AXClientExtensions Tests` {
         case .axError:
           ptr.bindMemory(to: AXError.self, capacity: 1).pointee = .failure
         case .illegal:
-          fallthrough
-        default:
+          break
+        @unknown default:
           break
         }
         return true
       }
 
-      let (result1, result2, result3, result4, result5, result6, result7) = try sut.attributeValue(
+      let _: (String?, CGPoint?, CGRect?, CGSize?, CFRange?, AXError?, Int?) = try sut.attributeValue(
         element: element,
-        for:
-          attr1,
-          attr2,
-          attr3,
-          attr4,
-          attr5,
-          attr6,
-          attr7
+        for: attr1,
+        attr2,
+        attr3,
+        attr4,
+        attr5,
+        attr6,
+        attr7
       )
-
-      #expect(result1 == "mockUIElement")
-      #expect(result2 == CGPoint(x: 100, y: 200))
-      #expect(result3 == CGRect(x: 10, y: 20, width: 300, height: 400))
-      #expect(result4 == CGSize(width: 500, height: 600))
-
-      let range = try #require(result5)
-      let loc = range.location as Int
-      let length = range.length as Int
-      #expect(loc == 0)
-      #expect(length == 1)
-
-      #expect(result6 == .failure)
-      #expect(result7 == nil)
-    #expect(didCall == true)
+    }
   }
 
   @Test
@@ -1325,4 +1303,3 @@ struct `AXClientExtensions Tests` {
     #expect(sut.focusedApplication == Attribute<AXClientMock.UIElement>(.focusedApplication))
   }
 }
-

@@ -74,8 +74,8 @@ public struct AXClientLive: AXClient {
     AXUIElementCopyMultipleAttributeValues(element, attributes, options, values)
   }
 
-  // func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError { fatalError("TODO") }
-  // func parameterizedAttributeValue(element: UIElement, parameterizedAttribute: CFString, parameter: CFTypeRef, result: UnsafeMutablePointer<CFTypeRef?>) -> AXError { fatalError("TODO") }
+  // func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError { fatalError() }
+  // func parameterizedAttributeValue(element: UIElement, parameterizedAttribute: CFString, parameter: CFTypeRef, result: UnsafeMutablePointer<CFTypeRef?>) -> AXError { fatalError() }
 
   public func actionNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError {
     AXUIElementCopyActionNames(element, names)
@@ -180,4 +180,3 @@ public struct AXClientLive: AXClient {
 // https://github.com/lwouis/alt-tab-macos/blob/bd162a9e08743f4fec5d94d1e428c7ea9919dc3f/src/api-wrappers/private-apis/ApplicationServices.HIServices.framework.swift#L4
 @_silgen_name("_AXUIElementGetWindow") @discardableResult
 func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) -> AXError
-

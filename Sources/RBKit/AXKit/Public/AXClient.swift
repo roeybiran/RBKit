@@ -106,8 +106,7 @@ extension AXClient {
     let result = attributeValue(element: element, attribute: a0.name as CFString, value: &value)
     guard result == .success else { throw AXClientError(axError: result) }
     guard let value = value.map(decode) as? A else {
-      // TODO: Swift 6.2 `processToExit`
-      // assertionFailure("The accessibility API returned no error yet casting failed. This shouldn't happen.")
+      assertionFailure("The accessibility API returned no error yet casting failed. This shouldn't happen.")
       throw .attributeUnsupported
     }
     return value
@@ -144,150 +143,37 @@ extension AXClient {
     guard result == .success else { throw AXClientError(axError: result) }
   }
 
-  public func attributeValue<A0, A1>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?)
-  {
-    let results = try multipleAttributeValues(element: element, for: [a0.name, a1.name], stopOnError: stopOnError)
-    return (results[0] as? A0, results[1] as? A1)
-  }
+  /**
+   Get multiple attributes in one call.
 
-  public func attributeValue<A0, A1, A2>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?)
-  {
-    let results = try multipleAttributeValues(element: element, for: [a0.name, a1.name, a2.name], stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2)
-  }
+   Inspired by Defaults' variadic API style:
+   https://github.com/sindresorhus/Defaults/blob/9.0.6/Sources/Defaults/Defaults.swift#L310
 
-  public func attributeValue<A0, A1, A2, A3>(
+   - Parameter attributes: Attributes to fetch.
+   - Parameter stopOnError: Whether AX should stop copying values on the first error.
+   */
+  public func attributeValue<each Value>(
     element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    _ a3: Attribute<A3>,
+    for attributes: repeat Attribute<each Value>,
     stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?, A3?)
+  throws(AXClientError) -> (repeat (each Value)?)
   {
+    var attributeNames = [String]()
+    for attribute in repeat (each attributes) {
+      attributeNames.append(attribute.name)
+    }
+
     let results = try multipleAttributeValues(
       element: element,
-      for: [a0.name, a1.name, a2.name, a3.name],
+      for: attributeNames,
       stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2,
-      results[3] as? A3)
-  }
 
-  public func attributeValue<A0, A1, A2, A3, A4>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    _ a3: Attribute<A3>,
-    _ a4: Attribute<A4>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?, A3?, A4?)
-  {
-    let results = try multipleAttributeValues(
-      element: element,
-      for: [a0.name, a1.name, a2.name, a3.name, a4.name],
-      stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2,
-      results[3] as? A3,
-      results[4] as? A4)
-  }
+    func castValues() -> (repeat (each Value)?) {
+      var iterator = results.makeIterator()
+      return (repeat (iterator.next() as? (each Value)))
+    }
 
-  public func attributeValue<A0, A1, A2, A3, A4, A5>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    _ a3: Attribute<A3>,
-    _ a4: Attribute<A4>,
-    _ a5: Attribute<A5>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?, A3?, A4?, A5?)
-  {
-    let results = try multipleAttributeValues(
-      element: element,
-      for: [a0.name, a1.name, a2.name, a3.name, a4.name, a5.name],
-      stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2,
-      results[3] as? A3,
-      results[4] as? A4,
-      results[5] as? A5)
-  }
-
-  public func attributeValue<A0, A1, A2, A3, A4, A5, A6>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    _ a3: Attribute<A3>,
-    _ a4: Attribute<A4>,
-    _ a5: Attribute<A5>,
-    _ a6: Attribute<A6>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?, A3?, A4?, A5?, A6?)
-  {
-    let results = try multipleAttributeValues(
-      element: element,
-      for: [a0.name, a1.name, a2.name, a3.name, a4.name, a5.name, a6.name],
-      stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2,
-      results[3] as? A3,
-      results[4] as? A4,
-      results[5] as? A5,
-      results[6] as? A6)
-  }
-
-  public func attributeValue<A0, A1, A2, A3, A4, A5, A6, A7>(
-    element: UIElement,
-    for a0: Attribute<A0>,
-    _ a1: Attribute<A1>,
-    _ a2: Attribute<A2>,
-    _ a3: Attribute<A3>,
-    _ a4: Attribute<A4>,
-    _ a5: Attribute<A5>,
-    _ a6: Attribute<A6>,
-    _ a7: Attribute<A7>,
-    stopOnError: Bool = false)
-  throws(AXClientError) -> (A0?, A1?, A2?, A3?, A4?, A5?, A6?, A7?)
-  {
-    let results = try multipleAttributeValues(
-      element: element,
-      for: [a0.name, a1.name, a2.name, a3.name, a4.name, a5.name, a6.name, a7.name],
-      stopOnError: stopOnError)
-    return (
-      results[0] as? A0,
-      results[1] as? A1,
-      results[2] as? A2,
-      results[3] as? A3,
-      results[4] as? A4,
-      results[5] as? A5,
-      results[6] as? A6,
-      results[7] as? A7)
+    return castValues()
   }
 
   public func actionNames(element: UIElement) throws -> [String] {
@@ -352,8 +238,7 @@ extension AXClient {
     if let values {
       transformed = (values as [AnyObject]).map(decode)
     } else {
-      // TODO: Swift 6.2 `processToExit`
-      // assertionFailure("Accessibility API reported no errors but copied value is nil")
+      assertionFailure("Accessibility API reported no errors but copied value is nil")
       transformed = Array(repeating: nil, count: attributes.count)
     }
     return transformed
@@ -362,7 +247,10 @@ extension AXClient {
   private func decode(_ value: AnyObject) -> Any {
     // TODO: should CFGetTypeID be a dependency?
     if CFGetTypeID(value) == getAXValueTypeID() {
-      let castValue = value as! UIElementValue
+      guard let castValue = value as? UIElementValue else {
+        assertionFailure("Expected value with AX value type ID to be UIElementValue")
+        return value
+      }
       switch getAXValueType(castValue) {
       case .cgPoint:
         var defaultValue = CGPoint()
@@ -398,8 +286,7 @@ extension AXClient {
         fallthrough
 
       @unknown default:
-        // TODO: Swift 6.2 `processToExit`
-        // assertionFailure()
+        assertionFailure("Received an unsupported AX value type")
         return value
       }
     } else {
@@ -486,4 +373,3 @@ extension AXClient {
   public var zoomButton: Attribute<UIElement> { .init(.zoomButton) }
   public var focusedApplication: Attribute<UIElement> { .init(.focusedApplication) }
 }
-

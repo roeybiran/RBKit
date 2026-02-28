@@ -95,8 +95,9 @@ struct `AXClientError Tests` {
   }
 
   @Test
-  func `init, with .success, should fallback to .unknown`() {
-    let error = AXClientError(axError: .success)
-    #expect(error == .unknown)
+  func `init, with .success, should assert`() async {
+    await #expect(processExitsWith: .failure) {
+      _ = AXClientError(axError: .success)
+    }
   }
 }

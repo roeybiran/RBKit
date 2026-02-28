@@ -68,8 +68,7 @@ public enum AXClientError: Error {
       self = .notEnoughPrecision
 
     case .success:
-      // TODO: Swift 6.2 `processToExit`
-      // assertionFailure()
+      assertionFailure()
       fallthrough
 
     @unknown default:

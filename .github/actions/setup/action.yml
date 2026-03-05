@@ -1,0 +1,9 @@
+name: Setup
+description: Select the Xcode toolchain used by CI jobs
+
+runs:
+  using: composite
+  steps:
+    - name: Select Xcode
+      shell: bash
+      run: sudo xcode-select --switch "/Applications/Xcode_26.0.1.app"

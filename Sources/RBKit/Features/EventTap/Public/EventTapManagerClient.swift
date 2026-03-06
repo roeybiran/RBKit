@@ -14,8 +14,7 @@ public struct EventTapManagerClient: Sendable {
     _ events: [CGEventType],
     _ place: CGEventTapPlacement,
     _ callback: @escaping Callback
-  )
-    -> Void
+  ) -> Void
   public var stop: @Sendable @MainActor (_ id: ID) -> Void
   public var getIsEnabled: @Sendable @MainActor (_ id: ID) -> Bool = { _ in false }
   public var setIsEnabled: @Sendable @MainActor (_ id: ID, _ enabled: Bool) -> Void

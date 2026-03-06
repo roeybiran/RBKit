@@ -5,7 +5,13 @@ import SwiftUI
 
 public struct AppImporterButton: View {
 
-  // MARK: Internal
+  // MARK: Lifecycle
+
+  public init(bundleID: Binding<AppImporterItem.ID?>) {
+    _bundleID = bundleID
+  }
+
+  // MARK: Public
 
   @Binding public var bundleID: AppImporterItem.ID?
 
@@ -50,10 +56,6 @@ public struct AppImporterButton: View {
   // MARK: Private
 
   @State private var isSheetPresented = false
-
-  public init(bundleID: Binding<AppImporterItem.ID?>) {
-    _bundleID = bundleID
-  }
 
 }
 

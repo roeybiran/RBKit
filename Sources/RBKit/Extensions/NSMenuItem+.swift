@@ -17,15 +17,6 @@ extension NSMenuItem {
 
   // MARK: Public
 
-  @discardableResult
-  public func withChildren(@MenuBuilder _ builder: (() -> [NSMenuItem])) -> Self {
-    let children = builder()
-    guard !children.isEmpty else { return self }
-    submenu = NSMenu(title: title)
-    submenu?.items = children
-    return self
-  }
-
   public static let appName = Bundle.main.appName
 
   // MARK: - Application menu
@@ -560,16 +551,6 @@ extension NSMenuItem {
   )
   .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
-  // MARK: - Services menu
-
-  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
-    let title = "Services"
-    let menuItem = NSMenuItem(title)
-    menuItem.submenu = NSMenu(title)
-    app.servicesMenu = menuItem.submenu
-    return menuItem
-  }
-
   // MARK: - Window menu
 
   public static let minimize = NSMenuItem(
@@ -587,6 +568,24 @@ extension NSMenuItem {
     "Bring All to Front",
     action: #selector(NSApplication.arrangeInFront(_:))
   )
+
+  // MARK: - Help menu
+
+  public static let appHelp = NSMenuItem(
+    "\(appName) Help",
+    action: #selector(NSApplication.showHelp(_:)),
+    keyEquivalent: "?"
+  )
+
+  // MARK: - Services menu
+
+  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let title = "Services"
+    let menuItem = NSMenuItem(title)
+    menuItem.submenu = NSMenu(title)
+    app.servicesMenu = menuItem.submenu
+    return menuItem
+  }
 
   public static func windowMenu(
     app: NSApplication = .shared,
@@ -609,14 +608,6 @@ extension NSMenuItem {
     }
   }
 
-  // MARK: - Help menu
-
-  public static let appHelp = NSMenuItem(
-    "\(appName) Help",
-    action: #selector(NSApplication.showHelp(_:)),
-    keyEquivalent: "?"
-  )
-
   public static func helpMenu(
     app: NSApplication = .shared,
     @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
@@ -633,6 +624,15 @@ extension NSMenuItem {
     helpMenu(app: app) {
       appHelp
     }
+  }
+
+  @discardableResult
+  public func withChildren(@MenuBuilder _ builder: () -> [NSMenuItem]) -> Self {
+    let children = builder()
+    guard !children.isEmpty else { return self }
+    submenu = NSMenu(title: title)
+    submenu?.items = children
+    return self
   }
 
 }

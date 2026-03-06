@@ -24,7 +24,7 @@ public struct PathWatcherClient: Sendable {
   ) -> AsyncThrowingStream<[PathWatcherEvent], any Swift.Error> = { _, _, _, _, _ in .finished() }
 }
 
-// MARK: - PathWatcherClient + DependencyKey
+// MARK: DependencyKey
 
 extension PathWatcherClient: DependencyKey {
   public static let liveValue = Self(

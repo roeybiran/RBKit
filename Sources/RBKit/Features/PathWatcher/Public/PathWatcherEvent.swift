@@ -3,17 +3,18 @@ import Foundation
 // MARK: - PathWatcherEvent
 
 public struct PathWatcherEvent: Sendable, Identifiable {
+  public init(path: String, flag: Flag, id: ID) {
+    self.path = path
+    self.flag = flag
+    self.id = id
+  }
+
   public typealias ID = FSEventStreamEventId
 
   public let path: String
   public let flag: Flag
   public let id: FSEventStreamEventId
 
-  public init(path: String, flag: Flag, id: ID) {
-    self.path = path
-    self.flag = flag
-    self.id = id
-  }
 }
 
 // MARK: PathWatcherEvent.Flag

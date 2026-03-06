@@ -69,6 +69,8 @@ extension NSWorkspace {
       _ context: UnsafeMutableRawPointer?
     ) -> Void = { _, _, _, _ in }
 
+    public var _notificationCenter = NotificationCenter.default
+
     public var _frontmostApplication: NSRunningApplication? {
       willSet {
         willChangeValue(forKey: #keyPath(NSWorkspace.frontmostApplication))
@@ -86,8 +88,6 @@ extension NSWorkspace {
         didChangeValue(forKey: #keyPath(NSWorkspace.runningApplications))
       }
     }
-
-    public var _notificationCenter: NotificationCenter = NotificationCenter.default
 
     public var _fileLabels = [String]() {
       willSet {

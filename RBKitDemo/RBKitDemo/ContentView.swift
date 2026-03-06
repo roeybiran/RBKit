@@ -16,11 +16,11 @@ struct ContentView: View {
     .task {
       do {
         for try await event in pathWatcher.watchPathsRecursively(
-          paths: ["/Users/roey.biran/Library/Application Support/com.apple.sharedfilelist/"],
-          latency: 1,
-          queue: nil,
-          sinceWhen: nil,
-          flags: [.fileEvents]
+          ["/Users/roey.biran/Library/Application Support/com.apple.sharedfilelist/"],
+          1,
+          nil,
+          nil,
+          .fileEvents
         ) {
           for e in event {
             print(e.path, e.flag)

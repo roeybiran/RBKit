@@ -104,6 +104,36 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
+  func `settings(action:), should preserve metadata and apply provided action`() throws {
+    let action = #selector(NSApplication.terminate(_:))
+    let menuItem = NSMenuItem.settings(action: action)
+
+    #expect(menuItem.title == "Settings…")
+    #expect(menuItem.keyEquivalent == ",")
+    #expect(menuItem.action == action)
+  }
+
+  @Test
+  func `applicationMenu(settingsAction:), should apply settings action`() throws {
+    let action = #selector(NSApplication.terminate(_:))
+    let menuItem = NSMenuItem.applicationMenu(settingsAction: action)
+    let submenu = try #require(menuItem.submenu)
+    let settingsMenuItem = try #require(
+      submenu.items.first(where: { $0.title == "Settings…" })
+    )
+
+    #expect(settingsMenuItem.action == action)
+  }
+
+  @Test
+  func `app-level standard items, should include default images`() throws {
+    #expect(NSMenuItem.about.image != nil)
+    #expect(NSMenuItem.settings(action: nil).image != nil)
+    #expect(NSMenuItem.help.image != nil)
+    #expect(NSMenuItem.quit.image != nil)
+  }
+
+  @Test
   func `standard static items, should preserve key metadata`() throws {
     #expect(NSMenuItem.close.title == "Close")
     #expect(NSMenuItem.close.action == #selector(NSWindow.performClose(_:)))
@@ -115,7 +145,7 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
-  func `standardMenuBar, should preserve top level order`() throws {
+  func `standardMenuBar(settingsAction:), should preserve top level order and settings action`() throws {
     let app = NSApplication.shared
     let originalServicesMenu = app.servicesMenu
     let originalWindowsMenu = app.windowsMenu
@@ -126,7 +156,8 @@ struct `NSMenuItem standard menu Tests` {
       app.helpMenu = originalHelpMenu
     }
 
-    let menuBar = NSMenu.standardMenuBar
+    let settingsAction = #selector(NSApplication.terminate(_:))
+    let menuBar = NSMenu.standardMenuBar(settingsAction: settingsAction)
     let titles = menuBar.items.map(\.title)
 
     #expect(titles == [
@@ -138,5 +169,11 @@ struct `NSMenuItem standard menu Tests` {
       "Window",
       "Help",
     ])
+
+    let appMenu = try #require(menuBar.items.first?.submenu)
+    let settingsMenuItem = try #require(
+      appMenu.items.first(where: { $0.title == "Settings…" })
+    )
+    #expect(settingsMenuItem.action == settingsAction)
   }
 }

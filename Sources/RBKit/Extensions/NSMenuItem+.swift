@@ -32,26 +32,33 @@ extension NSMenuItem {
 
   // MARK: - Application menu
 
-  public static let applicationMenu = NSMenuItem(String.appName) {
-    about
-    NSMenuItem.separator()
-    settings
-    NSMenuItem.separator()
-    servicesMenu()
-    NSMenuItem.separator()
-    hide
-    hideOthers
-    showAll
-    NSMenuItem.separator()
-    quit
+  public static func applicationMenu(settingsAction: Selector?) -> NSMenuItem {
+    NSMenuItem(String.appName) {
+      about
+      NSMenuItem.separator()
+      settings(action: settingsAction)
+      NSMenuItem.separator()
+      servicesMenu()
+      NSMenuItem.separator()
+      hide
+      hideOthers
+      showAll
+      NSMenuItem.separator()
+      quit
+    }
   }
 
   public static let about = NSMenuItem(
     "About \(String.appName)",
     action: #selector(NSApplication.orderFrontStandardAboutPanel(_:))
   )
+  .set(\.image, to: NSImage(systemSymbolName: "info.circle", accessibilityDescription: nil))
 
-  public static let settings = NSMenuItem("Settings…", keyEquivalent: ",")
+  public static func settings(action: Selector?) -> NSMenuItem {
+    let menuItem = NSMenuItem("Settings…", action: action, keyEquivalent: ",")
+    menuItem.image = NSImage(systemSymbolName: "gear", accessibilityDescription: nil)
+    return menuItem
+  }
 
   public static let hide = NSMenuItem(
     "Hide \(String.appName)",
@@ -76,6 +83,7 @@ extension NSMenuItem {
     action: #selector(NSApplication.terminate),
     keyEquivalent: "q"
   )
+  .set(\.image, to: NSImage(systemSymbolName: "power", accessibilityDescription: nil))
 
   // MARK: - File menu
 
@@ -717,6 +725,7 @@ extension NSMenuItem {
     action: #selector(NSApplication.showHelp(_:)),
     keyEquivalent: "?"
   )
+  .set(\.image, to: NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: nil))
 
   public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
     let title = "Services"

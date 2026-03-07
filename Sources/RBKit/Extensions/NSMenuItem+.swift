@@ -1,7 +1,7 @@
 import AppKit
 
 @MainActor
-extension NSMenuItem {
+public extension NSMenuItem {
 
   // MARK: Lifecycle
 
@@ -29,7 +29,7 @@ extension NSMenuItem {
 }
 
 @MainActor
-extension NSMenuItem {
+public extension NSMenuItem {
 
   // MARK: - Application menu
 

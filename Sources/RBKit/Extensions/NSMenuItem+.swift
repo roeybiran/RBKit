@@ -8,20 +8,13 @@ extension NSMenuItem {
   public convenience init(
     _ title: String,
     action: Selector? = nil,
-    keyEquivalent: String = ""
-  ) {
-    self.init(title: title, action: action, keyEquivalent: keyEquivalent)
-  }
-
-  public convenience init(
-    _ title: String,
-    action: Selector? = nil,
     keyEquivalent: String = "",
-    @MenuBuilder builder: () -> [NSMenuItem]
+    @MenuBuilder builder: () -> [NSMenuItem] = { [] }
   ) {
     self.init(title: title, action: action, keyEquivalent: keyEquivalent)
-    submenu = NSMenu(title: title)
-    submenu?.items = builder()
+    let menu = NSMenu(title: title)
+    menu.items = builder()
+    submenu = menu
   }
 
   // MARK: Public

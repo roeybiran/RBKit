@@ -8,20 +8,51 @@ extension NSMenuItem {
   public convenience init(
     _ title: String,
     action: Selector? = nil,
-    keyEquivalent: String = "",
-    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
+    keyEquivalent: String = ""
   ) {
     self.init(title: title, action: action, keyEquivalent: keyEquivalent)
-    withChildren(builder)
+  }
+
+  public convenience init(
+    _ title: String,
+    action: Selector? = nil,
+    keyEquivalent: String = "",
+    @MenuBuilder builder: () -> [NSMenuItem]
+  ) {
+    self.init(title: title, action: action, keyEquivalent: keyEquivalent)
+    submenu = NSMenu(title: title)
+    submenu?.items = builder()
   }
 
   // MARK: Public
 
+  public func withChildren(@MenuBuilder _ builder: () -> [NSMenuItem]) -> Self {
+    assert(submenu != nil, "NSMenuItem.withChildren(_:) requires an existing submenu.")
+    submenu?.items = builder()
+    return self
+  }
+
   public static let appName = Bundle.main.appName
+}
+
+@MainActor
+extension NSMenuItem {
 
   // MARK: - Application menu
 
-  public static let application = NSMenuItem(appName)
+  public static let applicationMenu = NSMenuItem(appName) {
+    about
+    NSMenuItem.separator()
+    settings
+    NSMenuItem.separator()
+    servicesMenu()
+    NSMenuItem.separator()
+    hide
+    hideOthers
+    showAll
+    NSMenuItem.separator()
+    quit
+  }
 
   public static let about = NSMenuItem(
     "About \(appName)",
@@ -29,6 +60,14 @@ extension NSMenuItem {
   )
 
   public static let settings = NSMenuItem("Settings…", keyEquivalent: ",")
+
+  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let title = "Services"
+    let menuItem = NSMenuItem(title)
+    menuItem.submenu = NSMenu(title)
+    app.servicesMenu = menuItem.submenu
+    return menuItem
+  }
 
   public static let hide = NSMenuItem(
     "Hide \(appName)",
@@ -41,7 +80,7 @@ extension NSMenuItem {
     action: #selector(NSApplication.hideOtherApplications(_:)),
     keyEquivalent: "h"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .command])
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let showAll = NSMenuItem(
     "Show All",
@@ -56,7 +95,19 @@ extension NSMenuItem {
 
   // MARK: - File menu
 
-  public static let file = NSMenuItem("File")
+  public static let fileMenu = NSMenuItem("File") {
+    new
+    open
+    openRecent
+    NSMenuItem.separator()
+    close
+    save
+    saveAs
+    revertToSaved
+    NSMenuItem.separator()
+    pageSetup
+    print
+  }
 
   public static let new = NSMenuItem(
     "New",
@@ -70,7 +121,9 @@ extension NSMenuItem {
     keyEquivalent: "o"
   )
 
-  public static let openRecent = NSMenuItem("Open Recent")
+  public static let openRecent = NSMenuItem("Open Recent") {
+    clearMenu
+  }
 
   public static let clearMenu = NSMenuItem(
     "Clear Menu",
@@ -115,7 +168,23 @@ extension NSMenuItem {
 
   // MARK: - Edit menu
 
-  public static let edit = NSMenuItem("Edit")
+  public static let editMenu = NSMenuItem("Edit") {
+    undo
+    redo
+    NSMenuItem.separator()
+    cut
+    copy
+    paste
+    pasteAndMatchStyle
+    delete
+    selectAll
+    NSMenuItem.separator()
+    findMenu
+    spellingAndGrammar
+    substitutions
+    transformations
+    speech
+  }
 
   public static let undo = NSMenuItem(
     "Undo",
@@ -152,7 +221,7 @@ extension NSMenuItem {
     action: #selector(NSTextView.pasteAsPlainText(_:)),
     keyEquivalent: "v"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
+    .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
 
   public static let delete = NSMenuItem(
     "Delete",
@@ -165,43 +234,50 @@ extension NSMenuItem {
     keyEquivalent: "a"
   )
 
-  public static let findMenu = NSMenuItem("Find")
+  public static let findMenu = NSMenuItem("Find") {
+    find
+    findAndReplace
+    findNext
+    findPrevious
+    useSelectionForFind
+    jumpToSelection
+  }
 
   public static let find = NSMenuItem(
     "Find…",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "f"
   )
-  .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
+    .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
 
   public static let findAndReplace = NSMenuItem(
     "Find and Replace…",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "f"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .command])
-  .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+    .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
 
   public static let findNext = NSMenuItem(
     "Find Next",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "g"
   )
-  .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
+    .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
 
   public static let findPrevious = NSMenuItem(
     "Find Previous",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "G"
   )
-  .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
+    .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
 
   public static let useSelectionForFind = NSMenuItem(
     "Use Selection for Find",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "e"
   )
-  .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
+    .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
 
   public static let jumpToSelection = NSMenuItem(
     "Jump to Selection",
@@ -209,7 +285,14 @@ extension NSMenuItem {
     keyEquivalent: "j"
   )
 
-  public static let spellingAndGrammar = NSMenuItem("Spelling and Grammar")
+  public static let spellingAndGrammar = NSMenuItem("Spelling and Grammar") {
+    showSpellingAndGrammar
+    checkDocumentNow
+    NSMenuItem.separator()
+    checkSpellingWhileTyping
+    checkGrammarWithSpelling
+    correctSpellingAutomatically
+  }
 
   public static let showSpellingAndGrammar = NSMenuItem(
     "Show Spelling and Grammar",
@@ -238,7 +321,16 @@ extension NSMenuItem {
     action: #selector(NSTextView.toggleAutomaticSpellingCorrection(_:))
   )
 
-  public static let substitutions = NSMenuItem("Substitutions")
+  public static let substitutions = NSMenuItem("Substitutions") {
+    showSubstitutions
+    NSMenuItem.separator()
+    smartCopyPaste
+    smartQuotes
+    smartDashes
+    smartLinks
+    dataDetectors
+    textReplacement
+  }
 
   public static let showSubstitutions = NSMenuItem(
     "Show Substitutions",
@@ -275,7 +367,11 @@ extension NSMenuItem {
     action: #selector(NSTextView.toggleAutomaticTextReplacement(_:))
   )
 
-  public static let transformations = NSMenuItem("Transformations")
+  public static let transformations = NSMenuItem("Transformations") {
+    makeUpperCase
+    makeLowerCase
+    capitalize
+  }
 
   public static let makeUpperCase = NSMenuItem(
     "Make Upper Case",
@@ -292,7 +388,10 @@ extension NSMenuItem {
     action: #selector(NSResponder.capitalizeWord(_:))
   )
 
-  public static let speech = NSMenuItem("Speech")
+  public static let speech = NSMenuItem("Speech") {
+    startSpeaking
+    stopSpeaking
+  }
 
   public static let startSpeaking = NSMenuItem(
     "Start Speaking",
@@ -306,9 +405,29 @@ extension NSMenuItem {
 
   // MARK: - Format menu
 
-  public static let format = NSMenuItem("Format")
+  public static let formatMenu = NSMenuItem("Format") {
+    fontMenu
+    textMenu
+  }
 
-  public static let fontMenu = NSMenuItem("Font")
+  public static let fontMenu = NSMenuItem("Font") {
+    showFonts
+    bold
+    italic
+    underline
+    NSMenuItem.separator()
+    bigger
+    smaller
+    NSMenuItem.separator()
+    kernMenu
+    ligaturesMenu
+    baselineMenu
+    NSMenuItem.separator()
+    showColors
+    NSMenuItem.separator()
+    copyStyle
+    pasteStyle
+  }
 
   public static let showFonts = NSMenuItem(
     "Show Fonts",
@@ -321,14 +440,14 @@ extension NSMenuItem {
     action: #selector(NSFontManager.addFontTrait(_:)),
     keyEquivalent: "b"
   )
-  .set(\.tag, to: 2)
+    .set(\.tag, to: 2)
 
   public static let italic = NSMenuItem(
     "Italic",
     action: #selector(NSFontManager.addFontTrait(_:)),
     keyEquivalent: "i"
   )
-  .set(\.tag, to: 1)
+    .set(\.tag, to: 1)
 
   public static let underline = NSMenuItem(
     "Underline",
@@ -341,16 +460,21 @@ extension NSMenuItem {
     action: #selector(NSFontManager.modifyFont(_:)),
     keyEquivalent: "+"
   )
-  .set(\.tag, to: 3)
+    .set(\.tag, to: 3)
 
   public static let smaller = NSMenuItem(
     "Smaller",
     action: #selector(NSFontManager.modifyFont(_:)),
     keyEquivalent: "-"
   )
-  .set(\.tag, to: 4)
+    .set(\.tag, to: 4)
 
-  public static let kernMenu = NSMenuItem("Kern")
+  public static let kernMenu = NSMenuItem("Kern") {
+    kernUseDefault
+    kernUseNone
+    kernTighten
+    kernLoosen
+  }
 
   public static let kernUseDefault = NSMenuItem(
     "Use Default",
@@ -372,7 +496,11 @@ extension NSMenuItem {
     action: #selector(NSTextView.loosenKerning(_:))
   )
 
-  public static let ligaturesMenu = NSMenuItem("Ligatures")
+  public static let ligaturesMenu = NSMenuItem("Ligatures") {
+    ligaturesUseDefault
+    ligaturesUseNone
+    ligaturesUseAll
+  }
 
   public static let ligaturesUseDefault = NSMenuItem(
     "Use Default",
@@ -389,7 +517,13 @@ extension NSMenuItem {
     action: #selector(NSTextView.useAllLigatures(_:))
   )
 
-  public static let baselineMenu = NSMenuItem("Baseline")
+  public static let baselineMenu = NSMenuItem("Baseline") {
+    baselineUseDefault
+    baselineSuperscript
+    baselineSubscript
+    baselineRaise
+    baselineLower
+  }
 
   public static let baselineUseDefault = NSMenuItem(
     "Use Default",
@@ -427,16 +561,27 @@ extension NSMenuItem {
     action: #selector(NSText.copyFont(_:)),
     keyEquivalent: "c"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .command])
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let pasteStyle = NSMenuItem(
     "Paste Style",
     action: #selector(NSText.pasteFont(_:)),
     keyEquivalent: "v"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .command])
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
-  public static let textMenu = NSMenuItem("Text")
+  public static let textMenu = NSMenuItem("Text") {
+    alignLeft
+    center
+    justify
+    alignRight
+    NSMenuItem.separator()
+    writingDirectionMenu
+    NSMenuItem.separator()
+    showRuler
+    copyRuler
+    pasteRuler
+  }
 
   public static let alignLeft = NSMenuItem(
     "Align Left",
@@ -464,7 +609,17 @@ extension NSMenuItem {
   public static let writingDirectionMenu = NSMenuItem(
     "Writing Direction",
     action: #selector(NSText.unscript(_:))
-  )
+  ) {
+    paragraphLabel
+    paragraphDefault
+    paragraphLeftToRight
+    paragraphRightToLeft
+    NSMenuItem.separator()
+    selectionLabel
+    selectionDefault
+    selectionLeftToRight
+    selectionRightToLeft
+  }
 
   public static let paragraphLabel = NSMenuItem("Paragraph")
     .set(\.isEnabled, to: false)
@@ -512,25 +667,31 @@ extension NSMenuItem {
     action: #selector(NSText.copyRuler(_:)),
     keyEquivalent: "c"
   )
-  .set(\.keyEquivalentModifierMask, to: [.control, .command])
+    .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   public static let pasteRuler = NSMenuItem(
     "Paste Ruler",
     action: #selector(NSText.pasteRuler(_:)),
     keyEquivalent: "v"
   )
-  .set(\.keyEquivalentModifierMask, to: [.control, .command])
+    .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   // MARK: - View menu
 
-  public static let view = NSMenuItem("View")
+  public static let viewMenu = NSMenuItem("View") {
+    showToolbar
+    customizeToolbar
+    NSMenuItem.separator()
+    showSidebar
+    enterFullScreen
+  }
 
   public static let showToolbar = NSMenuItem(
     "Show Toolbar",
     action: #selector(NSWindow.toggleToolbarShown(_:)),
     keyEquivalent: "t"
   )
-  .set(\.keyEquivalentModifierMask, to: [.option, .command])
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let customizeToolbar = NSMenuItem(
     "Customize Toolbar…",
@@ -542,16 +703,27 @@ extension NSMenuItem {
     action: #selector(NSSplitViewController.toggleSidebar(_:)),
     keyEquivalent: "s"
   )
-  .set(\.keyEquivalentModifierMask, to: [.control, .command])
+    .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   public static let enterFullScreen = NSMenuItem(
     "Enter Full Screen",
     action: #selector(NSWindow.toggleFullScreen(_:)),
     keyEquivalent: "f"
   )
-  .set(\.keyEquivalentModifierMask, to: [.control, .command])
+    .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   // MARK: - Window menu
+
+  public static func windowMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let menuItem = NSMenuItem("Window") {
+      minimize
+      zoom
+      NSMenuItem.separator()
+      bringAllToFront
+    }
+    app.windowsMenu = menuItem.submenu
+    return menuItem
+  }
 
   public static let minimize = NSMenuItem(
     "Minimize",
@@ -571,68 +743,17 @@ extension NSMenuItem {
 
   // MARK: - Help menu
 
-  public static let appHelp = NSMenuItem(
-    "\(appName) Help",
-    action: #selector(NSApplication.showHelp(_:)),
-    keyEquivalent: "?"
-  )
-
-  // MARK: - Services menu
-
-  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
-    let title = "Services"
-    let menuItem = NSMenuItem(title)
-    menuItem.submenu = NSMenu(title)
-    app.servicesMenu = menuItem.submenu
-    return menuItem
-  }
-
-  public static func windowMenu(
-    app: NSApplication = .shared,
-    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
-  ) -> NSMenuItem {
-    let title = "Window"
-    let menuItem = NSMenuItem(title)
-    menuItem.submenu = NSMenu(title: title)
-    menuItem.withChildren(builder)
-    app.windowsMenu = menuItem.submenu
-    return menuItem
-  }
-
-  public static func standardWindowMenu(app: NSApplication = .shared) -> NSMenuItem {
-    windowMenu(app: app) {
-      minimize
-      zoom
-      NSMenuItem.separator()
-      bringAllToFront
+  public static func helpMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let menuItem = NSMenuItem("Help") {
+      help
     }
-  }
-
-  public static func helpMenu(
-    app: NSApplication = .shared,
-    @MenuBuilder builder: (() -> [NSMenuItem]) = { [] }
-  ) -> NSMenuItem {
-    let title = "Help"
-    let menuItem = NSMenuItem(title)
-    menuItem.submenu = NSMenu(title)
-    menuItem.withChildren(builder)
     app.helpMenu = menuItem.submenu
     return menuItem
   }
 
-  public static func standardHelpMenu(app: NSApplication = .shared) -> NSMenuItem {
-    helpMenu(app: app) {
-      appHelp
-    }
-  }
-
-  @discardableResult
-  public func withChildren(@MenuBuilder _ builder: () -> [NSMenuItem]) -> Self {
-    let children = builder()
-    guard !children.isEmpty else { return self }
-    submenu = NSMenu(title: title)
-    submenu?.items = children
-    return self
-  }
-
+  public static let help = NSMenuItem(
+    "Help",
+    action: #selector(NSApplication.showHelp(_:)),
+    keyEquivalent: "?"
+  )
 }

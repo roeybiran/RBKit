@@ -23,16 +23,19 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
-  func `init with empty builder, should keep submenu nil`() throws {
+  func `init with empty builder, should create empty submenu`() throws {
     let menuItem = NSMenuItem("Parent") {
     }
+    let submenu = try #require(menuItem.submenu)
 
-    #expect(menuItem.submenu == nil)
+    #expect(submenu.title == "Parent")
+    #expect(submenu.items.isEmpty)
   }
 
   @Test
   func `withChildren, should return self and replace submenu items`() throws {
-    let menuItem = NSMenuItem("Parent")
+    let menuItem = NSMenuItem("Parent") {
+    }
     let child1 = NSMenuItem("Child 1")
     let child2 = NSMenuItem("Child 2")
 
@@ -45,7 +48,7 @@ struct `NSMenuItem standard menu Tests` {
     #expect(submenu.items.count == 1)
     #expect(submenu.items.first === child1)
 
-    menuItem.withChildren {
+    _ = menuItem.withChildren {
       child2
     }
     submenu = try #require(menuItem.submenu)
@@ -68,38 +71,35 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
-  func `windowMenu(app:builder:), should set windowsMenu on provided app`() throws {
+  func `windowMenu(app:), should include standard window items and set windowsMenu`() throws {
     let app = NSApplication.shared
     let originalWindowsMenu = app.windowsMenu
     defer { app.windowsMenu = originalWindowsMenu }
 
-    let child = NSMenuItem("Child")
-    let menuItem = NSMenuItem.windowMenu(app: app) {
-      child
-    }
+    let menuItem = NSMenuItem.windowMenu(app: app)
     let submenu = try #require(menuItem.submenu)
 
     #expect(menuItem.title == "Window")
-    #expect(submenu.items.count == 1)
-    #expect(submenu.items.first === child)
+    #expect(submenu.items.count == 4)
+    #expect(submenu.items[0] === NSMenuItem.minimize)
+    #expect(submenu.items[1] === NSMenuItem.zoom)
+    #expect(submenu.items[2].isSeparatorItem)
+    #expect(submenu.items[3] === NSMenuItem.bringAllToFront)
     #expect(app.windowsMenu === submenu)
   }
 
   @Test
-  func `helpMenu(app:builder:), should set helpMenu on provided app`() throws {
+  func `helpMenu(app:), should include standard help item and set helpMenu`() throws {
     let app = NSApplication.shared
     let originalHelpMenu = app.helpMenu
     defer { app.helpMenu = originalHelpMenu }
 
-    let child = NSMenuItem("Child")
-    let menuItem = NSMenuItem.helpMenu(app: app) {
-      child
-    }
+    let menuItem = NSMenuItem.helpMenu(app: app)
     let submenu = try #require(menuItem.submenu)
 
     #expect(menuItem.title == "Help")
     #expect(submenu.items.count == 1)
-    #expect(submenu.items.first === child)
+    #expect(submenu.items.first === NSMenuItem.help)
     #expect(app.helpMenu === submenu)
   }
 

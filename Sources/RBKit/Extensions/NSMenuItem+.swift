@@ -1,7 +1,7 @@
 import AppKit
 
 @MainActor
-public extension NSMenuItem {
+extension NSMenuItem {
 
   // MARK: Lifecycle
 
@@ -25,15 +25,14 @@ public extension NSMenuItem {
     return self
   }
 
-  public static let appName = Bundle.main.appName
 }
 
 @MainActor
-public extension NSMenuItem {
+extension NSMenuItem {
 
   // MARK: - Application menu
 
-  public static let applicationMenu = NSMenuItem(appName) {
+  public static let applicationMenu = NSMenuItem(String.appName) {
     about
     NSMenuItem.separator()
     settings
@@ -48,22 +47,14 @@ public extension NSMenuItem {
   }
 
   public static let about = NSMenuItem(
-    "About \(appName)",
+    "About \(String.appName)",
     action: #selector(NSApplication.orderFrontStandardAboutPanel(_:))
   )
 
   public static let settings = NSMenuItem("Settings…", keyEquivalent: ",")
 
-  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
-    let title = "Services"
-    let menuItem = NSMenuItem(title)
-    menuItem.submenu = NSMenu(title)
-    app.servicesMenu = menuItem.submenu
-    return menuItem
-  }
-
   public static let hide = NSMenuItem(
-    "Hide \(appName)",
+    "Hide \(String.appName)",
     action: #selector(NSApplication.hide(_:)),
     keyEquivalent: "h"
   )
@@ -73,7 +64,7 @@ public extension NSMenuItem {
     action: #selector(NSApplication.hideOtherApplications(_:)),
     keyEquivalent: "h"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let showAll = NSMenuItem(
     "Show All",
@@ -81,7 +72,7 @@ public extension NSMenuItem {
   )
 
   public static let quit = NSMenuItem(
-    "Quit \(appName)",
+    "Quit \(String.appName)",
     action: #selector(NSApplication.terminate),
     keyEquivalent: "q"
   )
@@ -214,7 +205,7 @@ public extension NSMenuItem {
     action: #selector(NSTextView.pasteAsPlainText(_:)),
     keyEquivalent: "v"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
+  .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
 
   public static let delete = NSMenuItem(
     "Delete",
@@ -241,36 +232,36 @@ public extension NSMenuItem {
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "f"
   )
-    .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
+  .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
 
   public static let findAndReplace = NSMenuItem(
     "Find and Replace…",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "f"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
-    .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
+  .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
 
   public static let findNext = NSMenuItem(
     "Find Next",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "g"
   )
-    .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
+  .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
 
   public static let findPrevious = NSMenuItem(
     "Find Previous",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "G"
   )
-    .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
+  .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
 
   public static let useSelectionForFind = NSMenuItem(
     "Use Selection for Find",
     action: #selector(NSResponder.performTextFinderAction(_:)),
     keyEquivalent: "e"
   )
-    .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
+  .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
 
   public static let jumpToSelection = NSMenuItem(
     "Jump to Selection",
@@ -433,14 +424,14 @@ public extension NSMenuItem {
     action: #selector(NSFontManager.addFontTrait(_:)),
     keyEquivalent: "b"
   )
-    .set(\.tag, to: 2)
+  .set(\.tag, to: 2)
 
   public static let italic = NSMenuItem(
     "Italic",
     action: #selector(NSFontManager.addFontTrait(_:)),
     keyEquivalent: "i"
   )
-    .set(\.tag, to: 1)
+  .set(\.tag, to: 1)
 
   public static let underline = NSMenuItem(
     "Underline",
@@ -453,14 +444,14 @@ public extension NSMenuItem {
     action: #selector(NSFontManager.modifyFont(_:)),
     keyEquivalent: "+"
   )
-    .set(\.tag, to: 3)
+  .set(\.tag, to: 3)
 
   public static let smaller = NSMenuItem(
     "Smaller",
     action: #selector(NSFontManager.modifyFont(_:)),
     keyEquivalent: "-"
   )
-    .set(\.tag, to: 4)
+  .set(\.tag, to: 4)
 
   public static let kernMenu = NSMenuItem("Kern") {
     kernUseDefault
@@ -554,14 +545,14 @@ public extension NSMenuItem {
     action: #selector(NSText.copyFont(_:)),
     keyEquivalent: "c"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let pasteStyle = NSMenuItem(
     "Paste Style",
     action: #selector(NSText.pasteFont(_:)),
     keyEquivalent: "v"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let textMenu = NSMenuItem("Text") {
     alignLeft
@@ -660,14 +651,14 @@ public extension NSMenuItem {
     action: #selector(NSText.copyRuler(_:)),
     keyEquivalent: "c"
   )
-    .set(\.keyEquivalentModifierMask, to: [.control, .command])
+  .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   public static let pasteRuler = NSMenuItem(
     "Paste Ruler",
     action: #selector(NSText.pasteRuler(_:)),
     keyEquivalent: "v"
   )
-    .set(\.keyEquivalentModifierMask, to: [.control, .command])
+  .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   // MARK: - View menu
 
@@ -684,7 +675,7 @@ public extension NSMenuItem {
     action: #selector(NSWindow.toggleToolbarShown(_:)),
     keyEquivalent: "t"
   )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  .set(\.keyEquivalentModifierMask, to: [.option, .command])
 
   public static let customizeToolbar = NSMenuItem(
     "Customize Toolbar…",
@@ -696,27 +687,14 @@ public extension NSMenuItem {
     action: #selector(NSSplitViewController.toggleSidebar(_:)),
     keyEquivalent: "s"
   )
-    .set(\.keyEquivalentModifierMask, to: [.control, .command])
+  .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   public static let enterFullScreen = NSMenuItem(
     "Enter Full Screen",
     action: #selector(NSWindow.toggleFullScreen(_:)),
     keyEquivalent: "f"
   )
-    .set(\.keyEquivalentModifierMask, to: [.control, .command])
-
-  // MARK: - Window menu
-
-  public static func windowMenu(app: NSApplication = .shared) -> NSMenuItem {
-    let menuItem = NSMenuItem("Window") {
-      minimize
-      zoom
-      NSMenuItem.separator()
-      bringAllToFront
-    }
-    app.windowsMenu = menuItem.submenu
-    return menuItem
-  }
+  .set(\.keyEquivalentModifierMask, to: [.control, .command])
 
   public static let minimize = NSMenuItem(
     "Minimize",
@@ -734,6 +712,33 @@ public extension NSMenuItem {
     action: #selector(NSApplication.arrangeInFront(_:))
   )
 
+  public static let help = NSMenuItem(
+    "Help",
+    action: #selector(NSApplication.showHelp(_:)),
+    keyEquivalent: "?"
+  )
+
+  public static func servicesMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let title = "Services"
+    let menuItem = NSMenuItem(title)
+    menuItem.submenu = NSMenu(title)
+    app.servicesMenu = menuItem.submenu
+    return menuItem
+  }
+
+  // MARK: - Window menu
+
+  public static func windowMenu(app: NSApplication = .shared) -> NSMenuItem {
+    let menuItem = NSMenuItem("Window") {
+      minimize
+      zoom
+      NSMenuItem.separator()
+      bringAllToFront
+    }
+    app.windowsMenu = menuItem.submenu
+    return menuItem
+  }
+
   // MARK: - Help menu
 
   public static func helpMenu(app: NSApplication = .shared) -> NSMenuItem {
@@ -744,9 +749,4 @@ public extension NSMenuItem {
     return menuItem
   }
 
-  public static let help = NSMenuItem(
-    "Help",
-    action: #selector(NSApplication.showHelp(_:)),
-    keyEquivalent: "?"
-  )
 }

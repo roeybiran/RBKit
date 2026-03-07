@@ -130,7 +130,7 @@ struct `NSMenuItem standard menu Tests` {
     let titles = menuBar.items.map(\.title)
 
     #expect(titles == [
-      NSMenuItem.appName,
+      String.appName,
       "File",
       "Edit",
       "Format",

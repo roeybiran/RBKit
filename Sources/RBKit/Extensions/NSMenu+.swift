@@ -1,6 +1,6 @@
 import AppKit
 
-public extension NSMenu {
+extension NSMenu {
 
   // MARK: Lifecycle
 
@@ -47,7 +47,7 @@ public extension NSMenu {
   // MARK: Internal
 
   /// A programmatically created application menu bar (`NSApp.mainMenu`). The menu’s structure and contents are an exact clone of those in a Storyboard–based, non–modified menu bar (as of **Xcode 14.2**). This is not meant to be used directly in your project (hence the lack of the `public` modifier), but rather copied and modified to suit your needs.
-  @MainActor internal static let standardMenuBar = NSMenu(NSMenuItem.appName) {
+  @MainActor static let standardMenuBar = NSMenu(String.appName) {
     NSMenuItem.applicationMenu
     NSMenuItem.fileMenu
     NSMenuItem.editMenu

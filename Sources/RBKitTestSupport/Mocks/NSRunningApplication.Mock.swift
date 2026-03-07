@@ -19,7 +19,7 @@ extension NSRunningApplication {
       _processIdentifier: pid_t = 0,
       _launchDate: Date? = nil,
       _icon _: NSImage? = nil,
-      _executableArchitecture: Int = 0
+      _executableArchitecture: Int = 0,
     ) {
       self._isTerminated = _isTerminated
       self._isFinishedLaunching = _isFinishedLaunching
@@ -38,26 +38,67 @@ extension NSRunningApplication {
 
     // MARK: Open
 
-    override open var isTerminated: Bool { _isTerminated }
-    override open var isFinishedLaunching: Bool { _isFinishedLaunching }
-    override open var isHidden: Bool { _isHidden }
-    override open var isActive: Bool { _isActive }
-    override open var ownsMenuBar: Bool { _ownsMenuBar }
-    override open var activationPolicy: NSApplication.ActivationPolicy { _activationPolicy }
-    override open var localizedName: String? { _localizedName }
-    override open var bundleIdentifier: String? { _bundleIdentifier }
-    override open var bundleURL: URL? { _bundleURL }
-    override open var executableURL: URL? { _executableURL }
-    override open var processIdentifier: pid_t { _processIdentifier }
-    override open var launchDate: Date? { _launchDate }
-    override open var icon: NSImage? { _icon }
-    override open var executableArchitecture: Int { _executableArchitecture }
+    override open var isTerminated: Bool {
+      _isTerminated
+    }
+
+    override open var isFinishedLaunching: Bool {
+      _isFinishedLaunching
+    }
+
+    override open var isHidden: Bool {
+      _isHidden
+    }
+
+    override open var isActive: Bool {
+      _isActive
+    }
+
+    override open var ownsMenuBar: Bool {
+      _ownsMenuBar
+    }
+
+    override open var activationPolicy: NSApplication.ActivationPolicy {
+      _activationPolicy
+    }
+
+    override open var localizedName: String? {
+      _localizedName
+    }
+
+    override open var bundleIdentifier: String? {
+      _bundleIdentifier
+    }
+
+    override open var bundleURL: URL? {
+      _bundleURL
+    }
+
+    override open var executableURL: URL? {
+      _executableURL
+    }
+
+    override open var processIdentifier: pid_t {
+      _processIdentifier
+    }
+
+    override open var launchDate: Date? {
+      _launchDate
+    }
+
+    override open var icon: NSImage? {
+      _icon
+    }
+
+    override open var executableArchitecture: Int {
+      _executableArchitecture
+    }
 
     open override func addObserver(
       _ observer: NSObject,
       forKeyPath keyPath: String,
       options: NSKeyValueObservingOptions = [],
-      context: UnsafeMutableRawPointer?
+      context: UnsafeMutableRawPointer?,
     ) {
       _addObserver(observer, keyPath, options, context)
       super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
@@ -69,7 +110,7 @@ extension NSRunningApplication {
       _ observer: NSObject,
       _ keyPath: String,
       _ options: NSKeyValueObservingOptions,
-      _ context: UnsafeMutableRawPointer?
+      _ context: UnsafeMutableRawPointer?,
     ) -> Void = { _, _, _, _ in }
 
     public var _isActive: Bool

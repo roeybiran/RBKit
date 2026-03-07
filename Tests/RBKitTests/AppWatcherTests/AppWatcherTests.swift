@@ -6,16 +6,18 @@ import Testing
 
 @testable import RBKit
 
+// MARK: - `AppWatcher Tests`
+
 @Suite(.serialized)
 @MainActor
 struct `AppWatcher Tests` {
   @Test
-  func `NSWorkspace observations: should observe correct key paths and NSKeyValueObservingOptions`() async throws {
+  func `NSWorkspace observations: should observe correct key paths and NSKeyValueObservingOptions`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
     } operation: {
-      var observeCalls: [(keyPath: String, options: NSKeyValueObservingOptions)] = []
+      var observeCalls = [(keyPath: String, options: NSKeyValueObservingOptions)]()
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._addObserver = { _, keyPath, options, _ in
         observeCalls.append((keyPath: keyPath, options: options))
@@ -43,12 +45,12 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace observations: with running applications changed, should emit launched event`() async throws {
+  func `NSWorkspace observations: with running applications changed, should emit launched event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
     } operation: {
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let mockApp1 = AppMock(_isFinishedLaunching: false, _processIdentifier: 0)
       let mockApp2 = AppMock(_isFinishedLaunching: false, _processIdentifier: 1)
@@ -85,7 +87,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace observations: with first app is current, should skip app`() async throws {
+  func `NSWorkspace observations: with first app is current, should skip app`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -95,7 +97,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       Task {
         for await event in SUT.events() {
           collectedEvents.append(event)
@@ -117,7 +119,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace observations: with first app is XPC, should skip app`() async throws {
+  func `NSWorkspace observations: with first app is XPC, should skip app`() async {
     nonisolated(unsafe) var getProcessInfoCallCount = 0
     nonisolated(unsafe) var getProcessForPIDCallCount = 0
 
@@ -149,7 +151,7 @@ struct `AppWatcher Tests` {
       let mockApps = [xpcApp, regularApp]
       let mockWorkspace = NSWorkspace.Mock()
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
       Task {
@@ -173,11 +175,10 @@ struct `AppWatcher Tests` {
       #expect(getProcessInfoCallCount == 2)
       #expect(getProcessForPIDCallCount == 2)
     }
-
   }
 
   @Test
-  func `NSWorkspace observations: with Passwords app as XPC, should not skip app`() async throws {
+  func `NSWorkspace observations: with Passwords app as XPC, should not skip app`() async {
     await withDependencies { deps in
       deps.processesClient = ProcessesClient(
         getProcessInformation: { _, info in
@@ -201,7 +202,7 @@ struct `AppWatcher Tests` {
       let mockApps = [passwordsApp, regularXPCApp]
       let mockWorkspace = NSWorkspace.Mock()
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
       Task {
@@ -230,7 +231,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace observations: with first app is zombie, should skip app`() async throws {
+  func `NSWorkspace observations: with first app is zombie, should skip app`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = SysctlClient(
@@ -251,7 +252,7 @@ struct `AppWatcher Tests` {
       let regularApp = AppMock(_isFinishedLaunching: false, _processIdentifier: 1)
       let mockApps = [zombieApp, regularApp]
       let mockWorkspace = NSWorkspace.Mock()
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
       Task {
@@ -276,7 +277,8 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace.frontmostApplication observations: with frontmost application changed, should emit activated and deactivated events`() async throws {
+  func `NSWorkspace.frontmostApplication observations: with frontmost application changed, should emit activated and deactivated events`(
+  ) async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -287,7 +289,7 @@ struct `AppWatcher Tests` {
       mockWorkspace._runningApplications = [mockApp, mockApp2]
       mockWorkspace._frontmostApplication = mockApp
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
       Task {
@@ -312,7 +314,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace.frontmostApplication observations: with frontmost application nil, should not emit activated event`() async throws {
+  func `NSWorkspace.frontmostApplication observations: with frontmost application nil, should not emit activated event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -323,7 +325,7 @@ struct `AppWatcher Tests` {
       mockWorkspace._frontmostApplication = mockApp
 
       let SUT = AppWatcher(workspace: mockWorkspace)
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       Task {
         for await event in SUT.events() {
           collectedEvents.append(event)
@@ -345,7 +347,8 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSWorkspace.frontmostApplication observations: with frontmost application not observed, should not emit activated event`() async throws {
+  func `NSWorkspace.frontmostApplication observations: with frontmost application not observed, should not emit activated event`(
+  ) async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -354,7 +357,7 @@ struct `AppWatcher Tests` {
       let nonObservedApp = AppMock(_isFinishedLaunching: false, _processIdentifier: 1)
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [observedApp]
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
 
@@ -376,7 +379,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with initial isFinishedLaunching true, should emit didFinishedLaunching event`() async throws {
+  func `NSRunningApplication observations: with initial isFinishedLaunching true, should emit didFinishedLaunching event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -385,7 +388,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
 
@@ -407,7 +410,8 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with initial isFinishedLaunching false, should not emit didFinishedLaunching event`() async throws {
+  func `NSRunningApplication observations: with initial isFinishedLaunching false, should not emit didFinishedLaunching event`(
+  ) async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -416,7 +420,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
 
       Task {
@@ -436,7 +440,8 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with isFinishedLaunching changed to true, should emit didFinishedLaunching event`() async throws {
+  func `NSRunningApplication observations: with isFinishedLaunching changed to true, should emit didFinishedLaunching event`(
+  ) async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -445,7 +450,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
 
@@ -469,7 +474,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with activation policy changed, should emit activationPolicyChanged event`() async throws {
+  func `NSRunningApplication observations: with activation policy changed, should emit activationPolicyChanged event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -478,7 +483,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
       Task {
@@ -501,7 +506,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with isHidden changed to true, should emit hidden event`() async throws {
+  func `NSRunningApplication observations: with isHidden changed to true, should emit hidden event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -510,7 +515,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
       let SUT = AppWatcher(workspace: mockWorkspace)
       Task {
         for await event in SUT.events() {
@@ -532,7 +537,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with isHidden changed to false, should emit unhidden event`() async throws {
+  func `NSRunningApplication observations: with isHidden changed to false, should emit unhidden event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -541,7 +546,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
       Task {
@@ -564,7 +569,7 @@ struct `AppWatcher Tests` {
   }
 
   @Test
-  func `NSRunningApplication observations: with isTerminated changed to true, should emit terminated event`() async throws {
+  func `NSRunningApplication observations: with isTerminated changed to true, should emit terminated event`() async {
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -573,7 +578,7 @@ struct `AppWatcher Tests` {
       let mockWorkspace = NSWorkspace.Mock()
       mockWorkspace._runningApplications = [mockApp]
 
-      var collectedEvents: [AppWatcherEvent] = []
+      var collectedEvents = [AppWatcherEvent]()
 
       let SUT = AppWatcher(workspace: mockWorkspace)
 
@@ -607,6 +612,8 @@ struct `AppWatcher Tests` {
   }
 }
 
+// MARK: - AppWatcherEvent + CustomDebugStringConvertible
+
 extension AppWatcherEvent: CustomDebugStringConvertible {
   public var debugDescription: String {
     func appDescription(_ app: NSRunningApplication) -> String {
@@ -617,18 +624,25 @@ extension AppWatcherEvent: CustomDebugStringConvertible {
     case .launched(let apps):
       let appsDescription = apps.map { appDescription($0) }.joined(separator: ", ")
       return "launched [\(appsDescription)]"
+
     case .didFinishedLaunching(let app):
       return "didFinishedLaunching \(appDescription(app))"
+
     case .activated(let app):
       return "activated \(appDescription(app))"
+
     case .deactivated(let app):
       return "deactivated \(appDescription(app))"
+
     case .terminated(let app):
       return "terminated \(appDescription(app))"
+
     case .hidden(let app):
       return "hidden \(appDescription(app))"
+
     case .unhidden(let app):
       return "unhidden \(appDescription(app))"
+
     case .activationPolicyChanged(let app):
       return "activationPolicyChanged \(appDescription(app))"
     }

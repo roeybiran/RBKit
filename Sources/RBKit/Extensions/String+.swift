@@ -1,5 +1,5 @@
 import Foundation
 
-public extension String {
-  static let appName = Bundle.main.appName
+extension String {
+  public static let appName = Bundle.main.appName
 }

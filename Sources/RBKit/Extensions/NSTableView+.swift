@@ -6,7 +6,7 @@ extension NSTableView {
   public func makeView<T: NSView>(
     ofType _: T.Type,
     withIdentifier identifier: NSUserInterfaceItemIdentifier = .init("\(T.self)"),
-    owner: Any? = nil
+    owner: Any? = nil,
   ) -> T {
     if let existingCell = makeView(withIdentifier: identifier, owner: owner) as? T {
       return existingCell

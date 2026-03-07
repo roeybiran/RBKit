@@ -8,9 +8,9 @@ import Testing
 @MainActor
 struct `AppWatcherClient Tests` {
   @Test
-  func `liveValue: should create valid client`() async throws {
+  func `liveValue: should create valid client`() async {
     nonisolated(unsafe) var eventCount = 0
-    
+
     await withDependencies { deps in
       deps.processesClient = .nonXPC
       deps.sysctlClient = .nonZombie
@@ -37,7 +37,7 @@ struct `AppWatcherClient Tests` {
 
       try? await Task.sleep(for: .seconds(0.5))
     }
-    
+
     #expect(eventCount == 2)
   }
 

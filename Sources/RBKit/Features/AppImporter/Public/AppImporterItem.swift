@@ -16,7 +16,9 @@ public struct AppImporterItem: Hashable, Identifiable, Sendable, Codable {
 
   public let bundleID: String
 
-  public var id: String { bundleID }
+  public var id: String {
+    bundleID
+  }
 
   public var title: String {
     resolvedApplicationURL?.deletingPathExtension().lastPathComponent ?? bundleID

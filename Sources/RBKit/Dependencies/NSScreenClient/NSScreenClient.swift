@@ -9,7 +9,7 @@ public struct NSScreenClient: Sendable {
   public static let liveValue = NSScreenClient(
     main: { NSScreen.main.map(NSScreenValue.init) },
     deepest: { NSScreen.deepest.map(NSScreenValue.init) },
-    screens: { NSScreen.screens.map(NSScreenValue.init) }
+    screens: { NSScreen.screens.map(NSScreenValue.init) },
   )
 
   public static let testValue = NSScreenClient()

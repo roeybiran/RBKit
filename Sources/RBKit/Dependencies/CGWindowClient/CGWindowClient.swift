@@ -13,7 +13,7 @@ public struct CGWindowClient: Sendable {
 
   public func list(
     options: CGWindowListOption = [.excludeDesktopElements],
-    referenceWindow: CGWindowID = kCGNullWindowID
+    referenceWindow: CGWindowID = kCGNullWindowID,
   ) -> [CGWindowValue] {
     let info = copyWindowInfo(options: options, referenceWindow: referenceWindow) as? [[CFString: Any]]
     return info?.compactMap(CGWindowValue.init) ?? []
@@ -26,7 +26,7 @@ extension CGWindowClient: DependencyKey {
   public static let liveValue = Self(
     copyWindowInfo: CGWindowListCopyWindowInfo,
     preflightScreenCaptureAccess: CGPreflightScreenCaptureAccess,
-    requestScreenCaptureAccess: CGRequestScreenCaptureAccess
+    requestScreenCaptureAccess: CGRequestScreenCaptureAccess,
   )
 
   public static let testValue = Self()

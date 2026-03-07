@@ -1,11 +1,10 @@
 import AppKit.NSTextAttachment
 
 extension Character {
-  public static let attachment: Self = {
+  public static let attachment =
     if let character = Unicode.Scalar(NSTextAttachment.character) {
-      return Self(character)
+      Self(character)
     } else {
-      return Self("⍰")
+      Self("⍰")
     }
-  }()
 }

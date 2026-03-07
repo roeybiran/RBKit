@@ -22,8 +22,9 @@ public struct FrecencyCollection<T: FrecencyID> {
     items = items.merging([entry: FrecencyItem(id: entry, visits: [timestamp], count: 1)]) {
       current, new in
       FrecencyItem(
-        id: new.id, visits: (current.visits + new.visits).suffix(.frecencySamplingLimit),
-        count: current.count + new.count
+        id: new.id,
+        visits: (current.visits + new.visits).suffix(.frecencySamplingLimit),
+        count: current.count + new.count,
       )
     }
     // if let query {
@@ -47,8 +48,14 @@ extension FrecencyCollection {
   }
 }
 
+// MARK: Hashable
+
 extension FrecencyCollection: Hashable { }
 
+// MARK: Codable
+
 extension FrecencyCollection: Codable { }
+
+// MARK: Sendable
 
 extension FrecencyCollection: Sendable { }

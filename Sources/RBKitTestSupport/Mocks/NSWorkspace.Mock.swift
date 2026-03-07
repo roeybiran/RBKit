@@ -11,7 +11,7 @@ extension NSWorkspace {
       _notificationCenter: NotificationCenter = NotificationCenter.default,
       _fileLabels: [String] = [],
       _fileLabelColors: [NSColor] = [],
-      _menuBarOwningApplication: NSRunningApplication? = nil
+      _menuBarOwningApplication: NSRunningApplication? = nil,
     ) {
       self._frontmostApplication = _frontmostApplication
       self._runningApplications = _runningApplications
@@ -54,7 +54,7 @@ extension NSWorkspace {
       _ observer: NSObject,
       forKeyPath keyPath: String,
       options: NSKeyValueObservingOptions = [],
-      context: UnsafeMutableRawPointer?
+      context: UnsafeMutableRawPointer?,
     ) {
       _addObserver(observer, keyPath, options, context)
       super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
@@ -66,7 +66,7 @@ extension NSWorkspace {
       _ observer: NSObject,
       _ keyPath: String,
       _ options: NSKeyValueObservingOptions,
-      _ context: UnsafeMutableRawPointer?
+      _ context: UnsafeMutableRawPointer?,
     ) -> Void = { _, _, _, _ in }
 
     public var _notificationCenter = NotificationCenter.default

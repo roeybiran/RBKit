@@ -5,10 +5,10 @@ import Testing
 
 @Suite
 struct `Double Tests` {
-    @Test
-    func `radians, should convert degrees to radians`() async throws {
-        let radians = Double(360).radians
+  @Test
+  func `radians, should convert degrees to radians`() {
+    let radians = Double(360).radians
 
-        #expect(radians == 2 * .pi)
-    }
+    #expect(radians == 2 * .pi)
+  }
 }

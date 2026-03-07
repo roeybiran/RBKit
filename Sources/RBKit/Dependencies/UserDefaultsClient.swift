@@ -71,7 +71,7 @@ extension UserDefaultsClient: DependencyKey {
     observeString: { keyValueStream(observed: suite, keyPath: $0) },
     observeBool: { keyValueStream(observed: suite, keyPath: $0) },
     observeInt: { keyValueStream(observed: suite, keyPath: $0) },
-    observeDouble: { keyValueStream(observed: suite, keyPath: $0) }
+    observeDouble: { keyValueStream(observed: suite, keyPath: $0) },
   )
 
   public static let testValue = Self()

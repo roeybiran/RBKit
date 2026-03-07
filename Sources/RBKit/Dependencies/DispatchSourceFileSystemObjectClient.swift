@@ -17,13 +17,13 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
   public var make: @Sendable (_ fileDescriptor: Int32, _ eventMask: DispatchSource.FileSystemEvent, _ queue: DispatchQueue?)
     -> any DispatchSourceFileSystemObject = { _, _, _ in DispatchSource.makeFileSystemObjectSource(
       fileDescriptor: 0,
-      eventMask: []
+      eventMask: [],
     ) }
   public var setEventHandler: @Sendable (
     _ object: any DispatchSourceFileSystemObject,
     _ qos: DispatchQoS,
     _ flags: DispatchWorkItemFlags,
-    _ handler: DispatchSource.DispatchSourceHandler?
+    _ handler: DispatchSource.DispatchSourceHandler?,
   ) -> Void = { _, _, _, _ in }
   public var resume: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
   public var cancel: @Sendable (_ object: any DispatchSourceFileSystemObject) -> Void = { _ in }
@@ -40,7 +40,7 @@ extension DispatchSourceFileSystemObjectClient: DependencyKey {
     resume: { $0.resume() },
     cancel: { $0.cancel() },
     data: { $0.data },
-    handle: { $0.handle }
+    handle: { $0.handle },
   )
   public static let testValue = Self()
 }

@@ -6,14 +6,14 @@ import Testing
 @MainActor
 @Suite
 struct `NSObject Tests` {
-    @Test
-    func `set, with keyPath, should update value`() async throws {
-        let view = NSView()
+  @Test
+  func `set, with keyPath, should update value`() {
+    let view = NSView()
 
-        #expect(view.identifier == nil)
+    #expect(view.identifier == nil)
 
-        view.set(\.identifier, to: .init("foo"))
+    view.set(\.identifier, to: .init("foo"))
 
-        #expect(view.identifier == .init("foo"))
-    }
+    #expect(view.identifier == .init("foo"))
+  }
 }

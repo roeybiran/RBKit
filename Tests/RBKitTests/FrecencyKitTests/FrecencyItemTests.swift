@@ -6,12 +6,12 @@ import Testing
 struct FrecencyItemTests {
 
   @Test
-  func item_init() throws {
+  func item_init() {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
       visits: dates,
-      count: 4
+      count: 4,
     )
     #expect("a" == a.id)
     #expect(4 == a.count)
@@ -20,11 +20,11 @@ struct FrecencyItemTests {
   }
 
   @Test
-  func item_init2() throws {
+  func item_init2() {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
-      visits: dates
+      visits: dates,
     )
     #expect("a" == a.id)
     #expect(2 == a.count)
@@ -33,10 +33,10 @@ struct FrecencyItemTests {
   }
 
   @Test
-  func debugDescription() throws {
+  func debugDescription() {
     let a = FrecencyItem<String>(
       id: "a",
-      visits: [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
+      visits: [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)],
     )
     #expect(
       a.debugDescription

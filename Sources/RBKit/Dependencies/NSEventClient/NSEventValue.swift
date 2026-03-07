@@ -110,7 +110,7 @@ public struct NSEventValue {
       character: "\(NSEvent.SpecialKey.upArrow.unicodeScalar)",
       code: kVK_UpArrow,
       modifierFlags: modifierFlags,
-      specialKey: .upArrow
+      specialKey: .upArrow,
     )
   }
 
@@ -119,7 +119,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.rightArrow.character,
       code: kVK_RightArrow,
       modifierFlags: modifierFlags,
-      specialKey: .rightArrow
+      specialKey: .rightArrow,
     )
   }
 
@@ -128,7 +128,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.downArrow.character,
       code: kVK_DownArrow,
       modifierFlags: modifierFlags,
-      specialKey: .downArrow
+      specialKey: .downArrow,
     )
   }
 
@@ -137,7 +137,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.leftArrow.character,
       code: kVK_LeftArrow,
       modifierFlags: modifierFlags,
-      specialKey: .leftArrow
+      specialKey: .leftArrow,
     )
   }
 
@@ -146,7 +146,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.pageUp.character,
       code: kVK_PageUp,
       modifierFlags: .init(rawValue: 0x800100),
-      specialKey: .pageUp
+      specialKey: .pageUp,
     )
   }
 
@@ -155,7 +155,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.pageDown.character,
       code: kVK_PageDown,
       modifierFlags: .init(rawValue: 0x800100),
-      specialKey: .pageDown
+      specialKey: .pageDown,
     )
   }
 
@@ -164,7 +164,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.home.character,
       code: kVK_Home,
       modifierFlags: [],
-      specialKey: .home
+      specialKey: .home,
     )
   }
 
@@ -173,7 +173,7 @@ public struct NSEventValue {
       character: NSEvent.SpecialKey.end.character,
       code: kVK_End,
       modifierFlags: [],
-      specialKey: .end
+      specialKey: .end,
     )
   }
 
@@ -183,7 +183,7 @@ public struct NSEventValue {
     character: String,
     code: Int,
     modifierFlags: NSEvent.ModifierFlags,
-    specialKey: NSEvent.SpecialKey? = nil
+    specialKey: NSEvent.SpecialKey? = nil,
   ) -> Self {
     Self(
       type: .keyDown,
@@ -195,7 +195,7 @@ public struct NSEventValue {
       charactersIgnoringModifiers: character,
       keyCode: UInt16(code),
       specialKey: specialKey,
-      isARepeat: false
+      isARepeat: false,
     )
   }
 
@@ -230,7 +230,7 @@ extension NSEventValue {
   public static func mock(
     _ keyCode: UInt16?,
     _ modifierFlags: NSEvent.ModifierFlags = [],
-    _ type: NSEvent.EventType = .keyDown
+    _ type: NSEvent.EventType = .keyDown,
   ) -> Self {
     Self(
       type: type,
@@ -242,7 +242,7 @@ extension NSEventValue {
       charactersIgnoringModifiers: nil,
       keyCode: keyCode ?? 0,
       specialKey: nil,
-      isARepeat: false
+      isARepeat: false,
     )
   }
 }

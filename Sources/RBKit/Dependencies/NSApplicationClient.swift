@@ -51,7 +51,7 @@ extension NSApplicationClient: DependencyKey {
     runModal: NSApplication.shared.runModal,
     stopModal: NSApplication.shared.stopModal,
     activationPolicy: NSApplication.shared.activationPolicy,
-    setActivationPolicy: NSApplication.shared.setActivationPolicy
+    setActivationPolicy: NSApplication.shared.setActivationPolicy,
   )
 
   public static let testValue = Self()

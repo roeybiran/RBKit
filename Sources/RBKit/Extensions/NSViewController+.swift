@@ -7,7 +7,7 @@ extension NSViewController {
     asPopoverRelativeTo positioningRect: NSRect,
     of positioningView: NSView,
     preferredEdge: NSRectEdge,
-    behavior: NSPopover.Behavior
+    behavior: NSPopover.Behavior,
   ) {
     if let presentor = viewController.presentingViewController {
       presentor.dismiss(viewController)
@@ -17,7 +17,7 @@ extension NSViewController {
         asPopoverRelativeTo: positioningRect,
         of: positioningView,
         preferredEdge: preferredEdge,
-        behavior: behavior
+        behavior: behavior,
       )
     }
   }

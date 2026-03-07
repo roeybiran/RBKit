@@ -15,7 +15,7 @@ public struct CGEventClientLive: CGEventClientProtocol {
     place: CGEventTapPlacement,
     options: CGEventTapOptions,
     eventsOfInterest: CGEventMask,
-    userInfo: UnsafeMutableRawPointer?
+    userInfo: UnsafeMutableRawPointer?,
   ) -> CFMachPort? {
     CGEvent.tapCreate(
       tap: tap,
@@ -27,7 +27,7 @@ public struct CGEventClientLive: CGEventClientProtocol {
         let box = Unmanaged<BoxedEventHandler>.fromOpaque(refcon).takeUnretainedValue()
         return box.eventHandler(proxy, type, event)
       },
-      userInfo: userInfo
+      userInfo: userInfo,
     )
   }
 

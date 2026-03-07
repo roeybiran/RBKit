@@ -20,7 +20,7 @@ struct ContentView: View {
           1,
           nil,
           nil,
-          .fileEvents
+          .fileEvents,
         ) {
           for e in event {
             print(e.path, e.flag)

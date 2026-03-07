@@ -44,7 +44,10 @@ extension NSEvent.ModifierFlags {
 
   public var hotkeyApplicable: Self {
     intersection(.deviceIndependentFlagsMask).subtracting([
-      .capsLock, .numericPad, .help, .function,
+      .capsLock,
+      .numericPad,
+      .help,
+      .function,
     ])
   }
 }

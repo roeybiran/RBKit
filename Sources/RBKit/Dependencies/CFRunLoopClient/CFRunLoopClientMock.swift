@@ -13,13 +13,13 @@ public final class CFRunLoopClientMock: CFRunLoopClientProtocol {
   public var _add: (
     _ source: RunLoopSourceMock,
     _ runLoop: CFRunLoop,
-    _ mode: CFRunLoopMode
+    _ mode: CFRunLoopMode,
   ) -> Void = { _, _, _ in }
 
   public var _remove: (
     _ source: RunLoopSourceMock,
     _ runLoop: CFRunLoop,
-    _ mode: CFRunLoopMode
+    _ mode: CFRunLoopMode,
   ) -> Void = { _, _, _ in }
 
   public func add(source: RunLoopSourceMock, to runLoop: CFRunLoop, mode: CFRunLoopMode) {

@@ -12,7 +12,7 @@ struct SysctlClient: Sendable {
     _: UnsafeMutableRawPointer?,
     _ oldlenp: UnsafeMutablePointer<Int>?,
     _: UnsafeMutableRawPointer?,
-    _ newlen: Int
+    _ newlen: Int,
   ) -> Int32 = { _, _, _, _, _, _ in -1 }
 
   func isZombie(pid: pid_t) -> Bool {

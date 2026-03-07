@@ -15,7 +15,7 @@ public final class CGEventClientMock: CGEventClientProtocol {
     _ place: CGEventTapPlacement,
     _ options: CGEventTapOptions,
     _ eventsOfInterest: CGEventMask,
-    _ userInfo: UnsafeMutableRawPointer?
+    _ userInfo: UnsafeMutableRawPointer?,
   ) -> MachPortMock? = { _, _, _, _, _ in nil }
 
   public var _getEnabled: (_ tap: MachPortMock) -> Bool = { _ in false }
@@ -31,7 +31,7 @@ public final class CGEventClientMock: CGEventClientProtocol {
     place: CGEventTapPlacement,
     options: CGEventTapOptions,
     eventsOfInterest: CGEventMask,
-    userInfo: UnsafeMutableRawPointer?
+    userInfo: UnsafeMutableRawPointer?,
   ) -> MachPortMock? {
     _createEventTap(tap, place, options, eventsOfInterest, userInfo)
   }

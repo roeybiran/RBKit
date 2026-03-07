@@ -13,7 +13,7 @@ public struct EventTapManagerClient: Sendable {
     _ id: ID,
     _ events: [CGEventType],
     _ place: CGEventTapPlacement,
-    _ callback: @escaping Callback
+    _ callback: @escaping Callback,
   ) -> Void
   public var stop: @Sendable @MainActor (_ id: ID) -> Void
   public var getIsEnabled: @Sendable @MainActor (_ id: ID) -> Bool = { _ in false }
@@ -27,13 +27,13 @@ extension EventTapManagerClient: DependencyKey {
     let instance = EventTapManager(
       cgEventClient: CGEventClientLive(),
       cfMachPortClient: CFMachPortClientLive(),
-      cfRunLoopClient: CFRunLoopClientLive()
+      cfRunLoopClient: CFRunLoopClientLive(),
     )
     return Self(
       start: { instance.start(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
       stop: { instance.stop(id: $0) },
       getIsEnabled: { instance.getIsEnabled(id: $0) },
-      setIsEnabled: { instance.setIsEnabled(id: $0, $1) }
+      setIsEnabled: { instance.setIsEnabled(id: $0, $1) },
     )
   }()
 

@@ -6,7 +6,7 @@ import Testing
 struct FrecencyCollectionTests {
 
   @Test
-  func initWithDictionary() throws {
+  func initWithDictionary() {
     let now = Date.now
     let items = ["a": FrecencyItem(id: "a", visits: [now])]
     let sut = FrecencyCollection(items: items)
@@ -14,7 +14,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func initWithArray() throws {
+  func initWithArray() {
     let now = Date.now
     let item = FrecencyItem(id: "a", visits: [now])
     let sut = FrecencyCollection(items: [item])
@@ -22,7 +22,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withNewItem() throws {
+  func add_withNewItem() {
     var sut = FrecencyCollection<String>()
     let item = "A"
     sut.add(entry: item)
@@ -30,7 +30,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withExistingItem() throws {
+  func add_withExistingItem() {
     let date = Date()
     let existingItem = FrecencyItem(id: "A", visits: [date])
     var sut = FrecencyCollection<String>(items: ["A": existingItem])
@@ -40,7 +40,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withExistingItemHaving10Dates() throws {
+  func add_withExistingItemHaving10Dates() {
     let dates: [Date] = Array(repeating: 0, count: 10)
       .enumerated()
       .map { idx, _ in .distantPast.addingTimeInterval(Double(idx)) }
@@ -52,12 +52,12 @@ struct FrecencyCollectionTests {
     sut.add(entry: item, timestamp: now)
     #expect(sut.score(for: item) == 110)
     #expect(sut.items.count == 1)
-    #expect(sut.items.values.first!.visits.count == 10)
-    #expect(sut.items.values.first!.visits.last! == now)
+    #expect(sut.items.values.first?.visits.count == 10)
+    #expect(sut.items.values.first?.visits.last == now)
   }
 
   @Test
-  func score_withNonExistingItem_shouldReturn0() throws {
+  func score_withNonExistingItem_shouldReturn0() {
     let sut = FrecencyCollection<String>()
     let item = "A"
     #expect(sut.score(for: item) == 0)
@@ -68,7 +68,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .day, value: -90, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .day, value: -90, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 0)
   }
@@ -78,7 +78,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .month, value: -1, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .month, value: -1, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 10)
   }
@@ -88,7 +88,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .weekOfYear, value: -1, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 20)
   }
@@ -98,7 +98,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .day, value: -3, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .day, value: -3, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 40)
   }
@@ -108,7 +108,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .day, value: -1, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 60)
   }
@@ -118,7 +118,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .hour, value: -4, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .hour, value: -4, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 80)
   }
@@ -128,7 +128,7 @@ struct FrecencyCollectionTests {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
-    let date = Calendar.current.date(byAdding: .hour, value: -3, to: now)!
+    let date = try #require(Calendar.current.date(byAdding: .hour, value: -3, to: now))
     sut.add(entry: item, timestamp: date)
     #expect(sut.score(for: item) == 100)
   }
@@ -142,7 +142,7 @@ struct FrecencyCollectionTests {
           visits: [
             Date(timeIntervalSince1970: 0),
             Date(timeIntervalSince1970: 1),
-          ]
+          ],
         )
       ]
     )
@@ -162,7 +162,7 @@ struct FrecencyCollectionTests {
           visits: [
             Date(timeIntervalSince1970: 0),
             Date(timeIntervalSince1970: 1),
-          ]
+          ],
         )
       ]
     )
@@ -170,7 +170,8 @@ struct FrecencyCollectionTests {
     let str =
       #"{"items":{"A":{"_reduced":false,"count":2,"visits":[-978307200,-978307199],"id":"A"}},"queries":{}}"#
     let decoded = try JSONDecoder().decode(
-      FrecencyCollection<String>.self, from: str.data(using: .utf8) ?? .init()
+      FrecencyCollection<String>.self,
+      from: str.data(using: .utf8) ?? .init(),
     )
 
     #expect(sut == decoded)

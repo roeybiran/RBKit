@@ -15,7 +15,7 @@ public final class CFMachPortClientMock: CFMachPortClientProtocol {
 
   public var _createRunLoopSource: (
     _ port: MachPortMock,
-    _ order: CFIndex
+    _ order: CFIndex,
   ) -> RunLoopSourceMock = { _, _ in RunLoopSourceMock(id: "mock") }
 
   public func invalidate(machPort: MachPortMock) {

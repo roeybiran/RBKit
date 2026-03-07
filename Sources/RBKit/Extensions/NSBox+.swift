@@ -12,7 +12,7 @@ extension NSBox {
         origin: .zero,
         size: axis == .horizontal
           ? .init(width: 96, height: 5)
-          : .init(width: 5, height: 96)
+          : .init(width: 5, height: 96),
       )
     )
     box.boxType = .separator

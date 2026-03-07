@@ -10,12 +10,12 @@ typealias TestFrecencyStore = FrecencyStore<String>
 
 struct TestError: Error { }
 
-// MARK: - FrecencyStoreTests
+// MARK: - `FrecencyStore Tests`
 
 @Suite
 struct `FrecencyStore Tests` {
   @Test
-  func getURL() async throws {
+  func getURL() {
     nonisolated(unsafe) var called_urls = false
     nonisolated(unsafe) var called_createDirectory = false
 
@@ -41,7 +41,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func getURL_with_bundleIdentifier_nil() async throws {
+  func getURL_with_bundleIdentifier_nil() {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -56,7 +56,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func getURL_with_createDirectory_failing() async throws {
+  func getURL_with_createDirectory_failing() {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -90,7 +90,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_withoutURL_shouldNoOp() async throws {
+  func load_withoutURL_shouldNoOp() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in fatalError("should not get here") }
     } operation: {
@@ -101,7 +101,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_with_readError_shouldThrow() async throws {
+  func load_with_readError_shouldThrow() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in throw TestError() }
     } operation: {
@@ -112,7 +112,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_with_invalidJson_shouldThrow() async throws {
+  func load_with_invalidJson_shouldThrow() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in "foo".data(using: .utf8)! }
     } operation: {
@@ -146,7 +146,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test(.disabled())
-  func save_withJSONEncodingError_shouldNoOp() async throws {
+  func save_withJSONEncodingError_shouldNoOp() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in }
     } operation: {
@@ -157,7 +157,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func save_withDiskWriteError_shouldThrow() async throws {
+  func save_withDiskWriteError_shouldThrow() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in throw TestError() }
     } operation: {
@@ -168,7 +168,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func save_withoutURL_shouldNoOp() async throws {
+  func save_withoutURL_shouldNoOp() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in fatalError("should not get here") }
     } operation: {
@@ -179,7 +179,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func add() async throws {
+  func add() {
     var sut = TestFrecencyStore(url: testURL)
 
     #expect(sut.score(for: "a") == 0)

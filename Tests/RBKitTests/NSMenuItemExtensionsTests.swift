@@ -24,8 +24,7 @@ struct `NSMenuItem standard menu Tests` {
 
   @Test
   func `init with empty builder, should create empty submenu`() throws {
-    let menuItem = NSMenuItem("Parent") {
-    }
+    let menuItem = NSMenuItem("Parent") { }
     let submenu = try #require(menuItem.submenu)
 
     #expect(submenu.title == "Parent")
@@ -33,9 +32,19 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
+  func `init with selector and target, should assign selector and target`() {
+    let selector = #selector(NSApplication.terminate(_:))
+    let target = NSApplication.shared
+    let menuItem = NSMenuItem("Terminate", selector: selector, target: target, keyEquivalent: "q")
+
+    #expect(menuItem.action == selector)
+    #expect(menuItem.target === target)
+    #expect(menuItem.keyEquivalent == "q")
+  }
+
+  @Test
   func `withChildren, should return self and replace submenu items`() throws {
-    let menuItem = NSMenuItem("Parent") {
-    }
+    let menuItem = NSMenuItem("Parent") { }
     let child1 = NSMenuItem("Child 1")
     let child2 = NSMenuItem("Child 2")
 
@@ -89,47 +98,76 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
-  func `helpMenu(app:), should include standard help item and set helpMenu`() throws {
+  func `helpMenu(app:selector:target:), should include configured help item and set helpMenu`() throws {
     let app = NSApplication.shared
     let originalHelpMenu = app.helpMenu
     defer { app.helpMenu = originalHelpMenu }
+    let selector = #selector(NSApplication.terminate(_:))
 
-    let menuItem = NSMenuItem.helpMenu(app: app)
+    let menuItem = NSMenuItem.helpMenu(
+      app: app,
+      selector: selector,
+      target: app,
+    )
     let submenu = try #require(menuItem.submenu)
+    let helpMenuItem = try #require(submenu.items.first)
 
     #expect(menuItem.title == "Help")
     #expect(submenu.items.count == 1)
-    #expect(submenu.items.first === NSMenuItem.help)
+    #expect(helpMenuItem.title == "\(String.appName) Help")
+    #expect(helpMenuItem.action == selector)
+    #expect(helpMenuItem.target === app)
     #expect(app.helpMenu === submenu)
   }
 
   @Test
-  func `settings(action:), should preserve metadata and apply provided action`() throws {
+  func `settings(action:target:), should preserve metadata and apply provided action and target`() {
     let action = #selector(NSApplication.terminate(_:))
-    let menuItem = NSMenuItem.settings(action: action)
+    let target = NSApplication.shared
+    let menuItem = NSMenuItem.settings(action: action, target: target)
 
     #expect(menuItem.title == "Settings…")
     #expect(menuItem.keyEquivalent == ",")
     #expect(menuItem.action == action)
+    #expect(menuItem.target === target)
   }
 
   @Test
-  func `applicationMenu(settingsAction:), should apply settings action`() throws {
+  func `applicationMenu(settingsAction:settingsTarget:), should apply settings action and target`() throws {
     let action = #selector(NSApplication.terminate(_:))
-    let menuItem = NSMenuItem.applicationMenu(settingsAction: action)
+    let target = NSApplication.shared
+    let menuItem = NSMenuItem.applicationMenu(
+      settingsAction: action,
+      settingsTarget: target,
+    )
     let submenu = try #require(menuItem.submenu)
     let settingsMenuItem = try #require(
       submenu.items.first(where: { $0.title == "Settings…" })
     )
 
     #expect(settingsMenuItem.action == action)
+    #expect(settingsMenuItem.target === target)
   }
 
   @Test
-  func `app-level standard items, should include default images`() throws {
+  func `about(selector:target:), should support custom selector and default selector`() {
+    let target = NSApplication.shared
+    let customSelector = #selector(NSApplication.terminate(_:))
+
+    let customMenuItem = NSMenuItem.about(selector: customSelector, target: target)
+    let defaultMenuItem = NSMenuItem.about(target: target)
+
+    #expect(customMenuItem.action == customSelector)
+    #expect(customMenuItem.target === target)
+    #expect(defaultMenuItem.action == #selector(NSApplication.orderFrontStandardAboutPanel(_:)))
+    #expect(defaultMenuItem.target === target)
+  }
+
+  @Test
+  func `app-level standard items, should include default images`() {
     #expect(NSMenuItem.about.image != nil)
-    #expect(NSMenuItem.settings(action: nil).image != nil)
-    #expect(NSMenuItem.help.image != nil)
+    #expect(NSMenuItem.settings(action: nil, target: nil).image != nil)
+    #expect(NSMenuItem.help().image != nil)
     #expect(NSMenuItem.quit.image != nil)
   }
 
@@ -139,13 +177,26 @@ struct `NSMenuItem standard menu Tests` {
     #expect(NSMenuItem.close.action == #selector(NSWindow.performClose(_:)))
     #expect(NSMenuItem.close.keyEquivalent == "w")
 
+    #expect(NSMenuItem.save.title == "Save…")
+    #expect(NSMenuItem.revertToSaved.keyEquivalent == "r")
+    #expect(NSMenuItem.find.action == #selector(NSTextView.performFindPanelAction(_:)))
+    #expect(NSMenuItem.findAndReplace.action == #selector(NSTextView.performFindPanelAction(_:)))
+    #expect(NSMenuItem.findNext.action == #selector(NSTextView.performFindPanelAction(_:)))
+    #expect(NSMenuItem.findPrevious.action == #selector(NSTextView.performFindPanelAction(_:)))
+    #expect(NSMenuItem.useSelectionForFind.action == #selector(NSTextView.performFindPanelAction(_:)))
+    let writingDirectionAction = try #require(NSMenuItem.writingDirectionMenu.action)
+    #expect(NSStringFromSelector(writingDirectionAction) == "submenuAction:")
+
     #expect(NSMenuItem.findNext.tag == NSTextFinder.Action.nextMatch.rawValue)
-    #expect(NSMenuItem.bold.tag == 2)
+    #expect(NSMenuItem.bold.tag == Int(NSFontTraitMask.boldFontMask.rawValue))
+    #expect(NSMenuItem.italic.tag == Int(NSFontTraitMask.italicFontMask.rawValue))
+    #expect(NSMenuItem.bigger.tag == Int(NSFontAction.sizeUpFontAction.rawValue))
+    #expect(NSMenuItem.smaller.tag == Int(NSFontAction.sizeDownFontAction.rawValue))
     #expect(NSMenuItem.showToolbar.keyEquivalentModifierMask == [.option, .command])
   }
 
   @Test
-  func `standardMenuBar(settingsAction:), should preserve top level order and settings action`() throws {
+  func `standardMenuBar(settingsAction:settingsTarget:), should preserve top level order and settings action`() throws {
     let app = NSApplication.shared
     let originalServicesMenu = app.servicesMenu
     let originalWindowsMenu = app.windowsMenu
@@ -157,7 +208,11 @@ struct `NSMenuItem standard menu Tests` {
     }
 
     let settingsAction = #selector(NSApplication.terminate(_:))
-    let menuBar = NSMenu.standardMenuBar(settingsAction: settingsAction)
+    let settingsTarget = NSApplication.shared
+    let menuBar = NSMenu.standardMenuBar(
+      settingsAction: settingsAction,
+      settingsTarget: settingsTarget,
+    )
     let titles = menuBar.items.map(\.title)
 
     #expect(titles == [
@@ -175,5 +230,6 @@ struct `NSMenuItem standard menu Tests` {
       appMenu.items.first(where: { $0.title == "Settings…" })
     )
     #expect(settingsMenuItem.action == settingsAction)
+    #expect(settingsMenuItem.target === settingsTarget)
   }
 }

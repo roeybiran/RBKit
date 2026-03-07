@@ -10,11 +10,11 @@ let package = Package(
     // Products define the executables and libraries a package produces, and make them visible to other packages.
     .library(
       name: "RBKit",
-      targets: ["RBKit"]
+      targets: ["RBKit"],
     ),
     .library(
       name: "RBKitTestSupport",
-      targets: ["RBKitTestSupport"]
+      targets: ["RBKitTestSupport"],
     ),
   ],
   dependencies: [
@@ -34,7 +34,7 @@ let package = Package(
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency"),
         .enableUpcomingFeature("InferSendableFromCaptures"),
-      ]
+      ],
     ),
     .target(
       name: "RBKitTestSupport"
@@ -44,7 +44,7 @@ let package = Package(
       dependencies: [
         "RBKit",
         "RBKitTestSupport",
-      ]
+      ],
     ),
-  ]
+  ],
 )

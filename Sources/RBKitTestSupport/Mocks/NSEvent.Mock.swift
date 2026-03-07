@@ -13,81 +13,266 @@ extension NSEvent {
       _isSwipeTrackingFromScrollEventsEnabled
     }
 
-    override open class var mouseLocation: NSPoint { _mouseLocation }
-    override open class var modifierFlags: NSEvent.ModifierFlags { _modifierFlags }
-    override open class var pressedMouseButtons: Int { _pressedMouseButtons }
-    override open class var doubleClickInterval: TimeInterval { _doubleClickInterval }
-    override open class var keyRepeatDelay: TimeInterval { _keyRepeatDelay }
-    override open class var keyRepeatInterval: TimeInterval { _keyRepeatInterval }
+    override open class var mouseLocation: NSPoint {
+      _mouseLocation
+    }
 
-    override open var type: NSEvent.EventType { _type }
-    override open var modifierFlags: NSEvent.ModifierFlags { _modifierFlags }
-    override open var timestamp: TimeInterval { _timestamp }
-    weak override open var window: NSWindow? { _window }
-    override open var windowNumber: Int { _windowNumber }
-    override open var context: NSGraphicsContext? { _context }
-    override open var clickCount: Int { _clickCount }
-    override open var buttonNumber: Int { _buttonNumber }
-    override open var eventNumber: Int { _eventNumber }
-    override open var pressure: Float { _pressure }
-    override open var locationInWindow: NSPoint { _locationInWindow }
-    override open var deltaX: CGFloat { _deltaX }
-    override open var deltaY: CGFloat { _deltaY }
-    override open var deltaZ: CGFloat { _deltaZ }
-    override open var hasPreciseScrollingDeltas: Bool { _hasPreciseScrollingDeltas }
-    override open var scrollingDeltaX: CGFloat { _scrollingDeltaX }
-    override open var scrollingDeltaY: CGFloat { _scrollingDeltaY }
-    override open var momentumPhase: NSEvent.Phase { _momentumPhase }
-    override open var isDirectionInvertedFromDevice: Bool { _isDirectionInvertedFromDevice }
-    override open var characters: String? { _characters }
-    override open var charactersIgnoringModifiers: String? { _charactersIgnoringModifiers }
-    override open var isARepeat: Bool { _isARepeat }
-    override open var keyCode: UInt16 { _keyCode }
-    override open var trackingNumber: Int { _trackingNumber }
-    override open var userData: UnsafeMutableRawPointer? { _userData }
-    override open var trackingArea: NSTrackingArea? { _trackingArea }
-    override open var subtype: NSEvent.EventSubtype { _subtype }
-    override open var data1: Int { _data1 }
-    override open var data2: Int { _data2 }
-    override open var cgEvent: CGEvent? { _cgEvent }
+    override open class var modifierFlags: NSEvent.ModifierFlags {
+      _modifierFlags
+    }
+
+    override open class var pressedMouseButtons: Int {
+      _pressedMouseButtons
+    }
+
+    override open class var doubleClickInterval: TimeInterval {
+      _doubleClickInterval
+    }
+
+    override open class var keyRepeatDelay: TimeInterval {
+      _keyRepeatDelay
+    }
+
+    override open class var keyRepeatInterval: TimeInterval {
+      _keyRepeatInterval
+    }
+
+    override open var type: NSEvent.EventType {
+      _type
+    }
+
+    override open var modifierFlags: NSEvent.ModifierFlags {
+      _modifierFlags
+    }
+
+    override open var timestamp: TimeInterval {
+      _timestamp
+    }
+
+    weak override open var window: NSWindow? {
+      _window
+    }
+
+    override open var windowNumber: Int {
+      _windowNumber
+    }
+
+    override open var context: NSGraphicsContext? {
+      _context
+    }
+
+    override open var clickCount: Int {
+      _clickCount
+    }
+
+    override open var buttonNumber: Int {
+      _buttonNumber
+    }
+
+    override open var eventNumber: Int {
+      _eventNumber
+    }
+
+    override open var pressure: Float {
+      _pressure
+    }
+
+    override open var locationInWindow: NSPoint {
+      _locationInWindow
+    }
+
+    override open var deltaX: CGFloat {
+      _deltaX
+    }
+
+    override open var deltaY: CGFloat {
+      _deltaY
+    }
+
+    override open var deltaZ: CGFloat {
+      _deltaZ
+    }
+
+    override open var hasPreciseScrollingDeltas: Bool {
+      _hasPreciseScrollingDeltas
+    }
+
+    override open var scrollingDeltaX: CGFloat {
+      _scrollingDeltaX
+    }
+
+    override open var scrollingDeltaY: CGFloat {
+      _scrollingDeltaY
+    }
+
+    override open var momentumPhase: NSEvent.Phase {
+      _momentumPhase
+    }
+
+    override open var isDirectionInvertedFromDevice: Bool {
+      _isDirectionInvertedFromDevice
+    }
+
+    override open var characters: String? {
+      _characters
+    }
+
+    override open var charactersIgnoringModifiers: String? {
+      _charactersIgnoringModifiers
+    }
+
+    override open var isARepeat: Bool {
+      _isARepeat
+    }
+
+    override open var keyCode: UInt16 {
+      _keyCode
+    }
+
+    override open var trackingNumber: Int {
+      _trackingNumber
+    }
+
+    override open var userData: UnsafeMutableRawPointer? {
+      _userData
+    }
+
+    override open var trackingArea: NSTrackingArea? {
+      _trackingArea
+    }
+
+    override open var subtype: NSEvent.EventSubtype {
+      _subtype
+    }
+
+    override open var data1: Int {
+      _data1
+    }
+
+    override open var data2: Int {
+      _data2
+    }
+
+    override open var cgEvent: CGEvent? {
+      _cgEvent
+    }
+
     // override open class var isMouseCoalescingEnabled: Bool { _isMouseCoalescingEnabled }
 
-    override open var magnification: CGFloat { _magnification }
-    override open var deviceID: Int { _deviceID }
-    override open var rotation: Float { _rotation }
-    override open var absoluteX: Int { _absoluteX }
-    override open var absoluteY: Int { _absoluteY }
-    override open var absoluteZ: Int { _absoluteZ }
-    override open var buttonMask: NSEvent.ButtonMask { _buttonMask }
-    override open var tilt: NSPoint { _tilt }
-    override open var tangentialPressure: Float { _tangentialPressure }
-    override open var vendorDefined: Any { _vendorDefined }
-    override open var vendorID: Int { _vendorID }
-    override open var tabletID: Int { _tabletID }
-    override open var pointingDeviceID: Int { _pointingDeviceID }
-    override open var systemTabletID: Int { _systemTabletID }
-    override open var vendorPointingDeviceType: Int { _vendorPointingDeviceType }
-    override open var pointingDeviceSerialNumber: Int { _pointingDeviceSerialNumber }
-    override open var uniqueID: UInt64 { _uniqueID }
-    override open var capabilityMask: Int { _capabilityMask }
-    override open var pointingDeviceType: NSEvent.PointingDeviceType { _pointingDeviceType }
-    override open var isEnteringProximity: Bool { _isEnteringProximity }
-    override open var phase: NSEvent.Phase { _phase }
-    override open var stage: Int { _stage }
-    override open var stageTransition: CGFloat { _stageTransition }
-    override open var associatedEventsMask: NSEvent.EventTypeMask { _associatedEventsMask }
-    override open var pressureBehavior: NSEvent.PressureBehavior { _pressureBehavior }
+    override open var magnification: CGFloat {
+      _magnification
+    }
+
+    override open var deviceID: Int {
+      _deviceID
+    }
+
+    override open var rotation: Float {
+      _rotation
+    }
+
+    override open var absoluteX: Int {
+      _absoluteX
+    }
+
+    override open var absoluteY: Int {
+      _absoluteY
+    }
+
+    override open var absoluteZ: Int {
+      _absoluteZ
+    }
+
+    override open var buttonMask: NSEvent.ButtonMask {
+      _buttonMask
+    }
+
+    override open var tilt: NSPoint {
+      _tilt
+    }
+
+    override open var tangentialPressure: Float {
+      _tangentialPressure
+    }
+
+    override open var vendorDefined: Any {
+      _vendorDefined
+    }
+
+    override open var vendorID: Int {
+      _vendorID
+    }
+
+    override open var tabletID: Int {
+      _tabletID
+    }
+
+    override open var pointingDeviceID: Int {
+      _pointingDeviceID
+    }
+
+    override open var systemTabletID: Int {
+      _systemTabletID
+    }
+
+    override open var vendorPointingDeviceType: Int {
+      _vendorPointingDeviceType
+    }
+
+    override open var pointingDeviceSerialNumber: Int {
+      _pointingDeviceSerialNumber
+    }
+
+    override open var uniqueID: UInt64 {
+      _uniqueID
+    }
+
+    override open var capabilityMask: Int {
+      _capabilityMask
+    }
+
+    override open var pointingDeviceType: NSEvent.PointingDeviceType {
+      _pointingDeviceType
+    }
+
+    override open var isEnteringProximity: Bool {
+      _isEnteringProximity
+    }
+
+    override open var phase: NSEvent.Phase {
+      _phase
+    }
+
+    override open var stage: Int {
+      _stage
+    }
+
+    override open var stageTransition: CGFloat {
+      _stageTransition
+    }
+
+    override open var associatedEventsMask: NSEvent.EventTypeMask {
+      _associatedEventsMask
+    }
+
+    override open var pressureBehavior: NSEvent.PressureBehavior {
+      _pressureBehavior
+    }
 
     override open class func startPeriodicEvents(
-      afterDelay delay: TimeInterval, withPeriod period: TimeInterval
+      afterDelay delay: TimeInterval,
+      withPeriod period: TimeInterval,
     ) {
       _startPeriodicEvents(
         delay,
-        period
+        period,
       )
     }
 
-    override open class func stopPeriodicEvents() { _stopPeriodicEvents() }
+    override open class func stopPeriodicEvents() {
+      _stopPeriodicEvents()
+    }
+
     override open class func mouseEvent(
       with type: NSEvent.EventType,
       location: NSPoint,
@@ -97,7 +282,7 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       eventNumber eNum: Int,
       clickCount cNum: Int,
-      pressure: Float
+      pressure: Float,
     ) -> NSEvent? {
       _mouseEvent(type, location, flags, time, wNum, unusedPassNil, eNum, cNum, pressure)
     }
@@ -112,7 +297,7 @@ extension NSEvent {
       characters keys: String,
       charactersIgnoringModifiers ukeys: String,
       isARepeat flag: Bool,
-      keyCode code: UInt16
+      keyCode code: UInt16,
     ) -> NSEvent? {
       _keyEvent(
         type,
@@ -124,7 +309,7 @@ extension NSEvent {
         keys,
         ukeys,
         flag,
-        code
+        code,
       )
     }
 
@@ -137,7 +322,7 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       eventNumber eNum: Int,
       trackingNumber tNum: Int,
-      userData data: UnsafeMutableRawPointer?
+      userData data: UnsafeMutableRawPointer?,
     ) -> NSEvent? {
       _enterExitEvent(
         type,
@@ -148,7 +333,7 @@ extension NSEvent {
         unusedPassNil,
         eNum,
         tNum,
-        data
+        data,
       )
     }
 
@@ -161,7 +346,7 @@ extension NSEvent {
       context unusedPassNil: NSGraphicsContext?,
       subtype: Int16,
       data1 d1: Int,
-      data2 d2: Int
+      data2 d2: Int,
     ) -> NSEvent? {
       _otherEvent(
         type,
@@ -172,36 +357,47 @@ extension NSEvent {
         unusedPassNil,
         subtype,
         d1,
-        d2
+        d2,
       )
     }
 
     override open class func addGlobalMonitorForEvents(
       matching mask: NSEvent.EventTypeMask,
-      handler block: @escaping (NSEvent) -> Void
+      handler block: @escaping (NSEvent) -> Void,
     ) -> Any? {
       _addGlobalMonitorForEvents(mask, block)
     }
 
     override open class func addLocalMonitorForEvents(
       matching mask: NSEvent.EventTypeMask,
-      handler block: @escaping (NSEvent) -> NSEvent?
+      handler block: @escaping (NSEvent) -> NSEvent?,
     ) -> Any? {
       _addLocalMonitorForEvents(mask, block)
     }
 
-    override open class func removeMonitor(_ eventMonitor: Any) { _removeMonitor(eventMonitor) }
+    override open class func removeMonitor(_ eventMonitor: Any) {
+      _removeMonitor(eventMonitor)
+    }
 
     override open func characters(
       byApplyingModifiers modifiers: NSEvent
         .ModifierFlags
-    ) -> String? { _charactersbyApplyingModifiers(modifiers) }
+    ) -> String? {
+      _charactersbyApplyingModifiers(modifiers)
+    }
+
     override open func touches(matching phase: NSTouch.Phase, in view: NSView?) -> Set<NSTouch> {
       _touches(phase, view)
     }
 
-    override open func allTouches() -> Set<NSTouch> { _allTouches() }
-    override open func touches(for view: NSView) -> Set<NSTouch> { _touchesForView(view) }
+    override open func allTouches() -> Set<NSTouch> {
+      _allTouches()
+    }
+
+    override open func touches(for view: NSView) -> Set<NSTouch> {
+      _touchesForView(view)
+    }
+
     override open func coalescedTouches(for touch: NSTouch) -> [NSTouch] {
       _coalescedTouches(touch)
     }
@@ -214,8 +410,8 @@ extension NSEvent {
         CGFloat,
         NSEvent.Phase,
         Bool,
-        UnsafeMutablePointer<ObjCBool>
-      ) -> Void
+        UnsafeMutablePointer<ObjCBool>,
+      ) -> Void,
     ) {
       _trackSwipeEvent(options, minDampenThreshold, maxDampenThreshold, trackingHandler)
     }
@@ -241,7 +437,7 @@ extension NSEvent {
         _ unusedPassNil: NSGraphicsContext?,
         _ eNum: Int,
         _ cNum: Int,
-        _ pressure: Float
+        _ pressure: Float,
       ) -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _keyEvent:
@@ -255,7 +451,7 @@ extension NSEvent {
         _ keys: String,
         _ ukeys: String,
         _ flag: Bool,
-        _ code: UInt16
+        _ code: UInt16,
       ) -> NSEvent? = {
         _,
           _,
@@ -280,7 +476,7 @@ extension NSEvent {
         _ unusedPassNil: NSGraphicsContext?,
         _ eNum: Int,
         _ tNum: Int,
-        _ data: UnsafeMutableRawPointer?
+        _ data: UnsafeMutableRawPointer?,
       ) -> NSEvent? = {
         _,
           _,
@@ -303,7 +499,7 @@ extension NSEvent {
         _ context: NSGraphicsContext?,
         _ subtype: Int16,
         _ d1: Int,
-        _ d2: Int
+        _ d2: Int,
       ) -> NSEvent? = {
         _,
           _,
@@ -331,13 +527,13 @@ extension NSEvent {
     static nonisolated(unsafe) public var _addGlobalMonitorForEvents:
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
-        _ block: @escaping (NSEvent) -> Void
+        _ block: @escaping (NSEvent) -> Void,
       ) -> Any? = { _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _addLocalMonitorForEvents:
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
-        _ block: @escaping (NSEvent) -> NSEvent?
+        _ block: @escaping (NSEvent) -> NSEvent?,
       ) -> Any? = { _, _ in fatalError() }
 
     static nonisolated(unsafe) public var _removeMonitor:
@@ -472,7 +668,7 @@ extension NSEvent {
         _ options: NSEvent.SwipeTrackingOptions,
         _ minDampenThreshold: CGFloat,
         _ maxDampenThreshold: CGFloat,
-        _ trackingHandler: (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void
+        _ trackingHandler: (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void,
       ) -> Void = { _, _, _, _ in fatalError() }
 
   }

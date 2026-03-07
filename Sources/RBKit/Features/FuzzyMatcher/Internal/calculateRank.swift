@@ -8,7 +8,7 @@ func calculateRank(lhs: String, rhs: String) -> Score {
 
   var matrix = [[Int]](
     repeating: [Int](repeating: 0, count: m),
-    count: n
+    count: n,
   )
 
   var first = [Int](repeating: m, count: n)
@@ -114,7 +114,7 @@ func calculateRank(lhs: String, rhs: String) -> Score {
 
   // MARK: - Calculate rank based on walk
 
-  let totalCapitals = capitals[0 ..< m].filter { $0 }.count
+  let totalCapitals = capitals[0 ..< m].count(where: { $0 })
   var score = 0.0
   let denom = Double(n) * (Double(n) + 1.0) + 1.0
 

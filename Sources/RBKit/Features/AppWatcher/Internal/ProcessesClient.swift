@@ -10,7 +10,7 @@ import DependenciesMacros
 struct ProcessesClient: Sendable {
   var getProcessInformation: @Sendable (
     _ psn: UnsafeMutablePointer<ProcessSerialNumber>,
-    _ info: UnsafeMutablePointer<ProcessInfoRec>
+    _ info: UnsafeMutablePointer<ProcessInfoRec>,
   ) -> OSErr = { _, _ in 0 }
   var getProcessForPID: @Sendable (_ pid: pid_t, _ psn: UnsafeMutablePointer<ProcessSerialNumber>) -> OSStatus = { _, _ in 0 }
 }

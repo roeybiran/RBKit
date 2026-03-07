@@ -23,27 +23,27 @@ public struct NSWorkspaceClient: Sendable {
   public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> NotificationCenter
     .Notifications = { NotificationCenter().notifications(
       named: $0,
-      object: $1
+      object: $1,
     ) }
 
   @DependencyEndpoint(method: "observe")
   public var NSRunningApplicationArrayObservation: @Sendable (
     KeyPath<NSWorkspace, [NSRunningApplication]>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void
+    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void,
   ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
     \.hash,
-    changeHandler: { _, _ in }
+    changeHandler: { _, _ in },
   ) }
 
   @DependencyEndpoint(method: "observe")
   public var optionalNSRunningApplicationObservation: @Sendable (
     KeyPath<NSWorkspace, NSRunningApplication?>,
     _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void
+    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void,
   ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
     \.hash,
-    changeHandler: { _, _ in }
+    changeHandler: { _, _ in },
   ) }
 }
 

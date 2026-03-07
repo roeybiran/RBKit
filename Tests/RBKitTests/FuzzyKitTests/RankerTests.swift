@@ -3,7 +3,7 @@ import XCTest
 
 final class FuzzyMatcherTests: XCTestCase {
 
-  func test_sanity() throws {
+  func test_sanity() {
     let score = "Sort By".rank(for: "sby")
 
     XCTAssertEqual(score.rank, 0.5233516483516484)
@@ -13,33 +13,33 @@ final class FuzzyMatcherTests: XCTestCase {
     XCTAssertEqual(score.ranges[1].upperBound, 7)
   }
 
-  func test_sanity_2() throws {
+  func test_sanity_2() {
     let result = ["OakTabBarView.mm", "OakTabBarView.h", "OakTextView.mm", "OakTextView.h"].map { $0.rank(for: "obtv") }
       .filter { $0.rank > 0 }
     XCTAssertEqual(result.count, 0)
   }
 
-  func test_subset() throws {
+  func test_subset() {
     let score = "ezdziztzozr".rank(for: "editor")
     XCTAssertGreaterThan(score.rank, 0)
   }
 
-  func test_not_subset() throws {
+  func test_not_subset() {
     let score = "oaktextview.mm".rank(for: "obtv")
     XCTAssertEqual(score.rank, 0)
   }
 
-  func test_prefix() throws {
+  func test_prefix() {
     let score = "oaktextview.mm".rank(for: "oak")
     XCTAssertGreaterThan(score.rank, 0)
   }
 
-  func test_suffix() throws {
+  func test_suffix() {
     let score = "oaktextview.mm".rank(for: "w.mm")
     XCTAssertGreaterThan(score.rank, 0)
   }
 
-  func test_filterLongerThanHaystack() throws {
+  func test_filterLongerThanHaystack() {
     let score = "obtv".rank(for: "oaktextview.mm")
     XCTAssertEqual(score.rank, 0)
     XCTAssertEqual(score.ranges, [])
@@ -50,28 +50,28 @@ final class FuzzyMatcherTests: XCTestCase {
   func test_capitalCoverage() {
     XCTAssertLessThan(
       "OTVStatusBar.mm".rank(for: "otv"),
-      "OakTextView.mm".rank(for: "otv")
+      "OakTextView.mm".rank(for: "otv"),
     )
   }
 
   func test_distanceToStart() {
     XCTAssertLessThan(
       "OakDocument.mm".rank(for: "doc"),
-      "document.cc".rank(for: "doc")
+      "document.cc".rank(for: "doc"),
     )
   }
 
   func test_substring() {
     XCTAssertLessThan(
       "Encrypt With Password — Text".rank(for: "paste"),
-      "Paste Selection Online — TextMate".rank(for: "paste")
+      "Paste Selection Online — TextMate".rank(for: "paste"),
     )
   }
 
   func test_fullMatch() {
     XCTAssertLessThan(
       "RMateServer.cc".rank(for: "rmate"),
-      "rmate".rank(for: "rmate")
+      "rmate".rank(for: "rmate"),
     )
   }
 
@@ -86,29 +86,29 @@ final class FuzzyMatcherTests: XCTestCase {
   func test_ranker_1() {
     XCTAssertNotEqual(
       "OakFileChooser".rank(for: "oakfilechooser").rank,
-      0
+      0,
     )
 
     XCTAssertNotEqual(
       "OakFinderLabelChooser".rank(for: "oakfilechooser").rank,
-      0
+      0,
     )
 
     XCTAssertLessThan(
       "OakFinderLabelChooser".rank(for: "oakfilechooser").rank,
-      "OakFileChooser".rank(for: "oakfilechooser").rank
+      "OakFileChooser".rank(for: "oakfilechooser").rank,
     )
   }
 
   func test_ranker_2() {
     XCTAssertNotEqual(
       "Comments » Insert Comment Banner — Source".rank(for: "banne").rank,
-      0
+      0,
     )
 
     XCTAssertNotEqual(
       "Comments » Insert Comment Banner — Source".rank(for: "banner").rank,
-      0
+      0,
     )
   }
 

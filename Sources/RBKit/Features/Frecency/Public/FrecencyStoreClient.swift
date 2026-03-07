@@ -23,9 +23,11 @@ extension FrecencyStoreClient: DependencyKey {
       save: { try? store.save() },
       add: { store.add($0) },
       score: { store.score(for: $0) },
-      items: { store.items.items }
+      items: { store.items.items },
     )
   }
 
-  public static var testValue: Self { .init() }
+  public static var testValue: Self {
+    .init()
+  }
 }

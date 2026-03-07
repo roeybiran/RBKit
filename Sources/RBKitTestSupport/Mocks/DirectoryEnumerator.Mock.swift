@@ -11,7 +11,9 @@ extension FileManager.DirectoryEnumerator {
 
     // MARK: Open
 
-    open override var allObjects: [Any] { files }
+    open override var allObjects: [Any] {
+      files
+    }
 
     open override func nextObject() -> Any? {
       guard index < files.count else { return nil }

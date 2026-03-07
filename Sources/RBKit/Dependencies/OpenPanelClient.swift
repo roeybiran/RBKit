@@ -13,7 +13,7 @@ public struct OpenPanelClient: Sendable {
 // MARK: DependencyKey
 
 extension OpenPanelClient: DependencyKey {
-  public static let liveValue = Self.init {
+  public static let liveValue = Self {
     let panel = NSOpenPanel()
     panel.allowsMultipleSelection = true
     panel.allowedContentTypes = [.applicationBundle]
@@ -22,7 +22,7 @@ extension OpenPanelClient: DependencyKey {
       for: .applicationDirectory,
       in: .systemDomainMask,
       appropriateFor: nil,
-      create: false
+      create: false,
     )
 
     let result = panel.runModal()

@@ -10,20 +10,20 @@ public struct FileManagerClient: Sendable {
     _ directory: FileManager.SearchPathDirectory,
     _ domain: FileManager.SearchPathDomainMask,
     _ appropriateFor: URL?,
-    _ create: Bool
+    _ create: Bool,
   ) throws -> URL
 
   public var urls:
     @Sendable (
       _ directory: FileManager.SearchPathDirectory,
-      _ domainMask: FileManager.SearchPathDomainMask
+      _ domainMask: FileManager.SearchPathDomainMask,
     ) -> [URL] = { _, _ in [] }
 
   public var contentsOfDirectory:
     @Sendable (
       _ url: URL,
       _ keys: [URLResourceKey]?,
-      _ options: FileManager.DirectoryEnumerationOptions
+      _ options: FileManager.DirectoryEnumerationOptions,
     ) throws -> [URL]
 
   public var enumerator:
@@ -34,16 +34,16 @@ public struct FileManagerClient: Sendable {
       _ errorHandler: (
         (
           URL,
-          Error
+          Error,
         ) -> Bool
-      )?
+      )?,
     ) -> FileManager.DirectoryEnumerator?
 
   public var createDirectory:
     @Sendable (
       _ atURL: URL,
       _ withIntermediateDirectories: Bool,
-      _ attributes: [FileAttributeKey: Any]?
+      _ attributes: [FileAttributeKey: Any]?,
     ) throws -> Void
 
   public var fileExists:
@@ -67,7 +67,7 @@ extension FileManagerClient: DependencyKey {
     enumerator: { FileManager.default.enumerator(at: $0, includingPropertiesForKeys: $1, options: $2, errorHandler: $3) },
     createDirectory: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: $1, attributes: $2) },
     fileExists: { FileManager.default.fileExists(atPath: $0) },
-    displayName: { FileManager.default.displayName(atPath: $0) }
+    displayName: { FileManager.default.displayName(atPath: $0) },
   )
   public static let testValue = FileManagerClient()
 }

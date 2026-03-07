@@ -8,7 +8,7 @@ public protocol CGEventClientProtocol {
     place: CGEventTapPlacement,
     options: CGEventTapOptions,
     eventsOfInterest: CGEventMask,
-    userInfo: UnsafeMutableRawPointer?
+    userInfo: UnsafeMutableRawPointer?,
   ) -> MachPort?
 
   func getEnabled(tap: MachPort) -> Bool

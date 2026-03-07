@@ -29,12 +29,15 @@ struct FrecencyStore<Key: FrecencyID>: Sendable {
     }
 
     let parentDir = applicationSupportDirectory.appending(
-      component: selfBundleId, directoryHint: .isDirectory
+      component: selfBundleId,
+      directoryHint: .isDirectory,
     )
 
     do {
       try fileManagerClient.createDirectory(
-        atURL: parentDir, withIntermediateDirectories: true, attributes: nil
+        atURL: parentDir,
+        withIntermediateDirectories: true,
+        attributes: nil,
       )
     } catch {
       logger.log("Failed to create the application support directory, error: \(error)")

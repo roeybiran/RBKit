@@ -10,7 +10,7 @@ public struct FileDescriptorClient: Sendable {
   public var open: @Sendable (
     _ path: FilePath,
     _ mode: FileDescriptor.AccessMode,
-    _ options: FileDescriptor.OpenOptions
+    _ options: FileDescriptor.OpenOptions,
   ) throws -> FileDescriptor
   public var close: @Sendable (_ fileDescriptor: FileDescriptor) throws -> Void
 }
@@ -24,7 +24,7 @@ extension FileDescriptorClient: DependencyKey {
     },
     close: { fileDescriptor in
       try fileDescriptor.close()
-    }
+    },
   )
 
   public static let testValue = Self()

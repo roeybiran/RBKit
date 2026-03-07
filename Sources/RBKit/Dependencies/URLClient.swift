@@ -17,7 +17,7 @@ public struct URLClient: Sendable {
     _ bookmarkData: Data,
     _ options: URL.BookmarkResolutionOptions,
     _ relativeTo: URL?,
-    _ bookmarkDataIsStale: inout Bool
+    _ bookmarkDataIsStale: inout Bool,
   ) throws -> URL = { _, _, _, _ in throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError) }
 }
 
@@ -39,9 +39,9 @@ extension URLClient: DependencyKey {
         resolvingBookmarkData: bookmarkData,
         options: options,
         relativeTo: relativeTo,
-        bookmarkDataIsStale: &isStale
+        bookmarkDataIsStale: &isStale,
       )
-    }
+    },
   )
 
   public static let testValue = Self()

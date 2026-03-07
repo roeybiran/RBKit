@@ -1,6 +1,6 @@
 import Carbon
 
-public class BoxedEventHandler {
+public final class BoxedEventHandler {
 
   // MARK: Lifecycle
 

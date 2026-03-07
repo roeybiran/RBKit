@@ -6,7 +6,7 @@ import Testing
 @Suite
 struct `SysctlClient Tests` {
   @Test
-  func `With process is zombie, isZombie returns true`() async throws {
+  func `With process is zombie, isZombie returns true`() {
     let client = SysctlClient(
       run: { _, _, oldp, _, _, _ in
         guard let kinfo = oldp?.assumingMemoryBound(to: kinfo_proc.self) else { return -1 }
@@ -19,7 +19,7 @@ struct `SysctlClient Tests` {
   }
 
   @Test
-  func `With process is not zombie, isZombie returns false`() async throws {
+  func `With process is not zombie, isZombie returns false`() {
     let client = SysctlClient(
       run: { _, _, oldp, _, _, _ in
         guard let kinfo = oldp?.assumingMemoryBound(to: kinfo_proc.self) else { return -1 }
@@ -32,9 +32,9 @@ struct `SysctlClient Tests` {
   }
 
   @Test
-  func `isZombie should call dependency once and with correct parameters`() async throws {
+  func `isZombie should call dependency once and with correct parameters`() {
     nonisolated(unsafe) var callCount = 0
-    
+
     let client = SysctlClient(
       run: { mib, count, oldp, oldlenp, _, _ in
         callCount += 1
@@ -51,7 +51,7 @@ struct `SysctlClient Tests` {
     )
 
     _ = client.isZombie(pid: 123)
-    
+
     #expect(callCount == 1)
   }
 }

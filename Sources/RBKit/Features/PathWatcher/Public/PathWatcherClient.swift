@@ -11,7 +11,7 @@ public struct PathWatcherClient: Sendable {
   public var watchPath: @Sendable (
     _ path: FilePath,
     _ mask: DispatchSource.FileSystemEvent,
-    _ queue: DispatchQueue?
+    _ queue: DispatchQueue?,
   ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Swift.Error> = { _, _, _ in .finished() }
 
   @DependencyEndpoint(method: "events")
@@ -20,7 +20,7 @@ public struct PathWatcherClient: Sendable {
     _ latency: TimeInterval,
     _ queue: DispatchQueue?,
     _ sinceWhen: PathWatcherEvent.ID?,
-    _ flags: PathWatcherFlag?
+    _ flags: PathWatcherFlag?,
   ) -> AsyncThrowingStream<[PathWatcherEvent], any Swift.Error> = { _, _, _, _, _ in .finished() }
 }
 
@@ -34,7 +34,7 @@ extension PathWatcherClient: DependencyKey {
 
       let (stream, continuation) = AsyncThrowingStream.makeStream(
         of: DispatchSource.FileSystemEvent.self,
-        throwing: (any Swift.Error).self
+        throwing: (any Swift.Error).self,
       )
 
       let fileDescriptor: FileDescriptor
@@ -48,7 +48,7 @@ extension PathWatcherClient: DependencyKey {
       let source = dispatchSourceFileSystemObjectClient.make(
         fileDescriptor: fileDescriptor.rawValue,
         eventMask: mask,
-        queue: queue
+        queue: queue,
       )
       dispatchSourceFileSystemObjectClient.setEventHandler(object: source, qos: .unspecified, flags: []) {
         continuation.yield(dispatchSourceFileSystemObjectClient.data(object: source))
@@ -83,7 +83,7 @@ extension PathWatcherClient: DependencyKey {
         info: Unmanaged.passRetained(wrapper).toOpaque(),
         retain: nil,
         release: nil,
-        copyDescription: nil
+        copyDescription: nil,
       )
 
       guard
@@ -91,7 +91,7 @@ extension PathWatcherClient: DependencyKey {
           allocator: nil,
           callback: { _, info, count, paths, flags, ids in
             guard
-              let info = info,
+              let info,
               let eventPaths = Unmanaged<CFArray>
                 .fromOpaque(paths)
                 .takeUnretainedValue() as? [String]
@@ -110,7 +110,7 @@ extension PathWatcherClient: DependencyKey {
                 PathWatcherEvent(
                   path: eventPaths[i],
                   flag: PathWatcherEvent.Flag(rawValue: flags[i]),
-                  id: ids[i]
+                  id: ids[i],
                 )
               )
             }
@@ -121,7 +121,7 @@ extension PathWatcherClient: DependencyKey {
           pathsToWatch: paths as CFArray,
           sinceWhen: defaultSinceWhen,
           latency: latency as CFTimeInterval,
-          flags: defaultFlags.union(.useCFTypes).rawValue
+          flags: defaultFlags.union(.useCFTypes).rawValue,
         )
       else {
         continuation.finish(throwing: PathWatcherError.streamCreationFailed)
@@ -140,7 +140,7 @@ extension PathWatcherClient: DependencyKey {
       }
 
       return stream
-    }
+    },
   )
 
   public static let testValue = Self()
@@ -152,6 +152,8 @@ extension DependencyValues {
     set { self[PathWatcherClient.self] = newValue }
   }
 }
+
+// MARK: - EventHandlerWrapper
 
 final class EventHandlerWrapper {
 

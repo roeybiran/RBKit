@@ -4,7 +4,7 @@ import Testing
 public func expectNoTextualDifference<T: Equatable>(
   _ expression1: T,
   _ expression2: T,
-  showDiffInFileMerge: Bool
+  showDiffInFileMerge: Bool,
 ) async {
   let areEqual = expression1 == expression2
   if areEqual { return }

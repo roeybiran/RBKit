@@ -112,7 +112,7 @@ extension NSMenuItem {
 
   public static func about(
     selector: Selector = #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
-    target: AnyObject?,
+    target: AnyObject? = NSApplication.shared,
   ) -> NSMenuItem {
     NSMenuItem(
       "About \(String.appName)",

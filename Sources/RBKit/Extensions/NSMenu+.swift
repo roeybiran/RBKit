@@ -11,6 +11,10 @@ extension NSMenu {
 
   // MARK: Public
 
+  public static func menuBar(@MenuBuilder builder: () -> [NSMenuItem]) -> NSMenu {
+    NSMenu(String.appName, builder: builder)
+  }
+
   @MainActor
   public static func fromNib(named nibName: String, bundle: Bundle = .main) -> NSMenu {
     let nib = NSNib(nibNamed: nibName, bundle: bundle)
@@ -35,10 +39,7 @@ extension NSMenu {
       NSMenuItem.formatMenu
       NSMenuItem.viewMenu
       NSMenuItem.windowMenu()
-      NSMenuItem.helpMenu(
-        selector: #selector(NSApplication.showHelp(_:)),
-        target: NSApplication.shared,
-      )
+      NSMenuItem.helpMenu()
     }
   }
 

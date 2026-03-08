@@ -23,12 +23,19 @@ struct `NSMenuItem standard menu Tests` {
   }
 
   @Test
-  func `init with empty builder, should create empty submenu`() throws {
+  func `init with empty builder, should not create submenu`() {
     let menuItem = NSMenuItem("Parent") { }
-    let submenu = try #require(menuItem.submenu)
 
-    #expect(submenu.title == "Parent")
-    #expect(submenu.items.isEmpty)
+    #expect(menuItem.submenu == nil)
+  }
+
+  @Test
+  func `init with default selector and target, should keep action and target nil`() {
+    let menuItem = NSMenuItem("Plain")
+
+    #expect(menuItem.action == nil)
+    #expect(menuItem.target == nil)
+    #expect(menuItem.submenu == nil)
   }
 
   @Test
@@ -40,30 +47,6 @@ struct `NSMenuItem standard menu Tests` {
     #expect(menuItem.action == selector)
     #expect(menuItem.target === target)
     #expect(menuItem.keyEquivalent == "q")
-  }
-
-  @Test
-  func `withChildren, should return self and replace submenu items`() throws {
-    let menuItem = NSMenuItem("Parent") { }
-    let child1 = NSMenuItem("Child 1")
-    let child2 = NSMenuItem("Child 2")
-
-    let returned = menuItem.withChildren {
-      child1
-    }
-    var submenu = try #require(menuItem.submenu)
-
-    #expect(returned === menuItem)
-    #expect(submenu.items.count == 1)
-    #expect(submenu.items.first === child1)
-
-    _ = menuItem.withChildren {
-      child2
-    }
-    submenu = try #require(menuItem.submenu)
-
-    #expect(submenu.items.count == 1)
-    #expect(submenu.items.first === child2)
   }
 
   @Test
@@ -87,13 +70,15 @@ struct `NSMenuItem standard menu Tests` {
 
     let menuItem = NSMenuItem.windowMenu(app: app)
     let submenu = try #require(menuItem.submenu)
+    let itemTitles = submenu.items.map(\.title)
 
     #expect(menuItem.title == "Window")
     #expect(submenu.items.count == 4)
-    #expect(submenu.items[0] === NSMenuItem.minimize)
-    #expect(submenu.items[1] === NSMenuItem.zoom)
+    #expect(itemTitles == ["Minimize", "Zoom", "", "Bring All to Front"])
+    #expect(submenu.items[0].action == #selector(NSWindow.performMiniaturize(_:)))
+    #expect(submenu.items[1].action == #selector(NSWindow.performZoom(_:)))
     #expect(submenu.items[2].isSeparatorItem)
-    #expect(submenu.items[3] === NSMenuItem.bringAllToFront)
+    #expect(submenu.items[3].action == #selector(NSApplication.arrangeInFront(_:)))
     #expect(app.windowsMenu === submenu)
   }
 

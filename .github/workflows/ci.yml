@@ -14,8 +14,11 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Install lint tools
+        run: brew install swiftlint swiftformat
+
       - name: Lint
-        run: swift package -q --allow-writing-to-package-directory format 
+        run: ./rb-swiftlint/lint.sh
 
   build-and-test:
     needs: lint

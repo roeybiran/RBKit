@@ -1,5 +1,5 @@
 {
-  "originHash" : "9005d3d72f99077173cb81c1d97ede5dcb3246668c71992d08dee156a970ca2b",
+  "originHash" : "037d3590828b1046c6b010f7b59256847f194894a0152a57dc99837b68a5feb4",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -8,6 +8,24 @@
       "state" : {
         "revision" : "5928286acce13def418ec36d05a001a9641086f2",
         "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/swift",
+      "state" : {
+        "revision" : "a702f58d25ca2d1d58026ccf12fac8ccb6e2b475",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "309a47b2b1d9b5e991f36961c983ecec72275be3",
+        "version" : "1.6.1"
       }
     },
     {

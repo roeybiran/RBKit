@@ -1,8 +1,12 @@
 import Dependencies
+import OSLog
 import RBKit
 import SwiftUI
 
 struct ContentView: View {
+
+  // MARK: Internal
+
   @Dependency(\.pathWatcherClient) var pathWatcher
 
   var body: some View {
@@ -23,12 +27,17 @@ struct ContentView: View {
           .fileEvents,
         ) {
           for e in event {
-            print(e.path, e.flag)
+            logger.debug("Path watcher event: \(e.path, privacy: .public) \(String(describing: e.flag), privacy: .public)")
           }
         }
       } catch { }
     }
   }
+
+  // MARK: Private
+
+  private let logger = Logger(subsystem: "RBKitDemo", category: "ContentView")
+
 }
 
 #Preview {

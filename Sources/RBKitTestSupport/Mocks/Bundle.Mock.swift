@@ -1,7 +1,7 @@
 import Foundation
 
 extension Bundle {
-  open class Mock: Bundle, @unchecked Sendable {
+  open class Mock: Bundle {
 
     // MARK: Open
 

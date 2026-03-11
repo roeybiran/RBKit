@@ -421,10 +421,12 @@ extension NSEvent {
     static nonisolated(unsafe) public var _isSwipeTrackingFromScrollEventsEnabled = false
 
     static nonisolated(unsafe) public var _startPeriodicEvents:
-      @Sendable (_ delay: TimeInterval, _ period: TimeInterval) -> Void = { _, _ in fatalError() }
+      @Sendable (_ delay: TimeInterval, _ period: TimeInterval) -> Void = { _, _ in
+        fatalError("NSEvent.Mock default stub was not overridden")
+      }
 
     static nonisolated(unsafe) public var _stopPeriodicEvents: @Sendable () -> Void = {
-      fatalError()
+      fatalError("NSEvent.Mock default stub was not overridden")
     }
 
     static nonisolated(unsafe) public var _mouseEvent:
@@ -438,7 +440,7 @@ extension NSEvent {
         _ eNum: Int,
         _ cNum: Int,
         _ pressure: Float,
-      ) -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError() }
+      ) -> NSEvent = { _, _, _, _, _, _, _, _, _ in fatalError("NSEvent.Mock default stub was not overridden") }
 
     static nonisolated(unsafe) public var _keyEvent:
       @Sendable (
@@ -463,7 +465,7 @@ extension NSEvent {
           _,
           _,
           _ in
-        fatalError()
+        fatalError("NSEvent.Mock default stub was not overridden")
       }
 
     static nonisolated(unsafe) public var _enterExitEvent:
@@ -486,7 +488,7 @@ extension NSEvent {
           _,
           _,
           _,
-          _ in fatalError()
+          _ in fatalError("NSEvent.Mock default stub was not overridden")
       }
 
     static nonisolated(unsafe) public var _otherEvent:
@@ -509,7 +511,7 @@ extension NSEvent {
           _,
           _,
           _,
-          _ in fatalError()
+          _ in fatalError("NSEvent.Mock default stub was not overridden")
       }
 
     static nonisolated(unsafe) public var _mouseLocation = NSPoint.zero
@@ -528,16 +530,16 @@ extension NSEvent {
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
         _ block: @escaping (NSEvent) -> Void,
-      ) -> Any? = { _, _ in fatalError() }
+      ) -> Any? = { _, _ in fatalError("NSEvent.Mock default stub was not overridden") }
 
     static nonisolated(unsafe) public var _addLocalMonitorForEvents:
       @Sendable (
         _ mask: NSEvent.EventTypeMask,
         _ block: @escaping (NSEvent) -> NSEvent?,
-      ) -> Any? = { _, _ in fatalError() }
+      ) -> Any? = { _, _ in fatalError("NSEvent.Mock default stub was not overridden") }
 
     static nonisolated(unsafe) public var _removeMonitor:
-      @Sendable (_ eventMonitor: Any) -> Void = { _ in fatalError() }
+      @Sendable (_ eventMonitor: Any) -> Void = { _ in fatalError("NSEvent.Mock default stub was not overridden") }
 
     public var _type = NSEvent.EventType.keyDown
 
@@ -582,7 +584,9 @@ extension NSEvent {
     public var _charactersIgnoringModifiers: String? = nil
 
     public var _charactersbyApplyingModifiers:
-      @Sendable (_ modifiers: NSEvent.ModifierFlags) -> String? = { _ in fatalError() }
+      @Sendable (_ modifiers: NSEvent.ModifierFlags) -> String? = { _ in
+        fatalError("NSEvent.Mock default stub was not overridden")
+      }
 
     public var _isARepeat = false
 
@@ -646,11 +650,14 @@ extension NSEvent {
       _, _ in []
     }
 
-    public var _allTouches: @Sendable () -> Set<NSTouch> = { fatalError() }
+    public var _allTouches: @Sendable () -> Set<NSTouch> = { fatalError("NSEvent.Mock default stub was not overridden") }
 
-    public var _touchesForView: @Sendable (_ view: NSView) -> Set<NSTouch> = { _ in fatalError() }
+    public var _touchesForView: @Sendable (_ view: NSView) -> Set<NSTouch> = { _ in
+      fatalError("NSEvent.Mock default stub was not overridden")
+    }
 
-    public var _coalescedTouches: @Sendable (_ touch: NSTouch) -> [NSTouch] = { _ in fatalError()
+    public var _coalescedTouches: @Sendable (_ touch: NSTouch) -> [NSTouch] = { _ in
+      fatalError("NSEvent.Mock default stub was not overridden")
     }
 
     public var _phase = NSEvent.Phase.began
@@ -669,7 +676,7 @@ extension NSEvent {
         _ minDampenThreshold: CGFloat,
         _ maxDampenThreshold: CGFloat,
         _ trackingHandler: (CGFloat, NSEvent.Phase, Bool, UnsafeMutablePointer<ObjCBool>) -> Void,
-      ) -> Void = { _, _, _, _ in fatalError() }
+      ) -> Void = { _, _, _, _ in fatalError("NSEvent.Mock default stub was not overridden") }
 
   }
 }

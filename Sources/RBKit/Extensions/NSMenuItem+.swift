@@ -3,8 +3,6 @@ import AppKit
 @MainActor
 extension NSMenuItem {
 
-  // MARK: Lifecycle
-
   public convenience init(
     _ title: String,
     selector: Selector? = nil,
@@ -27,7 +25,42 @@ extension NSMenuItem {
 @MainActor
 extension NSMenuItem {
 
-  // MARK: - Application menu
+  public static var about: NSMenuItem {
+    NSMenuItem.about(target: NSApplication.shared)
+  }
+
+  public static var hide: NSMenuItem {
+    NSMenuItem(
+      "Hide \(String.appName)",
+      selector: #selector(NSApplication.hide(_:)),
+      keyEquivalent: "h",
+    )
+  }
+
+  public static var hideOthers: NSMenuItem {
+    NSMenuItem(
+      "Hide Others",
+      selector: #selector(NSApplication.hideOtherApplications(_:)),
+      keyEquivalent: "h",
+    )
+    .set(\.keyEquivalentModifierMask, to: [.option, .command])
+  }
+
+  public static var showAll: NSMenuItem {
+    NSMenuItem(
+      "Show All",
+      selector: #selector(NSApplication.unhideAllApplications(_:)),
+    )
+  }
+
+  public static var quit: NSMenuItem {
+    NSMenuItem(
+      "Quit \(String.appName)",
+      selector: #selector(NSApplication.terminate),
+      keyEquivalent: "q",
+    )
+    .set(\.image, to: NSImage(systemSymbolName: "power", accessibilityDescription: nil))
+  }
 
   public static func applicationMenu(
     settingsAction: Selector?,
@@ -48,8 +81,6 @@ extension NSMenuItem {
     }
   }
 
-  public static var about: NSMenuItem { NSMenuItem.about(target: NSApplication.shared) }
-
   public static func settings(
     action: Selector?,
     target: AnyObject?,
@@ -68,39 +99,6 @@ extension NSMenuItem {
     return menuItem
   }
 
-  public static var hide: NSMenuItem {
-    NSMenuItem(
-      "Hide \(String.appName)",
-      selector: #selector(NSApplication.hide(_:)),
-      keyEquivalent: "h"
-    )
-  }
-
-  public static var hideOthers: NSMenuItem {
-    NSMenuItem(
-      "Hide Others",
-      selector: #selector(NSApplication.hideOtherApplications(_:)),
-      keyEquivalent: "h"
-    )
-    .set(\.keyEquivalentModifierMask, to: [.option, .command])
-  }
-
-  public static var showAll: NSMenuItem {
-    NSMenuItem(
-      "Show All",
-      selector: #selector(NSApplication.unhideAllApplications(_:))
-    )
-  }
-
-  public static var quit: NSMenuItem {
-    NSMenuItem(
-      "Quit \(String.appName)",
-      selector: #selector(NSApplication.terminate),
-      keyEquivalent: "q"
-    )
-    .set(\.image, to: NSImage(systemSymbolName: "power", accessibilityDescription: nil))
-  }
-
   public static func about(
     selector: Selector = #selector(NSApplication.orderFrontStandardAboutPanel(_:)),
     target: AnyObject? = NSApplication.shared,
@@ -108,7 +106,7 @@ extension NSMenuItem {
     NSMenuItem(
       "About \(String.appName)",
       selector: selector,
-      target: target
+      target: target,
     )
     .set(\.image, to: NSImage(systemSymbolName: "info.circle", accessibilityDescription: nil))
   }
@@ -117,8 +115,6 @@ extension NSMenuItem {
 
 @MainActor
 extension NSMenuItem {
-
-  // MARK: - File menu
 
   public static var fileMenu: NSMenuItem {
     NSMenuItem("File") {
@@ -140,7 +136,7 @@ extension NSMenuItem {
     NSMenuItem(
       "New",
       selector: #selector(NSDocumentController.newDocument(_:)),
-      keyEquivalent: "n"
+      keyEquivalent: "n",
     )
   }
 
@@ -148,7 +144,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Open…",
       selector: #selector(NSDocumentController.openDocument(_:)),
-      keyEquivalent: "o"
+      keyEquivalent: "o",
     )
   }
 
@@ -161,7 +157,7 @@ extension NSMenuItem {
   public static var clearMenu: NSMenuItem {
     NSMenuItem(
       "Clear Menu",
-      selector: #selector(NSDocumentController.clearRecentDocuments(_:))
+      selector: #selector(NSDocumentController.clearRecentDocuments(_:)),
     )
   }
 
@@ -169,7 +165,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Close",
       selector: #selector(NSWindow.performClose(_:)),
-      keyEquivalent: "w"
+      keyEquivalent: "w",
     )
   }
 
@@ -177,7 +173,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Save…",
       selector: #selector(NSDocument.save(_:)),
-      keyEquivalent: "s"
+      keyEquivalent: "s",
     )
   }
 
@@ -185,7 +181,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Save As…",
       selector: #selector(NSDocument.saveAs(_:)),
-      keyEquivalent: "S"
+      keyEquivalent: "S",
     )
   }
 
@@ -193,7 +189,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Revert to Saved",
       selector: #selector(NSDocument.revertToSaved(_:)),
-      keyEquivalent: "r"
+      keyEquivalent: "r",
     )
   }
 
@@ -201,7 +197,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Page Setup…",
       selector: #selector(NSDocument.runPageLayout(_:)),
-      keyEquivalent: "P"
+      keyEquivalent: "P",
     )
   }
 
@@ -209,7 +205,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Print…",
       selector: #selector(NSDocument.printDocument(_:)),
-      keyEquivalent: "p"
+      keyEquivalent: "p",
     )
   }
 
@@ -217,8 +213,6 @@ extension NSMenuItem {
 
 @MainActor
 extension NSMenuItem {
-
-  // MARK: - Edit menu
 
   public static var editMenu: NSMenuItem {
     NSMenuItem("Edit") {
@@ -244,7 +238,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Undo",
       selector: #selector(UndoManager.undo),
-      keyEquivalent: "z"
+      keyEquivalent: "z",
     )
   }
 
@@ -252,7 +246,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Redo",
       selector: #selector(UndoManager.redo),
-      keyEquivalent: "Z"
+      keyEquivalent: "Z",
     )
   }
 
@@ -260,7 +254,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Cut",
       selector: #selector(NSText.cut(_:)),
-      keyEquivalent: "x"
+      keyEquivalent: "x",
     )
   }
 
@@ -268,7 +262,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Copy",
       selector: #selector(NSText.copy(_:)),
-      keyEquivalent: "c"
+      keyEquivalent: "c",
     )
   }
 
@@ -276,7 +270,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Paste",
       selector: #selector(NSText.paste(_:)),
-      keyEquivalent: "v"
+      keyEquivalent: "v",
     )
   }
 
@@ -284,7 +278,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Paste and Match Style",
       selector: #selector(NSTextView.pasteAsPlainText(_:)),
-      keyEquivalent: "v"
+      keyEquivalent: "v",
     )
     .set(\.keyEquivalentModifierMask, to: [.option, .shift, .command])
   }
@@ -292,7 +286,7 @@ extension NSMenuItem {
   public static var delete: NSMenuItem {
     NSMenuItem(
       "Delete",
-      selector: #selector(NSText.delete(_:))
+      selector: #selector(NSText.delete(_:)),
     )
   }
 
@@ -300,7 +294,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Select All",
       selector: #selector(NSText.selectAll(_:)),
-      keyEquivalent: "a"
+      keyEquivalent: "a",
     )
   }
 
@@ -319,7 +313,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Find…",
       selector: #selector(NSTextView.performFindPanelAction(_:)),
-      keyEquivalent: "f"
+      keyEquivalent: "f",
     )
     .set(\.tag, to: NSTextFinder.Action.showFindInterface.rawValue)
   }
@@ -328,7 +322,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Find and Replace…",
       selector: #selector(NSTextView.performFindPanelAction(_:)),
-      keyEquivalent: "f"
+      keyEquivalent: "f",
     )
     .set(\.keyEquivalentModifierMask, to: [.option, .command])
     .set(\.tag, to: NSTextFinder.Action.showReplaceInterface.rawValue)
@@ -338,7 +332,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Find Next",
       selector: #selector(NSTextView.performFindPanelAction(_:)),
-      keyEquivalent: "g"
+      keyEquivalent: "g",
     )
     .set(\.tag, to: NSTextFinder.Action.nextMatch.rawValue)
   }
@@ -347,7 +341,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Find Previous",
       selector: #selector(NSTextView.performFindPanelAction(_:)),
-      keyEquivalent: "G"
+      keyEquivalent: "G",
     )
     .set(\.tag, to: NSTextFinder.Action.previousMatch.rawValue)
   }
@@ -356,7 +350,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Use Selection for Find",
       selector: #selector(NSTextView.performFindPanelAction(_:)),
-      keyEquivalent: "e"
+      keyEquivalent: "e",
     )
     .set(\.tag, to: NSTextFinder.Action.setSearchString.rawValue)
   }
@@ -365,7 +359,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Jump to Selection",
       selector: #selector(NSStandardKeyBindingResponding.centerSelectionInVisibleArea(_:)),
-      keyEquivalent: "j"
+      keyEquivalent: "j",
     )
   }
 
@@ -384,7 +378,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Show Spelling and Grammar",
       selector: #selector(NSText.showGuessPanel(_:)),
-      keyEquivalent: ":"
+      keyEquivalent: ":",
     )
   }
 
@@ -392,28 +386,28 @@ extension NSMenuItem {
     NSMenuItem(
       "Check Document Now",
       selector: #selector(NSText.checkSpelling(_:)),
-      keyEquivalent: ";"
+      keyEquivalent: ";",
     )
   }
 
   public static var checkSpellingWhileTyping: NSMenuItem {
     NSMenuItem(
       "Check Spelling While Typing",
-      selector: #selector(NSTextView.toggleContinuousSpellChecking(_:))
+      selector: #selector(NSTextView.toggleContinuousSpellChecking(_:)),
     )
   }
 
   public static var checkGrammarWithSpelling: NSMenuItem {
     NSMenuItem(
       "Check Grammar With Spelling",
-      selector: #selector(NSTextView.toggleGrammarChecking(_:))
+      selector: #selector(NSTextView.toggleGrammarChecking(_:)),
     )
   }
 
   public static var correctSpellingAutomatically: NSMenuItem {
     NSMenuItem(
       "Correct Spelling Automatically",
-      selector: #selector(NSTextView.toggleAutomaticSpellingCorrection(_:))
+      selector: #selector(NSTextView.toggleAutomaticSpellingCorrection(_:)),
     )
   }
 
@@ -433,49 +427,49 @@ extension NSMenuItem {
   public static var showSubstitutions: NSMenuItem {
     NSMenuItem(
       "Show Substitutions",
-      selector: #selector(NSTextView.orderFrontSubstitutionsPanel(_:))
+      selector: #selector(NSTextView.orderFrontSubstitutionsPanel(_:)),
     )
   }
 
   public static var smartCopyPaste: NSMenuItem {
     NSMenuItem(
       "Smart Copy/Paste",
-      selector: #selector(NSTextView.toggleSmartInsertDelete(_:))
+      selector: #selector(NSTextView.toggleSmartInsertDelete(_:)),
     )
   }
 
   public static var smartQuotes: NSMenuItem {
     NSMenuItem(
       "Smart Quotes",
-      selector: #selector(NSTextView.toggleAutomaticQuoteSubstitution(_:))
+      selector: #selector(NSTextView.toggleAutomaticQuoteSubstitution(_:)),
     )
   }
 
   public static var smartDashes: NSMenuItem {
     NSMenuItem(
       "Smart Dashes",
-      selector: #selector(NSTextView.toggleAutomaticDashSubstitution(_:))
+      selector: #selector(NSTextView.toggleAutomaticDashSubstitution(_:)),
     )
   }
 
   public static var smartLinks: NSMenuItem {
     NSMenuItem(
       "Smart Links",
-      selector: #selector(NSTextView.toggleAutomaticLinkDetection(_:))
+      selector: #selector(NSTextView.toggleAutomaticLinkDetection(_:)),
     )
   }
 
   public static var dataDetectors: NSMenuItem {
     NSMenuItem(
       "Data Detectors",
-      selector: #selector(NSTextView.toggleAutomaticDataDetection(_:))
+      selector: #selector(NSTextView.toggleAutomaticDataDetection(_:)),
     )
   }
 
   public static var textReplacement: NSMenuItem {
     NSMenuItem(
       "Text Replacement",
-      selector: #selector(NSTextView.toggleAutomaticTextReplacement(_:))
+      selector: #selector(NSTextView.toggleAutomaticTextReplacement(_:)),
     )
   }
 
@@ -490,21 +484,21 @@ extension NSMenuItem {
   public static var makeUpperCase: NSMenuItem {
     NSMenuItem(
       "Make Upper Case",
-      selector: #selector(NSResponder.uppercaseWord(_:))
+      selector: #selector(NSResponder.uppercaseWord(_:)),
     )
   }
 
   public static var makeLowerCase: NSMenuItem {
     NSMenuItem(
       "Make Lower Case",
-      selector: #selector(NSResponder.lowercaseWord(_:))
+      selector: #selector(NSResponder.lowercaseWord(_:)),
     )
   }
 
   public static var capitalize: NSMenuItem {
     NSMenuItem(
       "Capitalize",
-      selector: #selector(NSResponder.capitalizeWord(_:))
+      selector: #selector(NSResponder.capitalizeWord(_:)),
     )
   }
 
@@ -518,14 +512,14 @@ extension NSMenuItem {
   public static var startSpeaking: NSMenuItem {
     NSMenuItem(
       "Start Speaking",
-      selector: #selector(NSTextView.startSpeaking(_:))
+      selector: #selector(NSTextView.startSpeaking(_:)),
     )
   }
 
   public static var stopSpeaking: NSMenuItem {
     NSMenuItem(
       "Stop Speaking",
-      selector: #selector(NSTextView.stopSpeaking(_:))
+      selector: #selector(NSTextView.stopSpeaking(_:)),
     )
   }
 
@@ -533,8 +527,6 @@ extension NSMenuItem {
 
 @MainActor
 extension NSMenuItem {
-
-  // MARK: - Format menu
 
   public static var formatMenu: NSMenuItem {
     NSMenuItem("Format") {
@@ -568,7 +560,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Show Fonts",
       selector: #selector(NSFontManager.orderFrontFontPanel(_:)),
-      keyEquivalent: "t"
+      keyEquivalent: "t",
     )
   }
 
@@ -576,7 +568,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Bold",
       selector: #selector(NSFontManager.addFontTrait(_:)),
-      keyEquivalent: "b"
+      keyEquivalent: "b",
     )
     .set(\.tag, to: Int(NSFontTraitMask.boldFontMask.rawValue))
   }
@@ -585,7 +577,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Italic",
       selector: #selector(NSFontManager.addFontTrait(_:)),
-      keyEquivalent: "i"
+      keyEquivalent: "i",
     )
     .set(\.tag, to: Int(NSFontTraitMask.italicFontMask.rawValue))
   }
@@ -594,7 +586,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Underline",
       selector: #selector(NSText.underline(_:)),
-      keyEquivalent: "u"
+      keyEquivalent: "u",
     )
   }
 
@@ -602,7 +594,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Bigger",
       selector: #selector(NSFontManager.modifyFont(_:)),
-      keyEquivalent: "+"
+      keyEquivalent: "+",
     )
     .set(\.tag, to: Int(NSFontAction.sizeUpFontAction.rawValue))
   }
@@ -611,7 +603,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Smaller",
       selector: #selector(NSFontManager.modifyFont(_:)),
-      keyEquivalent: "-"
+      keyEquivalent: "-",
     )
     .set(\.tag, to: Int(NSFontAction.sizeDownFontAction.rawValue))
   }
@@ -628,28 +620,28 @@ extension NSMenuItem {
   public static var kernUseDefault: NSMenuItem {
     NSMenuItem(
       "Use Default",
-      selector: #selector(NSTextView.useStandardKerning(_:))
+      selector: #selector(NSTextView.useStandardKerning(_:)),
     )
   }
 
   public static var kernUseNone: NSMenuItem {
     NSMenuItem(
       "Use None",
-      selector: #selector(NSTextView.turnOffKerning(_:))
+      selector: #selector(NSTextView.turnOffKerning(_:)),
     )
   }
 
   public static var kernTighten: NSMenuItem {
     NSMenuItem(
       "Tighten",
-      selector: #selector(NSTextView.tightenKerning(_:))
+      selector: #selector(NSTextView.tightenKerning(_:)),
     )
   }
 
   public static var kernLoosen: NSMenuItem {
     NSMenuItem(
       "Loosen",
-      selector: #selector(NSTextView.loosenKerning(_:))
+      selector: #selector(NSTextView.loosenKerning(_:)),
     )
   }
 
@@ -664,21 +656,21 @@ extension NSMenuItem {
   public static var ligaturesUseDefault: NSMenuItem {
     NSMenuItem(
       "Use Default",
-      selector: #selector(NSTextView.useStandardLigatures(_:))
+      selector: #selector(NSTextView.useStandardLigatures(_:)),
     )
   }
 
   public static var ligaturesUseNone: NSMenuItem {
     NSMenuItem(
       "Use None",
-      selector: #selector(NSTextView.turnOffLigatures(_:))
+      selector: #selector(NSTextView.turnOffLigatures(_:)),
     )
   }
 
   public static var ligaturesUseAll: NSMenuItem {
     NSMenuItem(
       "Use All",
-      selector: #selector(NSTextView.useAllLigatures(_:))
+      selector: #selector(NSTextView.useAllLigatures(_:)),
     )
   }
 
@@ -695,35 +687,35 @@ extension NSMenuItem {
   public static var baselineUseDefault: NSMenuItem {
     NSMenuItem(
       "Use Default",
-      selector: #selector(NSText.unscript(_:))
+      selector: #selector(NSText.unscript(_:)),
     )
   }
 
   public static var baselineSuperscript: NSMenuItem {
     NSMenuItem(
       "Superscript",
-      selector: #selector(NSText.superscript(_:))
+      selector: #selector(NSText.superscript(_:)),
     )
   }
 
   public static var baselineSubscript: NSMenuItem {
     NSMenuItem(
       "Subscript",
-      selector: #selector(NSText.subscript(_:))
+      selector: #selector(NSText.subscript(_:)),
     )
   }
 
   public static var baselineRaise: NSMenuItem {
     NSMenuItem(
       "Raise",
-      selector: #selector(NSTextView.raiseBaseline(_:))
+      selector: #selector(NSTextView.raiseBaseline(_:)),
     )
   }
 
   public static var baselineLower: NSMenuItem {
     NSMenuItem(
       "Lower",
-      selector: #selector(NSTextView.lowerBaseline(_:))
+      selector: #selector(NSTextView.lowerBaseline(_:)),
     )
   }
 
@@ -731,7 +723,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Show Colors",
       selector: #selector(NSApplication.orderFrontColorPanel(_:)),
-      keyEquivalent: "C"
+      keyEquivalent: "C",
     )
   }
 
@@ -739,7 +731,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Copy Style",
       selector: #selector(NSText.copyFont(_:)),
-      keyEquivalent: "c"
+      keyEquivalent: "c",
     )
     .set(\.keyEquivalentModifierMask, to: [.option, .command])
   }
@@ -748,7 +740,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Paste Style",
       selector: #selector(NSText.pasteFont(_:)),
-      keyEquivalent: "v"
+      keyEquivalent: "v",
     )
     .set(\.keyEquivalentModifierMask, to: [.option, .command])
   }
@@ -772,7 +764,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Align Left",
       selector: #selector(NSText.alignLeft(_:)),
-      keyEquivalent: "{"
+      keyEquivalent: "{",
     )
   }
 
@@ -780,14 +772,14 @@ extension NSMenuItem {
     NSMenuItem(
       "Center",
       selector: #selector(NSText.alignCenter(_:)),
-      keyEquivalent: "|"
+      keyEquivalent: "|",
     )
   }
 
   public static var justify: NSMenuItem {
     NSMenuItem(
       "Justify",
-      selector: #selector(NSTextView.alignJustified(_:))
+      selector: #selector(NSTextView.alignJustified(_:)),
     )
   }
 
@@ -795,7 +787,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Align Right",
       selector: #selector(NSText.alignRight(_:)),
-      keyEquivalent: "}"
+      keyEquivalent: "}",
     )
   }
 
@@ -821,21 +813,21 @@ extension NSMenuItem {
   public static var paragraphDefault: NSMenuItem {
     NSMenuItem(
       "\tDefault",
-      selector: #selector(NSResponder.makeBaseWritingDirectionNatural(_:))
+      selector: #selector(NSResponder.makeBaseWritingDirectionNatural(_:)),
     )
   }
 
   public static var paragraphLeftToRight: NSMenuItem {
     NSMenuItem(
       "\tLeft to Right",
-      selector: #selector(NSResponder.makeBaseWritingDirectionLeftToRight(_:))
+      selector: #selector(NSResponder.makeBaseWritingDirectionLeftToRight(_:)),
     )
   }
 
   public static var paragraphRightToLeft: NSMenuItem {
     NSMenuItem(
       "\tRight to Left",
-      selector: #selector(NSResponder.makeBaseWritingDirectionRightToLeft(_:))
+      selector: #selector(NSResponder.makeBaseWritingDirectionRightToLeft(_:)),
     )
   }
 
@@ -847,28 +839,28 @@ extension NSMenuItem {
   public static var selectionDefault: NSMenuItem {
     NSMenuItem(
       "\tDefault",
-      selector: #selector(NSResponder.makeTextWritingDirectionNatural(_:))
+      selector: #selector(NSResponder.makeTextWritingDirectionNatural(_:)),
     )
   }
 
   public static var selectionLeftToRight: NSMenuItem {
     NSMenuItem(
       "\tLeft to Right",
-      selector: #selector(NSResponder.makeTextWritingDirectionLeftToRight(_:))
+      selector: #selector(NSResponder.makeTextWritingDirectionLeftToRight(_:)),
     )
   }
 
   public static var selectionRightToLeft: NSMenuItem {
     NSMenuItem(
       "\tRight to Left",
-      selector: #selector(NSResponder.makeTextWritingDirectionRightToLeft(_:))
+      selector: #selector(NSResponder.makeTextWritingDirectionRightToLeft(_:)),
     )
   }
 
   public static var showRuler: NSMenuItem {
     NSMenuItem(
       "Show Ruler",
-      selector: #selector(NSText.toggleRuler(_:))
+      selector: #selector(NSText.toggleRuler(_:)),
     )
   }
 
@@ -876,7 +868,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Copy Ruler",
       selector: #selector(NSText.copyRuler(_:)),
-      keyEquivalent: "c"
+      keyEquivalent: "c",
     )
     .set(\.keyEquivalentModifierMask, to: [.control, .command])
   }
@@ -885,7 +877,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Paste Ruler",
       selector: #selector(NSText.pasteRuler(_:)),
-      keyEquivalent: "v"
+      keyEquivalent: "v",
     )
     .set(\.keyEquivalentModifierMask, to: [.control, .command])
   }
@@ -894,8 +886,6 @@ extension NSMenuItem {
 
 @MainActor
 extension NSMenuItem {
-
-  // MARK: - View menu
 
   public static var viewMenu: NSMenuItem {
     NSMenuItem("View") {
@@ -911,7 +901,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Show Toolbar",
       selector: #selector(NSWindow.toggleToolbarShown(_:)),
-      keyEquivalent: "t"
+      keyEquivalent: "t",
     )
     .set(\.keyEquivalentModifierMask, to: [.option, .command])
   }
@@ -919,7 +909,7 @@ extension NSMenuItem {
   public static var customizeToolbar: NSMenuItem {
     NSMenuItem(
       "Customize Toolbar…",
-      selector: #selector(NSWindow.runToolbarCustomizationPalette(_:))
+      selector: #selector(NSWindow.runToolbarCustomizationPalette(_:)),
     )
   }
 
@@ -927,7 +917,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Show Sidebar",
       selector: #selector(NSSplitViewController.toggleSidebar(_:)),
-      keyEquivalent: "s"
+      keyEquivalent: "s",
     )
     .set(\.keyEquivalentModifierMask, to: [.control, .command])
   }
@@ -936,7 +926,7 @@ extension NSMenuItem {
     NSMenuItem(
       "Enter Full Screen",
       selector: #selector(NSWindow.toggleFullScreen(_:)),
-      keyEquivalent: "f"
+      keyEquivalent: "f",
     )
     .set(\.keyEquivalentModifierMask, to: [.control, .command])
   }
@@ -946,7 +936,27 @@ extension NSMenuItem {
 @MainActor
 extension NSMenuItem {
 
-  // MARK: - Window menu
+  public static var minimize: NSMenuItem {
+    NSMenuItem(
+      "Minimize",
+      selector: #selector(NSWindow.performMiniaturize(_:)),
+      keyEquivalent: "m",
+    )
+  }
+
+  public static var zoom: NSMenuItem {
+    NSMenuItem(
+      "Zoom",
+      selector: #selector(NSWindow.performZoom(_:)),
+    )
+  }
+
+  public static var bringAllToFront: NSMenuItem {
+    NSMenuItem(
+      "Bring All to Front",
+      selector: #selector(NSApplication.arrangeInFront(_:)),
+    )
+  }
 
   public static func windowMenu(app: NSApplication = .shared) -> NSMenuItem {
     let menuItem = NSMenuItem("Window") {
@@ -959,34 +969,10 @@ extension NSMenuItem {
     return menuItem
   }
 
-  public static var minimize: NSMenuItem {
-    NSMenuItem(
-      "Minimize",
-      selector: #selector(NSWindow.performMiniaturize(_:)),
-      keyEquivalent: "m"
-    )
-  }
-
-  public static var zoom: NSMenuItem {
-    NSMenuItem(
-      "Zoom",
-      selector: #selector(NSWindow.performZoom(_:))
-    )
-  }
-
-  public static var bringAllToFront: NSMenuItem {
-    NSMenuItem(
-      "Bring All to Front",
-      selector: #selector(NSApplication.arrangeInFront(_:))
-    )
-  }
-
 }
 
 @MainActor
 extension NSMenuItem {
-
-  // MARK: - Help menu
 
   public static func helpMenu(
     app: NSApplication = .shared,
@@ -1008,7 +994,7 @@ extension NSMenuItem {
       "\(String.appName) Help",
       selector: selector,
       target: target,
-      keyEquivalent: "?"
+      keyEquivalent: "?",
     )
     .set(\.image, to: NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: nil))
   }

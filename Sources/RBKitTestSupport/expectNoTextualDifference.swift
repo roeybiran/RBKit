@@ -11,11 +11,8 @@ public func expectNoTextualDifference<T: Equatable>(
 
   #expect(areEqual)
 
-  var output1 = ""
-  var output2 = ""
-
-  dump(expression1, to: &output1)
-  dump(expression2, to: &output2)
+  let output1 = String(reflecting: expression1)
+  let output2 = String(reflecting: expression2)
 
   guard showDiffInFileMerge else { return }
 

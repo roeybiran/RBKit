@@ -5,8 +5,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `NSScreenValue Tests` {
+struct NSScreenValueTests {
   @Test
   func `ScreenDeviceDescription parser, should parse standard keys and NSScreenNumber`() {
     let dictionary: [NSDeviceDescriptionKey: Any] = [
@@ -53,7 +52,7 @@ struct `NSScreenValue Tests` {
         isScreen: true,
         isPrinter: false,
         size: CGSize(width: 3, height: 4),
-        cgDirectDisplayID: 42
+        cgDirectDisplayID: 42,
       )
     )
 

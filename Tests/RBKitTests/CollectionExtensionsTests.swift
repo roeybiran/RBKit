@@ -1,8 +1,7 @@
 import Testing
 @testable import RBKit
 
-@Suite
-struct `Collection Tests` {
+struct CollectionTests {
   @Test
   func `subscript safe:, with out of range index, should return nil`() {
     let values = [1, 2, 3]

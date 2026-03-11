@@ -6,9 +6,8 @@ import Testing
 
 // MARK: - `EventTapManager Tests`
 
-@Suite
 @MainActor
-struct `EventTapManager Tests` {
+struct EventTapManagerTests {
 
   @Test
   func `Creates event tap and run loop source when starting with events of interest`() {

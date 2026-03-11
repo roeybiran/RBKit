@@ -6,7 +6,7 @@ import Testing
 struct FrecencyItemTests {
 
   @Test
-  func item_init() {
+  func `item init`() {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
@@ -20,7 +20,7 @@ struct FrecencyItemTests {
   }
 
   @Test
-  func item_init2() {
+  func `item init2`() {
     let dates = [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)]
     let a = FrecencyItem<String>(
       id: "a",
@@ -33,7 +33,7 @@ struct FrecencyItemTests {
   }
 
   @Test
-  func debugDescription() {
+  func `debug description`() {
     let a = FrecencyItem<String>(
       id: "a",
       visits: [Date(timeIntervalSinceReferenceDate: 0), Date(timeIntervalSinceReferenceDate: 1)],

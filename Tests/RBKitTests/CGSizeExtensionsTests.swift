@@ -3,8 +3,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `CGSize Tests` {
+struct CGSizeTests {
   @Test
   func `clamp, with smaller size, should keep original size`() {
     let original = CGSize(width: 100, height: 50)

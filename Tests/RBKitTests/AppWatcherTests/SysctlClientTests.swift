@@ -3,8 +3,7 @@ import Foundation
 import Testing
 @testable import RBKit
 
-@Suite
-struct `SysctlClient Tests` {
+struct SysctlClientTests {
   @Test
   func `With process is zombie, isZombie returns true`() {
     let client = SysctlClient(

@@ -6,8 +6,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `PathWatcher Tests` {
+struct PathWatcherTests {
   @Test
   func `init`() {
     let path = "/tmp/test"

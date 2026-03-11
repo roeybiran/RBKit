@@ -2,6 +2,8 @@ import AppKit.NSWindow
 import CoreGraphics
 import Foundation
 
+// MARK: - DeviceDescription
+
 public protocol DeviceDescription: Sendable, Equatable {
   var resolution: CGSize? { get }
   var colorSpaceName: String? { get }
@@ -11,14 +13,11 @@ public protocol DeviceDescription: Sendable, Equatable {
   var size: CGSize? { get }
 }
 
+// MARK: - ScreenDeviceDescription
+
 public struct ScreenDeviceDescription: DeviceDescription {
-  public let resolution: CGSize?
-  public let colorSpaceName: String?
-  public let bitsPerSample: Int?
-  public let isScreen: Bool
-  public let isPrinter: Bool
-  public let size: CGSize?
-  public let cgDirectDisplayID: CGDirectDisplayID?
+
+  // MARK: Lifecycle
 
   public init(
     resolution: CGSize? = nil,
@@ -27,7 +26,7 @@ public struct ScreenDeviceDescription: DeviceDescription {
     isScreen: Bool = false,
     isPrinter: Bool = false,
     size: CGSize? = nil,
-    cgDirectDisplayID: CGDirectDisplayID? = nil
+    cgDirectDisplayID: CGDirectDisplayID? = nil,
   ) {
     self.resolution = resolution
     self.colorSpaceName = colorSpaceName
@@ -47,4 +46,15 @@ public struct ScreenDeviceDescription: DeviceDescription {
     size = deviceDescription[.size] as? CGSize
     cgDirectDisplayID = deviceDescription[NSDeviceDescriptionKey(rawValue: "NSScreenNumber")] as? CGDirectDisplayID
   }
+
+  // MARK: Public
+
+  public let resolution: CGSize?
+  public let colorSpaceName: String?
+  public let bitsPerSample: Int?
+  public let isScreen: Bool
+  public let isPrinter: Bool
+  public let size: CGSize?
+  public let cgDirectDisplayID: CGDirectDisplayID?
+
 }

@@ -5,8 +5,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `CGWindowValue Tests` {
+struct CGWindowValueTests {
 
   // MARK: Internal
 

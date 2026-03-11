@@ -3,8 +3,7 @@ import UniformTypeIdentifiers
 
 @testable import RBKit
 
-@Suite
-struct `URLResourceValuesWrapper Tests` {
+struct URLResourceValuesWrapperTests {
   @Test
   func `init, with memberwise values, should assign every property`() {
     let allValues: [URLResourceKey: Any] = [.isDirectoryKey: true]

@@ -5,7 +5,7 @@ import Testing
 
 @Suite(.serialized)
 @MainActor
-struct `NSMenuItem standard menu Tests` {
+struct NSMenuItemStandardMenuTests {
   @Test
   func `init with builder, should attach submenu children`() throws {
     let child1 = NSMenuItem("Child 1")

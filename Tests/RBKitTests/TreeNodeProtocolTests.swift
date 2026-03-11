@@ -2,8 +2,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `TreeNodeProtocol Tests` {
+struct TreeNodeProtocolTests {
   struct MockNode: TreeNodeProtocol, Equatable {
     init(_ title: String, children: [MockNode] = []) {
       self.title = title

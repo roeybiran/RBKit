@@ -3,8 +3,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `NSRunningApplication.Mock Tests` {
+struct NSRunningApplicationMockTests {
   @Test
   func `init, should track activation policy and visibility`() {
     let application = NSRunningApplication.Mock()

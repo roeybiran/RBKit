@@ -3,8 +3,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `CACornerMask Tests` {
+struct CACornerMaskTests {
   @Test
   func `topLeft, should equal layerMinXMaxYCorner`() {
     #expect(CACornerMask.topLeft == .layerMinXMaxYCorner)

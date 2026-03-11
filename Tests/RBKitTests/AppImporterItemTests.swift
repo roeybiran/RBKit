@@ -4,8 +4,7 @@ import Foundation
 import Testing
 @testable import RBKit
 
-@Suite
-struct `AppImporterItem Tests` {
+struct AppImporterItemTests {
   @Test
   func `init(bundleID:) should store identifier`() {
     let item = AppImporterItem(bundleID: "com.example.app")

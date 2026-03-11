@@ -4,8 +4,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `NSEvent.ModifierFlags Tests` {
+struct NSEventModifierFlagsTests {
   @Test
   func `init carbon:, with carbon flags, should convert to ModifierFlags`() {
     #expect(NSEvent.ModifierFlags(carbon: cmdKey) == .command)

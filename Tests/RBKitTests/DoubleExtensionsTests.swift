@@ -3,8 +3,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `Double Tests` {
+struct DoubleTests {
   @Test
   func `radians, should convert degrees to radians`() {
     let radians = Double(360).radians

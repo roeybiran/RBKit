@@ -4,8 +4,7 @@ import Testing
 @testable import RBKit
 
 @MainActor
-@Suite
-struct `EventTapManagerClient glue code tests` {
+struct EventTapManagerClientGlueCodeTests {
   @Test
   func `Can access live value and call getIsEnabled`() {
     let eventTapClient = EventTapManagerClient.liveValue

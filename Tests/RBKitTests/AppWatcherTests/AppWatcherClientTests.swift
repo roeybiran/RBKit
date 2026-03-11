@@ -4,9 +4,8 @@ import Testing
 
 @testable import RBKit
 
-@Suite
 @MainActor
-struct `AppWatcherClient Tests` {
+struct AppWatcherClientTests {
   @Test
   func `liveValue: should create valid client`() async {
     nonisolated(unsafe) var eventCount = 0

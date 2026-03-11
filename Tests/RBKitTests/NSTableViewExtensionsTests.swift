@@ -4,8 +4,7 @@ import Testing
 @testable import RBKit
 
 @MainActor
-@Suite
-struct `NSTableView Tests` {
+struct NSTableViewTests {
   @Test
   func `makeView ofType:, should use type name as identifier`() {
     let tableView = NSTableView()

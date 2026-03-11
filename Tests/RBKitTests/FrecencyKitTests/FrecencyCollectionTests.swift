@@ -6,7 +6,7 @@ import Testing
 struct FrecencyCollectionTests {
 
   @Test
-  func initWithDictionary() {
+  func `init with dictionary`() {
     let now = Date.now
     let items = ["a": FrecencyItem(id: "a", visits: [now])]
     let sut = FrecencyCollection(items: items)
@@ -14,7 +14,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func initWithArray() {
+  func `init with array`() {
     let now = Date.now
     let item = FrecencyItem(id: "a", visits: [now])
     let sut = FrecencyCollection(items: [item])
@@ -22,7 +22,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withNewItem() {
+  func `add with new item`() {
     var sut = FrecencyCollection<String>()
     let item = "A"
     sut.add(entry: item)
@@ -30,7 +30,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withExistingItem() {
+  func `add with existing item`() {
     let date = Date()
     let existingItem = FrecencyItem(id: "A", visits: [date])
     var sut = FrecencyCollection<String>(items: ["A": existingItem])
@@ -40,7 +40,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func add_withExistingItemHaving10Dates() {
+  func `add with existing item having10 dates`() {
     let dates: [Date] = Array(repeating: 0, count: 10)
       .enumerated()
       .map { idx, _ in .distantPast.addingTimeInterval(Double(idx)) }
@@ -57,14 +57,14 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withNonExistingItem_shouldReturn0() {
+  func `score with non existing item should return0`() {
     let sut = FrecencyCollection<String>()
     let item = "A"
     #expect(sut.score(for: item) == 0)
   }
 
   @Test
-  func score_withLast90Days() throws {
+  func `score with last90 days`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -74,7 +74,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withLastMonth() throws {
+  func `score with last month`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -84,7 +84,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withLastWeek() throws {
+  func `score with last week`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -94,7 +94,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withLast3Days() throws {
+  func `score with last3 days`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -104,7 +104,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withLastDay() throws {
+  func `score with last day`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -114,7 +114,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withLast4Hours() throws {
+  func `score with last4 hours`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"
@@ -124,7 +124,7 @@ struct FrecencyCollectionTests {
   }
 
   @Test
-  func score_withNow() throws {
+  func `score with now`() throws {
     let now = Date()
     var sut = FrecencyCollection<String>()
     let item = "A"

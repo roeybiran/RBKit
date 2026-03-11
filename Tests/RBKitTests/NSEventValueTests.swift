@@ -4,8 +4,7 @@ import Testing
 @testable import RBKit
 
 @MainActor
-@Suite
-struct `NSEventValue Tests` {
+struct NSEventValueTests {
   @Test
   func `init nsEvent:, with keyDown event, should create value`() throws {
     let event = try #require(NSEvent.keyEvent(

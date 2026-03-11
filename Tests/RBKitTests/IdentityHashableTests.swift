@@ -2,8 +2,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `IdentityHashable Tests` {
+struct IdentityHashableTests {
   @Test
   func `conformance, should use identity for equality and hashing`() {
     struct Identified: IdentityHashable {

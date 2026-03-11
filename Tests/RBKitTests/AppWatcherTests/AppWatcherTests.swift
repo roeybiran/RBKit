@@ -10,7 +10,7 @@ import Testing
 
 @Suite(.serialized)
 @MainActor
-struct `AppWatcher Tests` {
+struct AppWatcherTests {
   @Test
   func `NSWorkspace observations: should observe correct key paths and NSKeyValueObservingOptions`() async {
     await withDependencies { deps in

@@ -2,8 +2,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `Sequence Tests` {
+struct SequenceTests {
   @Test
   func `sorted by:, with keyPath, should return ascending order`() {
     struct Book: Equatable {

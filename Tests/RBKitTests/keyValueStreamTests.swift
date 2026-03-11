@@ -3,8 +3,7 @@ import Testing
 
 @testable import RBKit
 
-@Suite
-struct `keyValueStream Tests` {
+struct KeyValueStreamTests {
   @Test
   func `keyValueStream, with keyPath, should emit changes`() async {
     await confirmation { confirm in

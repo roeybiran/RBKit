@@ -12,10 +12,9 @@ struct TestError: Error { }
 
 // MARK: - `FrecencyStore Tests`
 
-@Suite
-struct `FrecencyStore Tests` {
+struct FrecencyStoreTests {
   @Test
-  func getURL() {
+  func `get URL`() {
     nonisolated(unsafe) var called_urls = false
     nonisolated(unsafe) var called_createDirectory = false
 
@@ -41,7 +40,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func getURL_with_bundleIdentifier_nil() {
+  func `get URL with bundle identifier nil`() {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -56,7 +55,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func getURL_with_createDirectory_failing() {
+  func `get URL with create directory failing`() {
     let sut = withDependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
@@ -90,7 +89,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_withoutURL_shouldNoOp() throws {
+  func `load without URL should no op`() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in fatalError("should not get here") }
     } operation: {
@@ -101,7 +100,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_with_readError_shouldThrow() throws {
+  func `load with read error should throw`() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in throw TestError() }
     } operation: {
@@ -112,7 +111,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func load_with_invalidJson_shouldThrow() throws {
+  func `load with invalid json should throw`() throws {
     var sut = withDependencies {
       $0.diskClient.read = { @Sendable _ in "foo".data(using: .utf8)! }
     } operation: {
@@ -146,7 +145,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test(.disabled())
-  func save_withJSONEncodingError_shouldNoOp() throws {
+  func `save with JSON encoding error should no op`() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in }
     } operation: {
@@ -157,7 +156,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func save_withDiskWriteError_shouldThrow() throws {
+  func `save with disk write error should throw`() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in throw TestError() }
     } operation: {
@@ -168,7 +167,7 @@ struct `FrecencyStore Tests` {
   }
 
   @Test
-  func save_withoutURL_shouldNoOp() throws {
+  func `save without URL should no op`() throws {
     let sut = withDependencies {
       $0.diskClient.write = { @Sendable _, _, _ in fatalError("should not get here") }
     } operation: {

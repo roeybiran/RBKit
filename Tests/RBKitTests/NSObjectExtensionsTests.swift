@@ -4,8 +4,7 @@ import Testing
 @testable import RBKit
 
 @MainActor
-@Suite
-struct `NSObject Tests` {
+struct NSObjectTests {
   @Test
   func `set, with keyPath, should update value`() {
     let view = NSView()

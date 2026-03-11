@@ -29,6 +29,7 @@ public struct NSScreenValue {
     maximumRefreshInterval: TimeInterval,
     displayUpdateGranularity: TimeInterval,
     lastDisplayUpdateTimestamp: TimeInterval,
+    deviceDescription: ScreenDeviceDescription,
   ) {
     self.depth = depth
     self.frame = frame
@@ -48,6 +49,7 @@ public struct NSScreenValue {
     self.maximumRefreshInterval = maximumRefreshInterval
     self.displayUpdateGranularity = displayUpdateGranularity
     self.lastDisplayUpdateTimestamp = lastDisplayUpdateTimestamp
+    self.deviceDescription = deviceDescription
   }
 
   // MARK: Public
@@ -85,6 +87,7 @@ public struct NSScreenValue {
   public let maximumRefreshInterval: TimeInterval
   public let displayUpdateGranularity: TimeInterval
   public let lastDisplayUpdateTimestamp: TimeInterval
+  public let deviceDescription: ScreenDeviceDescription
 
 }
 
@@ -117,6 +120,7 @@ extension NSScreenValue {
     maximumRefreshInterval = nsScreen.maximumRefreshInterval
     displayUpdateGranularity = nsScreen.displayUpdateGranularity
     lastDisplayUpdateTimestamp = nsScreen.lastDisplayUpdateTimestamp
+    deviceDescription = .init(deviceDescription: nsScreen.deviceDescription)
   }
 }
 
@@ -138,6 +142,7 @@ extension NSScreenValue {
     maximumRefreshInterval: TimeInterval = 0,
     displayUpdateGranularity: TimeInterval = 0,
     lastDisplayUpdateTimestamp: TimeInterval = 0,
+    deviceDescription: ScreenDeviceDescription = .init(),
   ) -> Self {
     .init(
       depth: depth,
@@ -158,6 +163,7 @@ extension NSScreenValue {
       maximumRefreshInterval: maximumRefreshInterval,
       displayUpdateGranularity: displayUpdateGranularity,
       lastDisplayUpdateTimestamp: lastDisplayUpdateTimestamp,
+      deviceDescription: deviceDescription,
     )
   }
 }

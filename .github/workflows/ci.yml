@@ -15,7 +15,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Lint
-        run: swift package -q --allow-writing-to-package-directory format
+        run: swift package -q --allow-writing-to-package-directory format --lint
 
   build-and-test:
     needs: lint

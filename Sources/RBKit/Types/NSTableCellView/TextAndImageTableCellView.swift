@@ -6,9 +6,12 @@ open class TextAndImageTableCellView: TextTableCellView {
 
   public override init(frame frameRect: NSRect) {
     super.init(frame: frameRect)
+
+    let _imageView = NSImageView()
+    self._imageView = _imageView
+
     identifier = .init("\(Self.self)")
-    _imageView = NSImageView()
-    addSubview(_imageView!)
+    addSubview(_imageView)
   }
 
   required public init?(coder _: NSCoder) {

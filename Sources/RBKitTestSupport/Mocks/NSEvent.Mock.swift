@@ -456,15 +456,15 @@ extension NSEvent {
         _ code: UInt16,
       ) -> NSEvent? = {
         _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _ in
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _ in
         fatalError("NSEvent.Mock default stub was not overridden")
       }
 
@@ -481,14 +481,14 @@ extension NSEvent {
         _ data: UnsafeMutableRawPointer?,
       ) -> NSEvent? = {
         _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _ in fatalError("NSEvent.Mock default stub was not overridden")
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _ in fatalError("NSEvent.Mock default stub was not overridden")
       }
 
     static nonisolated(unsafe) public var _otherEvent:
@@ -504,14 +504,14 @@ extension NSEvent {
         _ d2: Int,
       ) -> NSEvent? = {
         _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _ in fatalError("NSEvent.Mock default stub was not overridden")
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _ in fatalError("NSEvent.Mock default stub was not overridden")
       }
 
     static nonisolated(unsafe) public var _mouseLocation = NSPoint.zero

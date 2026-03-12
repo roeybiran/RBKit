@@ -1,3 +1,4 @@
+import IdentifiedCollections
 import Testing
 
 @testable import RBKit
@@ -6,21 +7,23 @@ struct TreeNodeProtocolTests {
   struct MockNode: TreeNodeProtocol, Equatable {
     init(_ title: String, children: [MockNode] = []) {
       self.title = title
-      self.children = children
+      self.children = .init(uniqueElements: children)
     }
 
+    var id: String { title }
     let title: String
-    var children: [MockNode]
+    var children: IdentifiedArrayOf<MockNode>
   }
 
   struct MockNode2: TreeNodeProtocol, Equatable {
     init(_ title: String, children: [MockNode2] = []) {
       self.title = title
-      self.children = children
+      self.children = .init(uniqueElements: children)
     }
 
+    var id: String { title }
     let title: String
-    var children: [MockNode2]
+    var children: IdentifiedArrayOf<MockNode2>
   }
 
   static let mockTree = MockNode(

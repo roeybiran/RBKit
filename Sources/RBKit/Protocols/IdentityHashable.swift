@@ -1,7 +1,7 @@
 // MARK: - IdentityHashable
 
 @dynamicMemberLookup
-public protocol IdentityHashable: Hashable {
+public protocol IdentityHashable: Hashable, Identifiable {
   init(_ value: Value)
 
   associatedtype Value: Identifiable
@@ -11,6 +11,10 @@ public protocol IdentityHashable: Hashable {
 }
 
 extension IdentityHashable {
+  public var id: Value.ID {
+    value.id
+  }
+
   public static func ==(lhs: Self, rhs: Self) -> Bool {
     lhs.value.id == rhs.value.id
   }

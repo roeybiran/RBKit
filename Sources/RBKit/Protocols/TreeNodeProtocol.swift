@@ -12,11 +12,10 @@ public protocol TreeNodeProtocol: Identifiable {
 extension TreeNodeProtocol {
   /// Recursively returns children of self in a breadth-first order.
   public var descendants: [Self] {
-    let children = children.elements
     let descendantChildren = children.reduce(into: [Self]()) { result, child in
       result.append(contentsOf: child.descendants)
     }
-    return children + descendantChildren
+    return Array(children) + descendantChildren
   }
 
   /// Apply `transform` on `self` and recursively on all of its descendants.

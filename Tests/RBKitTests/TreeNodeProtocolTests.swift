@@ -7,12 +7,12 @@ struct TreeNodeProtocolTests {
   struct MockNode: TreeNodeProtocol, Equatable {
     init(_ title: String, children: [MockNode] = []) {
       self.title = title
-      self.children = .init(uniqueElements: children)
+      self.children = children
     }
 
     var id: String { title }
     let title: String
-    var children: IdentifiedArrayOf<MockNode>
+    var children: [MockNode]
   }
 
   struct MockNode2: TreeNodeProtocol, Equatable {
@@ -295,6 +295,30 @@ struct TreeNodeProtocolTests {
   }
 
   @Test
+  func `subscript, with IdentifiedArray children, should update nested child`() {
+    var node = MockNode2(
+      "a",
+      children: [
+        MockNode2("b"),
+        MockNode2(
+          "c",
+          children: [
+            MockNode2("y")
+          ],
+        ),
+      ],
+    )
+    node[[1, 0]] = MockNode2("z")
+
+    #expect(node[[1, 0]] == MockNode2("z"))
+  }
+
+  @Test
+  func `recursiveFirst where:, with IdentifiedArray children, should find it`() {
+    #expect(Self.mockTree2.recursiveFirst(where: { $0.title == "1.2.1.2" }) != nil)
+  }
+
+  @Test
   func `recursiveMap, with Array, should transform nodes`() {
     let nodes = [
       MockNode("a", children: [MockNode("a.1")]),
@@ -348,4 +372,5 @@ struct TreeNodeProtocolTests {
     let notFound = nodes.recursiveFirst(where: { $0.title == "c" })
     #expect(notFound == nil)
   }
+
 }

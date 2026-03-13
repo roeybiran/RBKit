@@ -31,7 +31,6 @@ let package = Package(
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
-        .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
       ],
       swiftSettings: [
         .enableExperimentalFeature("StrictConcurrency"),
@@ -46,6 +45,7 @@ let package = Package(
       dependencies: [
         "RBKit",
         "RBKitTestSupport",
+        .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
       ],
     ),
   ],

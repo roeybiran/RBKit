@@ -1,12 +1,10 @@
-// NSTreeController.h
-// NSTreeNode.h
-
-import IdentifiedCollections
-
 // MARK: - TreeNodeProtocol
 
 public protocol TreeNodeProtocol: Identifiable {
-  var children: IdentifiedArrayOf<Self> { get set }
+  associatedtype Children: RangeReplaceableCollection = [Self]
+    where Children.Element == Self
+
+  var children: Children { get set }
 }
 
 extension TreeNodeProtocol {
@@ -21,13 +19,19 @@ extension TreeNodeProtocol {
   /// Apply `transform` on `self` and recursively on all of its descendants.
   public func recursiveMap<T: TreeNodeProtocol>(_ transform: (Self) throws -> T) rethrows -> T {
     var transformed = try transform(self)
-    transformed.children = .init(uniqueElements: try children.map { try $0.recursiveMap(transform) })
+    transformed.children = try children.reduce(into: T.Children()) { result, child in
+      result.append(try child.recursiveMap(transform))
+    }
     return transformed
   }
 
   public func recursiveCompactMap<T: TreeNodeProtocol>(_ transform: (Self) throws -> T?) rethrows -> T? {
     guard var transformed = try transform(self) else { return nil }
-    transformed.children = .init(uniqueElements: try children.compactMap { try $0.recursiveCompactMap(transform) })
+    transformed.children = try children.reduce(into: T.Children()) { result, child in
+      if let child = try child.recursiveCompactMap(transform) {
+        result.append(child)
+      }
+    }
     return transformed
   }
 
@@ -45,6 +49,9 @@ extension TreeNodeProtocol {
     return nil
   }
 
+}
+
+extension TreeNodeProtocol where Children.Index == Int {
   /// If `indices` is empty, returns `self`.
   public subscript(indices: [Int]) -> Self {
     get {
@@ -53,7 +60,7 @@ extension TreeNodeProtocol {
       } else {
         var indicesCopy = indices
         let next = indicesCopy.removeFirst()
-        return children.elements[next][indicesCopy]
+        return children[next][indicesCopy]
       }
     }
     set {
@@ -62,9 +69,9 @@ extension TreeNodeProtocol {
       } else {
         var indicesCopy = indices
         let next = indicesCopy.removeFirst()
-        var elements = children.elements
+        var elements = Array(children)
         elements[next][indicesCopy] = newValue
-        children = .init(uniqueElements: elements)
+        children = .init(elements)
       }
     }
   }
@@ -79,7 +86,7 @@ extension TreeNodeProtocol {
   }
 }
 
-extension Array where Element: TreeNodeProtocol {
+extension Collection where Element: TreeNodeProtocol {
   public func recursiveMap<T: TreeNodeProtocol>(_ transform: (Element) throws -> T) rethrows -> [T] {
     try map {
       try $0.recursiveMap(transform)
@@ -90,33 +97,6 @@ extension Array where Element: TreeNodeProtocol {
     try compactMap {
       try $0.recursiveCompactMap(transform)
     }
-  }
-
-  public func recursiveFirst(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    for child in self {
-      if try predicate(child) {
-        return child
-      }
-
-      if let found = try child.children.recursiveFirst(where: predicate) {
-        return found
-      }
-    }
-    return nil
-  }
-}
-
-extension IdentifiedArray where Element: TreeNodeProtocol, ID == Element.ID {
-  public func recursiveMap<T: TreeNodeProtocol>(_ transform: (Element) throws -> T) rethrows -> IdentifiedArrayOf<T> {
-    try .init(uniqueElements: map {
-      try $0.recursiveMap(transform)
-    })
-  }
-
-  public func recursiveCompactMap<T: TreeNodeProtocol>(_ transform: (Element) throws -> T?) rethrows -> IdentifiedArrayOf<T> {
-    try .init(uniqueElements: compactMap {
-      try $0.recursiveCompactMap(transform)
-    })
   }
 
   public func recursiveFirst(where predicate: (Element) throws -> Bool) rethrows -> Element? {

@@ -11,28 +11,41 @@ import UniformTypeIdentifiers
 
 @DependencyClient
 public struct NSWorkspaceClient: Sendable {
+  // MARK: - Opening URLs
+
   public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
-  public var openItemURLs: @Sendable @MainActor (
-    _ itemURLs: [URL],
-    _ applicationURL: URL,
-    _ configuration: NSWorkspace.OpenConfiguration
-  ) async throws -> NSRunningApplication = { _, _, _ in
-    throw CancellationError()
-  }
-  public var openURLWithConfiguration: @Sendable @MainActor (
-    _ url: URL,
+  @DependencyEndpoint(method: "open")
+  public var openWithConfiguration: @Sendable @MainActor (
+    URL,
     _ configuration: NSWorkspace.OpenConfiguration
   ) async throws -> NSRunningApplication = { _, _ in
     throw CancellationError()
   }
+  @DependencyEndpoint(method: "open")
+  public var openWithApplicationAt: @Sendable @MainActor (
+    [URL],
+    _ withApplicationAt: URL,
+    _ configuration: NSWorkspace.OpenConfiguration
+  ) async throws -> NSRunningApplication = { _, _, _ in
+    throw CancellationError()
+  }
   public var activateFileViewerSelecting: @Sendable (_ fileURLs: [URL]) -> Void
+
+  // MARK: - Launching and Hiding Apps
+
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
-  public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
-  public var iconForContentType: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
+
+  // MARK: - Managing Icons
+
+  public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
+  public var iconForContentType: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
   public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
+
+  // MARK: - Accessing the Workspace Notification Center
+
   public var notifications: @Sendable (_ named: Notification.Name, _ object: (any AnyObject & Sendable)?) -> NotificationCenter
     .Notifications = { NotificationCenter().notifications(
       named: $0,
@@ -58,46 +71,33 @@ public struct NSWorkspaceClient: Sendable {
     \.hash,
     changeHandler: { _, _ in },
   ) }
-
-  @MainActor
-  public func open(
-    itemURLs: [URL],
-    withApplicationAt applicationURL: URL,
-    configuration: NSWorkspace.OpenConfiguration = .init()
-  ) async throws -> NSRunningApplication {
-    try await openItemURLs(itemURLs, applicationURL, configuration)
-  }
-
-  @MainActor
-  public func open(
-    url: URL,
-    configuration: NSWorkspace.OpenConfiguration = .init()
-  ) async throws -> NSRunningApplication {
-    try await openURLWithConfiguration(url, configuration)
-  }
 }
 
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
-  public static let liveValue = Self(
-    open: { NSWorkspace.shared.open($0) },
-    openItemURLs: { try await NSWorkspace.shared.open($0, withApplicationAt: $1, configuration: $2) },
-    openURLWithConfiguration: { try await NSWorkspace.shared.open($0, configuration: $1) },
-    activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
-    urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
-    iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
-    iconForContentType: { NSWorkspace.shared.icon(for: $0) },
-    frontmostApplication: { NSWorkspace.shared.frontmostApplication },
-    runningApplications: { NSWorkspace.shared.runningApplications },
-    menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-    accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
-    notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1) },
-    NSRunningApplicationArrayObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
-    optionalNSRunningApplicationObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
-  )
+  public static var liveValue: Self {
+    Self(
+      open: { NSWorkspace.shared.open($0) },
+      openWithConfiguration: { try await NSWorkspace.shared.open($0, configuration: $1) },
+      openWithApplicationAt: { try await NSWorkspace.shared.open($0, withApplicationAt: $1, configuration: $2) },
+      activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
+      urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
+      frontmostApplication: { NSWorkspace.shared.frontmostApplication },
+      runningApplications: { NSWorkspace.shared.runningApplications },
+      menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
+      iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
+      iconForContentType: { NSWorkspace.shared.icon(for: $0) },
+      accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
+      notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1) },
+      NSRunningApplicationArrayObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
+      optionalNSRunningApplicationObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
+    )
+  }
 
-  public static let testValue = NSWorkspaceClient()
+  public static var testValue: Self {
+    Self()
+  }
 }
 
 extension DependencyValues {

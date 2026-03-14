@@ -13,25 +13,38 @@ import UniformTypeIdentifiers
 public struct NSWorkspaceClient: Sendable {
   // MARK: - Opening URLs
 
-  public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
   @DependencyEndpoint(method: "open")
   public var openWithConfiguration: @Sendable @MainActor (
-    URL,
+    _ url: URL,
     _ configuration: NSWorkspace.OpenConfiguration
   ) async throws -> NSRunningApplication = { _, _ in
     throw CancellationError()
   }
   @DependencyEndpoint(method: "open")
   public var openWithApplicationAt: @Sendable @MainActor (
-    [URL],
+    _ itemURLs: [URL],
     _ withApplicationAt: URL,
     _ configuration: NSWorkspace.OpenConfiguration
   ) async throws -> NSRunningApplication = { _, _, _ in
     throw CancellationError()
   }
-  public var activateFileViewerSelecting: @Sendable (_ fileURLs: [URL]) -> Void
+  public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
   // MARK: - Launching and Hiding Apps
+
+  @DependencyEndpoint(method: "openApplication")
+  public var openApplicationAt: @Sendable @MainActor (
+    _ at: URL,
+    _ configuration: NSWorkspace.OpenConfiguration
+  ) async throws -> NSRunningApplication = { _, _ in
+    throw CancellationError()
+  }
+
+  // MARK: - Manipulating Files
+
+  public var activateFileViewerSelecting: @Sendable (_ fileURLs: [URL]) -> Void
+
+  // MARK: - Requesting Information
 
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
@@ -40,8 +53,13 @@ public struct NSWorkspaceClient: Sendable {
 
   // MARK: - Managing Icons
 
-  public var iconForFile: @Sendable (_ fullPath: String) -> NSImage = { _ in .init() }
-  public var iconForContentType: @Sendable (_ contentType: UTType) -> NSImage = { _ in .init() }
+  @DependencyEndpoint(method: "icon")
+  public var iconForFile: @Sendable (_ forFile: String) -> NSImage = { _ in .init() }
+  @DependencyEndpoint(method: "icon")
+  public var iconForContentType: @Sendable (_ `for`: UTType) -> NSImage = { _ in .init() }
+
+  // MARK: - Supporting Accessibility
+
   public var accessibilityDisplayShouldReduceMotion: @Sendable () -> Bool = { false }
 
   // MARK: - Accessing the Workspace Notification Center
@@ -51,6 +69,8 @@ public struct NSWorkspaceClient: Sendable {
       named: $0,
       object: $1,
     ) }
+
+  // MARK: - Custom
 
   @DependencyEndpoint(method: "observe")
   public var NSRunningApplicationArrayObservation: @Sendable (
@@ -78,9 +98,10 @@ public struct NSWorkspaceClient: Sendable {
 extension NSWorkspaceClient: DependencyKey {
   public static var liveValue: Self {
     Self(
-      open: { NSWorkspace.shared.open($0) },
       openWithConfiguration: { try await NSWorkspace.shared.open($0, configuration: $1) },
       openWithApplicationAt: { try await NSWorkspace.shared.open($0, withApplicationAt: $1, configuration: $2) },
+      open: { NSWorkspace.shared.open($0) },
+      openApplicationAt: { try await NSWorkspace.shared.openApplication(at: $0, configuration: $1) },
       activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
       urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
       frontmostApplication: { NSWorkspace.shared.frontmostApplication },

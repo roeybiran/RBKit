@@ -175,8 +175,16 @@ public struct AXClientLive: AXClient {
   public func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError {
     _AXUIElementGetWindow(axUiElement, &wid)
   }
+
+  public func _createElement(withRemoteToken remoteToken: CFData) -> Unmanaged<UIElement>? {
+    _AXUIElementCreateWithRemoteToken(remoteToken)
+  }
 }
 
 // https://github.com/lwouis/alt-tab-macos/blob/bd162a9e08743f4fec5d94d1e428c7ea9919dc3f/src/api-wrappers/private-apis/ApplicationServices.HIServices.framework.swift#L4
 @_silgen_name("_AXUIElementGetWindow") @discardableResult
 func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) -> AXError
+
+@_silgen_name("_AXUIElementCreateWithRemoteToken")
+nonisolated
+func _AXUIElementCreateWithRemoteToken(_ data: CFData) -> Unmanaged<AXUIElement>?

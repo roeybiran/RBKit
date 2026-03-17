@@ -78,6 +78,7 @@ public protocol AXClient: Sendable {
 
   // Private APIs
   func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError
+  func _createElement(withRemoteToken remoteToken: CFData) -> Unmanaged<UIElement>?
 }
 
 extension AXClient {

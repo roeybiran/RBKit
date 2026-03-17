@@ -80,6 +80,8 @@ public final class AXClientMock: AXClient {
 
   public nonisolated(unsafe) var _getWindow: (UIElement, inout CGWindowID) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
 
+  public nonisolated(unsafe) var _createElementWithRemoteToken: (CFData) -> Unmanaged<UIElement>? = { _ in nil }
+
   // MARK: - Process Trust
   
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
@@ -229,5 +231,8 @@ public final class AXClientMock: AXClient {
   public func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError {
     _getWindow(axUiElement, &wid)
   }
-}
 
+  public func _createElement(withRemoteToken remoteToken: CFData) -> Unmanaged<UIElement>? {
+    _createElementWithRemoteToken(remoteToken)
+  }
+}

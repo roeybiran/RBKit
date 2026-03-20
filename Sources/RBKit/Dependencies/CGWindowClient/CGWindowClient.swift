@@ -6,16 +6,18 @@ import Quartz
 
 @DependencyClient
 public struct CGWindowClient: Sendable {
-  public var copyWindowInfo: @Sendable (_ options: CGWindowListOption, _ referenceWindow: CGWindowID) -> CFArray?
+  public var windowListCopyWindowInfo: @Sendable (_ option: CGWindowListOption, _ relativeToWindow: CGWindowID) -> CFArray?
   // https://github.com/nonstrict-hq/ScreenCaptureKit-Recording-example/blob/main/Sources/sckrecording/main.swift
   public var preflightScreenCaptureAccess: @Sendable () -> Bool = { false }
   public var requestScreenCaptureAccess: @Sendable () -> Bool = { false }
+}
 
+extension CGWindowClient {
   public func list(
     options: CGWindowListOption = [.excludeDesktopElements],
     referenceWindow: CGWindowID = kCGNullWindowID,
   ) -> [CGWindowValue] {
-    let info = copyWindowInfo(options: options, referenceWindow: referenceWindow) as? [[CFString: Any]]
+    let info = windowListCopyWindowInfo(options, referenceWindow) as? [[CFString: Any]]
     return info?.compactMap(CGWindowValue.init) ?? []
   }
 }
@@ -24,7 +26,7 @@ public struct CGWindowClient: Sendable {
 
 extension CGWindowClient: DependencyKey {
   public static let liveValue = Self(
-    copyWindowInfo: CGWindowListCopyWindowInfo,
+    windowListCopyWindowInfo: CGWindowListCopyWindowInfo,
     preflightScreenCaptureAccess: CGPreflightScreenCaptureAccess,
     requestScreenCaptureAccess: CGRequestScreenCaptureAccess,
   )

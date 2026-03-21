@@ -52,22 +52,18 @@ extension NSEvent.ModifierFlags {
   }
 }
 
-// MARK: - NSEvent.ModifierFlags + CustomStringConvertible
-
-extension NSEvent.ModifierFlags: CustomStringConvertible {
-  public var description: String {
-    [
-      (Self.control, kControlUnicode),
-      (.option, kOptionUnicode),
-      (.shift, kShiftUnicode),
-      (.command, kCommandUnicode),
-    ]
-    .filter {
-      contains($0.0)
-    }
-    .map {
-      String(format: "%C", $0.1)
-    }
-    .reduce("", +)
+public func description(_ modifierFlags: NSEvent.ModifierFlags) -> String {
+  [
+    (NSEvent.ModifierFlags.control, kControlUnicode),
+    (.option, kOptionUnicode),
+    (.shift, kShiftUnicode),
+    (.command, kCommandUnicode),
+  ]
+  .filter {
+    modifierFlags.contains($0.0)
   }
+  .map {
+    String(format: "%C", $0.1)
+  }
+  .reduce("", +)
 }

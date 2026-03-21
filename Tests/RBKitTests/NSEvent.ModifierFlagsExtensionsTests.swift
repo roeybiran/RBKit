@@ -48,6 +48,6 @@ struct NSEventModifierFlagsTests {
   func `description, should render symbols in correct order`() {
     let modifiers = NSEvent.ModifierFlags([.command, .shift, .control, .option].shuffled())
 
-    #expect("\(modifiers)" == "⌃⌥⇧⌘")
+    #expect(description(modifiers) == "⌃⌥⇧⌘")
   }
 }

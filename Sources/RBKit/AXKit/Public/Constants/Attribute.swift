@@ -60,7 +60,6 @@ public struct Attribute<T>: Equatable {
   public static var matteHole: Attribute<CGRect> { .init(.matteHole) }
   public static var menuItemCmdChar: Attribute<String> { .init(.menuItemCmdChar) }
   public static var menuItemCmdGlyph: Attribute<Int> { .init(.menuItemCmdGlyph) }
-  // TODO: change to AXMenuItemModifiers?
   public static var menuItemCmdModifiers: Attribute<UInt32> { .init(.menuItemCmdModifiers) }
   public static var menuItemCmdVirtualKey: Attribute<Int> { .init(.menuItemCmdVirtualKey) }
   public static var menuItemMarkChar: Attribute<String> { .init(.menuItemMarkChar) }

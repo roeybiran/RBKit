@@ -20,19 +20,18 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
     self.client = client
     self.runLoopClient = runLoopClient
   }
-  
+
   public func createObserver(process: pid_t) throws(AXClientError) {
     var outObserver: AX.Observer?
     let result = client.observerCreate(application: process, outObserver: &outObserver)
     guard result == .success else {
       throw AXClientError(axError: result)
     }
-    
+
     guard let outObserver else {
       throw AXClientError.unknown
     }
-    
-    // Create a box for this observer
+
     let box = Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>()
     observers[process] = ObserverData(observer: outObserver, box: box)
   }
@@ -56,13 +55,13 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
       continuation.finish(throwing: AXClientError.unknown)
       return stream
     }
-    
-    observerData.box.callback = { observer, uiElement, notification in
+
+    observerData.box.callback = { _, uiElement, notification in
       let notificationString = notification as String
       guard let axNotification = AXNotification(rawValue: notificationString) else { return }
       continuation.yield((process, uiElement, axNotification))
     }
-    
+
     let runLoopSource = client.observerGetRunLoopSource(observer: observerData.observer)
     guard let currentRunLoop = runLoopClient.getCurrent() else {
       continuation.finish(throwing: AXClientError.unknown)
@@ -76,7 +75,7 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
         self.observers.removeValue(forKey: process)
       }
     }
-    
+
     runLoopClient.addSource(runLoop: currentRunLoop, source: runLoopSource, mode: .commonModes)
 
     return stream

@@ -14,17 +14,17 @@ struct `AXObserverManager Tests` {
     let mockRunLoopClient = CFRunLoopClientMock()
     let pid: pid_t = 12345
     let expectedObserver = ObserverMock(id: "test-observer-123")
-    
+
     mockClient._observerCreate = { receivedPid, _, outObserver in
       #expect(receivedPid == pid)
       outObserver.pointee = expectedObserver
       didCreateObserver = true
       return .success
     }
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
     try manager.createObserver(process: pid)
-    
+
     #expect(didCreateObserver == true)
   }
 
@@ -32,11 +32,11 @@ struct `AXObserverManager Tests` {
   func `createObserver, with AXError, should throw`() async {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
-    
+
     mockClient._observerCreate = { _, _, _ in .failure }
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
-    
+
     #expect(throws: AXClientError.self) {
       try manager.createObserver(process: 12345)
     }
@@ -46,14 +46,14 @@ struct `AXObserverManager Tests` {
   func `createObserver, with success but nil observer, should throw unknown`() async {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
-    
+
     mockClient._observerCreate = { _, _, outObserver in
       outObserver.pointee = nil  // Success but nil observer
       return .success
     }
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
-    
+
     #expect(throws: AXClientError.unknown) {
       try manager.createObserver(process: 12345)
     }
@@ -75,7 +75,7 @@ struct `AXObserverManager Tests` {
     }
     mockClient._observerGetRunLoopSource = { _ in RunLoopSourceMock() }
     mockRunLoopClient._getCurrent = { RunLoopSourceMock() }
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
     try manager.createObserver(process: pid)
     let stream = manager.notifications(for: pid)
@@ -142,10 +142,10 @@ struct `AXObserverManager Tests` {
       didAddNotification = true
       return .success
     }
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
-    try manager.createObserver(process: pid)  // Create observer first
-    
+    try manager.createObserver(process: pid)
+
     try manager.add(notification: notification, to: pid, element: element)
     #expect(didAddNotification == true)
   }

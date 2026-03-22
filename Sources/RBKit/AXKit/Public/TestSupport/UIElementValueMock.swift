@@ -17,4 +17,3 @@ open class UIElementValueMock: Hashable {
     hasher.combine(id)
   }
 }
-

@@ -22,4 +22,3 @@ public struct CFRunLoopClientMock: CFRunLoopClient {
     _removeSource(runLoop, source, mode)
   }
 }
-

@@ -1,8 +1,6 @@
-import AppKit.NSApplication
 import AppKit.NSScreen
 import Dependencies
 import DependenciesMacros
-import Foundation
 
 // MARK: - NSScreenClient
 
@@ -12,7 +10,7 @@ public struct NSScreenClient: Sendable {
   // see also -- NSScreen.main is not really the active screen: https://stackoverflow.com/a/56268826
   public var main: @Sendable () -> Screen?
   public var deepest: @Sendable () -> Screen?
-  public var screens: @Sendable () -> AsyncStream<[Screen]> = { .finished }
+  public var screens: @Sendable () -> [Screen] = { [] }
 }
 
 // MARK: DependencyKey
@@ -21,23 +19,7 @@ extension NSScreenClient: DependencyKey {
   public static let liveValue = NSScreenClient(
     main: { NSScreen.main.map(Screen.init) },
     deepest: { NSScreen.deepest.map(Screen.init) },
-    screens: {
-      @Dependency(\.notificationCenter) var notificationCenter
-      let (stream, continuation) = AsyncStream.makeStream(of: [Screen].self)
-      let screenParametersTask = Task {
-        let notification = NSApplication.didChangeScreenParametersNotification
-        for await _ in notificationCenter.notifications(named: notification) {
-          continuation.yield(NSScreen.screens.map(Screen.init))
-        }
-      }
-
-      continuation.onTermination = { _ in
-        screenParametersTask.cancel()
-      }
-
-      continuation.yield(NSScreen.screens.map(Screen.init))
-      return stream
-    },
+    screens: { NSScreen.screens.map(Screen.init) },
   )
 
   public static let testValue = NSScreenClient()

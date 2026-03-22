@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2620"
+   LastUpgradeVersion = "2630"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -19,6 +19,34 @@
                BuildableName = "RBKitDemo.app"
                BlueprintName = "RBKitDemo"
                ReferencedContainer = "container:RBKitDemo.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RBKitTestSupport"
+               BuildableName = "RBKitTestSupport"
+               BlueprintName = "RBKitTestSupport"
+               ReferencedContainer = "container:..">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RBKit"
+               BuildableName = "RBKit"
+               BlueprintName = "RBKit"
+               ReferencedContainer = "container:..">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

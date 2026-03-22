@@ -5,8 +5,10 @@ import CoreGraphics
 
 public struct ScreenDeviceDescription: DeviceDescriptionProtocol {
 
-  // Swift keeps synthesized memberwise initializers internal for public
-  // structs, so expose the same shape explicitly for public mocks/defaults.
+  // MARK: Lifecycle
+
+  /// Swift keeps synthesized memberwise initializers internal for public
+  /// structs, so expose the same shape explicitly for public mocks/defaults.
   public init(
     resolution: CGSize?,
     colorSpaceName: String?,

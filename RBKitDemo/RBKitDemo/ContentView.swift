@@ -7,6 +7,7 @@ struct ContentView: View {
   struct Match: Identifiable {
     let candidate: String
     let score: ScoreV2
+
     var id: String { candidate }
   }
 
@@ -50,39 +51,38 @@ struct ContentView: View {
     .task {
       appWatcherTask = Task {
         for await event in appWatcherClient.events() {
-        switch event {
-        case .launched(let apps):
-          let names = apps.map { $0.localizedName ?? "UNKNOWN" }.joined(separator: ", ")
-          appWatcherLogs.append("launched: \(names)")
+          switch event {
+          case .launched(let apps):
+            let names = apps.map { $0.localizedName ?? "UNKNOWN" }.joined(separator: ", ")
+            appWatcherLogs.append("launched: \(names)")
 
-        case .didFinishedLaunching(let app):
-          appWatcherLogs.append("didFinishedLaunching: \(app.localizedName ?? "UNKNOWN")")
+          case .didFinishedLaunching(let app):
+            appWatcherLogs.append("didFinishedLaunching: \(app.localizedName ?? "UNKNOWN")")
 
-        case .activated(let app):
-          appWatcherLogs.append("activated: \(app.localizedName ?? "UNKNOWN")")
+          case .activated(let app):
+            appWatcherLogs.append("activated: \(app.localizedName ?? "UNKNOWN")")
 
-        case .deactivated(let app):
-          appWatcherLogs.append("deactivated: \(app.localizedName ?? "UNKNOWN")")
+          case .deactivated(let app):
+            appWatcherLogs.append("deactivated: \(app.localizedName ?? "UNKNOWN")")
 
-        case .terminated(let app):
-          appWatcherLogs.append("terminated: \(app.localizedName ?? "UNKNOWN")")
+          case .terminated(let app):
+            appWatcherLogs.append("terminated: \(app.localizedName ?? "UNKNOWN")")
 
-        case .hidden(let app):
-          appWatcherLogs.append("hidden: \(app.localizedName ?? "UNKNOWN")")
+          case .hidden(let app):
+            appWatcherLogs.append("hidden: \(app.localizedName ?? "UNKNOWN")")
 
-        case .unhidden(let app):
-          appWatcherLogs.append("unhidden: \(app.localizedName ?? "UNKNOWN")")
+          case .unhidden(let app):
+            appWatcherLogs.append("unhidden: \(app.localizedName ?? "UNKNOWN")")
 
-        case .activationPolicyChanged(let app):
-          appWatcherLogs.append("activationPolicyChanged: \(app.localizedName ?? "UNKNOWN")")
-        }
+          case .activationPolicyChanged(let app):
+            appWatcherLogs.append("activationPolicyChanged: \(app.localizedName ?? "UNKNOWN")")
+          }
 
-        if appWatcherLogs.count > 200 {
-          appWatcherLogs.removeFirst(appWatcherLogs.count - 200)
+          if appWatcherLogs.count > 200 {
+            appWatcherLogs.removeFirst(appWatcherLogs.count - 200)
+          }
         }
       }
-      }
-
     }
     .task(id: query) {
       if

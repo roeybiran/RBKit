@@ -7,12 +7,6 @@ public struct Screen: Equatable, Sendable {
 
   // MARK: Lifecycle
 
-  public typealias ID = CGDirectDisplayID
-
-  public var id: ID? {
-    deviceDescription.cgDirectDisplayID
-  }
-
   public init(
     depth: NSWindow.Depth,
     frame: NSRect,
@@ -62,11 +56,11 @@ public struct Screen: Equatable, Sendable {
     auxiliaryTopLeftArea = nsScreen.auxiliaryTopLeftArea
     auxiliaryTopRightArea = nsScreen.auxiliaryTopRightArea
     maximumPotentialExtendedDynamicRangeColorComponentValue =
-    nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
+      nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
     maximumExtendedDynamicRangeColorComponentValue =
-    nsScreen.maximumExtendedDynamicRangeColorComponentValue
+      nsScreen.maximumExtendedDynamicRangeColorComponentValue
     maximumReferenceExtendedDynamicRangeColorComponentValue =
-    nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
+      nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
     maximumFramesPerSecond = nsScreen.maximumFramesPerSecond
     minimumRefreshInterval = nsScreen.minimumRefreshInterval
     maximumRefreshInterval = nsScreen.maximumRefreshInterval
@@ -76,6 +70,8 @@ public struct Screen: Equatable, Sendable {
   }
 
   // MARK: Public
+
+  public typealias ID = CGDirectDisplayID
 
   // Getting Screen Information
   public let depth: NSWindow.Depth
@@ -111,6 +107,10 @@ public struct Screen: Equatable, Sendable {
   public let displayUpdateGranularity: TimeInterval
   public let lastDisplayUpdateTimestamp: TimeInterval
   public let deviceDescription: ScreenDeviceDescription
+
+  public var id: ID? {
+    deviceDescription.cgDirectDisplayID
+  }
 
 }
 

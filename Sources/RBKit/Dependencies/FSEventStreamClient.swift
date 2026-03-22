@@ -27,10 +27,10 @@ public struct FSEventStreamClient: Sendable {
 
 extension FSEventStreamClient: DependencyKey {
   public static let liveValue = Self(
-    create: FSEventStreamCreate,
-    setDispatchQueue: FSEventStreamSetDispatchQueue,
-    start: FSEventStreamStart,
-    stop: FSEventStreamStop,
+    create: { FSEventStreamCreate($0, $1, $2, $3, $4, $5, $6) },
+    setDispatchQueue: { FSEventStreamSetDispatchQueue($0, $1) },
+    start: { FSEventStreamStart($0) },
+    stop: { FSEventStreamStop($0) },
   )
 
   public static let testValue = Self()

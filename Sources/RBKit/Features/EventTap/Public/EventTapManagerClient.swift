@@ -23,21 +23,25 @@ public struct EventTapManagerClient: Sendable {
 // MARK: DependencyKey
 
 extension EventTapManagerClient: DependencyKey {
-  public static let liveValue: Self = {
-    let instance = EventTapManager(
-      cgEventClient: CGEventClientLive(),
-      cfMachPortClient: CFMachPortClientLive(),
-      cfRunLoopClient: CFRunLoopClientLive(),
-    )
-    return Self(
-      start: { instance.start(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
-      stop: { instance.stop(id: $0) },
-      getIsEnabled: { instance.getIsEnabled(id: $0) },
-      setIsEnabled: { instance.setIsEnabled(id: $0, $1) },
-    )
-  }()
 
+  // MARK: Public
+
+  public static let liveValue = Self(
+    start: { manager.start(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
+    stop: { manager.stop(id: $0) },
+    getIsEnabled: { manager.getIsEnabled(id: $0) },
+    setIsEnabled: { manager.setIsEnabled(id: $0, $1) },
+  )
   public static let testValue = Self()
+
+  // MARK: Internal
+
+  @MainActor static let manager = EventTapManager(
+    cgEventClient: CGEventClientLive(),
+    cfMachPortClient: CFMachPortClientLive(),
+    cfRunLoopClient: CFRunLoopClientLive(),
+  )
+
 }
 
 extension DependencyValues {

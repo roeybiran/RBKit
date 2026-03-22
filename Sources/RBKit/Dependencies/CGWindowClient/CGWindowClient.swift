@@ -26,9 +26,9 @@ extension CGWindowClient {
 
 extension CGWindowClient: DependencyKey {
   public static let liveValue = Self(
-    windowListCopyWindowInfo: CGWindowListCopyWindowInfo,
-    preflightScreenCaptureAccess: CGPreflightScreenCaptureAccess,
-    requestScreenCaptureAccess: CGRequestScreenCaptureAccess,
+    windowListCopyWindowInfo: { CGWindowListCopyWindowInfo($0, $1) },
+    preflightScreenCaptureAccess: { CGPreflightScreenCaptureAccess() },
+    requestScreenCaptureAccess: { CGRequestScreenCaptureAccess() },
   )
 
   public static let testValue = Self()

@@ -6,10 +6,9 @@ import Foundation
 
 @DependencyClient
 public struct UserDefaultsClient: Sendable {
+  public typealias Stream<T: Sendable> = AsyncStream<KeyValueObservedChange<T>>
 
-  public typealias Stream<T> = AsyncStream<(object: UserDefaults, change: NSKeyValueObservedChange<T>)>
-
-  public static nonisolated(unsafe) var suite = UserDefaults.standard
+  public static let suite = UserDefaults.standard
 
   public var object: @Sendable (_ forKey: String) -> Any?
   public var url: @Sendable (_ forKey: String) -> URL?
@@ -68,10 +67,10 @@ extension UserDefaultsClient: DependencyKey {
     setURL: { suite.set($0, forKey: $1) },
     removeObject: { suite.removeObject(forKey: $0) },
     register: { suite.register(defaults: $0) },
-    observeString: { keyValueStream(observed: suite, keyPath: $0) },
-    observeBool: { keyValueStream(observed: suite, keyPath: $0) },
-    observeInt: { keyValueStream(observed: suite, keyPath: $0) },
-    observeDouble: { keyValueStream(observed: suite, keyPath: $0) },
+    observeString: { keyValueChangeStream(observed: suite, keyPath: $0) },
+    observeBool: { keyValueChangeStream(observed: suite, keyPath: $0) },
+    observeInt: { keyValueChangeStream(observed: suite, keyPath: $0) },
+    observeDouble: { keyValueChangeStream(observed: suite, keyPath: $0) },
   )
 
   public static let testValue = Self()

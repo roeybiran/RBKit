@@ -1,32 +1,20 @@
 import AppKit.NSWindow
 import CoreGraphics
-import Foundation
-
-// MARK: - DeviceDescription
-
-public protocol DeviceDescription: Sendable, Equatable {
-  var resolution: CGSize? { get }
-  var colorSpaceName: String? { get }
-  var bitsPerSample: Int? { get }
-  var isScreen: Bool { get }
-  var isPrinter: Bool { get }
-  var size: CGSize? { get }
-}
 
 // MARK: - ScreenDeviceDescription
 
-public struct ScreenDeviceDescription: DeviceDescription {
+public struct ScreenDeviceDescription: DeviceDescriptionProtocol {
 
-  // MARK: Lifecycle
-
+  // Swift keeps synthesized memberwise initializers internal for public
+  // structs, so expose the same shape explicitly for public mocks/defaults.
   public init(
-    resolution: CGSize? = nil,
-    colorSpaceName: String? = nil,
-    bitsPerSample: Int? = nil,
-    isScreen: Bool = false,
-    isPrinter: Bool = false,
-    size: CGSize? = nil,
-    cgDirectDisplayID: CGDirectDisplayID? = nil,
+    resolution: CGSize?,
+    colorSpaceName: String?,
+    bitsPerSample: Int?,
+    isScreen: Bool,
+    isPrinter: Bool,
+    size: CGSize?,
+    cgDirectDisplayID: CGDirectDisplayID?,
   ) {
     self.resolution = resolution
     self.colorSpaceName = colorSpaceName
@@ -37,7 +25,7 @@ public struct ScreenDeviceDescription: DeviceDescription {
     self.cgDirectDisplayID = cgDirectDisplayID
   }
 
-  public init(deviceDescription: [NSDeviceDescriptionKey: Any]) {
+  init(deviceDescription: [NSDeviceDescriptionKey: Any]) {
     resolution = deviceDescription[.resolution] as? CGSize
     colorSpaceName = deviceDescription[.colorSpaceName] as? String
     bitsPerSample = deviceDescription[.bitsPerSample] as? Int

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -32,10 +32,6 @@ let package = Package(
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
       ],
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency"),
-        .enableUpcomingFeature("InferSendableFromCaptures"),
-      ],
     ),
     .target(
       name: "RBKitTestSupport"
@@ -49,4 +45,15 @@ let package = Package(
       ],
     ),
   ],
+  swiftLanguageModes: [.v5],
 )
+
+for target in package.targets {
+  var settings = target.swiftSettings ?? []
+  settings.append(contentsOf: [
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+    .enableUpcomingFeature("InferIsolatedConformances"),
+    .enableUpcomingFeature("IsolatedDefaultValues"),
+  ])
+  target.swiftSettings = settings
+}

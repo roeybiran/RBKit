@@ -35,7 +35,7 @@ public struct DispatchSourceFileSystemObjectClient: Sendable {
 
 extension DispatchSourceFileSystemObjectClient: DependencyKey {
   public static let liveValue = Self(
-    make: DispatchSource.makeFileSystemObjectSource,
+    make: { DispatchSource.makeFileSystemObjectSource(fileDescriptor: $0, eventMask: $1, queue: $2) },
     setEventHandler: { $0.setEventHandler(qos: $1, flags: $2, handler: $3) },
     resume: { $0.resume() },
     cancel: { $0.cancel() },

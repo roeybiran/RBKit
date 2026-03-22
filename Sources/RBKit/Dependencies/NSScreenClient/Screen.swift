@@ -1,17 +1,17 @@
 import AppKit.NSScreen
 import Foundation
 
-// MARK: - NSScreenValue
+// MARK: - Screen
 
-public struct NSScreenValue {
+public struct Screen: Equatable, Sendable {
 
   // MARK: Lifecycle
 
-  // Receiving Screen-Related Notifications
-  // class let colorSpaceDidChangeNotification: NSNotification.Name
+  public typealias ID = CGDirectDisplayID
 
-  // Synchronizing with the display’s refresh rate
-  // func displayLink(target: Any, selector: Selector) -> CADisplayLink
+  public var id: ID? {
+    deviceDescription.cgDirectDisplayID
+  }
 
   public init(
     depth: NSWindow.Depth,
@@ -50,6 +50,29 @@ public struct NSScreenValue {
     self.displayUpdateGranularity = displayUpdateGranularity
     self.lastDisplayUpdateTimestamp = lastDisplayUpdateTimestamp
     self.deviceDescription = deviceDescription
+  }
+
+  public init(nsScreen: NSScreen) {
+    depth = nsScreen.depth
+    frame = nsScreen.frame
+    localizedName = nsScreen.localizedName
+    backingScaleFactor = nsScreen.backingScaleFactor
+    visibleFrame = nsScreen.visibleFrame
+    // safeAreaInsets = nsScreen.safeAreaInsets
+    auxiliaryTopLeftArea = nsScreen.auxiliaryTopLeftArea
+    auxiliaryTopRightArea = nsScreen.auxiliaryTopRightArea
+    maximumPotentialExtendedDynamicRangeColorComponentValue =
+    nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
+    maximumExtendedDynamicRangeColorComponentValue =
+    nsScreen.maximumExtendedDynamicRangeColorComponentValue
+    maximumReferenceExtendedDynamicRangeColorComponentValue =
+    nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
+    maximumFramesPerSecond = nsScreen.maximumFramesPerSecond
+    minimumRefreshInterval = nsScreen.minimumRefreshInterval
+    maximumRefreshInterval = nsScreen.maximumRefreshInterval
+    displayUpdateGranularity = nsScreen.displayUpdateGranularity
+    lastDisplayUpdateTimestamp = nsScreen.lastDisplayUpdateTimestamp
+    deviceDescription = .init(deviceDescription: nsScreen.deviceDescription)
   }
 
   // MARK: Public
@@ -91,41 +114,8 @@ public struct NSScreenValue {
 
 }
 
-// MARK: Sendable
-
-extension NSScreenValue: Sendable { }
-
-// MARK: Equatable
-
-extension NSScreenValue: Equatable { }
-
-extension NSScreenValue {
-  public init(nsScreen: NSScreen) {
-    depth = nsScreen.depth
-    frame = nsScreen.frame
-    localizedName = nsScreen.localizedName
-    backingScaleFactor = nsScreen.backingScaleFactor
-    visibleFrame = nsScreen.visibleFrame
-    // safeAreaInsets = nsScreen.safeAreaInsets
-    auxiliaryTopLeftArea = nsScreen.auxiliaryTopLeftArea
-    auxiliaryTopRightArea = nsScreen.auxiliaryTopRightArea
-    maximumPotentialExtendedDynamicRangeColorComponentValue =
-      nsScreen.maximumPotentialExtendedDynamicRangeColorComponentValue
-    maximumExtendedDynamicRangeColorComponentValue =
-      nsScreen.maximumExtendedDynamicRangeColorComponentValue
-    maximumReferenceExtendedDynamicRangeColorComponentValue =
-      nsScreen.maximumReferenceExtendedDynamicRangeColorComponentValue
-    maximumFramesPerSecond = nsScreen.maximumFramesPerSecond
-    minimumRefreshInterval = nsScreen.minimumRefreshInterval
-    maximumRefreshInterval = nsScreen.maximumRefreshInterval
-    displayUpdateGranularity = nsScreen.displayUpdateGranularity
-    lastDisplayUpdateTimestamp = nsScreen.lastDisplayUpdateTimestamp
-    deviceDescription = .init(deviceDescription: nsScreen.deviceDescription)
-  }
-}
-
 #if DEBUG
-extension NSScreenValue {
+extension Screen {
   public static func mock(
     depth: NSWindow.Depth = .sixtyfourBitRGB,
     frame: NSRect = .zero,
@@ -142,7 +132,15 @@ extension NSScreenValue {
     maximumRefreshInterval: TimeInterval = 0,
     displayUpdateGranularity: TimeInterval = 0,
     lastDisplayUpdateTimestamp: TimeInterval = 0,
-    deviceDescription: ScreenDeviceDescription = .init(),
+    deviceDescription: ScreenDeviceDescription = .init(
+      resolution: nil,
+      colorSpaceName: nil,
+      bitsPerSample: nil,
+      isScreen: false,
+      isPrinter: false,
+      size: nil,
+      cgDirectDisplayID: nil,
+    ),
   ) -> Self {
     .init(
       depth: depth,

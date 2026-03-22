@@ -5,7 +5,7 @@ import Testing
 
 @testable import RBKit
 
-struct NSScreenValueTests {
+struct ScreenTests {
   @Test
   func `ScreenDeviceDescription parser, should parse standard keys and NSScreenNumber`() {
     let dictionary: [NSDeviceDescriptionKey: Any] = [
@@ -43,8 +43,8 @@ struct NSScreenValueTests {
   }
 
   @Test
-  func `NSScreenValue mock, should carry deviceDescription`() {
-    let value = NSScreenValue.mock(
+  func `Screen mock, should carry deviceDescription`() {
+    let value = Screen.mock(
       deviceDescription: .init(
         resolution: CGSize(width: 1, height: 2),
         colorSpaceName: "x",

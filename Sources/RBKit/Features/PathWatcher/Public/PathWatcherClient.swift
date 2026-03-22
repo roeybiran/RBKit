@@ -74,7 +74,7 @@ extension PathWatcherClient: DependencyKey {
 
       var streamRef: FSEventStreamRef?
 
-      let wrapper = EventHandlerWrapper { result in
+      let wrapper = Box { result in
         continuation.yield(result)
       }
 
@@ -99,7 +99,7 @@ extension PathWatcherClient: DependencyKey {
 
             if count != eventPaths.count { return }
 
-            let wrapper = Unmanaged<EventHandlerWrapper>
+            let wrapper = Unmanaged<Box>
               .fromOpaque(info)
               .takeUnretainedValue()
 
@@ -153,9 +153,9 @@ extension DependencyValues {
   }
 }
 
-// MARK: - EventHandlerWrapper
+// MARK: - Box
 
-final class EventHandlerWrapper {
+private final class Box {
 
   // MARK: Lifecycle
 

@@ -43,15 +43,17 @@ public struct NSApplicationClient: Sendable {
 
 extension NSApplicationClient: DependencyKey {
   public static let liveValue = Self(
-    terminate: NSApplication.shared.terminate,
-    activate: NSApplication.shared.activate,
-    activateIgnoringOtherApps: NSApplication.shared.activate(ignoringOtherApps:),
-    yieldActivationTo: NSApplication.shared.yieldActivation,
-    yieldActivationToApplicationWithBundleIdentifier: NSApplication.shared.yieldActivation,
-    runModal: NSApplication.shared.runModal,
-    stopModal: NSApplication.shared.stopModal,
-    activationPolicy: NSApplication.shared.activationPolicy,
-    setActivationPolicy: NSApplication.shared.setActivationPolicy,
+    terminate: { NSApplication.shared.terminate($0) },
+    activate: { NSApplication.shared.activate() },
+    activateIgnoringOtherApps: { NSApplication.shared.activate(ignoringOtherApps: $0) },
+    yieldActivationTo: { NSApplication.shared.yieldActivation(to: $0) },
+    yieldActivationToApplicationWithBundleIdentifier: {
+      NSApplication.shared.yieldActivation(toApplicationWithBundleIdentifier: $0)
+    },
+    runModal: { NSApplication.shared.runModal(for: $0) },
+    stopModal: { NSApplication.shared.stopModal() },
+    activationPolicy: { NSApplication.shared.activationPolicy() },
+    setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) },
   )
 
   public static let testValue = Self()

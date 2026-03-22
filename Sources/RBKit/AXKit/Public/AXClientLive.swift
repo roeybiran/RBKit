@@ -4,15 +4,16 @@
 
 public struct AXClientLive: AXClient {
 
-  // MARK: Public
+  // MARK: Lifecycle
 
   public init() { }
+
+  // MARK: Public
 
   public typealias UIElement = AXUIElement
   public typealias UIElementValue = AXValue
   public typealias Observer = AXObserver
   public typealias RunLoopSource = CFRunLoopSource
-
 
   // MARK: - Process Trust
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
@@ -122,7 +123,7 @@ public struct AXClientLive: AXClient {
   }
 
   public func observerCreate(application: pid_t, outObserver: UnsafeMutablePointer<Observer?>) -> AXError {
-    return AXObserverCreate(
+    AXObserverCreate(
       application,
       { observer, element, notification, refcon in
         guard let refcon else { return assertionFailure() }
@@ -143,8 +144,14 @@ public struct AXClientLive: AXClient {
       outObserver)
   }
 
-  public func observerAddNotification(observer: Observer, element: UIElement, notification: CFString, refcon: UnsafeMutableRawPointer?) -> AXError {
-    return AXObserverAddNotification(observer, element, notification, refcon)
+  public func observerAddNotification(
+    observer: Observer,
+    element: UIElement,
+    notification: CFString,
+    refcon: UnsafeMutableRawPointer?)
+    -> AXError
+  {
+    AXObserverAddNotification(observer, element, notification, refcon)
   }
 
   public func observerRemoveNotification(observer: Observer, element: UIElement, notification: CFString) -> AXError {
@@ -181,7 +188,7 @@ public struct AXClientLive: AXClient {
   }
 }
 
-// https://github.com/lwouis/alt-tab-macos/blob/bd162a9e08743f4fec5d94d1e428c7ea9919dc3f/src/api-wrappers/private-apis/ApplicationServices.HIServices.framework.swift#L4
+/// https://github.com/lwouis/alt-tab-macos/blob/bd162a9e08743f4fec5d94d1e428c7ea9919dc3f/src/api-wrappers/private-apis/ApplicationServices.HIServices.framework.swift#L4
 @_silgen_name("_AXUIElementGetWindow") @discardableResult
 func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) -> AXError
 

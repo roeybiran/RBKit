@@ -1,6 +1,6 @@
 import ApplicationServices
-import Foundation
 import Dependencies
+import Foundation
 
 public final class AXClientMock: AXClient {
 
@@ -15,47 +15,75 @@ public final class AXClientMock: AXClient {
   public typealias Observer = ObserverMock
   public typealias RunLoopSource = RunLoopSourceMock
 
-  public nonisolated(unsafe) var _isProcessTrustedWithOptions: (CFDictionary?) -> Bool = { _ in unimplemented(placeholder: false) }
+  public nonisolated(unsafe) var _isProcessTrustedWithOptions: (CFDictionary?) -> Bool = { _ in
+    unimplemented(placeholder: false)
+  }
 
   public nonisolated(unsafe) var _isProcessTrusted: () -> Bool = { unimplemented("_isProcessTrusted", placeholder: true) }
 
   public nonisolated(unsafe) var _getTypeID: () -> CFTypeID = { CFStringGetTypeID() }
 
-  public nonisolated(unsafe) var _attributeNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _attributeNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _attributeValue: (UIElement, CFString, UnsafeMutablePointer<CFTypeRef?>) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _attributeValue: (UIElement, CFString, UnsafeMutablePointer<CFTypeRef?>)
+    -> AXError = { _, _, _ in
+      unimplemented(placeholder: .apiDisabled)
+    }
 
-  public nonisolated(unsafe) var _getAttributeValueCount: (UIElement, CFString, UnsafeMutablePointer<CFIndex>) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _getAttributeValueCount: (UIElement, CFString, UnsafeMutablePointer<CFIndex>)
+    -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _attributeValues: (UIElement, CFString, CFIndex, CFIndex, UnsafeMutablePointer<CFArray?>)
     -> AXError = { _, _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public nonisolated(unsafe) var _isAttributeSettable: (UIElement, CFString, UnsafeMutablePointer<DarwinBoolean>) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _isAttributeSettable: (UIElement, CFString, UnsafeMutablePointer<DarwinBoolean>)
+    -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public nonisolated(unsafe) var _setAttributeValue: (UIElement, CFString, CFTypeRef) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _setAttributeValue: (UIElement, CFString, CFTypeRef) -> AXError = { _, _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _attributeValueMultiple: (UIElement, CFArray, AXCopyMultipleAttributeOptions, UnsafeMutablePointer<CFArray?>)
+  public nonisolated(unsafe) var _attributeValueMultiple: (
+    UIElement,
+    CFArray,
+    AXCopyMultipleAttributeOptions,
+    UnsafeMutablePointer<CFArray?>)
     -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public nonisolated(unsafe) var _actionNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _actionNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _actionDescription: (UIElement, CFString, UnsafeMutablePointer<CFString?>) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _actionDescription: (UIElement, CFString, UnsafeMutablePointer<CFString?>)
+    -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public nonisolated(unsafe) var _performAction: (UIElement, CFString) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _performAction: (UIElement, CFString) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _elementAtPosition: (UIElement, Float, Float, UnsafeMutablePointer<UIElement?>) -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _elementAtPosition: (UIElement, Float, Float, UnsafeMutablePointer<UIElement?>)
+    -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _application: (pid_t) -> UIElement = { _ in unimplemented(placeholder: UIElementMock()) }
 
   public nonisolated(unsafe) var _systemWide: () -> UIElement = { unimplemented(placeholder: UIElementMock()) }
 
-  public nonisolated(unsafe) var _getPid: (UIElement, UnsafeMutablePointer<pid_t>) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _getPid: (UIElement, UnsafeMutablePointer<pid_t>) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _setMessagingTimeout: (UIElement, Float) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _setMessagingTimeout: (UIElement, Float) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
   public nonisolated(unsafe) var _observerGetTypeID: () -> CFTypeID = { unimplemented(placeholder: CFStringGetTypeID()) }
 
-  public nonisolated(unsafe) var _observerCreate: (pid_t, @escaping (Observer, UIElement, CFString) -> Void, UnsafeMutablePointer<Observer?>)
+  public nonisolated(unsafe) var _observerCreate: (
+    pid_t,
+    @escaping (Observer, UIElement, CFString) -> Void,
+    UnsafeMutablePointer<Observer?>)
     -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _observerCreateWithInfoCallback: (
@@ -64,26 +92,38 @@ public final class AXClientMock: AXClient {
     UnsafeMutablePointer<Observer?>)
     -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
-  public nonisolated(unsafe) var _observerAddNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _observerAddNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _observerRemoveNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _observerRemoveNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
-  public nonisolated(unsafe) var _observerGetRunLoopSource: (Observer) -> RunLoopSource = { _ in unimplemented(placeholder: RunLoopSourceMock()) }
+  public nonisolated(unsafe) var _observerGetRunLoopSource: (Observer) -> RunLoopSource = { _ in
+    unimplemented(placeholder: RunLoopSourceMock())
+  }
 
   public nonisolated(unsafe) var _getAXValueTypeID: () -> CFTypeID = { unimplemented(placeholder: AXValueGetTypeID()) }
 
-  public nonisolated(unsafe) var _createAXValue: (AXValueType, UnsafeRawPointer) -> UIElementValue? = { _, _ in unimplemented(placeholder: nil) }
+  public nonisolated(unsafe) var _createAXValue: (AXValueType, UnsafeRawPointer) -> UIElementValue? = { _, _ in
+    unimplemented(placeholder: nil)
+  }
 
   public nonisolated(unsafe) var _getAXValueType: (UIElementValue) -> AXValueType = { _ in unimplemented(placeholder: .cgPoint) }
 
-  public nonisolated(unsafe) var _getAXValueValue: (UIElementValue, AXValueType, UnsafeMutableRawPointer) -> Bool = { _, _, _ in unimplemented(placeholder: false) }
+  public nonisolated(unsafe) var _getAXValueValue: (UIElementValue, AXValueType, UnsafeMutableRawPointer) -> Bool = { _, _, _ in
+    unimplemented(placeholder: false)
+  }
 
-  public nonisolated(unsafe) var _getWindow: (UIElement, inout CGWindowID) -> AXError = { _, _ in unimplemented(placeholder: .apiDisabled) }
+  public nonisolated(unsafe) var _getWindow: (UIElement, inout CGWindowID) -> AXError = { _, _ in
+    unimplemented(placeholder: .apiDisabled)
+  }
 
   public nonisolated(unsafe) var _createElementWithRemoteToken: (CFData) -> Unmanaged<UIElement>? = { _ in nil }
 
   // MARK: - Process Trust
-  
+
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
     _isProcessTrustedWithOptions(options)
   }
@@ -196,7 +236,13 @@ public final class AXClientMock: AXClient {
     _observerCreateWithInfoCallback(application, { _, _, _, _ in }, outObserver)
   }
 
-  public func observerAddNotification(observer: Observer, element: UIElement, notification: CFString, refcon: UnsafeMutableRawPointer?) -> AXError {
+  public func observerAddNotification(
+    observer: Observer,
+    element: UIElement,
+    notification: CFString,
+    refcon _: UnsafeMutableRawPointer?)
+    -> AXError
+  {
     _observerAddNotification(observer, element, notification)
   }
 

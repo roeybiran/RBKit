@@ -1,16 +1,20 @@
 open class ObserverMock: Hashable {
-  public let id: String
-  
+
+  // MARK: Lifecycle
+
   public init(id: String = "") {
     self.id = id
   }
-  
-  public static func == (lhs: ObserverMock, rhs: ObserverMock) -> Bool {
-    return lhs.id == rhs.id
+
+  // MARK: Public
+
+  public let id: String
+
+  public static func ==(lhs: ObserverMock, rhs: ObserverMock) -> Bool {
+    lhs.id == rhs.id
   }
-  
+
   public func hash(into hasher: inout Hasher) {
     hasher.combine(id)
   }
 }
-

@@ -1,8 +1,8 @@
 @preconcurrency import ApplicationServices
+import CoreFoundation
 import Dependencies
 import DependenciesMacros
 import Foundation
-import CoreFoundation
 
 // MARK: - AXClient
 
@@ -66,7 +66,8 @@ public protocol AXClient: Sendable {
   func observerGetTypeID() -> CFTypeID
   func observerCreate(application: pid_t, outObserver: UnsafeMutablePointer<Observer?>) -> AXError
   func observerCreateWithInfoCallback(application: pid_t, outObserver: UnsafeMutablePointer<Observer?>) -> AXError
-  func observerAddNotification(observer: Observer, element: UIElement, notification: CFString, refcon: UnsafeMutableRawPointer?) -> AXError
+  func observerAddNotification(observer: Observer, element: UIElement, notification: CFString, refcon: UnsafeMutableRawPointer?)
+    -> AXError
   func observerRemoveNotification(observer: Observer, element: UIElement, notification: CFString) -> AXError
   func observerGetRunLoopSource(observer: Observer) -> RunLoopSource
 
@@ -82,12 +83,72 @@ public protocol AXClient: Sendable {
 }
 
 extension AXClient {
+
   // MARK: Public
+
+  public var AMPMField: Attribute<UIElement> { .init(.AMPMField) }
+  public var cancelButton: Attribute<UIElement> { .init(.cancelButton) }
+  public var children: Attribute<[UIElement]> { .init(.children) }
+  public var closeButton: Attribute<UIElement> { .init(.closeButton) }
+  public var columns: Attribute<[UIElement]> { .init(.columns) }
+  public var contents: Attribute<[UIElement]> { .init(.contents) }
+  public var dayField: Attribute<UIElement> { .init(.dayField) }
+  public var decrementButton: Attribute<UIElement> { .init(.decrementButton) }
+  public var defaultButton: Attribute<UIElement> { .init(.defaultButton) }
+  public var disclosedByRow: Attribute<UIElement> { .init(.disclosedByRow) }
+  public var disclosedRows: Attribute<[UIElement]> { .init(.disclosedRows) }
+  public var extrasMenuBar: Attribute<UIElement> { .init(.extrasMenuBar) }
+  public var focusedUIElement: Attribute<UIElement> { .init(.focusedUIElement) }
+  public var focusedWindow: Attribute<UIElement> { .init(.focusedWindow) }
+  public var fullScreenButton: Attribute<UIElement> { .init(.fullScreenButton) }
+  public var growArea: Attribute<UIElement> { .init(.growArea) }
+  public var header: Attribute<UIElement> { .init(.header) }
+  public var horizontalScrollBar: Attribute<UIElement> { .init(.horizontalScrollBar) }
+  public var hourField: Attribute<UIElement> { .init(.hourField) }
+  public var incrementButton: Attribute<UIElement> { .init(.incrementButton) }
+  public var incrementor: Attribute<UIElement> { .init(.incrementor) }
+  public var labelUIElements: Attribute<[UIElement]> { .init(.labelUIElements) }
+  public var linkedUIElements: Attribute<[UIElement]> { .init(.linkedUIElements) }
+  public var mainWindow: Attribute<UIElement> { .init(.mainWindow) }
+  public var markerUIElements: Attribute<UIElement> { .init(.markerUIElements) }
+  public var matteContentUIElement: Attribute<UIElement> { .init(.matteContentUIElement) }
+  public var menuBar: Attribute<UIElement> { .init(.menuBar) }
+  public var menuItemPrimaryUIElement: Attribute<UIElement> { .init(.menuItemPrimaryUIElement) }
+  public var minimizeButton: Attribute<UIElement> { .init(.minimizeButton) }
+  public var minuteField: Attribute<UIElement> { .init(.minuteField) }
+  public var monthField: Attribute<UIElement> { .init(.monthField) }
+  public var nextContents: Attribute<[UIElement]> { .init(.nextContents) }
+  public var overflowButton: Attribute<UIElement> { .init(.overflowButton) }
+  public var parent: Attribute<UIElement> { .init(.parent) }
+  public var previousContents: Attribute<[UIElement]> { .init(.previousContents) }
+  public var proxy: Attribute<UIElement> { .init(.proxy) }
+  public var rows: Attribute<[UIElement]> { .init(.rows) }
+  public var secondField: Attribute<UIElement> { .init(.secondField) }
+  public var selectedChildren: Attribute<[UIElement]> { .init(.selectedChildren) }
+  public var selectedColumns: Attribute<[UIElement]> { .init(.selectedColumns) }
+  public var selectedRows: Attribute<[UIElement]> { .init(.selectedRows) }
+  public var sharedFocusElements: Attribute<[UIElement]> { .init(.sharedFocusElements) }
+  public var sharedTextUIElements: Attribute<[UIElement]> { .init(.sharedTextUIElements) }
+  public var shownMenuUIElement: Attribute<UIElement> { .init(.shownMenuUIElement) }
+  public var splitters: Attribute<[UIElement]> { .init(.splitters) }
+  public var tabs: Attribute<[UIElement]> { .init(.tabs) }
+  public var titleUIElement: Attribute<UIElement> { .init(.titleUIElement) }
+  public var toolbarButton: Attribute<UIElement> { .init(.toolbarButton) }
+  public var topLevelUIElement: Attribute<UIElement> { .init(.topLevelUIElement) }
+  public var verticalScrollBar: Attribute<UIElement> { .init(.verticalScrollBar) }
+  public var visibleChildren: Attribute<[UIElement]> { .init(.visibleChildren) }
+  public var visibleColumns: Attribute<[UIElement]> { .init(.visibleColumns) }
+  public var visibleRows: Attribute<[UIElement]> { .init(.visibleRows) }
+  public var window: Attribute<UIElement> { .init(.window) }
+  public var windows: Attribute<[UIElement]> { .init(.windows) }
+  public var yearField: Attribute<UIElement> { .init(.yearField) }
+  public var zoomButton: Attribute<UIElement> { .init(.zoomButton) }
+  public var focusedApplication: Attribute<UIElement> { .init(.focusedApplication) }
 
   @discardableResult
   public func isProcessTrusted(usePrompt: Bool) -> Bool {
     let preflight = isProcessTrusted()
-    if usePrompt && !preflight {
+    if usePrompt, !preflight {
       let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): kCFBooleanTrue] as CFDictionary
       return isProcessTrustedWithOptions(opts)
     } else {
@@ -144,20 +205,18 @@ extension AXClient {
     guard result == .success else { throw AXClientError(axError: result) }
   }
 
-  /**
-   Get multiple attributes in one call.
-
-   Inspired by Defaults' variadic API style:
-   https://github.com/sindresorhus/Defaults/blob/9.0.6/Sources/Defaults/Defaults.swift#L310
-
-   - Parameter attributes: Attributes to fetch.
-   - Parameter stopOnError: Whether AX should stop copying values on the first error.
-   */
+  /// Get multiple attributes in one call.
+  ///
+  /// Inspired by Defaults' variadic API style:
+  /// https://github.com/sindresorhus/Defaults/blob/9.0.6/Sources/Defaults/Defaults.swift#L310
+  ///
+  /// - Parameter attributes: Attributes to fetch.
+  /// - Parameter stopOnError: Whether AX should stop copying values on the first error.
   public func attributeValue<each Value>(
     element: UIElement,
     for attributes: repeat Attribute<each Value>,
     stopOnError: Bool = false)
-  throws(AXClientError) -> (repeat (each Value)?)
+    throws(AXClientError) -> (repeat (each Value)?)
   {
     var attributeNames = [String]()
     for attribute in repeat (each attributes) {
@@ -226,7 +285,7 @@ extension AXClient {
     element: UIElement,
     for attributes: [String],
     stopOnError: Bool = false)
-  throws(AXClientError) -> [Any?]
+    throws(AXClientError) -> [Any?]
   {
     let options: AXCopyMultipleAttributeOptions = stopOnError ? .stopOnError : []
 
@@ -300,77 +359,23 @@ extension AXClient {
     case var value as CFRange:
       guard let rangeValue = createAXValue(.cfRange, &value) else { break }
       return rangeValue
+
     case var value as CGPoint:
       guard let pointValue = createAXValue(.cgPoint, &value) else { break }
       return pointValue
+
     case var value as CGRect:
       guard let rectValue = createAXValue(.cgRect, &value) else { break }
       return rectValue
+
     case var value as CGSize:
       guard let sizeValue = createAXValue(.cgSize, &value) else { break }
       return sizeValue
+
     default:
       break
     }
     return value as AnyObject // must be an object to pass to AX
   }
 
-  public var AMPMField: Attribute<UIElement> { .init(.AMPMField) }
-  public var cancelButton: Attribute<UIElement> { .init(.cancelButton) }
-  public var children: Attribute<[UIElement]> { .init(.children) }
-  public var closeButton: Attribute<UIElement> { .init(.closeButton) }
-  public var columns: Attribute<[UIElement]> { .init(.columns) }
-  public var contents: Attribute<[UIElement]> { .init(.contents) }
-  public var dayField: Attribute<UIElement> { .init(.dayField) }
-  public var decrementButton: Attribute<UIElement> { .init(.decrementButton) }
-  public var defaultButton: Attribute<UIElement> { .init(.defaultButton) }
-  public var disclosedByRow: Attribute<UIElement> { .init(.disclosedByRow) }
-  public var disclosedRows: Attribute<[UIElement]> { .init(.disclosedRows) }
-  public var extrasMenuBar: Attribute<UIElement> { .init(.extrasMenuBar) }
-  public var focusedUIElement: Attribute<UIElement> { .init(.focusedUIElement) }
-  public var focusedWindow: Attribute<UIElement> { .init(.focusedWindow) }
-  public var fullScreenButton: Attribute<UIElement> { .init(.fullScreenButton) }
-  public var growArea: Attribute<UIElement> { .init(.growArea) }
-  public var header: Attribute<UIElement> { .init(.header) }
-  public var horizontalScrollBar: Attribute<UIElement> { .init(.horizontalScrollBar) }
-  public var hourField: Attribute<UIElement> { .init(.hourField) }
-  public var incrementButton: Attribute<UIElement> { .init(.incrementButton) }
-  public var incrementor: Attribute<UIElement> { .init(.incrementor) }
-  public var labelUIElements: Attribute<[UIElement]> { .init(.labelUIElements) }
-  public var linkedUIElements: Attribute<[UIElement]> { .init(.linkedUIElements) }
-  public var mainWindow: Attribute<UIElement> { .init(.mainWindow) }
-  public var markerUIElements: Attribute<UIElement> { .init(.markerUIElements) }
-  public var matteContentUIElement: Attribute<UIElement> { .init(.matteContentUIElement) }
-  public var menuBar: Attribute<UIElement> { .init(.menuBar) }
-  public var menuItemPrimaryUIElement: Attribute<UIElement> { .init(.menuItemPrimaryUIElement) }
-  public var minimizeButton: Attribute<UIElement> { .init(.minimizeButton) }
-  public var minuteField: Attribute<UIElement> { .init(.minuteField) }
-  public var monthField: Attribute<UIElement> { .init(.monthField) }
-  public var nextContents: Attribute<[UIElement]> { .init(.nextContents) }
-  public var overflowButton: Attribute<UIElement> { .init(.overflowButton) }
-  public var parent: Attribute<UIElement> { .init(.parent) }
-  public var previousContents: Attribute<[UIElement]> { .init(.previousContents) }
-  public var proxy: Attribute<UIElement> { .init(.proxy) }
-  public var rows: Attribute<[UIElement]> { .init(.rows) }
-  public var secondField: Attribute<UIElement> { .init(.secondField) }
-  public var selectedChildren: Attribute<[UIElement]> { .init(.selectedChildren) }
-  public var selectedColumns: Attribute<[UIElement]> { .init(.selectedColumns) }
-  public var selectedRows: Attribute<[UIElement]> { .init(.selectedRows) }
-  public var sharedFocusElements: Attribute<[UIElement]> { .init(.sharedFocusElements) }
-  public var sharedTextUIElements: Attribute<[UIElement]> { .init(.sharedTextUIElements) }
-  public var shownMenuUIElement: Attribute<UIElement> { .init(.shownMenuUIElement) }
-  public var splitters: Attribute<[UIElement]> { .init(.splitters) }
-  public var tabs: Attribute<[UIElement]> { .init(.tabs) }
-  public var titleUIElement: Attribute<UIElement> { .init(.titleUIElement) }
-  public var toolbarButton: Attribute<UIElement> { .init(.toolbarButton) }
-  public var topLevelUIElement: Attribute<UIElement> { .init(.topLevelUIElement) }
-  public var verticalScrollBar: Attribute<UIElement> { .init(.verticalScrollBar) }
-  public var visibleChildren: Attribute<[UIElement]> { .init(.visibleChildren) }
-  public var visibleColumns: Attribute<[UIElement]> { .init(.visibleColumns) }
-  public var visibleRows: Attribute<[UIElement]> { .init(.visibleRows) }
-  public var window: Attribute<UIElement> { .init(.window) }
-  public var windows: Attribute<[UIElement]> { .init(.windows) }
-  public var yearField: Attribute<UIElement> { .init(.yearField) }
-  public var zoomButton: Attribute<UIElement> { .init(.zoomButton) }
-  public var focusedApplication: Attribute<UIElement> { .init(.focusedApplication) }
 }

@@ -5,21 +5,18 @@ import DependenciesMacros
 import Foundation
 
 @MainActor
-public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClient>: Sendable where AX.RunLoopSource == RunLoopClient.RunLoopSource {
-  
-  private struct ObserverData {
-    let observer: AX.Observer
-    let box: Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>
-  }
-  
-  private let client: AX
-  private let runLoopClient: RunLoopClient
-  private var observers: [pid_t: ObserverData] = [:]
-  
+public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClient>: Sendable
+  where AX.RunLoopSource == RunLoopClient.RunLoopSource
+{
+
+  // MARK: Lifecycle
+
   public init(client: AX, runLoopClient: RunLoopClient) {
     self.client = client
     self.runLoopClient = runLoopClient
   }
+
+  // MARK: Public
 
   public func createObserver(process: pid_t) throws(AXClientError) {
     var outObserver: AX.Observer?
@@ -41,14 +38,20 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
       throw .unknown
     }
     let refcon = UnsafeMutableRawPointer(Unmanaged.passUnretained(observerData.box).toOpaque())
-    let result = client.observerAddNotification(observer: observerData.observer, element: element, notification: notification.rawValue as CFString, refcon: refcon)
+    let result = client.observerAddNotification(
+      observer: observerData.observer,
+      element: element,
+      notification: notification.rawValue as CFString,
+      refcon: refcon)
     guard result == .success else {
-       throw AXClientError(axError: result)
+      throw AXClientError(axError: result)
     }
   }
 
   public func notifications(for process: pid_t) -> AsyncThrowingStream<(pid_t, AX.UIElement, AXNotification), any Error> {
-    let (stream, continuation) = AsyncThrowingStream.makeStream(of: (pid_t, AX.UIElement, AXNotification).self, throwing: (any Error).self)
+    let (stream, continuation) = AsyncThrowingStream.makeStream(
+      of: (pid_t, AX.UIElement, AXNotification).self,
+      throwing: (any Error).self)
 
     guard let observerData = observers[process] else {
       assertionFailure()
@@ -80,4 +83,16 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
 
     return stream
   }
+
+  // MARK: Private
+
+  private struct ObserverData {
+    let observer: AX.Observer
+    let box: Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>
+  }
+
+  private let client: AX
+  private let runLoopClient: RunLoopClient
+  private var observers: [pid_t: ObserverData] = [:]
+
 }

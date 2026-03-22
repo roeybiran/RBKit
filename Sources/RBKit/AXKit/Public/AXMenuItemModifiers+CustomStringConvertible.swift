@@ -1,7 +1,7 @@
 import ApplicationServices
 import Carbon
 
-// MARK: - AXMenuItemModifiers + CustomStringConvertible
+// MARK: - AXMenuItemModifiers + @retroactive CustomStringConvertible
 
 /// see AXAttributeConstants.h:994
 extension AXMenuItemModifiers: @retroactive CustomStringConvertible {

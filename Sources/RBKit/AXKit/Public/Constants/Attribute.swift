@@ -5,6 +5,7 @@ import ApplicationServices
 // /System/Library/Accessibility/AccessibilityDefinitions.plist
 
 public struct Attribute<T>: Equatable {
+
   // MARK: Lifecycle
 
   public init(_ name: AttributeName) {
@@ -15,12 +16,13 @@ public struct Attribute<T>: Equatable {
     name = string
   }
 
-  public let name: String
+  // MARK: Public
 
   public static var alternateUIVisible: Attribute<Bool> { .init(.alternateUIVisible) }
   public static var attributedStringForRangeParameterized: Attribute<NSAttributedString> {
     .init(.attributedStringForRangeParameterized)
   }
+
   public static var boundsForRangeParameterized: Attribute<CGRect> { .init(.boundsForRangeParameterized) }
   public static var cellForColumnAndRowParameterized: Attribute<Any> { .init(.cellForColumnAndRowParameterized) }
   public static var clearButton: Attribute<Any> { .init(.clearButton) }
@@ -108,6 +110,8 @@ public struct Attribute<T>: Equatable {
   public static var visibleText: Attribute<Any> { .init(.visibleText) }
   public static var warningValue: Attribute<Any> { .init(.warningValue) }
   public static var statusLabel: Attribute<String> { .init(.statusLabel) }
+
+  public let name: String
 
   public static func allowedValues<A>() -> Attribute<[A]> { .init(.allowedValues) }
   public static func handles<A>() -> Attribute<[A]> { .init(.handles) }

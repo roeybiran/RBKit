@@ -19,8 +19,8 @@ struct ProcessesClient: Sendable {
 
 extension ProcessesClient: DependencyKey {
   static let liveValue = Self(
-    getProcessInformation: GetProcessInformation,
-    getProcessForPID: GetProcessForPID,
+    getProcessInformation: { GetProcessInformation($0, $1) },
+    getProcessForPID: { GetProcessForPID($0, $1) },
   )
 
   static let testValue = Self()

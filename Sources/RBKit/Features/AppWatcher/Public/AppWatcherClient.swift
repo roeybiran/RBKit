@@ -14,17 +14,12 @@ public struct AppWatcherClient: Sendable {
 
 extension AppWatcherClient: DependencyKey {
   public static let liveValue = Self(events: {
-    let instance = AppWatcher(workspace: .shared)
-    let (stream, cont) = AsyncStream.makeStream(of: AppWatcherEvent.self)
-    let task = Task {
-      for await event in instance.events() {
-        cont.yield(event)
-      }
+    withDependencies { deps in
+      deps.nsWorkspaceClient = .liveValue
+      deps.nsRunningApplicationClient = .liveValue
+    } operation: {
+      AppWatcher().events()
     }
-    cont.onTermination = { _ in
-      task.cancel()
-    }
-    return stream
   })
 
   public static let testValue = Self()

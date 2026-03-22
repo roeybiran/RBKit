@@ -1,15 +1,23 @@
 import Foundation
 
-public func keyValueStream<A: NSObject, T: Sendable>(
+public func keyValueChangeStream<A: NSObject, T: Sendable>(
   observed: A,
   keyPath: KeyPath<A, T>,
   options: NSKeyValueObservingOptions = [.initial, .new],
-) -> AsyncStream<(object: A, change: NSKeyValueObservedChange<T>)> {
-  let (stream, cont) = AsyncStream.makeStream(of: (object: A, change: NSKeyValueObservedChange<T>).self)
-  let observation = observed.observe(keyPath, options: options) { object, change in
-    cont.yield((object: object, change: change))
+) -> AsyncStream<KeyValueObservedChange<T>> {
+  let (stream, continuation) = AsyncStream.makeStream(of: KeyValueObservedChange<T>.self)
+  let observation = observed.observe(keyPath, options: options) { _, change in
+    continuation.yield(
+      .init(
+        kind: change.kind,
+        oldValue: change.oldValue,
+        newValue: change.newValue,
+        indexes: change.indexes,
+        isPrior: change.isPrior,
+      )
+    )
   }
-  cont.onTermination = { _ in
+  continuation.onTermination = { _ in
     observation.invalidate()
   }
   return stream

@@ -31,7 +31,7 @@ struct SysctlClient: Sendable {
 // MARK: DependencyKey
 
 extension SysctlClient: DependencyKey {
-  static let liveValue = Self(run: sysctl)
+  static let liveValue = Self(run: { sysctl($0, $1, $2, $3, $4, $5) })
 
   static let testValue = Self()
 

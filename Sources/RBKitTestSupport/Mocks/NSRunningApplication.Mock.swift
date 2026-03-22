@@ -1,7 +1,8 @@
 import AppKit
 
 extension NSRunningApplication {
-  open class Mock: NSRunningApplication {
+  // swiftlint:disable:next no_unchecked_sendable -- NSRunningApplication already inherits @unchecked Sendable from AppKit, and Swift requires subclasses to restate that inherited conformance ("must restate inherited '@unchecked Sendable' conformance").
+  open class Mock: NSRunningApplication, @unchecked Sendable {
 
     // MARK: Lifecycle
 

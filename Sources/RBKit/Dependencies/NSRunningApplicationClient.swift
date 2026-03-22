@@ -28,14 +28,23 @@ public struct NSRunningApplicationClient: Sendable {
   public var hide: @Sendable (_ app: NSRunningApplication) -> () -> Bool = { _ in { false } }
   public var unhide: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
 
-  public var boolObservation: @Sendable (_ app: NSRunningApplication) -> (
+  @DependencyEndpoint(method: "changes")
+  public var boolChanges: @Sendable @MainActor (
+    _ app: NSRunningApplication,
     _ keyPath: KeyPath<NSRunningApplication, Bool>,
-    _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping (NSRunningApplication, NSKeyValueObservedChange<Bool>) -> Void,
-  ) -> NSKeyValueObservation = { _ in { _, _, _ in NSObject().observe(
-    \.hash,
-    changeHandler: { _, _ in },
-  ) } }
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<Bool>> = { _, _, _ in
+    .finished
+  }
+
+  @DependencyEndpoint(method: "changes")
+  public var activationPolicyChanges: @Sendable @MainActor (
+    _ app: NSRunningApplication,
+    _ keyPath: KeyPath<NSRunningApplication, NSApplication.ActivationPolicy>,
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<NSApplication.ActivationPolicy>> = { _, _, _ in
+    .finished
+  }
 
   public var forceTerminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
   public var terminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }
@@ -45,16 +54,31 @@ public struct NSRunningApplicationClient: Sendable {
 
 extension NSRunningApplicationClient: DependencyKey {
   public static let liveValue = NSRunningApplicationClient(
-    initWithPID: NSRunningApplication.init(processIdentifier:),
-    runningApplications: NSRunningApplication.runningApplications(withBundleIdentifier:),
+    initWithPID: { NSRunningApplication(processIdentifier: $0) },
+    runningApplications: { NSRunningApplication.runningApplications(withBundleIdentifier: $0) },
     current: { NSRunningApplication.current },
     activate: { $0.activate(options: $1) },
     activateFromApplication: { app, fromApp, options in
       app.activate(from: fromApp, options: options)
     },
-    hide: NSRunningApplication.hide,
+    hide: { app in
+      { app.hide() }
+    },
     unhide: { $0.unhide() },
-    boolObservation: NSRunningApplication.observe,
+    boolChanges: { keyPathApp, keyPath, options in
+      keyValueChangeStream(
+        observed: keyPathApp,
+        keyPath: keyPath,
+        options: options,
+      )
+    },
+    activationPolicyChanges: { keyPathApp, keyPath, options in
+      keyValueChangeStream(
+        observed: keyPathApp,
+        keyPath: keyPath,
+        options: options,
+      )
+    },
     forceTerminate: { $0.forceTerminate() },
     terminate: { $0.terminate() },
   )

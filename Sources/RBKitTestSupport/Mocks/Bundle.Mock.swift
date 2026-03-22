@@ -1,7 +1,8 @@
 import Foundation
 
 extension Bundle {
-  open class Mock: Bundle {
+  // swiftlint:disable:next no_unchecked_sendable -- Bundle already inherits @unchecked Sendable from Foundation, and Swift requires subclasses to restate that inherited conformance ("must restate inherited '@unchecked Sendable' conformance").
+  open class Mock: Bundle, @unchecked Sendable {
 
     // MARK: Open
 

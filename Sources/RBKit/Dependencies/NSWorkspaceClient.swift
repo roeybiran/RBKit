@@ -20,6 +20,7 @@ public struct NSWorkspaceClient: Sendable {
   ) async throws -> NSRunningApplication = { _, _ in
     throw CancellationError()
   }
+
   @DependencyEndpoint(method: "open")
   public var openWithApplicationAt: @Sendable @MainActor (
     _ itemURLs: [URL],
@@ -28,6 +29,7 @@ public struct NSWorkspaceClient: Sendable {
   ) async throws -> NSRunningApplication = { _, _, _ in
     throw CancellationError()
   }
+
   public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
   // MARK: - Launching and Hiding Apps
@@ -72,25 +74,19 @@ public struct NSWorkspaceClient: Sendable {
 
   // MARK: - Custom
 
-  @DependencyEndpoint(method: "observe")
-  public var NSRunningApplicationArrayObservation: @Sendable (
-    KeyPath<NSWorkspace, [NSRunningApplication]>,
-    _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<[NSRunningApplication]>) -> Void,
-  ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
-    \.hash,
-    changeHandler: { _, _ in },
-  ) }
+  @DependencyEndpoint(method: "changes")
+  public var runningApplicationsChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> = { _ in
+    .finished
+  }
 
-  @DependencyEndpoint(method: "observe")
-  public var optionalNSRunningApplicationObservation: @Sendable (
-    KeyPath<NSWorkspace, NSRunningApplication?>,
-    _ options: NSKeyValueObservingOptions,
-    _ changeHandler: @escaping @Sendable (NSWorkspace, NSKeyValueObservedChange<NSRunningApplication?>) -> Void,
-  ) -> NSKeyValueObservation = { _, _, _ in NSObject().observe(
-    \.hash,
-    changeHandler: { _, _ in },
-  ) }
+  @DependencyEndpoint(method: "changes")
+  public var frontmostApplicationChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
+    .finished
+  }
 }
 
 // MARK: DependencyKey
@@ -111,8 +107,20 @@ extension NSWorkspaceClient: DependencyKey {
       iconForContentType: { NSWorkspace.shared.icon(for: $0) },
       accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
       notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1) },
-      NSRunningApplicationArrayObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
-      optionalNSRunningApplicationObservation: { NSWorkspace.shared.observe($0, options: $1, changeHandler: $2) },
+      runningApplicationsChanges: { options in
+        keyValueChangeStream(
+          observed: NSWorkspace.shared,
+          keyPath: \.runningApplications,
+          options: options,
+        )
+      },
+      frontmostApplicationChanges: { options in
+        keyValueChangeStream(
+          observed: NSWorkspace.shared,
+          keyPath: \.frontmostApplication,
+          options: options,
+        )
+      },
     )
   }
 

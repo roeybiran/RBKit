@@ -87,37 +87,53 @@ public struct NSWorkspaceClient: Sendable {
   ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
     .finished
   }
+
+  @DependencyEndpoint(method: "observeMenuBarOwningApplication")
+  public var menuBarOwningApplicationChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
+    .finished
+  }
 }
 
 // MARK: DependencyKey
 
 extension NSWorkspaceClient: DependencyKey {
+  private static let instance = NSWorkspace.shared
+
   public static var liveValue: Self {
     Self(
-      openWithConfiguration: { try await NSWorkspace.shared.open($0, configuration: $1) },
-      openWithApplicationAt: { try await NSWorkspace.shared.open($0, withApplicationAt: $1, configuration: $2) },
-      open: { NSWorkspace.shared.open($0) },
-      openApplicationAt: { try await NSWorkspace.shared.openApplication(at: $0, configuration: $1) },
-      activateFileViewerSelecting: { NSWorkspace.shared.activateFileViewerSelecting($0) },
-      urlForApplication: { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) },
-      frontmostApplication: { NSWorkspace.shared.frontmostApplication },
-      runningApplications: { NSWorkspace.shared.runningApplications },
-      menuBarOwningApplication: { NSWorkspace.shared.menuBarOwningApplication },
-      iconForFile: { NSWorkspace.shared.icon(forFile: $0) },
-      iconForContentType: { NSWorkspace.shared.icon(for: $0) },
-      accessibilityDisplayShouldReduceMotion: { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion },
-      notifications: { NSWorkspace.shared.notificationCenter.notifications(named: $0, object: $1) },
+      openWithConfiguration: { try await instance.open($0, configuration: $1) },
+      openWithApplicationAt: { try await instance.open($0, withApplicationAt: $1, configuration: $2) },
+      open: { instance.open($0) },
+      openApplicationAt: { try await instance.openApplication(at: $0, configuration: $1) },
+      activateFileViewerSelecting: { instance.activateFileViewerSelecting($0) },
+      urlForApplication: { instance.urlForApplication(withBundleIdentifier: $0) },
+      frontmostApplication: { instance.frontmostApplication },
+      runningApplications: { instance.runningApplications },
+      menuBarOwningApplication: { instance.menuBarOwningApplication },
+      iconForFile: { instance.icon(forFile: $0) },
+      iconForContentType: { instance.icon(for: $0) },
+      accessibilityDisplayShouldReduceMotion: { instance.accessibilityDisplayShouldReduceMotion },
+      notifications: { instance.notificationCenter.notifications(named: $0, object: $1) },
       runningApplicationsChanges: { options in
         keyValueChangeStream(
-          observed: NSWorkspace.shared,
+          observed: instance,
           keyPath: \.runningApplications,
           options: options,
         )
       },
       frontmostApplicationChanges: { options in
         keyValueChangeStream(
-          observed: NSWorkspace.shared,
+          observed: instance,
           keyPath: \.frontmostApplication,
+          options: options,
+        )
+      },
+      menuBarOwningApplicationChanges: { options in
+        keyValueChangeStream(
+          observed: instance,
+          keyPath: \.menuBarOwningApplication,
           options: options,
         )
       },

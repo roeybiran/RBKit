@@ -128,4 +128,38 @@ struct `NSWorkspaceClient Tests` {
 
     #expect(result === expectedIcon)
   }
+
+  @Test
+  @MainActor
+  func `menuBarOwningApplicationChanges, should route to menuBarOwningApplicationChanges`() async {
+    let expectedApp = NSRunningApplication.current
+
+    let result = await withDependencies {
+      $0.nsWorkspaceClient.menuBarOwningApplicationChanges = { options in
+        #expect(options == [.initial, .new])
+        return .init { continuation in
+          continuation.yield(
+            .init(
+              kind: .setting,
+              oldValue: nil,
+              newValue: expectedApp,
+              indexes: nil,
+              isPrior: false,
+            )
+          )
+          continuation.finish()
+        }
+      }
+    } operation: {
+      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+      for await change in nsWorkspaceClient.menuBarOwningApplicationChanges([.initial, .new]) {
+        if let newValue = change.newValue {
+          return newValue
+        }
+      }
+      return nil
+    }
+
+    #expect(result?.processIdentifier == expectedApp.processIdentifier)
+  }
 }

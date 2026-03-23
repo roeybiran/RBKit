@@ -7,8 +7,8 @@ import UserNotifications
 @DependencyClient
 public struct UserNotificationCenterClient: Sendable {
   public var requestAuthorization:
-    @Sendable (_ options: UNAuthorizationOptions) async throws -> Bool
-  public var add: @Sendable (_ request: UNNotificationRequest) async throws -> Void
+    @MainActor @Sendable (_ options: UNAuthorizationOptions) async throws -> Bool
+  public var add: @MainActor @Sendable (_ request: UNNotificationRequest) async throws -> Void
 }
 
 // MARK: DependencyKey

@@ -23,7 +23,7 @@ struct AppWatcher {
         workspaceTaskGroup.addTask { @MainActor [self] in
           await withTaskGroup(of: Void.self) { appTaskGroup in
             for await potentiallyUnsafeApps in nsWorkspaceClient
-              .runningApplicationsChanges([.initial, .new])
+              .runningApplications(options: [.initial, .new])
               .compactMap(\.newValue)
             {
               let batchOfSafeApps = potentiallyUnsafeApps.filter { isSafe($0) }
@@ -49,7 +49,7 @@ struct AppWatcher {
 
         // MARK: - Frontmost Application
         workspaceTaskGroup.addTask { @MainActor in
-          for await change in nsWorkspaceClient.frontmostApplicationChanges([.initial, .old, .new]) {
+          for await change in nsWorkspaceClient.frontmostApplication(options: [.initial, .old, .new]) {
             if let deactivatedApp = change.oldValue ?? nil, observedApps.contains(deactivatedApp) {
               continuation.yield(.deactivated(deactivatedApp))
             }

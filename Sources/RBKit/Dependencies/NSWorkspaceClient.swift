@@ -34,7 +34,6 @@ public struct NSWorkspaceClient: Sendable {
 
   // MARK: - Launching and Hiding Apps
 
-  @DependencyEndpoint(method: "openApplication")
   public var openApplicationAt: @Sendable @MainActor (
     _ at: URL,
     _ configuration: NSWorkspace.OpenConfiguration
@@ -49,9 +48,30 @@ public struct NSWorkspaceClient: Sendable {
   // MARK: - Requesting Information
 
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
+
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
+  @DependencyEndpoint(method: "frontmostApplication")
+  public var frontmostApplicationChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
+      .finished
+  }
+
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
+  @DependencyEndpoint(method: "runningApplications")
+  public var runningApplicationsChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> = { _ in
+      .finished
+  }
+
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
+  @DependencyEndpoint(method: "menuBarOwningApplication")
+  public var menuBarOwningApplicationChanges: @Sendable @MainActor (
+    _ options: NSKeyValueObservingOptions
+  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
+      .finished
+  }
 
   // MARK: - Managing Icons
 
@@ -71,29 +91,6 @@ public struct NSWorkspaceClient: Sendable {
       named: $0,
       object: $1,
     ) }
-
-  // MARK: - Custom
-
-  @DependencyEndpoint(method: "changes")
-  public var runningApplicationsChanges: @Sendable @MainActor (
-    _ options: NSKeyValueObservingOptions
-  ) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> = { _ in
-    .finished
-  }
-
-  @DependencyEndpoint(method: "changes")
-  public var frontmostApplicationChanges: @Sendable @MainActor (
-    _ options: NSKeyValueObservingOptions
-  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
-    .finished
-  }
-
-  @DependencyEndpoint(method: "observeMenuBarOwningApplication")
-  public var menuBarOwningApplicationChanges: @Sendable @MainActor (
-    _ options: NSKeyValueObservingOptions
-  ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
-    .finished
-  }
 }
 
 // MARK: DependencyKey
@@ -110,19 +107,6 @@ extension NSWorkspaceClient: DependencyKey {
       activateFileViewerSelecting: { instance.activateFileViewerSelecting($0) },
       urlForApplication: { instance.urlForApplication(withBundleIdentifier: $0) },
       frontmostApplication: { instance.frontmostApplication },
-      runningApplications: { instance.runningApplications },
-      menuBarOwningApplication: { instance.menuBarOwningApplication },
-      iconForFile: { instance.icon(forFile: $0) },
-      iconForContentType: { instance.icon(for: $0) },
-      accessibilityDisplayShouldReduceMotion: { instance.accessibilityDisplayShouldReduceMotion },
-      notifications: { instance.notificationCenter.notifications(named: $0, object: $1) },
-      runningApplicationsChanges: { options in
-        keyValueChangeStream(
-          observed: instance,
-          keyPath: \.runningApplications,
-          options: options,
-        )
-      },
       frontmostApplicationChanges: { options in
         keyValueChangeStream(
           observed: instance,
@@ -130,6 +114,15 @@ extension NSWorkspaceClient: DependencyKey {
           options: options,
         )
       },
+      runningApplications: { instance.runningApplications },
+      runningApplicationsChanges: { options in
+        keyValueChangeStream(
+          observed: instance,
+          keyPath: \.runningApplications,
+          options: options,
+        )
+      },
+      menuBarOwningApplication: { instance.menuBarOwningApplication },
       menuBarOwningApplicationChanges: { options in
         keyValueChangeStream(
           observed: instance,
@@ -137,6 +130,10 @@ extension NSWorkspaceClient: DependencyKey {
           options: options,
         )
       },
+      iconForFile: { instance.icon(forFile: $0) },
+      iconForContentType: { instance.icon(for: $0) },
+      accessibilityDisplayShouldReduceMotion: { instance.accessibilityDisplayShouldReduceMotion },
+      notifications: { instance.notificationCenter.notifications(named: $0, object: $1) },
     )
   }
 

@@ -53,6 +53,7 @@ struct AppWatcherTests {
         stream([.init(newValue: [.current, passwords, xpc, zombie, regular])])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
       deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
     } operation: {
@@ -80,6 +81,7 @@ struct AppWatcherTests {
         ])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { app, keyPath, options in
         let label =
           if keyPath == \.isFinishedLaunching {
@@ -179,6 +181,7 @@ struct AppWatcherTests {
           }
         }
       }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
       deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
     } operation: {
@@ -197,6 +200,43 @@ struct AppWatcherTests {
   }
 
   @Test
+  func `events should emit applicationOwnedMenuBar and applicationDisownedMenuBar`() async {
+    let app = AppMock(_processIdentifier: 0)
+
+    let actualEvents = await withDependencies { deps in
+      deps.processesClient = .nonXPC
+      deps.sysctlClient = .nonZombie
+      deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
+        stream([.init(newValue: [app])])
+      }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in
+        AsyncStream { continuation in
+          Task { @MainActor in
+            await Task.yield()
+            continuation.yield(.init(newValue: app))
+            continuation.yield(.init(oldValue: app, newValue: .some(nil)))
+            continuation.finish()
+          }
+        }
+      }
+      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+    } operation: {
+      let sut = AppWatcher()
+      return await collectEvents(from: sut.events())
+    }
+
+    #expect(
+      actualEvents == [
+        .launched([app]),
+        .applicationOwnedMenuBar(app),
+        .applicationDisownedMenuBar(app),
+      ]
+    )
+  }
+
+  @Test
   func `events should emit didFinishedLaunching`() async {
     let app = AppMock(_isFinishedLaunching: true, _processIdentifier: 0)
 
@@ -207,6 +247,7 @@ struct AppWatcherTests {
         stream([.init(newValue: [app])])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, _ in
         if keyPath == \.isFinishedLaunching {
           return stream([.init(newValue: true)])
@@ -233,6 +274,7 @@ struct AppWatcherTests {
         stream([.init(newValue: [app])])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
       deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in
         stream([.init(newValue: .regular)])
@@ -256,6 +298,7 @@ struct AppWatcherTests {
         stream([.init(newValue: [app])])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { app, keyPath, _ in
         if keyPath == \.isHidden {
           guard let app = app as? AppMock else {
@@ -295,6 +338,7 @@ struct AppWatcherTests {
         stream([.init(newValue: [app])])
       }
       deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, _ in
         if keyPath == \.isTerminated {
           return stream([.init(newValue: true)])
@@ -315,6 +359,7 @@ struct AppWatcherTests {
     let app = AppMock(_processIdentifier: 0)
     var runningApplicationsOptions = [NSKeyValueObservingOptions]()
     var frontmostApplicationOptions = [NSKeyValueObservingOptions]()
+    var menuBarOwningApplicationOptions = [NSKeyValueObservingOptions]()
     var boolObservationCalls = [(label: String, options: NSKeyValueObservingOptions)]()
     var activationPolicyObservationCalls = [NSKeyValueObservingOptions]()
 
@@ -328,6 +373,10 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.frontmostApplicationChanges = { options in
         frontmostApplicationOptions.append(options)
         return stream([])
+      }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { options in
+        menuBarOwningApplicationOptions.append(options)
+        return .finished
       }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, options in
         let label =
@@ -353,6 +402,7 @@ struct AppWatcherTests {
     #expect(actualEvents == [.launched([app])])
     #expect(runningApplicationsOptions == [[.initial, .new]])
     #expect(frontmostApplicationOptions == [[.initial, .old, .new]])
+    #expect(menuBarOwningApplicationOptions == [[.initial, .old, .new]])
     #expect(
       boolObservationCalls.filter {
         $0.label == #keyPath(NSRunningApplication.isFinishedLaunching) && $0.options == [.initial, .new]
@@ -387,6 +437,10 @@ extension AppWatcherEvent: CustomDebugStringConvertible {
       return "activated \(appDescription(app))"
     case .deactivated(let app):
       return "deactivated \(appDescription(app))"
+    case .applicationOwnedMenuBar(let app):
+      return "applicationOwnedMenuBar \(appDescription(app))"
+    case .applicationDisownedMenuBar(let app):
+      return "applicationDisownedMenuBar \(appDescription(app))"
     case .terminated(let app):
       return "terminated \(appDescription(app))"
     case .hidden(let app):

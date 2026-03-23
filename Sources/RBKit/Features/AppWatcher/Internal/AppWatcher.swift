@@ -51,12 +51,28 @@ struct AppWatcher {
         workspaceTaskGroup.addTask { @MainActor in
           for await change in nsWorkspaceClient.frontmostApplication(options: [.initial, .old, .new]) {
             if let deactivatedApp = change.oldValue ?? nil, observedApps.contains(deactivatedApp) {
+              debugLog(event: .deactivated, app: deactivatedApp)
               continuation.yield(.deactivated(deactivatedApp))
             }
 
             if let activatedApp = change.newValue ?? nil, observedApps.contains(activatedApp) {
               debugLog(event: .activated, app: activatedApp)
               continuation.yield(.activated(activatedApp))
+            }
+          }
+        }
+
+        // MARK: - Menu Bar Owning Application
+        workspaceTaskGroup.addTask { @MainActor in
+          for await change in nsWorkspaceClient.menuBarOwningApplication(options: [.initial, .old, .new]) {
+            if let disownedApp = change.oldValue ?? nil, observedApps.contains(disownedApp) {
+              debugLog(event: .applicationDisownedMenuBar, app: disownedApp)
+              continuation.yield(.applicationDisownedMenuBar(disownedApp))
+            }
+
+            if let owningApp = change.newValue ?? nil, observedApps.contains(owningApp) {
+              debugLog(event: .applicationOwnedMenuBar, app: owningApp)
+              continuation.yield(.applicationOwnedMenuBar(owningApp))
             }
           }
         }

@@ -98,7 +98,7 @@ public struct NSWorkspaceClient: Sendable {
 extension NSWorkspaceClient: DependencyKey {
   private static let instance = NSWorkspace.shared
 
-  public static var liveValue: Self {
+  public static let liveValue: Self = {
     Self(
       openWithConfiguration: { try await instance.open($0, configuration: $1) },
       openWithApplicationAt: { try await instance.open($0, withApplicationAt: $1, configuration: $2) },
@@ -135,11 +135,9 @@ extension NSWorkspaceClient: DependencyKey {
       accessibilityDisplayShouldReduceMotion: { instance.accessibilityDisplayShouldReduceMotion },
       notifications: { instance.notificationCenter.notifications(named: $0, object: $1) },
     )
-  }
+  }()
 
-  public static var testValue: Self {
-    Self()
-  }
+  public static let testValue = Self()
 }
 
 extension DependencyValues {

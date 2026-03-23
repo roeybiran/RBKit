@@ -73,7 +73,7 @@ struct `NSWorkspaceClient Tests` {
 
   @Test
   @MainActor
-  func `openApplication(at:configuration:), should route to openApplicationAt`() async throws {
+  func `openApplicationAt, should route to openApplicationAt`() async throws {
     let applicationURL = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
 
@@ -85,7 +85,7 @@ struct `NSWorkspaceClient Tests` {
       }
     } operation: {
       @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return try await nsWorkspaceClient.openApplication(at: applicationURL, configuration: configuration)
+      return try await nsWorkspaceClient.openApplicationAt(applicationURL, configuration)
     }
 
     #expect(result.processIdentifier == NSRunningApplication.current.processIdentifier)

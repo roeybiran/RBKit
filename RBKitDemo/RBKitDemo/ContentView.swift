@@ -65,6 +65,12 @@ struct ContentView: View {
           case .deactivated(let app):
             appWatcherLogs.append("deactivated: \(app.localizedName ?? "UNKNOWN")")
 
+          case .applicationOwnedMenuBar(let app):
+            appWatcherLogs.append("applicationOwnedMenuBar: \(app.localizedName ?? "UNKNOWN")")
+
+          case .applicationDisownedMenuBar(let app):
+            appWatcherLogs.append("applicationDisownedMenuBar: \(app.localizedName ?? "UNKNOWN")")
+
           case .terminated(let app):
             appWatcherLogs.append("terminated: \(app.localizedName ?? "UNKNOWN")")
 

@@ -5,6 +5,8 @@ public enum AppWatcherEvent: Hashable, Sendable {
   case didFinishedLaunching(NSRunningApplication)
   case activated(NSRunningApplication)
   case deactivated(NSRunningApplication)
+  case applicationOwnedMenuBar(NSRunningApplication)
+  case applicationDisownedMenuBar(NSRunningApplication)
   case terminated(NSRunningApplication)
   case hidden(NSRunningApplication)
   case unhidden(NSRunningApplication)

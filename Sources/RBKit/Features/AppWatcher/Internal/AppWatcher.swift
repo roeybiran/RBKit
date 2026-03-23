@@ -66,13 +66,13 @@ struct AppWatcher {
         workspaceTaskGroup.addTask { @MainActor in
           for await change in nsWorkspaceClient.menuBarOwningApplication(options: [.initial, .old, .new]) {
             if let disownedApp = change.oldValue ?? nil, observedApps.contains(disownedApp) {
-              debugLog(event: .applicationDisownedMenuBar, app: disownedApp)
-              continuation.yield(.applicationDisownedMenuBar(disownedApp))
+              debugLog(event: .disownedMenuBar, app: disownedApp)
+              continuation.yield(.disownedMenuBar(disownedApp))
             }
 
             if let owningApp = change.newValue ?? nil, observedApps.contains(owningApp) {
-              debugLog(event: .applicationOwnedMenuBar, app: owningApp)
-              continuation.yield(.applicationOwnedMenuBar(owningApp))
+              debugLog(event: .ownedMenuBar, app: owningApp)
+              continuation.yield(.ownedMenuBar(owningApp))
             }
           }
         }

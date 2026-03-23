@@ -21,8 +21,8 @@ enum Event: CustomStringConvertible {
   case isHidden(Bool)
   case activated
   case deactivated
-  case applicationOwnedMenuBar
-  case applicationDisownedMenuBar
+  case ownedMenuBar
+  case disownedMenuBar
   case skippingXPC(String)
   case skippingZombie
 
@@ -44,10 +44,10 @@ enum Event: CustomStringConvertible {
       "activated"
     case .deactivated:
       "deactivated"
-    case .applicationOwnedMenuBar:
-      "application owned menu bar"
-    case .applicationDisownedMenuBar:
-      "application disowned menu bar"
+    case .ownedMenuBar:
+      "owned menu bar"
+    case .disownedMenuBar:
+      "disowned menu bar"
     case .skippingXPC(let nsFileType):
       "skipping XPC (nsFileType: \(nsFileType))"
     case .skippingZombie:

@@ -200,7 +200,7 @@ struct AppWatcherTests {
   }
 
   @Test
-  func `events should emit applicationOwnedMenuBar and applicationDisownedMenuBar`() async {
+  func `events should emit ownedMenuBar and disownedMenuBar`() async {
     let app = AppMock(_processIdentifier: 0)
 
     let actualEvents = await withDependencies { deps in
@@ -230,8 +230,8 @@ struct AppWatcherTests {
     #expect(
       actualEvents == [
         .launched([app]),
-        .applicationOwnedMenuBar(app),
-        .applicationDisownedMenuBar(app),
+        .ownedMenuBar(app),
+        .disownedMenuBar(app),
       ]
     )
   }
@@ -437,10 +437,10 @@ extension AppWatcherEvent: CustomDebugStringConvertible {
       return "activated \(appDescription(app))"
     case .deactivated(let app):
       return "deactivated \(appDescription(app))"
-    case .applicationOwnedMenuBar(let app):
-      return "applicationOwnedMenuBar \(appDescription(app))"
-    case .applicationDisownedMenuBar(let app):
-      return "applicationDisownedMenuBar \(appDescription(app))"
+    case .ownedMenuBar(let app):
+      return "ownedMenuBar \(appDescription(app))"
+    case .disownedMenuBar(let app):
+      return "disownedMenuBar \(appDescription(app))"
     case .terminated(let app):
       return "terminated \(appDescription(app))"
     case .hidden(let app):

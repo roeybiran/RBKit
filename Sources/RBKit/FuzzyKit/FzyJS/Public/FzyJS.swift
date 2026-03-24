@@ -2,7 +2,7 @@ import Foundation
 
 // https://github.com/jhawthorn/fzy.js
 
-public enum FuzzyMatcherV2Core {
+public enum FzyJS {
 
   // MARK: Public
 
@@ -68,7 +68,9 @@ public enum FuzzyMatcherV2Core {
   }
 
   /// https://github.com/jhawthorn/fzy.js/blob/main/index.js#L123-L176
-  public static func positions(_ needle: String, _ haystack: String) -> [Int] {
+  /// This mirrors fzy.js' `positions`, except Swift returns `String.Index`
+  /// values instead of JavaScript integer offsets.
+  public static func positions(_ needle: String, _ haystack: String) -> [String.Index] {
     let n = needle.count
     let m = haystack.count
 
@@ -77,13 +79,14 @@ public enum FuzzyMatcherV2Core {
     }
 
     if n == m {
-      return Array(0 ..< n)
+      return Array(haystack.indices)
     }
 
     if m > 1024 {
       return []
     }
 
+    let haystackIndices = Array(haystack.indices)
     var D = [[Double]](
       repeating: [Double](repeating: SCORE_MIN, count: m),
       count: n
@@ -95,8 +98,8 @@ public enum FuzzyMatcherV2Core {
 
     compute(needle, haystack, &D, &M)
 
-    var positions = [Int](repeating: 0, count: n)
-    var match_required = false
+    var positions = [String.Index](repeating: haystack.startIndex, count: n)
+    var matchRequired = false
     var haystackIndex = m - 1
 
     for needleIndex in stride(from: n - 1, through: 0, by: -1) {
@@ -104,14 +107,14 @@ public enum FuzzyMatcherV2Core {
         if
           D[needleIndex][haystackIndex] != SCORE_MIN,
 
-          match_required
+          matchRequired
           || D[needleIndex][haystackIndex] == M[needleIndex][haystackIndex]
 
         {
-          match_required = needleIndex > 0
+          matchRequired = needleIndex > 0
             && haystackIndex > 0
             && M[needleIndex][haystackIndex] == D[needleIndex - 1][haystackIndex - 1] + SCORE_MATCH_CONSECUTIVE
-          positions[needleIndex] = haystackIndex
+          positions[needleIndex] = haystackIndices[haystackIndex]
           haystackIndex -= 1
           break
         }

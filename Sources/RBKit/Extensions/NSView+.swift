@@ -15,18 +15,19 @@ extension NSView {
   }
 
   public func keyDown(with event: NSEventValue) {
+    guard case .key(let keyEvent) = event.eventType else { return }
     guard
       let nsEvent = NSEvent.keyEvent(
         with: event.type,
-        location: NSEvent.mouseLocation,
+        location: event.locationInWindow,
         modifierFlags: event.modifierFlags,
         timestamp: event.timestamp,
         windowNumber: event.windowNumber,
         context: nil,
-        characters: event.characters ?? "",
-        charactersIgnoringModifiers: event.charactersIgnoringModifiers ?? "",
-        isARepeat: event.isARepeat,
-        keyCode: event.keyCode,
+        characters: keyEvent.characters ?? "",
+        charactersIgnoringModifiers: keyEvent.charactersIgnoringModifiers ?? "",
+        isARepeat: keyEvent.isARepeat,
+        keyCode: keyEvent.keyCode,
       )
     else {
       return

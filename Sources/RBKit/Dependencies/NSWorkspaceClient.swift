@@ -14,7 +14,7 @@ public struct NSWorkspaceClient: Sendable {
   // MARK: - Opening URLs
 
   @DependencyEndpoint(method: "open")
-  public var openWithConfiguration: @Sendable @MainActor (
+  public var openURLWithConfiguration: @Sendable @MainActor (
     _ url: URL,
     _ configuration: NSWorkspace.OpenConfiguration
   ) async throws -> NSRunningApplication = { _, _ in
@@ -22,7 +22,7 @@ public struct NSWorkspaceClient: Sendable {
   }
 
   @DependencyEndpoint(method: "open")
-  public var openWithApplicationAt: @Sendable @MainActor (
+  public var openURLsWithApplicationAt: @Sendable @MainActor (
     _ itemURLs: [URL],
     _ withApplicationAt: URL,
     _ configuration: NSWorkspace.OpenConfiguration
@@ -34,7 +34,7 @@ public struct NSWorkspaceClient: Sendable {
 
   // MARK: - Launching and Hiding Apps
 
-  public var openApplicationAt: @Sendable @MainActor (
+  public var openApplication: @Sendable @MainActor (
     _ at: URL,
     _ configuration: NSWorkspace.OpenConfiguration
   ) async throws -> NSRunningApplication = { _, _ in
@@ -100,10 +100,10 @@ extension NSWorkspaceClient: DependencyKey {
 
   public static let liveValue: Self = {
     Self(
-      openWithConfiguration: { try await instance.open($0, configuration: $1) },
-      openWithApplicationAt: { try await instance.open($0, withApplicationAt: $1, configuration: $2) },
+      openURLWithConfiguration: { try await instance.open($0, configuration: $1) },
+      openURLsWithApplicationAt: { try await instance.open($0, withApplicationAt: $1, configuration: $2) },
       open: { instance.open($0) },
-      openApplicationAt: { try await instance.openApplication(at: $0, configuration: $1) },
+      openApplication: { try await instance.openApplication(at: $0, configuration: $1) },
       activateFileViewerSelecting: { instance.activateFileViewerSelecting($0) },
       urlForApplication: { instance.urlForApplication(withBundleIdentifier: $0) },
       frontmostApplication: { instance.frontmostApplication },

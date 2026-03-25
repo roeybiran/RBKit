@@ -6,7 +6,7 @@ import Testing
 struct CharacterTests {
   @Test
   func `attachment, should match NSTextAttachment character`() throws {
-    let unicode = try #require(Unicode.Scalar(NSTextAttachment.character))
+    let unicode = try #require(Unicode.Scalar(NSAttachmentCharacter))
 
     #expect(Character.attachment == Character(unicode))
   }

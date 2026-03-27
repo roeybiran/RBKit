@@ -1,5 +1,6 @@
 import AppKit
 import Dependencies
+import DependenciesTestSupport
 import Foundation
 import Testing
 @testable import RBKit
@@ -13,59 +14,54 @@ struct AppImporterItemTests {
     #expect(item.id == "com.example.app")
   }
 
-  @Test
-  func `title, with resolved application URL, should use app name`() {
-    let bundleID = "com.example.app"
-    let appURL = URL(fileURLWithPath: "/Applications/Test.app")
-
-    let title = withDependencies {
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.urlForApplication = { queriedBundleID in
-        #expect(queriedBundleID == bundleID)
-        return appURL
+        #expect(queriedBundleID == "com.example.app")
+        return URL(fileURLWithPath: "/Applications/Test.app")
       }
-    } operation: {
-      AppImporterItem(bundleID: bundleID).title
     }
+  )
+  func `title, with resolved application URL, should use app name`() {
+    let title = AppImporterItem(bundleID: "com.example.app").title
 
     #expect(title == "Test")
   }
 
-  @Test
-  func `title, with unresolved application URL, should fallback to bundleID`() {
-    let bundleID = "com.missing.app"
-
-    let title = withDependencies {
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.urlForApplication = { queriedBundleID in
-        #expect(queriedBundleID == bundleID)
+        #expect(queriedBundleID == "com.missing.app")
         return nil
       }
-    } operation: {
-      AppImporterItem(bundleID: bundleID).title
     }
+  )
+  func `title, with unresolved application URL, should fallback to bundleID`() {
+    let title = AppImporterItem(bundleID: "com.missing.app").title
 
-    #expect(title == bundleID)
+    #expect(title == "com.missing.app")
   }
 
-  @Test
-  func `image, with resolved application URL, should return valid image`() {
-    let image = withDependencies {
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.urlForApplication = { _ in
         URL(fileURLWithPath: "/Applications/Test.app")
       }
-    } operation: {
-      AppImporterItem(bundleID: "com.example.app").image
     }
+  )
+  func `image, with resolved application URL, should return valid image`() {
+    let image = AppImporterItem(bundleID: "com.example.app").image
 
     #expect(image.isValid)
   }
 
-  @Test
-  func `image, with unresolved application URL, should return question mark icon`() {
-    let image = withDependencies {
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.urlForApplication = { _ in nil }
-    } operation: {
-      AppImporterItem(bundleID: "com.example.app").image
     }
+  )
+  func `image, with unresolved application URL, should return question mark icon`() {
+    let image = AppImporterItem(bundleID: "com.example.app").image
 
     #expect(image === NSImage.questionMark)
   }

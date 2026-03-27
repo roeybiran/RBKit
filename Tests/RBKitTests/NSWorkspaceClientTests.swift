@@ -1,31 +1,44 @@
 import AppKit
 import Dependencies
+import DependenciesTestSupport
 import Testing
 import UniformTypeIdentifiers
 @testable import RBKit
 
 struct `NSWorkspaceClient Tests` {
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.openURLWithConfiguration = { openedURL, openedConfiguration in
+        #expect(openedURL == URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory))
+        #expect(openedConfiguration.createsNewApplicationInstance)
+        return .current
+      }
+    }
+  )
   @MainActor
   func `open(url:configuration:), should route to openURLWithConfiguration`() async throws {
     let url = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
-
-    let result = try await withDependencies {
-      $0.nsWorkspaceClient.openURLWithConfiguration = { openedURL, openedConfiguration in
-        #expect(openedURL == url)
-        #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
-        return .current
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return try await nsWorkspaceClient.open(url: url, configuration: configuration)
-    }
+    configuration.createsNewApplicationInstance = true
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = try await nsWorkspaceClient.open(url: url, configuration: configuration)
 
     #expect(result.processIdentifier == NSRunningApplication.current.processIdentifier)
   }
 
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.openURLsWithApplicationAt = { openedURLs, openedApplicationURL, openedConfiguration in
+        #expect(openedURLs == [
+          URL(filePath: "/tmp/Test.txt"),
+          URL(filePath: "/tmp/Test Folder", directoryHint: .isDirectory),
+        ])
+        #expect(openedApplicationURL == URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory))
+        #expect(openedConfiguration.createsNewApplicationInstance)
+        return .current
+      }
+    }
+  )
   @MainActor
   func `open(itemURLs:withApplicationAt:configuration:), should route to openURLsWithApplicationAt`() async throws {
     let urls = [
@@ -34,107 +47,90 @@ struct `NSWorkspaceClient Tests` {
     ]
     let applicationURL = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
-
-    let result = try await withDependencies {
-      $0.nsWorkspaceClient.openURLsWithApplicationAt = { openedURLs, openedApplicationURL, openedConfiguration in
-        #expect(openedURLs == urls)
-        #expect(openedApplicationURL == applicationURL)
-        #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
-        return .current
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return try await nsWorkspaceClient.open(
-        itemURLs: urls,
-        withApplicationAt: applicationURL,
-        configuration: configuration,
-      )
-    }
+    configuration.createsNewApplicationInstance = true
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = try await nsWorkspaceClient.open(
+      itemURLs: urls,
+      withApplicationAt: applicationURL,
+      configuration: configuration,
+    )
 
     #expect(result.processIdentifier == NSRunningApplication.current.processIdentifier)
   }
 
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.open = { openedURL in
+        #expect(openedURL == URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory))
+        return true
+      }
+    }
+  )
   @MainActor
   func `open(url:), should route to open`() {
     let url = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
-    let result = withDependencies {
-      $0.nsWorkspaceClient.open = { openedURL in
-        #expect(openedURL == url)
-        return true
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return nsWorkspaceClient.open(url: url)
-    }
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = nsWorkspaceClient.open(url: url)
 
     #expect(result)
   }
 
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.openApplication = { openedApplicationURL, openedConfiguration in
+        #expect(openedApplicationURL == URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory))
+        #expect(openedConfiguration.createsNewApplicationInstance)
+        return .current
+      }
+    }
+  )
   @MainActor
   func `openApplication, should route to openApplication`() async throws {
     let applicationURL = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
-
-    let result = try await withDependencies {
-      $0.nsWorkspaceClient.openApplication = { openedApplicationURL, openedConfiguration in
-        #expect(openedApplicationURL == applicationURL)
-        #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
-        return .current
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return try await nsWorkspaceClient.openApplication(applicationURL, configuration)
-    }
+    configuration.createsNewApplicationInstance = true
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = try await nsWorkspaceClient.openApplication(applicationURL, configuration)
 
     #expect(result.processIdentifier == NSRunningApplication.current.processIdentifier)
   }
 
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.iconForFile = { queriedPath in
+        #expect(queriedPath == "/Applications/Test.app")
+        return NSImage(size: .init(width: 1, height: 1))
+      }
+    }
+  )
   @MainActor
   func `icon(forFile:), should route to iconForFile`() {
     let filePath = "/Applications/Test.app"
-    let expectedIcon = NSImage()
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = nsWorkspaceClient.icon(forFile: filePath)
 
-    let result = withDependencies {
-      $0.nsWorkspaceClient.iconForFile = { queriedPath in
-        #expect(queriedPath == filePath)
-        return expectedIcon
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return nsWorkspaceClient.icon(forFile: filePath)
-    }
-
-    #expect(result === expectedIcon)
+    #expect(result.size == .init(width: 1, height: 1))
   }
 
-  @Test
+  @Test(
+    .dependencies {
+      $0.nsWorkspaceClient.iconForContentType = { queriedContentType in
+        #expect(queriedContentType == .plainText)
+        return NSImage(size: .init(width: 1, height: 1))
+      }
+    }
+  )
   @MainActor
   func `icon(for:), should route to iconForContentType`() {
     let contentType = UTType.plainText
-    let expectedIcon = NSImage()
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = nsWorkspaceClient.icon(for: contentType)
 
-    let result = withDependencies {
-      $0.nsWorkspaceClient.iconForContentType = { queriedContentType in
-        #expect(queriedContentType == contentType)
-        return expectedIcon
-      }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return nsWorkspaceClient.icon(for: contentType)
-    }
-
-    #expect(result === expectedIcon)
+    #expect(result.size == .init(width: 1, height: 1))
   }
 
-  @Test
-  @MainActor
-  func `menuBarOwningApplicationChanges, should route to menuBarOwningApplicationChanges`() async {
-    let expectedApp = NSRunningApplication.current
-
-    let result = await withDependencies {
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.menuBarOwningApplicationChanges = { options in
         #expect(options == [.initial, .new])
         return .init { continuation in
@@ -142,7 +138,7 @@ struct `NSWorkspaceClient Tests` {
             .init(
               kind: .setting,
               oldValue: nil,
-              newValue: expectedApp,
+              newValue: .current,
               indexes: nil,
               isPrior: false,
             )
@@ -150,15 +146,20 @@ struct `NSWorkspaceClient Tests` {
           continuation.finish()
         }
       }
-    } operation: {
-      @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    }
+  )
+  @MainActor
+  func `menuBarOwningApplicationChanges, should route to menuBarOwningApplicationChanges`() async {
+    let expectedApp = NSRunningApplication.current
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+    let result = await {
       for await change in nsWorkspaceClient.menuBarOwningApplicationChanges([.initial, .new]) {
         if let newValue = change.newValue {
           return newValue
         }
       }
       return nil
-    }
+    }()
 
     #expect(result?.processIdentifier == expectedApp.processIdentifier)
   }

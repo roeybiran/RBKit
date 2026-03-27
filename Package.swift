@@ -41,6 +41,7 @@ let package = Package(
       dependencies: [
         "RBKit",
         "RBKitTestSupport",
+        .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
         .product(name: "IdentifiedCollections", package: "swift-identified-collections"),
       ],
     ),

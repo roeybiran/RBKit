@@ -1,4 +1,5 @@
 import Dependencies
+import DependenciesTestSupport
 import Foundation
 import Testing
 
@@ -39,32 +40,32 @@ struct FrecencyStoreTests {
     #expect(called_createDirectory)
   }
 
-  @Test
-  func `get URL with bundle identifier nil`() {
-    let sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
       $0.bundleClient.bundleIdentifier = { @Sendable _ in nil }
       $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
       $0.diskClient.read = { @Sendable _ in "[0]".data(using: .utf8)! }
-    } operation: {
-      TestFrecencyStore.defaultURL()
     }
+  )
+  func `get URL with bundle identifier nil`() {
+    let sut = TestFrecencyStore.defaultURL()
 
     #expect(sut == nil)
   }
 
-  @Test
-  func `get URL with create directory failing`() {
-    let sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.urlClient.applicationSupportDirectory = { @Sendable in URL(filePath: "/Users/roey/app_support/") }
       $0.bundleClient.main = { .init() }
       $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
       $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in throw TestError() }
       $0.diskClient.read = { @Sendable _ in "[0]".data(using: .utf8)! }
-    } operation: {
-      TestFrecencyStore.defaultURL()
     }
+  )
+  func `get URL with create directory failing`() {
+    let sut = TestFrecencyStore.defaultURL()
 
     #expect(sut == nil)
   }
@@ -88,35 +89,35 @@ struct FrecencyStoreTests {
     }
   }
 
-  @Test
-  func `load without URL should no op`() throws {
-    var sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.diskClient.read = { @Sendable _ in fatalError("should not get here") }
-    } operation: {
-      TestFrecencyStore(url: nil)
     }
+  )
+  func `load without URL should no op`() throws {
+    var sut = TestFrecencyStore(url: nil)
 
     try sut.load()
   }
 
-  @Test
-  func `load with read error should throw`() throws {
-    var sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.diskClient.read = { @Sendable _ in throw TestError() }
-    } operation: {
-      TestFrecencyStore(url: testURL)
     }
+  )
+  func `load with read error should throw`() throws {
+    var sut = TestFrecencyStore(url: testURL)
 
     #expect(throws: (any Error).self) { try sut.load() }
   }
 
-  @Test
-  func `load with invalid json should throw`() throws {
-    var sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.diskClient.read = { @Sendable _ in "foo".data(using: .utf8)! }
-    } operation: {
-      TestFrecencyStore(url: testURL)
     }
+  )
+  func `load with invalid json should throw`() throws {
+    var sut = TestFrecencyStore(url: testURL)
 
     #expect(throws: (any Error).self) { try sut.load() }
   }
@@ -144,35 +145,36 @@ struct FrecencyStoreTests {
     }
   }
 
-  @Test(.disabled())
-  func `save with JSON encoding error should no op`() throws {
-    let sut = withDependencies {
+  @Test(
+    .disabled(),
+    .dependencies {
       $0.diskClient.write = { @Sendable _, _, _ in }
-    } operation: {
-      TestFrecencyStore(url: nil)
-    }
+    },
+  )
+  func `save with JSON encoding error should no op`() throws {
+    let sut = TestFrecencyStore(url: nil)
 
     try sut.save()
   }
 
-  @Test
-  func `save with disk write error should throw`() throws {
-    let sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.diskClient.write = { @Sendable _, _, _ in throw TestError() }
-    } operation: {
-      TestFrecencyStore(url: testURL)
     }
+  )
+  func `save with disk write error should throw`() throws {
+    let sut = TestFrecencyStore(url: testURL)
 
     #expect(throws: (any Error).self) { try sut.save() }
   }
 
-  @Test
-  func `save without URL should no op`() throws {
-    let sut = withDependencies {
+  @Test(
+    .dependencies {
       $0.diskClient.write = { @Sendable _, _, _ in fatalError("should not get here") }
-    } operation: {
-      TestFrecencyStore(url: nil)
     }
+  )
+  func `save without URL should no op`() throws {
+    let sut = TestFrecencyStore(url: nil)
 
     try sut.save()
   }

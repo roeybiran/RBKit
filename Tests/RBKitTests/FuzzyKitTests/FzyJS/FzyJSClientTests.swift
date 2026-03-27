@@ -1,22 +1,21 @@
 import Dependencies
+import DependenciesTestSupport
 import Testing
 @testable import RBKit
 
 struct FzyJSClientTests {
-  @Test
-  func `fuzzyMatcher dependency should be overridable`() async {
-    let expectedScore = FzyJS.Rank(rank: 42, hasMatch: true)
-
-    let resolvedScore = await withDependencies {
-      $0.fuzzyMatcher.score = { _, _ in expectedScore }
-    } operation: {
-      @Dependency(\.fuzzyMatcher) var fuzzyMatcher
-      return await fuzzyMatcher.score("amor", "app/models/order")
+  @Test(
+    .dependencies {
+      $0.fuzzyMatcher.score = { _, _ in .init(rank: 42, hasMatch: true) }
     }
+  )
+  func `fuzzyMatcher dependency should be overridable`() async {
+    @Dependency(\.fuzzyMatcher) var fuzzyMatcher
+    let resolvedScore = await fuzzyMatcher.score("amor", "app/models/order")
 
-    #expect(resolvedScore.rank == expectedScore.rank)
-    #expect(resolvedScore.hasMatch == expectedScore.hasMatch)
-    #expect(resolvedScore.positions.count == expectedScore.positions.count)
+    #expect(resolvedScore.rank == 42)
+    #expect(resolvedScore.hasMatch)
+    #expect(resolvedScore.positions.isEmpty)
   }
 
   @Test

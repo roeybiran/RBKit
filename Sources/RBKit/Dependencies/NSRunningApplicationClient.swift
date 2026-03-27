@@ -32,7 +32,7 @@ public struct NSRunningApplicationClient: Sendable {
   public var boolChanges: @Sendable @MainActor (
     _ app: NSRunningApplication,
     _ keyPath: KeyPath<NSRunningApplication, Bool>,
-    _ options: NSKeyValueObservingOptions
+    _ options: NSKeyValueObservingOptions,
   ) -> AsyncStream<KeyValueObservedChange<Bool>> = { _, _, _ in
     .finished
   }
@@ -41,7 +41,7 @@ public struct NSRunningApplicationClient: Sendable {
   public var activationPolicyChanges: @Sendable @MainActor (
     _ app: NSRunningApplication,
     _ keyPath: KeyPath<NSRunningApplication, NSApplication.ActivationPolicy>,
-    _ options: NSKeyValueObservingOptions
+    _ options: NSKeyValueObservingOptions,
   ) -> AsyncStream<KeyValueObservedChange<NSApplication.ActivationPolicy>> = { _, _, _ in
     .finished
   }

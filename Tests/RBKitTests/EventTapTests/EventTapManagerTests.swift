@@ -4,7 +4,7 @@ import Testing
 
 @testable import RBKit
 
-// MARK: - `EventTapManager Tests`
+// MARK: - EventTapManagerTests
 
 @MainActor
 struct EventTapManagerTests {

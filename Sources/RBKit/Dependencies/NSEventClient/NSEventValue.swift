@@ -318,17 +318,41 @@ public struct NSEventValue {
 // MARK: Equatable
 
 extension NSEventValue: Equatable { }
+
+// MARK: - NSEventValue.EventType + Equatable
+
 extension NSEventValue.EventType: Equatable { }
+
+// MARK: - NSEventValue.KeyEvent + Equatable
+
 extension NSEventValue.KeyEvent: Equatable { }
+
+// MARK: - NSEventValue.MouseEvent + Equatable
+
 extension NSEventValue.MouseEvent: Equatable { }
+
+// MARK: - NSEventValue.ScrollWheelEvent + Equatable
+
 extension NSEventValue.ScrollWheelEvent: Equatable { }
 
-// MARK: Sendable
+// MARK: - NSEventValue + Sendable
 
 extension NSEventValue: Sendable { }
+
+// MARK: - NSEventValue.EventType + Sendable
+
 extension NSEventValue.EventType: Sendable { }
+
+// MARK: - NSEventValue.KeyEvent + Sendable
+
 extension NSEventValue.KeyEvent: Sendable { }
+
+// MARK: - NSEventValue.MouseEvent + Sendable
+
 extension NSEventValue.MouseEvent: Sendable { }
+
+// MARK: - NSEventValue.ScrollWheelEvent + Sendable
+
 extension NSEventValue.ScrollWheelEvent: Sendable { }
 
 #if DEBUG

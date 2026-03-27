@@ -1,5 +1,5 @@
-public extension FzyJS {
-  actor Cache {
+extension FzyJS {
+  public actor Cache {
 
     // MARK: Lifecycle
 
@@ -50,6 +50,6 @@ public extension FzyJS {
 
     private let cacheLimit: Int
     private var cacheKeys = [CacheKey]()
-    private var scoreCache: [CacheKey: FzyJS.Rank] = [:]
+    private var scoreCache = [CacheKey: FzyJS.Rank]()
   }
 }

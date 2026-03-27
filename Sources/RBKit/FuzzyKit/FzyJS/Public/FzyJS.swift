@@ -55,11 +55,11 @@ public enum FzyJS {
 
     var D = [[Double]](
       repeating: [Double](repeating: SCORE_MIN, count: m),
-      count: n
+      count: n,
     )
     var M = [[Double]](
       repeating: [Double](repeating: SCORE_MIN, count: m),
-      count: n
+      count: n,
     )
 
     compute(needle, haystack, &D, &M)
@@ -89,11 +89,11 @@ public enum FzyJS {
     let haystackIndices = Array(haystack.indices)
     var D = [[Double]](
       repeating: [Double](repeating: SCORE_MIN, count: m),
-      count: n
+      count: n,
     )
     var M = [[Double]](
       repeating: [Double](repeating: SCORE_MIN, count: m),
-      count: n
+      count: n,
     )
 
     compute(needle, haystack, &D, &M)

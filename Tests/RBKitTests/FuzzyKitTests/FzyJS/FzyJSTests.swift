@@ -5,6 +5,8 @@ import Testing
 
 private let epsilon = 0.000_000_1
 
+// MARK: - FzyJSTests
+
 struct FzyJSTests {
   @Test
   func `should prefer starts of words`() {
@@ -81,29 +83,38 @@ struct FzyJSTests {
     #expect(abs(FzyJS.score("a", "*ba") - FzyJS.SCORE_GAP_LEADING * 2) < epsilon)
     #expect(abs(FzyJS.score("a", "**a*") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_GAP_TRAILING)) < epsilon)
     #expect(abs(FzyJS.score("a", "**a**") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_GAP_TRAILING * 2)) < epsilon)
-    #expect(abs(FzyJS.score("aa", "**aa**") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CONSECUTIVE + FzyJS.SCORE_GAP_TRAILING * 2)) < epsilon)
-    #expect(abs(FzyJS.score("aa", "**a*a**") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_GAP_TRAILING + FzyJS.SCORE_GAP_TRAILING)) < epsilon)
+    #expect(abs(FzyJS
+        .score("aa", "**aa**") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CONSECUTIVE + FzyJS.SCORE_GAP_TRAILING * 2)) <
+      epsilon)
+    #expect(abs(FzyJS
+        .score("aa", "**a*a**") -
+        (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_GAP_TRAILING + FzyJS
+          .SCORE_GAP_TRAILING)) < epsilon)
   }
 
   @Test
   func `score consecutive`() {
     #expect(abs(FzyJS.score("aa", "*aa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
     #expect(abs(FzyJS.score("aaa", "*aaa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CONSECUTIVE * 2)) < epsilon)
-    #expect(abs(FzyJS.score("aaa", "*a*aa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
+    #expect(abs(FzyJS.score("aaa", "*a*aa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_MATCH_CONSECUTIVE)) <
+      epsilon)
   }
 
   @Test
   func `score slash`() {
     #expect(abs(FzyJS.score("a", "/a") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_SLASH)) < epsilon)
     #expect(abs(FzyJS.score("a", "*/a") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_SLASH)) < epsilon)
-    #expect(abs(FzyJS.score("aa", "a/aa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_SLASH + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
+    #expect(abs(FzyJS
+        .score("aa", "a/aa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_SLASH + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
   }
 
   @Test
   func `score capital`() {
     #expect(abs(FzyJS.score("a", "bA") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CAPITAL)) < epsilon)
     #expect(abs(FzyJS.score("a", "baA") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CAPITAL)) < epsilon)
-    #expect(abs(FzyJS.score("aa", "baAa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CAPITAL + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
+    #expect(abs(FzyJS
+        .score("aa", "baAa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CAPITAL + FzyJS.SCORE_MATCH_CONSECUTIVE)) <
+      epsilon)
   }
 
   @Test

@@ -6,6 +6,8 @@ import Testing
 
 @testable import RBKit
 
+// MARK: - AppWatcherTests
+
 @Suite(.serialized)
 @MainActor
 struct AppWatcherTests {
@@ -13,11 +15,11 @@ struct AppWatcherTests {
   func `events should filter current XPC and zombie apps but keep Passwords`() async {
     let passwords = AppMock(
       _bundleIdentifier: "com.apple.Passwords",
-      _processIdentifier: 1
+      _processIdentifier: 1,
     )
     let xpc = AppMock(
       _bundleIdentifier: "com.example.xpc",
-      _processIdentifier: 2
+      _processIdentifier: 2,
     )
     let zombie = AppMock(_processIdentifier: 3)
     let regular = AppMock(_processIdentifier: 4)
@@ -36,7 +38,7 @@ struct AppWatcherTests {
         getProcessForPID: { pid, ptr in
           ptr.pointee = ProcessSerialNumber(
             highLongOfPSN: UInt32(pid),
-            lowLongOfPSN: UInt32(pid)
+            lowLongOfPSN: UInt32(pid),
           )
           return noErr
         },
@@ -105,56 +107,56 @@ struct AppWatcherTests {
 
     #expect(actualEvents == [.launched([app1, app2]), .launched([app1, app2])])
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app1.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isFinishedLaunching)
           && $0.options == [.initial, .new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app1.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isHidden)
           && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app1.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isTerminated)
           && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app2.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isFinishedLaunching)
           && $0.options == [.initial, .new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app2.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isHidden)
           && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.pid == app2.processIdentifier
           && $0.label == #keyPath(NSRunningApplication.isTerminated)
           && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      activationPolicyObservationCalls.filter {
+      activationPolicyObservationCalls.count(where: {
         $0.pid == app1.processIdentifier && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
     #expect(
-      activationPolicyObservationCalls.filter {
+      activationPolicyObservationCalls.count(where: {
         $0.pid == app2.processIdentifier && $0.options == [.new]
-      }.count == 2
+      }) == 2
     )
   }
 
@@ -404,23 +406,25 @@ struct AppWatcherTests {
     #expect(frontmostApplicationOptions == [[.initial, .old, .new]])
     #expect(menuBarOwningApplicationOptions == [[.initial, .old, .new]])
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.label == #keyPath(NSRunningApplication.isFinishedLaunching) && $0.options == [.initial, .new]
-      }.count == 1
+      }) == 1
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.label == #keyPath(NSRunningApplication.isHidden) && $0.options == [.new]
-      }.count == 1
+      }) == 1
     )
     #expect(
-      boolObservationCalls.filter {
+      boolObservationCalls.count(where: {
         $0.label == #keyPath(NSRunningApplication.isTerminated) && $0.options == [.new]
-      }.count == 1
+      }) == 1
     )
     #expect(activationPolicyObservationCalls == [[.new]])
   }
 }
+
+// MARK: - AppWatcherEvent + CustomDebugStringConvertible
 
 extension AppWatcherEvent: CustomDebugStringConvertible {
   public var debugDescription: String {

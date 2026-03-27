@@ -6,7 +6,7 @@ import Testing
 @MainActor
 struct NSScreenClientTests {
   @Test
-  func `liveValue.screens(), should return current screens`() throws {
+  func `liveValue.screens(), should return current screens`() {
     let expectedScreens = NSScreen.screens.map(Screen.init)
     let actualScreens = NSScreenClient.liveValue.screens()
 

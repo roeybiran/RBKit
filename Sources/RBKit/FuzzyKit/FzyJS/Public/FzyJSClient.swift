@@ -11,17 +11,21 @@ public struct FzyJSClient: Sendable {
 // MARK: DependencyKey
 
 extension FzyJSClient: DependencyKey {
-  static let fzyJSCache = FzyJS.Cache()
 
-  public static let liveValue: Self = {
-    Self(
-      score: { filter, candidate in
-        await fzyJSCache.score(filter, candidate)
-      }
-    )
-  }()
+  // MARK: Public
+
+  public static let liveValue = Self(
+    score: { filter, candidate in
+      await fzyJSCache.score(filter, candidate)
+    }
+  )
 
   public static let testValue = Self()
+
+  // MARK: Internal
+
+  static let fzyJSCache = FzyJS.Cache()
+
 }
 
 extension DependencyValues {

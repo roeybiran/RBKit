@@ -8,7 +8,9 @@ struct ContentView: View {
     let candidate: String
     let score: FzyJS.Rank
 
-    var id: String { candidate }
+    var id: String {
+      candidate
+    }
   }
 
   @Dependency(\.appWatcherClient) private var appWatcherClient

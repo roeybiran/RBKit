@@ -1,5 +1,5 @@
-public extension FzyJS {
-  struct Rank: Sendable {
+extension FzyJS {
+  public struct Rank: Sendable {
     public init(
       rank: Double = 0,
       positions: [String.Index] = [],
@@ -16,7 +16,7 @@ public extension FzyJS {
   }
 
   /// RBKit's high-level API built on the parity-preserving fzy.js primitives.
-  static func rank(_ needle: String, _ haystack: String) -> Rank {
+  public static func rank(_ needle: String, _ haystack: String) -> Rank {
     let hasMatch = hasMatch(needle, haystack)
     guard hasMatch else {
       return Rank(rank: SCORE_MIN, hasMatch: false)

@@ -62,7 +62,7 @@ extension NSEventClient: DependencyKey {
         NSEvent.removeMonitor(monitor)
       }
       return stream
-    }
+    },
   )
 
   public static let testValue = Self()

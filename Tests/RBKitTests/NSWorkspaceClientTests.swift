@@ -7,12 +7,12 @@ import UniformTypeIdentifiers
 struct `NSWorkspaceClient Tests` {
   @Test
   @MainActor
-  func `open(url:configuration:), should route to openWithConfiguration`() async throws {
+  func `open(url:configuration:), should route to openURLWithConfiguration`() async throws {
     let url = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
 
     let result = try await withDependencies {
-      $0.nsWorkspaceClient.openWithConfiguration = { openedURL, openedConfiguration in
+      $0.nsWorkspaceClient.openURLWithConfiguration = { openedURL, openedConfiguration in
         #expect(openedURL == url)
         #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
         return .current
@@ -27,7 +27,7 @@ struct `NSWorkspaceClient Tests` {
 
   @Test
   @MainActor
-  func `open(itemURLs:withApplicationAt:configuration:), should route to openWithApplicationAt`() async throws {
+  func `open(itemURLs:withApplicationAt:configuration:), should route to openURLsWithApplicationAt`() async throws {
     let urls = [
       URL(filePath: "/tmp/Test.txt"),
       URL(filePath: "/tmp/Test Folder", directoryHint: .isDirectory),
@@ -36,7 +36,7 @@ struct `NSWorkspaceClient Tests` {
     let configuration = NSWorkspace.OpenConfiguration()
 
     let result = try await withDependencies {
-      $0.nsWorkspaceClient.openWithApplicationAt = { openedURLs, openedApplicationURL, openedConfiguration in
+      $0.nsWorkspaceClient.openURLsWithApplicationAt = { openedURLs, openedApplicationURL, openedConfiguration in
         #expect(openedURLs == urls)
         #expect(openedApplicationURL == applicationURL)
         #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
@@ -47,7 +47,7 @@ struct `NSWorkspaceClient Tests` {
       return try await nsWorkspaceClient.open(
         itemURLs: urls,
         withApplicationAt: applicationURL,
-        configuration: configuration
+        configuration: configuration,
       )
     }
 
@@ -73,19 +73,19 @@ struct `NSWorkspaceClient Tests` {
 
   @Test
   @MainActor
-  func `openApplicationAt, should route to openApplicationAt`() async throws {
+  func `openApplication, should route to openApplication`() async throws {
     let applicationURL = URL(filePath: "/Applications/Test.app", directoryHint: .isDirectory)
     let configuration = NSWorkspace.OpenConfiguration()
 
     let result = try await withDependencies {
-      $0.nsWorkspaceClient.openApplicationAt = { openedApplicationURL, openedConfiguration in
+      $0.nsWorkspaceClient.openApplication = { openedApplicationURL, openedConfiguration in
         #expect(openedApplicationURL == applicationURL)
         #expect(openedConfiguration.createsNewApplicationInstance == configuration.createsNewApplicationInstance)
         return .current
       }
     } operation: {
       @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
-      return try await nsWorkspaceClient.openApplicationAt(applicationURL, configuration)
+      return try await nsWorkspaceClient.openApplication(applicationURL, configuration)
     }
 
     #expect(result.processIdentifier == NSRunningApplication.current.processIdentifier)

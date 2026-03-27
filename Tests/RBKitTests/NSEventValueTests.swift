@@ -5,6 +5,8 @@ import Testing
 
 @testable import RBKit
 
+// MARK: - AccessTrackingEvent
+
 private final class AccessTrackingEvent: NSEvent.Mock {
   private(set) var accessedEventSpecificProperties = [String]()
 
@@ -93,6 +95,8 @@ private final class AccessTrackingEvent: NSEvent.Mock {
     return super.keyCode
   }
 }
+
+// MARK: - NSEventValueTests
 
 @MainActor
 struct NSEventValueTests {
@@ -289,14 +293,54 @@ struct NSEventValueTests {
   }
 
   @Test(arguments: [
-    (actual: NSEventValue.upArrow(), specialKey: NSEvent.SpecialKey.upArrow, keyCode: UInt16(kVK_UpArrow), modifierFlags: NSEvent.ModifierFlags()),
-    (actual: NSEventValue.rightArrow(), specialKey: NSEvent.SpecialKey.rightArrow, keyCode: UInt16(kVK_RightArrow), modifierFlags: NSEvent.ModifierFlags()),
-    (actual: NSEventValue.downArrow(), specialKey: NSEvent.SpecialKey.downArrow, keyCode: UInt16(kVK_DownArrow), modifierFlags: NSEvent.ModifierFlags()),
-    (actual: NSEventValue.leftArrow(), specialKey: NSEvent.SpecialKey.leftArrow, keyCode: UInt16(kVK_LeftArrow), modifierFlags: NSEvent.ModifierFlags()),
-    (actual: NSEventValue.pageUp(), specialKey: NSEvent.SpecialKey.pageUp, keyCode: UInt16(kVK_PageUp), modifierFlags: .init(rawValue: 0x800100)),
-    (actual: NSEventValue.pageDown(), specialKey: NSEvent.SpecialKey.pageDown, keyCode: UInt16(kVK_PageDown), modifierFlags: .init(rawValue: 0x800100)),
-    (actual: NSEventValue.home(), specialKey: NSEvent.SpecialKey.home, keyCode: UInt16(kVK_Home), modifierFlags: NSEvent.ModifierFlags()),
-    (actual: NSEventValue.end(), specialKey: NSEvent.SpecialKey.end, keyCode: UInt16(kVK_End), modifierFlags: NSEvent.ModifierFlags()),
+    (
+      actual: NSEventValue.upArrow(),
+      specialKey: NSEvent.SpecialKey.upArrow,
+      keyCode: UInt16(kVK_UpArrow),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
+    (
+      actual: NSEventValue.rightArrow(),
+      specialKey: NSEvent.SpecialKey.rightArrow,
+      keyCode: UInt16(kVK_RightArrow),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
+    (
+      actual: NSEventValue.downArrow(),
+      specialKey: NSEvent.SpecialKey.downArrow,
+      keyCode: UInt16(kVK_DownArrow),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
+    (
+      actual: NSEventValue.leftArrow(),
+      specialKey: NSEvent.SpecialKey.leftArrow,
+      keyCode: UInt16(kVK_LeftArrow),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
+    (
+      actual: NSEventValue.pageUp(),
+      specialKey: NSEvent.SpecialKey.pageUp,
+      keyCode: UInt16(kVK_PageUp),
+      modifierFlags: .init(rawValue: 0x800100),
+    ),
+    (
+      actual: NSEventValue.pageDown(),
+      specialKey: NSEvent.SpecialKey.pageDown,
+      keyCode: UInt16(kVK_PageDown),
+      modifierFlags: .init(rawValue: 0x800100),
+    ),
+    (
+      actual: NSEventValue.home(),
+      specialKey: NSEvent.SpecialKey.home,
+      keyCode: UInt16(kVK_Home),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
+    (
+      actual: NSEventValue.end(),
+      specialKey: NSEvent.SpecialKey.end,
+      keyCode: UInt16(kVK_End),
+      modifierFlags: NSEvent.ModifierFlags(),
+    ),
   ])
   func `convenience key helpers should create expected payloads`(
     actual: NSEventValue,

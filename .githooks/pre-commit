@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -eu
+
+cd -- "$(git rev-parse --show-toplevel)"
+
+swift package -q --allow-writing-to-package-directory format --lint
+swift test

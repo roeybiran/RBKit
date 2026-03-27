@@ -10,7 +10,7 @@ typealias TestFrecencyStore = FrecencyStore<String>
 
 struct TestError: Error { }
 
-// MARK: - `FrecencyStore Tests`
+// MARK: - FrecencyStoreTests
 
 struct FrecencyStoreTests {
   @Test

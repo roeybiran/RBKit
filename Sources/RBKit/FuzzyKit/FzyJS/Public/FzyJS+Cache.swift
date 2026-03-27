@@ -9,7 +9,7 @@ extension FzyJS {
 
     // MARK: Public
 
-    public func score(_ filter: String, _ candidate: String) -> FzyJS.Rank {
+    public func score(_ filter: String, _ candidate: String) -> Rank {
       let cacheKey = CacheKey(filter: filter, candidate: candidate)
       if let cached = scoreCache[cacheKey] {
         if let index = cacheKeys.firstIndex(of: cacheKey) {
@@ -33,23 +33,16 @@ extension FzyJS {
 
     // MARK: Internal
 
-    var cacheEntryCount: Int {
-      scoreCache.count
-    }
-
-    var cachedCandidates: [String] {
-      cacheKeys.map(\.candidate)
-    }
-
-    // MARK: Private
-
-    private struct CacheKey: Hashable {
+    struct CacheKey: Hashable {
       let filter: String
       let candidate: String
     }
 
+    var cacheKeys = [CacheKey]()
+
+    // MARK: Private
+
     private let cacheLimit: Int
-    private var cacheKeys = [CacheKey]()
-    private var scoreCache = [CacheKey: FzyJS.Rank]()
+    private var scoreCache = [CacheKey: Rank]()
   }
 }

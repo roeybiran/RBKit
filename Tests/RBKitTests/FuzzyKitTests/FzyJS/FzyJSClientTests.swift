@@ -58,10 +58,25 @@ struct FzyJSClientTests {
     _ = await matcher.score("a", "a3")
     _ = await matcher.score("a", "a4")
 
-    let cacheEntryCount = await matcher.cacheEntryCount
-    let cachedCandidates = await matcher.cachedCandidates
+    let cacheKeys = await matcher.cacheKeys
 
-    #expect(cacheEntryCount == 3)
-    #expect(cachedCandidates == ["a2", "a3", "a4"])
+    #expect(cacheKeys.count == 3)
+    #expect(cacheKeys.map(\.candidate) == ["a2", "a3", "a4"])
+  }
+
+  @Test
+  func `fuzzyMatcher cache should refresh recency on hit`() async {
+    let matcher = FzyJS.Cache(cacheLimit: 3)
+
+    _ = await matcher.score("a", "a1")
+    _ = await matcher.score("a", "a2")
+    _ = await matcher.score("a", "a3")
+    _ = await matcher.score("a", "a1")
+    _ = await matcher.score("a", "a4")
+
+    let cacheKeys = await matcher.cacheKeys
+
+    #expect(cacheKeys.count == 3)
+    #expect(cacheKeys.map(\.candidate) == ["a3", "a1", "a4"])
   }
 }

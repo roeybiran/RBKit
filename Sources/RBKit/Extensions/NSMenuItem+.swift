@@ -25,10 +25,6 @@ extension NSMenuItem {
 @MainActor
 extension NSMenuItem {
 
-  public static var about: NSMenuItem {
-    NSMenuItem.about(target: NSApplication.shared)
-  }
-
   public static var hide: NSMenuItem {
     NSMenuItem(
       "Hide \(String.appName)",
@@ -67,7 +63,7 @@ extension NSMenuItem {
     settingsTarget: AnyObject?,
   ) -> NSMenuItem {
     NSMenuItem(String.appName) {
-      about
+      about()
       NSMenuItem.separator()
       settings(action: settingsAction, target: settingsTarget)
       NSMenuItem.separator()

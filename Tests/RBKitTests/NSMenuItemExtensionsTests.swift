@@ -150,7 +150,7 @@ struct NSMenuItemStandardMenuTests {
 
   @Test
   func `app-level standard items, should include default images`() {
-    #expect(NSMenuItem.about.image != nil)
+    #expect(NSMenuItem.about().image != nil)
     #expect(NSMenuItem.settings(action: nil, target: nil).image != nil)
     #expect(NSMenuItem.help().image != nil)
     #expect(NSMenuItem.quit.image != nil)

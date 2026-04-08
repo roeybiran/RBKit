@@ -6,6 +6,7 @@ import Testing
 @testable import RBKit
 
 typealias TestFrecencyStore = FrecencyStore<String>
+typealias TestFrecencyStoreClient = FrecencyStoreClient<String>
 
 // MARK: - TestError
 
@@ -15,7 +16,7 @@ struct TestError: Error { }
 
 struct FrecencyStoreTests {
   @Test
-  func `get URL`() {
+  func `get frecency URL`() {
     nonisolated(unsafe) var called_urls = false
     nonisolated(unsafe) var called_createDirectory = false
 
@@ -33,7 +34,7 @@ struct FrecencyStoreTests {
         called_createDirectory = true
       }
     } operation: {
-      TestFrecencyStore.defaultURL()
+      URL.frecencyURL
     }
 
     #expect(called_urls)
@@ -46,13 +47,12 @@ struct FrecencyStoreTests {
       $0.bundleClient.main = { .init() }
       $0.bundleClient.bundleIdentifier = { @Sendable _ in nil }
       $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
-      $0.diskClient.read = { @Sendable _ in "[0]".data(using: .utf8)! }
     }
   )
-  func `get URL with bundle identifier nil`() {
-    let sut = TestFrecencyStore.defaultURL()
+  func `get frecency URL with bundle identifier nil`() {
+    let sut = URL.frecencyURL
 
-    #expect(sut == nil)
+    #expect(sut == URL(filePath: "/Users/roey/app_support/recents.json"))
   }
 
   @Test(
@@ -61,138 +61,102 @@ struct FrecencyStoreTests {
       $0.bundleClient.main = { .init() }
       $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
       $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in throw TestError() }
-      $0.diskClient.read = { @Sendable _ in "[0]".data(using: .utf8)! }
     }
   )
-  func `get URL with create directory failing`() {
-    let sut = TestFrecencyStore.defaultURL()
+  func `get frecency URL with create directory failing`() {
+    let sut = URL.frecencyURL
 
-    #expect(sut == nil)
+    #expect(sut == URL(filePath: "/Users/roey/app_support/recents.json"))
   }
 
   @Test
-  func load() async throws {
-    try await confirmation { c in
-      var sut = withDependencies {
-        $0.diskClient.read = { @Sendable url in
-          #expect(testURL == url)
-          c()
-          return makeTestJSON()
-        }
-      } operation: {
-        TestFrecencyStore(url: testURL)
-      }
+  func `collection persists across stores with same URL`() {
+    let applicationSupportDirectory = uniqueApplicationSupportDirectory()
 
-      #expect(sut.score(for: "a") == 0)
-      try sut.load()
-      #expect(sut.score(for: "a") == 100)
+    withDependencies {
+      $0.urlClient.applicationSupportDirectory = { @Sendable in applicationSupportDirectory }
+      $0.bundleClient.main = { .init() }
+      $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
+      $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
+    } operation: {
+      var writer = TestFrecencyStore()
+
+      writer.add("a")
+
+      let reader = TestFrecencyStore()
+
+      #expect(reader.score(for: "a") == 100)
     }
-  }
-
-  @Test(
-    .dependencies {
-      $0.diskClient.read = { @Sendable _ in fatalError("should not get here") }
-    }
-  )
-  func `load without URL should no op`() throws {
-    var sut = TestFrecencyStore(url: nil)
-
-    try sut.load()
-  }
-
-  @Test(
-    .dependencies {
-      $0.diskClient.read = { @Sendable _ in throw TestError() }
-    }
-  )
-  func `load with read error should throw`() throws {
-    var sut = TestFrecencyStore(url: testURL)
-
-    #expect(throws: (any Error).self) { try sut.load() }
-  }
-
-  @Test(
-    .dependencies {
-      $0.diskClient.read = { @Sendable _ in "foo".data(using: .utf8)! }
-    }
-  )
-  func `load with invalid json should throw`() throws {
-    var sut = TestFrecencyStore(url: testURL)
-
-    #expect(throws: (any Error).self) { try sut.load() }
   }
 
   @Test
-  func save() async throws {
-    try await confirmation { c in
-      var sut = withDependencies {
-        $0.diskClient.read = { @Sendable _ in makeTestJSON(date: 0) }
-        $0.diskClient.write = { @Sendable data, url, _ in
-          let expectedDecoded = FrecencyCollection<String>(items: [
-            "a": .init(id: "a", visits: [.init(timeIntervalSinceReferenceDate: 0)], count: 1)
-          ])
-          let actualDecoded = try! JSONDecoder().decode(FrecencyCollection<String>.self, from: data)
-          #expect(expectedDecoded == actualDecoded)
-          #expect(url == testURL)
-          c()
-        }
-      } operation: {
-        TestFrecencyStore(url: testURL)
-      }
+  func `stores with different URLs do not share state`() {
+    withDependencies {
+      $0.urlClient.applicationSupportDirectory = { @Sendable in uniqueApplicationSupportDirectory() }
+      $0.bundleClient.main = { .init() }
+      $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
+      $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
+    } operation: {
+      var writer = TestFrecencyStore()
 
-      try sut.load()
-      try sut.save()
+      writer.add("a")
     }
-  }
 
-  @Test(
-    .disabled(),
-    .dependencies {
-      $0.diskClient.write = { @Sendable _, _, _ in }
-    },
-  )
-  func `save with JSON encoding error should no op`() throws {
-    let sut = TestFrecencyStore(url: nil)
+    withDependencies {
+      $0.urlClient.applicationSupportDirectory = { @Sendable in uniqueApplicationSupportDirectory() }
+      $0.bundleClient.main = { .init() }
+      $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
+      $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
+    } operation: {
+      let reader = TestFrecencyStore()
 
-    try sut.save()
-  }
-
-  @Test(
-    .dependencies {
-      $0.diskClient.write = { @Sendable _, _, _ in throw TestError() }
+      #expect(reader.score(for: "a") == 0)
     }
-  )
-  func `save with disk write error should throw`() throws {
-    let sut = TestFrecencyStore(url: testURL)
-
-    #expect(throws: (any Error).self) { try sut.save() }
-  }
-
-  @Test(
-    .dependencies {
-      $0.diskClient.write = { @Sendable _, _, _ in fatalError("should not get here") }
-    }
-  )
-  func `save without URL should no op`() throws {
-    let sut = TestFrecencyStore(url: nil)
-
-    try sut.save()
   }
 
   @Test
   func add() {
-    var sut = TestFrecencyStore(url: testURL)
+    let applicationSupportDirectory = uniqueApplicationSupportDirectory()
 
-    #expect(sut.score(for: "a") == 0)
-    sut.add("a")
-    #expect(sut.score(for: "a") == 100)
+    withDependencies {
+      $0.urlClient.applicationSupportDirectory = { @Sendable in applicationSupportDirectory }
+      $0.bundleClient.main = { .init() }
+      $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
+      $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
+    } operation: {
+      var sut = TestFrecencyStore()
+
+      #expect(sut.score(for: "a") == 0)
+      sut.add("a")
+      #expect(sut.score(for: "a") == 100)
+    }
+  }
+
+  @Test
+  func `client live value`() {
+    let applicationSupportDirectory = uniqueApplicationSupportDirectory()
+
+    withDependencies {
+      $0.urlClient.applicationSupportDirectory = { @Sendable in applicationSupportDirectory }
+      $0.bundleClient.main = { .init() }
+      $0.bundleClient.bundleIdentifier = { @Sendable _ in "com.foo.bar" }
+      $0.fileManagerClient.createDirectory = { @Sendable _, _, _ in }
+    } operation: {
+      let sut = TestFrecencyStoreClient.liveValue
+
+      #expect(sut.score("a") == 0)
+      sut.add("a")
+      #expect(sut.score("a") == 100)
+    }
+  }
+
+  @Test
+  func `client test value`() {
+    _ = TestFrecencyStoreClient.testValue
   }
 
 }
 
-let testURL = URL(filePath: "/Users/roey/app_support/com.foo.bar/recents.json")
-
-func makeTestJSON(date: Double = Date.now.timeIntervalSince1970) -> Data {
-  "{ \"items\": { \"a\": { \"id\": \"a\", \"visits\": [\(date)], \"count\": 1, \"_reduced\": false } }, \"queries\": {} }"
-    .data(using: .utf8)!
+func uniqueApplicationSupportDirectory() -> URL {
+  URL(filePath: "/Users/roey/app_support/\(UUID().uuidString)/")
 }

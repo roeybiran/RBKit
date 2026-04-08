@@ -1,32 +1,19 @@
 import Foundation
 
-// MARK: - FrecencyItem
+// MARK: - FrecencyRecord
 
-public struct FrecencyItem<ID: FrecencyID>: Hashable, Codable, Sendable {
+struct FrecencyRecord: Hashable, Codable, Sendable {
 
-  // MARK: Lifecycle
+  // MARK: Internal
 
-  public init(id: ID, visits: [Date], count: Int) {
-    self.id = id
-    self.visits = visits
-    self.count = count
-  }
+  var visits: [Date]
+  var count: Int
 
-  // MARK: Public
-
-  public let id: ID
-  public var visits: [Date]
-  public var count: Int
-
-  public func score(referencing date: Date = .now, in calendar: Calendar = .current) -> Double {
+  func score(referencing date: Date = .now, in calendar: Calendar = .current) -> Double {
     let score = visits.map { self.score(for: $0, referenceDate: date, referenceCalendar: calendar) }
       .reduce(into: 0, +=)
     return Double(count) * score / Double(visits.count)
   }
-
-  // MARK: Internal
-
-  var _reduced = false
 
   // MARK: Private
 
@@ -63,20 +50,3 @@ public struct FrecencyItem<ID: FrecencyID>: Hashable, Codable, Sendable {
   }
 
 }
-
-extension FrecencyItem {
-  public init(id: ID, visits: [Date] = []) {
-    self.id = id
-    self.visits = visits
-    count = visits.count
-    _reduced = false
-  }
-}
-
-#if DEBUG
-extension FrecencyItem: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    "ID: \(id), SCORE: \(score()), COUNT: \(count), VISITS: \(visits)})"
-  }
-}
-#endif

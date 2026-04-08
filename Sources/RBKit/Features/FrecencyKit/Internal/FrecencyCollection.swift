@@ -13,12 +13,12 @@ struct FrecencyCollection<T: FrecencyID>: Hashable, Codable, Sendable {
   }
 
   mutating func add(entry: T, timestamp: Date = .now) {
-    items = items.merging([entry: FrecencyRecord(visits: [timestamp], count: 1)]) {
-      current, new in
-      FrecencyRecord(
-        visits: Array((current.visits + new.visits).suffix(.frecencySamplingLimit)),
-        count: current.count + new.count,
-      )
+    if var record = items[entry] {
+      record.visits = (record.visits + [timestamp]).suffix(.FRECENCY_SAMPLING_LIMIT)
+      record.count += 1
+      items[entry] = record
+    } else {
+      items[entry] = FrecencyRecord(visits: [timestamp], count: 1)
     }
   }
 

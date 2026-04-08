@@ -1,3 +1,3 @@
 extension Int {
-  static let frecencySamplingLimit = Self(10)
+  static let FRECENCY_SAMPLING_LIMIT = Self(10)
 }

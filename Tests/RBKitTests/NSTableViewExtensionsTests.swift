@@ -15,4 +15,14 @@ struct NSTableViewTests {
 
     #expect(view.identifier == .init("FooView"))
   }
+
+  @Test
+  func `makeView ofType:, with GroupRowCell, should create cell with label textField`() {
+    let tableView = NSTableView()
+
+    let view = tableView.makeView(ofType: GroupRowCell.self)
+
+    #expect(view.identifier == .init("GroupRowCell"))
+    #expect(view.textField != nil)
+  }
 }

@@ -156,6 +156,7 @@ struct AppWatcher {
       return false
     }
 
+    // https://github.com/lwouis/alt-tab-macos/pull/3554
     let isPasswords = app.bundleIdentifier == "com.apple.Passwords"
     if let nsFileType = getNSFileType(pid: app.processIdentifier), !isPasswords, nsFileType == "'XPC!'" {
       debugLog(event: .skippingXPC(nsFileType), app: app)

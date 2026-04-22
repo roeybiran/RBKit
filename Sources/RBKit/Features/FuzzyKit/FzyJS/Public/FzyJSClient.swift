@@ -5,7 +5,7 @@ import DependenciesMacros
 
 @DependencyClient
 public struct FzyJSClient: Sendable {
-  public var score: @Sendable (_ filter: String, _ candidate: String) async -> FzyJS.Rank = { _, _ in .init() }
+  public var score: @Sendable @MainActor (_ filter: String, _ candidate: String) -> FzyJS.Rank = { _, _ in .init() }
 }
 
 // MARK: DependencyKey
@@ -16,7 +16,7 @@ extension FzyJSClient: DependencyKey {
 
   public static let liveValue = Self(
     score: { filter, candidate in
-      await fzyJSCache.score(filter, candidate)
+      fzyJSCache.score(filter, candidate)
     }
   )
 
@@ -24,7 +24,7 @@ extension FzyJSClient: DependencyKey {
 
   // MARK: Internal
 
-  static let fzyJSCache = FzyJS.Cache()
+  @MainActor static let fzyJSCache = FzyJS.Cache()
 
 }
 

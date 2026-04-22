@@ -1,5 +1,6 @@
 extension FzyJS {
-  public actor Cache {
+  @MainActor
+  public final class Cache {
 
     // MARK: Lifecycle
 

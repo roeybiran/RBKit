@@ -3,7 +3,16 @@ import Testing
 
 // Parity tests ported from fzy.js: https://github.com/jhawthorn/fzy.js/blob/main/test.js
 
-private let epsilon = 0.000_000_1
+private let floatingPointTolerance = 0.000_000_1
+private let SCORE_MIN = FzyJS.SCORE_MIN
+private let SCORE_MAX = FzyJS.SCORE_MAX
+private let SCORE_GAP_LEADING = FzyJS.SCORE_GAP_LEADING
+private let SCORE_GAP_TRAILING = FzyJS.SCORE_GAP_TRAILING
+private let SCORE_GAP_INNER = FzyJS.SCORE_GAP_INNER
+private let SCORE_MATCH_CONSECUTIVE = FzyJS.SCORE_MATCH_CONSECUTIVE
+private let SCORE_MATCH_SLASH = FzyJS.SCORE_MATCH_SLASH
+private let SCORE_MATCH_CAPITAL = FzyJS.SCORE_MATCH_CAPITAL
+private let SCORE_MATCH_DOT = FzyJS.SCORE_MATCH_DOT
 
 // MARK: - FzyJSTests
 
@@ -73,68 +82,68 @@ struct FzyJSTests {
   @Test
   func `score exact score`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L564-L572
-    #expect(FzyJS.score("abc", "abc") == FzyJS.SCORE_MAX)
-    #expect(FzyJS.score("aBc", "abC") == FzyJS.SCORE_MAX)
+    #expect(FzyJS.score("abc", "abc") == SCORE_MAX)
+    #expect(FzyJS.score("aBc", "abC") == SCORE_MAX)
   }
 
   @Test
   func `score empty query`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L574-L583
-    #expect(FzyJS.score("", "") == FzyJS.SCORE_MIN)
-    #expect(FzyJS.score("", "a") == FzyJS.SCORE_MIN)
-    #expect(FzyJS.score("", "bb") == FzyJS.SCORE_MIN)
+    #expect(FzyJS.score("", "") == SCORE_MIN)
+    #expect(FzyJS.score("", "a") == SCORE_MIN)
+    #expect(FzyJS.score("", "bb") == SCORE_MIN)
   }
 
   @Test
   func `score gaps`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L585-L598
-    #expect(abs(FzyJS.score("a", "*a") - FzyJS.SCORE_GAP_LEADING) < epsilon)
-    #expect(abs(FzyJS.score("a", "*ba") - FzyJS.SCORE_GAP_LEADING * 2) < epsilon)
-    #expect(abs(FzyJS.score("a", "**a*") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_GAP_TRAILING)) < epsilon)
-    #expect(abs(FzyJS.score("a", "**a**") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_GAP_TRAILING * 2)) < epsilon)
+    #expect(abs(FzyJS.score("a", "*a") - SCORE_GAP_LEADING) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "*ba") - SCORE_GAP_LEADING * 2) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "**a*") - (SCORE_GAP_LEADING * 2 + SCORE_GAP_TRAILING)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "**a**") - (SCORE_GAP_LEADING * 2 + SCORE_GAP_TRAILING * 2)) < floatingPointTolerance)
     #expect(abs(FzyJS
-        .score("aa", "**aa**") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CONSECUTIVE + FzyJS.SCORE_GAP_TRAILING * 2)) <
-      epsilon)
+        .score("aa", "**aa**") - (SCORE_GAP_LEADING * 2 + SCORE_MATCH_CONSECUTIVE + SCORE_GAP_TRAILING * 2)) <
+      floatingPointTolerance)
     #expect(abs(FzyJS
         .score("aa", "**a*a**") -
-        (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_GAP_TRAILING + FzyJS
-          .SCORE_GAP_TRAILING)) < epsilon)
+        (SCORE_GAP_LEADING + SCORE_GAP_LEADING + SCORE_GAP_INNER + SCORE_GAP_TRAILING + SCORE_GAP_TRAILING)) <
+      floatingPointTolerance)
   }
 
   @Test
   func `score consecutive`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L600-L608
-    #expect(abs(FzyJS.score("aa", "*aa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
-    #expect(abs(FzyJS.score("aaa", "*aaa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CONSECUTIVE * 2)) < epsilon)
-    #expect(abs(FzyJS.score("aaa", "*a*aa") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_MATCH_CONSECUTIVE)) <
-      epsilon)
+    #expect(abs(FzyJS.score("aa", "*aa") - (SCORE_GAP_LEADING + SCORE_MATCH_CONSECUTIVE)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("aaa", "*aaa") - (SCORE_GAP_LEADING + SCORE_MATCH_CONSECUTIVE * 2)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("aaa", "*a*aa") - (SCORE_GAP_LEADING + SCORE_GAP_INNER + SCORE_MATCH_CONSECUTIVE)) <
+      floatingPointTolerance)
   }
 
   @Test
   func `score slash`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L610-L617
-    #expect(abs(FzyJS.score("a", "/a") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_SLASH)) < epsilon)
-    #expect(abs(FzyJS.score("a", "*/a") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_SLASH)) < epsilon)
+    #expect(abs(FzyJS.score("a", "/a") - (SCORE_GAP_LEADING + SCORE_MATCH_SLASH)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "*/a") - (SCORE_GAP_LEADING * 2 + SCORE_MATCH_SLASH)) < floatingPointTolerance)
     #expect(abs(FzyJS
-        .score("aa", "a/aa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_SLASH + FzyJS.SCORE_MATCH_CONSECUTIVE)) < epsilon)
+        .score("aa", "a/aa") - (SCORE_GAP_LEADING * 2 + SCORE_MATCH_SLASH + SCORE_MATCH_CONSECUTIVE)) < floatingPointTolerance)
   }
 
   @Test
   func `score capital`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L619-L626
-    #expect(abs(FzyJS.score("a", "bA") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_CAPITAL)) < epsilon)
-    #expect(abs(FzyJS.score("a", "baA") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CAPITAL)) < epsilon)
+    #expect(abs(FzyJS.score("a", "bA") - (SCORE_GAP_LEADING + SCORE_MATCH_CAPITAL)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "baA") - (SCORE_GAP_LEADING * 2 + SCORE_MATCH_CAPITAL)) < floatingPointTolerance)
     #expect(abs(FzyJS
-        .score("aa", "baAa") - (FzyJS.SCORE_GAP_LEADING * 2 + FzyJS.SCORE_MATCH_CAPITAL + FzyJS.SCORE_MATCH_CONSECUTIVE)) <
-      epsilon)
+        .score("aa", "baAa") - (SCORE_GAP_LEADING * 2 + SCORE_MATCH_CAPITAL + SCORE_MATCH_CONSECUTIVE)) <
+      floatingPointTolerance)
   }
 
   @Test
   func `score dot`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/test.js#L628-L636
-    #expect(abs(FzyJS.score("a", ".a") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_MATCH_DOT)) < epsilon)
-    #expect(abs(FzyJS.score("a", "*a.a") - (FzyJS.SCORE_GAP_LEADING * 3 + FzyJS.SCORE_MATCH_DOT)) < epsilon)
-    #expect(abs(FzyJS.score("a", "*a.a") - (FzyJS.SCORE_GAP_LEADING + FzyJS.SCORE_GAP_INNER + FzyJS.SCORE_MATCH_DOT)) < epsilon)
+    #expect(abs(FzyJS.score("a", ".a") - (SCORE_GAP_LEADING + SCORE_MATCH_DOT)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "*a.a") - (SCORE_GAP_LEADING * 3 + SCORE_MATCH_DOT)) < floatingPointTolerance)
+    #expect(abs(FzyJS.score("a", "*a.a") - (SCORE_GAP_LEADING + SCORE_GAP_INNER + SCORE_MATCH_DOT)) < floatingPointTolerance)
   }
 
   @Test
@@ -210,9 +219,9 @@ struct FzyJSTests {
     // https://github.com/jhawthorn/fzy.js/blob/main/index.js#L796-L806
     let rank = FzyJS.rank("abc", "xyz")
 
-    #expect(FzyJS.score("abc", "xyz") == FzyJS.SCORE_MAX)
+    #expect(FzyJS.score("abc", "xyz") == SCORE_MAX)
     #expect(!rank.hasMatch)
-    #expect(rank.rank == FzyJS.SCORE_MIN)
+    #expect(rank.rank == SCORE_MIN)
     #expect(rank.positions.isEmpty)
   }
 
@@ -226,7 +235,7 @@ struct FzyJSTests {
   @Test
   func `no subsequence match should return negative infinity`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/index.js#L787-L831
-    #expect(FzyJS.score("obtv", "oaktextview.mm") == FzyJS.SCORE_MIN)
+    #expect(FzyJS.score("obtv", "oaktextview.mm") == SCORE_MIN)
     #expect(!FzyJS.hasMatch("obtv", "oaktextview.mm"))
   }
 }

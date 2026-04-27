@@ -37,6 +37,8 @@ public struct NSApplicationClient: Sendable {
   public var setActivationPolicy:
     @MainActor @Sendable (_ activationPolicy: NSApplication.ActivationPolicy) -> Bool = { _ in false
     }
+
+  public var currentEvent: @MainActor @Sendable () -> NSEvent?
 }
 
 // MARK: DependencyKey
@@ -54,6 +56,7 @@ extension NSApplicationClient: DependencyKey {
     stopModal: { NSApplication.shared.stopModal() },
     activationPolicy: { NSApplication.shared.activationPolicy() },
     setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) },
+    currentEvent: { NSApplication.shared.currentEvent },
   )
 
   public static let testValue = Self()

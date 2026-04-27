@@ -131,6 +131,18 @@ struct `NSWorkspaceClient Tests` {
 
   @Test(
     .dependencies {
+      $0.nsWorkspaceClient.accessibilityDisplayShouldReduceMotion = { true }
+    }
+  )
+  @MainActor
+  func `accessibilityDisplayShouldReduceMotion, should route to accessibilityDisplayShouldReduceMotion`() {
+    @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
+
+    #expect(nsWorkspaceClient.accessibilityDisplayShouldReduceMotion())
+  }
+
+  @Test(
+    .dependencies {
       $0.nsWorkspaceClient.menuBarOwningApplicationChanges = { options in
         #expect(options == [.initial, .new])
         return .init { continuation in

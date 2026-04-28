@@ -12,7 +12,7 @@ func `modifiers description with all modifiers`() {
 
 @Test
 func `init carbon should convert to cocoa modifiers`() {
-  #expect(Modifiers(carbon: cmdKey).cocoa == .command)
+  #expect(Modifiers(carbon: cmdKey).modifierFlags == .command)
 
   var modifiers = 0
   modifiers |= cmdKey
@@ -20,7 +20,16 @@ func `init carbon should convert to cocoa modifiers`() {
   modifiers |= controlKey
   modifiers |= optionKey
 
-  #expect(Modifiers(carbon: modifiers).cocoa == [.command, .shift, .control, .option])
+  #expect(Modifiers(carbon: modifiers).modifierFlags == [.command, .shift, .control, .option])
+}
+
+@Test
+func `modifiers should store cocoa raw value`() {
+  let flags = NSEvent.ModifierFlags([.command, .shift])
+  let modifiers = Modifiers(cocoa: flags)
+
+  #expect(modifiers.cocoa == flags.rawValue)
+  #expect(modifiers.modifierFlags == flags)
 }
 
 @Test
@@ -46,5 +55,5 @@ func `unsupported cocoa modifiers should be dropped`() {
     .numericPad,
   ])
 
-  #expect(modifiers.cocoa == [.command, .shift, .control, .option])
+  #expect(modifiers.modifierFlags == [.command, .shift, .control, .option])
 }

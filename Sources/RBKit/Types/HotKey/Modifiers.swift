@@ -3,10 +3,14 @@ import Carbon
 
 // MARK: - Modifiers
 
-public struct Modifiers: Equatable {
+public struct Modifiers: Hashable {
   public let carbon: Int
-  public let cocoa: NSEvent.ModifierFlags
+  public let cocoa: UInt
   public let symbols: String
+
+  public var modifierFlags: NSEvent.ModifierFlags {
+    NSEvent.ModifierFlags(rawValue: cocoa)
+  }
 }
 
 extension Modifiers {
@@ -47,9 +51,8 @@ extension Modifiers {
       filteredCarbon |= cmdKey
     }
 
-    cocoa = filteredCocoa
     self.carbon = filteredCarbon
-    self.cocoa = cocoa
+    self.cocoa = filteredCocoa.rawValue
     symbols = [
       (NSEvent.ModifierFlags.control, kControlUnicode),
       (.option, kOptionUnicode),
@@ -57,7 +60,7 @@ extension Modifiers {
       (.command, kCommandUnicode),
     ]
     .filter {
-      cocoa.contains($0.0)
+      filteredCocoa.contains($0.0)
     }
     .map {
       String(format: "%C", $0.1)

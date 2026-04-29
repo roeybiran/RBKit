@@ -4,4 +4,5 @@ public enum SubRole: String {
   case standardWindow = "AXStandardWindow"
   case systemDialog = "AXSystemDialog"
   case systemFloatingWindow = "AXSystemFloatingWindow"
+  case unknown = "AXUnknown"
 }

@@ -1,10 +1,10 @@
 import ApplicationServices
 import Carbon
 
-// MARK: - AXMenuItemModifiers + @retroactive CustomStringConvertible
+// MARK: - AXMenuItemModifiers + CustomStringConvertible
 
 /// see AXAttributeConstants.h:994
-extension AXMenuItemModifiers: @retroactive CustomStringConvertible {
+extension AXMenuItemModifiers: CustomStringConvertible {
   public var description: String {
     var result = ""
     if rawValue == 0x18 { return "🌐" } // undocumented

@@ -4,10 +4,6 @@ import Dependencies
 import DependenciesMacros
 import Foundation
 
-// MARK: - EventMonitorID
-
-public typealias EventMonitorID = UUID
-
 // MARK: - NSEventClient
 
 @DependencyClient

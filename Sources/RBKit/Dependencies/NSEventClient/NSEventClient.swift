@@ -63,9 +63,11 @@ extension NSEventClient: DependencyKey {
       return id
     },
     removeMonitor: { id in
-      if let monitor = monitors.removeValue(forKey: id) {
-        NSEvent.removeMonitor(monitor)
+      guard let monitor = monitors.removeValue(forKey: id) else {
+        assertionFailure("Attempted to remove nonexistent NSEvent monitor: \(id)")
+        return
       }
+      NSEvent.removeMonitor(monitor)
     },
   )
 

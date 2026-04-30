@@ -4,27 +4,35 @@ import Dependencies
 import DependenciesMacros
 import Foundation
 
+// MARK: - EventMonitorID
+
+public typealias EventMonitorID = UUID
+
 // MARK: - NSEventClient
 
 @DependencyClient
 public struct NSEventClient: Sendable {
-  // key event information
   public var keyRepeatDelay: @MainActor @Sendable () -> TimeInterval = { .zero }
   public var keyRepeatInterval: @MainActor @Sendable () -> TimeInterval = { .zero }
-  //
   public var mouseLocation: @MainActor @Sendable () -> NSPoint = { .zero }
   public var globalEvents: @MainActor @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEventValue> = {
     _ in .finished
   }
 
-  public var localEvents:
-    @MainActor @Sendable (_ mask: NSEvent.EventTypeMask, _ handler: @escaping (NSEvent) -> NSEvent?) ->
-    AsyncStream<NSEventValue> = { _, _ in .finished }
+  public var addLocalMonitor:
+    @MainActor @Sendable (
+      _ mask: NSEvent.EventTypeMask,
+      _ handler: @escaping @MainActor @Sendable (NSEvent) -> NSEvent?,
+    ) -> EventMonitorID = { _, _ in .init() }
+  public var removeMonitor:
+    @MainActor @Sendable (_ id: EventMonitorID) -> Void = { _ in }
 }
 
 // MARK: DependencyKey
 
 extension NSEventClient: DependencyKey {
+
+  // MARK: Public
 
   public static let liveValue = Self(
     keyRepeatDelay: { NSEvent.keyRepeatDelay },
@@ -46,26 +54,27 @@ extension NSEventClient: DependencyKey {
       }
       return stream
     },
-    localEvents: { mask, handler in
-      let (stream, continuation) = AsyncStream.makeStream(of: NSEventValue.self)
-      let monitor =
-        NSEvent
-          .addLocalMonitorForEvents(
-            matching: mask,
-            handler: { nsEvent in
-              continuation.yield(NSEventValue(nsEvent: nsEvent))
-              return handler(nsEvent)
-            },
-          )
-      continuation.onTermination = { _ in
-        guard let monitor else { return }
+    addLocalMonitor: { mask, handler in
+      let id = EventMonitorID()
+      let monitor = NSEvent.addLocalMonitorForEvents(matching: mask) { event in
+        handler(event)
+      }
+      monitors[id] = monitor
+      return id
+    },
+    removeMonitor: { id in
+      if let monitor = monitors.removeValue(forKey: id) {
         NSEvent.removeMonitor(monitor)
       }
-      return stream
     },
   )
 
   public static let testValue = Self()
+
+  // MARK: Private
+
+  @MainActor private static var monitors = [UUID: Any]()
+
 }
 
 extension DependencyValues {

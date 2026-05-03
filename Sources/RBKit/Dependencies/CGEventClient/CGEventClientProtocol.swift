@@ -15,4 +15,5 @@ public protocol CGEventClientProtocol {
   func setEnabled(tap: MachPort, isEnabled: Bool)
   func flags(event: CGEvent) -> CGEventFlags
   func getIntegerValue(event: CGEvent, field: CGEventField) -> Int64
+  func postToPid(event: CGEvent, pid: pid_t)
 }

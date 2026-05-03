@@ -47,4 +47,8 @@ public struct CGEventClientLive: CGEventClientProtocol {
     event.getIntegerValueField(field)
   }
 
+  public func postToPid(event: CGEvent, pid: pid_t) {
+    event.postToPid(pid)
+  }
+
 }

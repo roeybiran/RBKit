@@ -26,6 +26,8 @@ public final class CGEventClientMock: CGEventClientProtocol {
 
   public var _getIntegerValue: @Sendable (_ event: CGEvent, _ field: CGEventField) -> Int64 = { _, _ in 0 }
 
+  public var _postToPid: @Sendable (_ event: CGEvent, _ pid: pid_t) -> Void = { _, _ in }
+
   public func createEventTap(
     tap: CGEventTapLocation,
     place: CGEventTapPlacement,
@@ -50,6 +52,10 @@ public final class CGEventClientMock: CGEventClientProtocol {
 
   public func getIntegerValue(event: CGEvent, field: CGEventField) -> Int64 {
     _getIntegerValue(event, field)
+  }
+
+  public func postToPid(event: CGEvent, pid: pid_t) {
+    _postToPid(event, pid)
   }
 
 }

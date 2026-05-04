@@ -3,7 +3,7 @@ import Carbon
 
 // MARK: - Modifiers
 
-public struct Modifiers: Hashable {
+public struct Modifiers: Hashable, Sendable {
   public let carbon: Int
   public let cocoa: UInt
   public let symbols: String

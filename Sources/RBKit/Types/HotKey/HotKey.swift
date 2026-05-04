@@ -1,6 +1,6 @@
 // MARK: - HotKey
 
-public struct HotKey: Hashable {
+public struct HotKey: Hashable, Sendable {
   public init(key: Key, modifiers: Modifiers) {
     self.key = key
     self.modifiers = modifiers

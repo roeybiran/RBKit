@@ -60,67 +60,70 @@ struct EventTapManagerTests {
   }
 
   @Test
-  func `Calls CGEventClient.createEventTap once with correct parameters`() async {
-    await confirmation("CGEventClient.createEventTap called once with correct parameters") { createEventTapCalled in
-      let (cgEventMock, cfMachPortMock, _, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "TAP")
-      let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
+  func `Calls CGEventClient.createEventTap once with correct parameters`() {
+    nonisolated(unsafe) var createEventTapCalls = 0
+    let (cgEventMock, cfMachPortMock, _, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "TAP")
+    let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
 
-      cgEventMock._createEventTap = { tap, place, options, eventsOfInterest, userInfo in
-        #expect(tap == .cgSessionEventTap)
-        #expect(place == .headInsertEventTap)
-        #expect(options == .defaultTap)
-        let expectedMask = ([CGEventType.keyDown, .flagsChanged] + [.tapDisabledByTimeout, .tapDisabledByUserInput])
-          .map { 1 << $0.rawValue }
-          .reduce(CGEventMask(), |)
-        #expect(eventsOfInterest == expectedMask)
-        #expect(userInfo != nil)
-        createEventTapCalled()
-        return mockMachPort
-      }
-      cfMachPortMock._createRunLoopSource = { _, _ in mockRunLoopSource }
-
-      sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+    cgEventMock._createEventTap = { tap, place, options, eventsOfInterest, userInfo in
+      #expect(tap == .cgSessionEventTap)
+      #expect(place == .headInsertEventTap)
+      #expect(options == .defaultTap)
+      let expectedMask = ([CGEventType.keyDown, .flagsChanged] + [.tapDisabledByTimeout, .tapDisabledByUserInput])
+        .map { 1 << $0.rawValue }
+        .reduce(CGEventMask(), |)
+      #expect(eventsOfInterest == expectedMask)
+      #expect(userInfo != nil)
+      createEventTapCalls += 1
+      return mockMachPort
     }
+    cfMachPortMock._createRunLoopSource = { _, _ in mockRunLoopSource }
+
+    sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+
+    #expect(createEventTapCalls == 1)
   }
 
   @Test
-  func `Calls CFMachPortClientProtocol.createRunLoopSource once with correct parameters`() async {
-    await confirmation("CFMachPortClientProtocol.createRunLoopSource called once with correct parameters") { createRunLoopSourceCalled in
-      let (cgEventMock, cfMachPortMock, _, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "TAP")
-      let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
+  func `Calls CFMachPortClientProtocol.createRunLoopSource once with correct parameters`() {
+    nonisolated(unsafe) var createRunLoopSourceCalls = 0
+    let (cgEventMock, cfMachPortMock, _, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "TAP")
+    let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
 
-      cgEventMock._createEventTap = { _, _, _, _, _ in mockMachPort }
-      cfMachPortMock._createRunLoopSource = { port, order in
-        #expect(port === mockMachPort)
-        #expect(order == 0)
-        createRunLoopSourceCalled()
-        return mockRunLoopSource
-      }
-
-      sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+    cgEventMock._createEventTap = { _, _, _, _, _ in mockMachPort }
+    cfMachPortMock._createRunLoopSource = { port, order in
+      #expect(port === mockMachPort)
+      #expect(order == 0)
+      createRunLoopSourceCalls += 1
+      return mockRunLoopSource
     }
+
+    sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+
+    #expect(createRunLoopSourceCalls == 1)
   }
 
   @Test
-  func `Calls CFRunLoopClient.add once with correct parameters`() async {
-    await confirmation("CFRunLoopClient.add called once with correct parameters") { addCalled in
-      let (cgEventMock, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "TAP")
-      let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
+  func `Calls CFRunLoopClient.add once with correct parameters`() {
+    nonisolated(unsafe) var addCalls = 0
+    let (cgEventMock, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "TAP")
+    let mockRunLoopSource = RunLoopSourceMock(id: "RUN_LOOP_SOURCE")
 
-      cgEventMock._createEventTap = { _, _, _, _, _ in mockMachPort }
-      cfMachPortMock._createRunLoopSource = { _, _ in mockRunLoopSource }
-      cfRunLoopMock._add = { source, runLoop, mode in
-        #expect(source === mockRunLoopSource)
-        #expect(runLoop === CFRunLoopGetMain())
-        #expect(mode == .commonModes)
-        addCalled()
-      }
-
-      sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+    cgEventMock._createEventTap = { _, _, _, _, _ in mockMachPort }
+    cfMachPortMock._createRunLoopSource = { _, _ in mockRunLoopSource }
+    cfRunLoopMock._add = { source, runLoop, mode in
+      #expect(source === mockRunLoopSource)
+      #expect(runLoop === CFRunLoopGetMain())
+      #expect(mode == .commonModes)
+      addCalls += 1
     }
+
+    sut.start(id: "test", eventsOfInterest: [.keyDown, .flagsChanged]) { (_: CGEventType, _: CGEvent) in nil }
+
+    #expect(addCalls == 1)
   }
 
   @Test
@@ -169,43 +172,45 @@ struct EventTapManagerTests {
   }
 
   @Test
-  func `Calls CFRunLoopClient.remove once with correct parameters`() async {
-    await confirmation("CFRunLoopClient.remove called once with correct parameters") { removeCalled in
-      let (_, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "A")
-      let mockRunLoopSource = RunLoopSourceMock(id: "B")
-      sut.taps["test"] = mockMachPort
-      sut.runLoopSources["test"] = mockRunLoopSource
+  func `Calls CFRunLoopClient.remove once with correct parameters`() {
+    nonisolated(unsafe) var removeCalls = 0
+    let (_, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "A")
+    let mockRunLoopSource = RunLoopSourceMock(id: "B")
+    sut.taps["test"] = mockMachPort
+    sut.runLoopSources["test"] = mockRunLoopSource
 
-      cfMachPortMock._invalidate = { (_: MachPortMock) in }
-      cfRunLoopMock._remove = { source, runLoop, mode in
-        #expect(source === mockRunLoopSource)
-        #expect(runLoop === CFRunLoopGetMain())
-        #expect(mode == .commonModes)
-        removeCalled()
-      }
-
-      sut.stop(id: "test")
+    cfMachPortMock._invalidate = { (_: MachPortMock) in }
+    cfRunLoopMock._remove = { source, runLoop, mode in
+      #expect(source === mockRunLoopSource)
+      #expect(runLoop === CFRunLoopGetMain())
+      #expect(mode == .commonModes)
+      removeCalls += 1
     }
+
+    sut.stop(id: "test")
+
+    #expect(removeCalls == 1)
   }
 
   @Test
-  func `Calls CFMachPortClientProtocol.invalidate once with correct parameters`() async {
-    await confirmation("CFMachPortClientProtocol.invalidate called once with correct parameters") { invalidateCalled in
-      let (_, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "A")
-      let mockRunLoopSource = RunLoopSourceMock(id: "B")
-      sut.taps["test"] = mockMachPort
-      sut.runLoopSources["test"] = mockRunLoopSource
+  func `Calls CFMachPortClientProtocol.invalidate once with correct parameters`() {
+    nonisolated(unsafe) var invalidateCalls = 0
+    let (_, cfMachPortMock, cfRunLoopMock, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "A")
+    let mockRunLoopSource = RunLoopSourceMock(id: "B")
+    sut.taps["test"] = mockMachPort
+    sut.runLoopSources["test"] = mockRunLoopSource
 
-      cfMachPortMock._invalidate = { machPort in
-        #expect(machPort === mockMachPort)
-        invalidateCalled()
-      }
-      cfRunLoopMock._remove = { (_: RunLoopSourceMock, _: CFRunLoop, _: CFRunLoopMode) in }
-
-      sut.stop(id: "test")
+    cfMachPortMock._invalidate = { machPort in
+      #expect(machPort === mockMachPort)
+      invalidateCalls += 1
     }
+    cfRunLoopMock._remove = { (_: RunLoopSourceMock, _: CFRunLoop, _: CFRunLoopMode) in }
+
+    sut.stop(id: "test")
+
+    #expect(invalidateCalls == 1)
   }
 
   @Test
@@ -227,21 +232,21 @@ struct EventTapManagerTests {
   }
 
   @Test
-  func `Calls CGEventClient.getEnabled once with correct parameters and returns result`() async {
-    await confirmation("CGEventClient.getEnabled called once with correct parameters") { getEnabledCalled in
-      let (cgEventMock, _, _, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "A")
-      cgEventMock._getEnabled = { tap in
-        #expect(tap === mockMachPort)
-        getEnabledCalled()
-        return true
-      }
-      sut.taps["test"] = mockMachPort
-
-      let result = sut.getIsEnabled(id: "test")
-
-      #expect(result == true)
+  func `Calls CGEventClient.getEnabled once with correct parameters and returns result`() {
+    nonisolated(unsafe) var getEnabledCalls = 0
+    let (cgEventMock, _, _, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "A")
+    cgEventMock._getEnabled = { tap in
+      #expect(tap === mockMachPort)
+      getEnabledCalls += 1
+      return true
     }
+    sut.taps["test"] = mockMachPort
+
+    let result = sut.getIsEnabled(id: "test")
+
+    #expect(result == true)
+    #expect(getEnabledCalls == 1)
   }
 
   @Test
@@ -254,20 +259,21 @@ struct EventTapManagerTests {
   }
 
   @Test
-  func `Calls CGEventClient.setEnabled once with correct parameters`() async {
-    await confirmation("CGEventClient.setEnabled called once with correct parameters") { setEnabledCalled in
-      let (cgEventMock, _, _, sut) = makeMockManager()
-      let mockMachPort = MachPortMock(id: "F")
-      sut.taps["test"] = mockMachPort
+  func `Calls CGEventClient.setEnabled once with correct parameters`() {
+    nonisolated(unsafe) var setEnabledCalls = 0
+    let (cgEventMock, _, _, sut) = makeMockManager()
+    let mockMachPort = MachPortMock(id: "F")
+    sut.taps["test"] = mockMachPort
 
-      cgEventMock._setEnabled = { tap, isEnabled in
-        #expect(tap === mockMachPort)
-        #expect(isEnabled == true)
-        setEnabledCalled()
-      }
-
-      sut.setIsEnabled(id: "test", true)
+    cgEventMock._setEnabled = { tap, isEnabled in
+      #expect(tap === mockMachPort)
+      #expect(isEnabled == true)
+      setEnabledCalls += 1
     }
+
+    sut.setIsEnabled(id: "test", true)
+
+    #expect(setEnabledCalls == 1)
   }
 
   @Test

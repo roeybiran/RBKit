@@ -5,10 +5,10 @@ import Foundation
 import Testing
 @testable import RBKit
 
-struct AppImporterItemTests {
+struct AppPickerItemTests {
   @Test
   func `init(bundleID:) should store identifier`() {
-    let item = AppImporterItem(bundleID: "com.example.app")
+    let item = AppPickerItem(bundleID: "com.example.app")
 
     #expect(item.bundleID == "com.example.app")
     #expect(item.id == "com.example.app")
@@ -23,7 +23,7 @@ struct AppImporterItemTests {
     }
   )
   func `title, with resolved application URL, should use app name`() {
-    let title = AppImporterItem(bundleID: "com.example.app").title
+    let title = AppPickerItem(bundleID: "com.example.app").title
 
     #expect(title == "Test")
   }
@@ -37,7 +37,7 @@ struct AppImporterItemTests {
     }
   )
   func `title, with unresolved application URL, should fallback to bundleID`() {
-    let title = AppImporterItem(bundleID: "com.missing.app").title
+    let title = AppPickerItem(bundleID: "com.missing.app").title
 
     #expect(title == "com.missing.app")
   }
@@ -50,7 +50,7 @@ struct AppImporterItemTests {
     }
   )
   func `image, with resolved application URL, should return valid image`() {
-    let image = AppImporterItem(bundleID: "com.example.app").image
+    let image = AppPickerItem(bundleID: "com.example.app").image
 
     #expect(image.isValid)
   }
@@ -61,16 +61,16 @@ struct AppImporterItemTests {
     }
   )
   func `image, with unresolved application URL, should return question mark icon`() {
-    let image = AppImporterItem(bundleID: "com.example.app").image
+    let image = AppPickerItem(bundleID: "com.example.app").image
 
     #expect(image === NSImage.questionMark)
   }
 
   @Test
   func `Codable roundtrip should preserve bundleID`() throws {
-    let original = AppImporterItem(bundleID: "com.example.app")
+    let original = AppPickerItem(bundleID: "com.example.app")
     let data = try JSONEncoder().encode(original)
-    let decoded = try JSONDecoder().decode(AppImporterItem.self, from: data)
+    let decoded = try JSONDecoder().decode(AppPickerItem.self, from: data)
 
     #expect(decoded == original)
   }

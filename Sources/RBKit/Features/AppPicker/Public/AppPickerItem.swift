@@ -2,9 +2,9 @@ import AppKit
 import Dependencies
 import Foundation
 
-// MARK: - AppImporterItem
+// MARK: - AppPickerItem
 
-public struct AppImporterItem: Hashable, Identifiable, Sendable, Codable {
+public struct AppPickerItem: Hashable, Identifiable, Sendable, Codable {
 
   // MARK: Lifecycle
 

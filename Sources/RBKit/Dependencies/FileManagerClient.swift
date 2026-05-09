@@ -55,6 +55,8 @@ public struct FileManagerClient: Sendable {
     @Sendable (
       _ atPath: String
     ) -> String = { _ in "" }
+
+  public var homeDirectoryForCurrentUser: @Sendable () -> URL = { URL(fileURLWithPath: "/") }
 }
 
 // MARK: DependencyKey
@@ -68,6 +70,7 @@ extension FileManagerClient: DependencyKey {
     createDirectory: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: $1, attributes: $2) },
     fileExists: { FileManager.default.fileExists(atPath: $0) },
     displayName: { FileManager.default.displayName(atPath: $0) },
+    homeDirectoryForCurrentUser: { FileManager.default.homeDirectoryForCurrentUser },
   )
   public static let testValue = FileManagerClient()
 }

@@ -1,4 +1,9 @@
 public struct EventType: Equatable, Sendable {
+  public init(kind: Kind, isRepeat: Bool = false) {
+    self.kind = kind
+    self.isRepeat = isRepeat
+  }
+
   public enum Kind: Equatable, Sendable {
     case keyDown
     case keyUp

@@ -1,4 +1,4 @@
-public enum AttributeName: String {
+public enum AttributeName: String, Sendable {
   case allowedValues = "AXAllowedValues"
   case alternateUIVisible = "AXAlternateUIVisible"
   case AMPMField = "AXAMPMField"

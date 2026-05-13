@@ -4,7 +4,7 @@ import ApplicationServices
 
 // /System/Library/Accessibility/AccessibilityDefinitions.plist
 
-public struct Attribute<T>: Equatable {
+public struct Attribute<T>: Equatable, Sendable {
 
   // MARK: Lifecycle
 

@@ -1,4 +1,4 @@
-open class ObserverMock: Hashable {
+open class ObserverMock: Hashable, @unchecked Sendable {
 
   // MARK: Lifecycle
 

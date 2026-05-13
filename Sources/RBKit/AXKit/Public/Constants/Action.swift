@@ -1,6 +1,6 @@
 // AXActionConstants.h
 
-public enum Action: String {
+public enum Action: String, Sendable {
   // standard actions
   case press = "AXPress"
   case increment = "AXIncrement"

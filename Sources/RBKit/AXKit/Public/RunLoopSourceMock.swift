@@ -1,4 +1,4 @@
-open class RunLoopSourceMock: Hashable {
+open class RunLoopSourceMock: Hashable, @unchecked Sendable {
 
   // MARK: Lifecycle
 

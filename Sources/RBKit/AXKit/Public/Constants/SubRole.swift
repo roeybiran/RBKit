@@ -1,4 +1,4 @@
-public enum SubRole: String {
+public enum SubRole: String, Sendable {
   case dialog = "AXDialog"
   case floatingWindow = "AXFloatingWindow"
   case standardWindow = "AXStandardWindow"

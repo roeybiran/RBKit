@@ -280,14 +280,14 @@ struct `AXClientExtensions Tests` {
     let element = UIElementMock()
     let testRange = CFRange(location: 10, length: 20)
     let expectedAXValue = UIElementValueMock(type: .cfRange)
-    
+
     sut._createAXValue = { type, _ in
       #expect(type == .cfRange)
       return expectedAXValue
     }
-    
+
     sut._setAttributeValue = { _, _, value in
-      #expect(value === expectedAXValue)
+      #expect(ObjectIdentifier(value) == ObjectIdentifier(expectedAXValue))
       didCall = true
       return .success
     }
@@ -303,14 +303,14 @@ struct `AXClientExtensions Tests` {
     let element = UIElementMock()
     let testPoint = CGPoint(x: 100.0, y: 200.0)
     let expectedAXValue = UIElementValueMock(type: .cgPoint)
-    
+
     sut._createAXValue = { type, _ in
       #expect(type == .cgPoint)
       return expectedAXValue
     }
-    
+
     sut._setAttributeValue = { _, _, value in
-      #expect(value === expectedAXValue)
+      #expect(ObjectIdentifier(value) == ObjectIdentifier(expectedAXValue))
       didCall = true
       return .success
     }
@@ -326,14 +326,14 @@ struct `AXClientExtensions Tests` {
     let element = UIElementMock()
     let testRect = CGRect(x: 10.0, y: 20.0, width: 300.0, height: 400.0)
     let expectedAXValue = UIElementValueMock(type: .cgRect)
-    
+
     sut._createAXValue = { type, _ in
       #expect(type == .cgRect)
       return expectedAXValue
     }
-    
+
     sut._setAttributeValue = { _, _, value in
-      #expect(value === expectedAXValue)
+      #expect(ObjectIdentifier(value) == ObjectIdentifier(expectedAXValue))
       didCall = true
       return .success
     }
@@ -349,14 +349,14 @@ struct `AXClientExtensions Tests` {
     let element = UIElementMock()
     let testSize = CGSize(width: 500.0, height: 600.0)
     let expectedAXValue = UIElementValueMock(type: .cgSize)
-    
+
     sut._createAXValue = { type, _ in
       #expect(type == .cgSize)
       return expectedAXValue
     }
-    
+
     sut._setAttributeValue = { _, _, value in
-      #expect(value === expectedAXValue)
+      #expect(ObjectIdentifier(value) == ObjectIdentifier(expectedAXValue))
       didCall = true
       return .success
     }

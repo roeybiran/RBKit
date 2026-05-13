@@ -4,7 +4,7 @@ import Carbon
 // MARK: - AXMenuItemModifiers + CustomStringConvertible
 
 /// see AXAttributeConstants.h:994
-extension AXMenuItemModifiers: CustomStringConvertible {
+extension AXMenuItemModifiers: @retroactive CustomStringConvertible {
   public var description: String {
     var result = ""
     if rawValue == 0x18 { return "🌐" } // undocumented

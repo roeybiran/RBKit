@@ -1,6 +1,6 @@
 import ApplicationServices
 
-public enum AXClientError: Error {
+public enum AXClientError: Error, Sendable {
   case failure
   case illegalArgument
   case invalidUIElement

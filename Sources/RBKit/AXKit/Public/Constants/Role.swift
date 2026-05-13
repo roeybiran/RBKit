@@ -1,4 +1,4 @@
-public enum Role: String {
+public enum Role: String, Sendable {
   case application = "AXApplication"
   case browser = "AXBrowser"
   case busyIndicator = "AXBusyIndicator"

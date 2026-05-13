@@ -1,6 +1,6 @@
 import Quartz
 
-open class UIElementMock: Hashable {
+open class UIElementMock: Hashable, @unchecked Sendable {
 
   // MARK: Lifecycle
 

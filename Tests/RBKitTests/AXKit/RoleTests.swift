@@ -74,10 +74,4 @@ struct `Role Tests` {
       #expect(role.rawValue == rawValue)
     }
   }
-
-  @Test
-  func `coalescing raw value returns unknown for unrecognized role`() {
-    #expect(Role(coalescingRawValue: "AXMadeUpRole") == .unknown)
-    #expect(Role(coalescingRawValue: "AXButton") == .button)
-  }
 }

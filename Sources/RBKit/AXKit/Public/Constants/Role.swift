@@ -61,8 +61,4 @@ public enum Role: String {
   case valueIndicator = "AXValueIndicator"
   case webArea = "AXWebArea"
   case window = "AXWindow"
-
-  public init(coalescingRawValue rawValue: String) {
-    self = Self(rawValue: rawValue) ?? .unknown
-  }
 }

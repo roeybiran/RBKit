@@ -1,6 +1,6 @@
 import ApplicationServices
 
-open class UIElementValueMock: Hashable, @unchecked Sendable {
+public final class UIElementValueMock: Hashable, Sendable {
 
   // MARK: Lifecycle
 

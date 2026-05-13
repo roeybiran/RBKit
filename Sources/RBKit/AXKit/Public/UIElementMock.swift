@@ -1,13 +1,13 @@
 import Quartz
 
-open class UIElementMock: Hashable, @unchecked Sendable {
+public final class UIElementMock: Hashable, Sendable {
 
   // MARK: Lifecycle
 
   public init(
     id: String = "",
-    attributes: [String: Any] = [:])
-  {
+    attributes: [String: (any Sendable)?] = [:],
+  ) {
     self.id = id
     self.attributes = attributes
   }
@@ -15,7 +15,7 @@ open class UIElementMock: Hashable, @unchecked Sendable {
   // MARK: Public
 
   public let id: String
-  public var attributes = [String: Any?]()
+  public let attributes: [String: (any Sendable)?]
 
   public static func ==(lhs: UIElementMock, rhs: UIElementMock) -> Bool {
     lhs.id == rhs.id

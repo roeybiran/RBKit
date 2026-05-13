@@ -42,7 +42,8 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
       observer: observerData.observer,
       element: element,
       notification: notification.rawValue as CFString,
-      refcon: refcon)
+      refcon: refcon,
+    )
     guard result == .success else {
       throw AXClientError(axError: result)
     }
@@ -51,7 +52,8 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
   public func notifications(for process: pid_t) -> AsyncThrowingStream<(pid_t, AX.UIElement, AXNotification), any Error> {
     let (stream, continuation) = AsyncThrowingStream.makeStream(
       of: (pid_t, AX.UIElement, AXNotification).self,
-      throwing: (any Error).self)
+      throwing: (any Error).self,
+    )
 
     guard let observerData = observers[process] else {
       assertionFailure()
@@ -93,6 +95,6 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
 
   private let client: AX
   private let runLoopClient: RunLoopClient
-  private var observers: [pid_t: ObserverData] = [:]
+  private var observers = [pid_t: ObserverData]()
 
 }

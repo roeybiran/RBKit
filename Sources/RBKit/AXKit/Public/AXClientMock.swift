@@ -49,8 +49,8 @@ public final class AXClientMock: AXClient {
     UIElement,
     CFArray,
     AXCopyMultipleAttributeOptions,
-    UnsafeMutablePointer<CFArray?>)
-    -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
+    UnsafeMutablePointer<CFArray?>,
+  ) -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _actionNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in
     unimplemented(placeholder: .apiDisabled)
@@ -83,14 +83,14 @@ public final class AXClientMock: AXClient {
   public nonisolated(unsafe) var _observerCreate: (
     pid_t,
     @escaping (Observer, UIElement, CFString) -> Void,
-    UnsafeMutablePointer<Observer?>)
-    -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+    UnsafeMutablePointer<Observer?>,
+  ) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _observerCreateWithInfoCallback: (
     pid_t,
     @escaping (Observer, UIElement, CFString, CFDictionary) -> Void,
-    UnsafeMutablePointer<Observer?>)
-    -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
+    UnsafeMutablePointer<Observer?>,
+  ) -> AXError = { _, _, _ in unimplemented(placeholder: .apiDisabled) }
 
   public nonisolated(unsafe) var _observerAddNotification: (Observer, UIElement, CFString) -> AXError = { _, _, _ in
     unimplemented(placeholder: .apiDisabled)
@@ -122,8 +122,6 @@ public final class AXClientMock: AXClient {
 
   public nonisolated(unsafe) var _createElementWithRemoteToken: (CFData) -> Unmanaged<UIElement>? = { _ in nil }
 
-  // MARK: - Process Trust
-
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
     _isProcessTrustedWithOptions(options)
   }
@@ -131,8 +129,6 @@ public final class AXClientMock: AXClient {
   public func isProcessTrusted() -> Bool {
     _isProcessTrusted()
   }
-
-  // MARK: - AXUIElement
 
   public func getTypeID() -> CFTypeID {
     _getTypeID()
@@ -155,18 +151,16 @@ public final class AXClientMock: AXClient {
     attribute: CFString,
     index: CFIndex,
     maxValues: CFIndex,
-    values: UnsafeMutablePointer<CFArray?>)
-    -> AXError
-  {
+    values: UnsafeMutablePointer<CFArray?>,
+  ) -> AXError {
     _attributeValues(element, attribute, index, maxValues, values)
   }
 
   public func isAttributeSettable(
     element: UIElement,
     attribute: CFString,
-    settable: UnsafeMutablePointer<DarwinBoolean>)
-    -> AXError
-  {
+    settable: UnsafeMutablePointer<DarwinBoolean>,
+  ) -> AXError {
     _isAttributeSettable(element, attribute, settable)
   }
 
@@ -178,9 +172,8 @@ public final class AXClientMock: AXClient {
     element: UIElement,
     attributes: CFArray,
     options: AXCopyMultipleAttributeOptions,
-    values: UnsafeMutablePointer<CFArray?>)
-    -> AXError
-  {
+    values: UnsafeMutablePointer<CFArray?>,
+  ) -> AXError {
     _attributeValueMultiple(element, attributes, options, values)
   }
 
@@ -200,9 +193,8 @@ public final class AXClientMock: AXClient {
     application: UIElement,
     x: Float,
     y: Float,
-    element: UnsafeMutablePointer<UIElement?>)
-    -> AXError
-  {
+    element: UnsafeMutablePointer<UIElement?>,
+  ) -> AXError {
     _elementAtPosition(application, x, y, element)
   }
 
@@ -222,8 +214,6 @@ public final class AXClientMock: AXClient {
     _setMessagingTimeout(element, timeoutInSeconds)
   }
 
-  // MARK: - AXObserver
-
   public func observerGetTypeID() -> CFTypeID {
     _observerGetTypeID()
   }
@@ -240,9 +230,8 @@ public final class AXClientMock: AXClient {
     observer: Observer,
     element: UIElement,
     notification: CFString,
-    refcon _: UnsafeMutableRawPointer?)
-    -> AXError
-  {
+    refcon _: UnsafeMutableRawPointer?,
+  ) -> AXError {
     _observerAddNotification(observer, element, notification)
   }
 
@@ -253,8 +242,6 @@ public final class AXClientMock: AXClient {
   public func observerGetRunLoopSource(observer: Observer) -> RunLoopSource {
     _observerGetRunLoopSource(observer)
   }
-
-  // MARK: - AXValue
 
   public func getAXValueTypeID() -> CFTypeID {
     _getAXValueTypeID()
@@ -271,8 +258,6 @@ public final class AXClientMock: AXClient {
   public func getAXValueValue(_ value: UIElementValue, _ theType: AXValueType, _ valuePtr: UnsafeMutableRawPointer) -> Bool {
     _getAXValueValue(value, theType, valuePtr)
   }
-
-  // MARK: - Private APIs
 
   public func _getWindow(_ axUiElement: UIElement, _ wid: inout CGWindowID) -> AXError {
     _getWindow(axUiElement, &wid)

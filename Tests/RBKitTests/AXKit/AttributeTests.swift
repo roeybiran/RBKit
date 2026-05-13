@@ -1,5 +1,5 @@
-import Testing
 import Foundation
+import Testing
 @testable import AXKit
 
 @Suite
@@ -252,7 +252,7 @@ struct `Attribute Tests` {
 
   @Test
   func `menuItemCmdModifiers == AXMenuItemCmdModifiers`() {
-    let attribute = Attribute<UInt32>.menuItemCmdModifiers
+    let attribute = Attribute<MenuItemModifiers>.menuItemCmdModifiers
     #expect(attribute.name == "AXMenuItemCmdModifiers")
   }
 
@@ -538,35 +538,33 @@ struct `Attribute Tests` {
     #expect(attribute.name == "AXStatusLabel")
   }
 
-  // MARK: - Static Functions
-
   @Test
   func `allowedValues() == AXAllowedValues`() {
-    let attribute: Attribute<[String]> = .allowedValues()
+    let attribute = Attribute<Never>.allowedValues() as Attribute<[String]>
     #expect(attribute.name == "AXAllowedValues")
   }
 
   @Test
   func `handles() == AXHandles`() {
-    let attribute: Attribute<[String]> = .handles()
+    let attribute = Attribute<Never>.handles() as Attribute<[String]>
     #expect(attribute.name == "AXHandles")
   }
 
   @Test
   func `maxValue() == AXMaxValue`() {
-    let attribute: Attribute<Int> = .maxValue()
+    let attribute = Attribute<Never>.maxValue() as Attribute<Int>
     #expect(attribute.name == "AXMaxValue")
   }
 
   @Test
   func `minValue() == AXMinValue`() {
-    let attribute: Attribute<Int> = .minValue()
+    let attribute = Attribute<Never>.minValue() as Attribute<Int>
     #expect(attribute.name == "AXMinValue")
   }
 
   @Test
   func `valueIncrement() == AXValueIncrement`() {
-    let attribute: Attribute<Int> = .valueIncrement()
+    let attribute = Attribute<Never>.valueIncrement() as Attribute<Int>
     #expect(attribute.name == "AXValueIncrement")
   }
 

@@ -1,5 +1,5 @@
-import Foundation
 import ApplicationServices
+import Foundation
 import Testing
 @testable import AXKit
 
@@ -8,7 +8,7 @@ import Testing
 struct `AXObserverManager Tests` {
 
   @Test
-  func `createObserver, with valid pid, should create observer`() async throws {
+  func `createObserver, with valid pid, should create observer`() throws {
     nonisolated(unsafe) var didCreateObserver = false
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
@@ -29,7 +29,7 @@ struct `AXObserverManager Tests` {
   }
 
   @Test
-  func `createObserver, with AXError, should throw`() async {
+  func `createObserver, with AXError, should throw`() {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
 
@@ -43,12 +43,12 @@ struct `AXObserverManager Tests` {
   }
 
   @Test
-  func `createObserver, with success but nil observer, should throw unknown`() async {
+  func `createObserver, with success but nil observer, should throw unknown`() {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
 
     mockClient._observerCreate = { _, _, outObserver in
-      outObserver.pointee = nil  // Success but nil observer
+      outObserver.pointee = nil // Success but nil observer
       return .success
     }
 
@@ -66,7 +66,7 @@ struct `AXObserverManager Tests` {
     var mockRunLoopClient = CFRunLoopClientMock()
     let pid: pid_t = 12345
     let expectedObserver = ObserverMock(id: "test-observer-123")
-    
+
     mockClient._observerCreate = { receivedPid, _, outObserver in
       #expect(receivedPid == pid)
       outObserver.pointee = expectedObserver
@@ -79,9 +79,9 @@ struct `AXObserverManager Tests` {
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
     try manager.createObserver(process: pid)
     let stream = manager.notifications(for: pid)
-    
+
     #expect(didCreateObserver == true)
-    
+
     // Cancel the stream to clean up
     let task = Task {
       for try await _ in stream {
@@ -105,7 +105,7 @@ struct `AXObserverManager Tests` {
   }
 
   @Test
-  func `notifications, with success but nil observer, should throw on createObserver`() async {
+  func `notifications, with success but nil observer, should throw on createObserver`() {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
 
@@ -122,7 +122,7 @@ struct `AXObserverManager Tests` {
   }
 
   @Test
-  func `add, with valid notification, should add notification to observer`() async throws {
+  func `add, with valid notification, should add notification to observer`() throws {
     nonisolated(unsafe) var didAddNotification = false
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
@@ -130,7 +130,7 @@ struct `AXObserverManager Tests` {
     let expectedObserver = ObserverMock(id: "test-observer-123")
     let element = UIElementMock()
     let notification = AXNotification.titleChanged
-    
+
     mockClient._observerCreate = { _, _, outObserver in
       outObserver.pointee = expectedObserver
       return .success
@@ -151,14 +151,14 @@ struct `AXObserverManager Tests` {
   }
 
   @Test
-  func `add, with unknown process, should throw`() async {
+  func `add, with unknown process, should throw`() {
     let mockClient = AXClientMock()
     let mockRunLoopClient = CFRunLoopClientMock()
     let element = UIElementMock()
     let notification = AXNotification.titleChanged
-    
+
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
-    
+
     #expect(throws: AXClientError.unknown) {
       try manager.add(notification: notification, to: 12345, element: element)
     }

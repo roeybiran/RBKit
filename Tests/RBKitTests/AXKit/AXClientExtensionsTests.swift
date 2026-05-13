@@ -1,5 +1,5 @@
-import Foundation
 import ApplicationServices
+import Foundation
 import Testing
 @testable import AXKit
 
@@ -7,25 +7,25 @@ import Testing
 struct `AXClientExtensions Tests` {
 
   @Test
-  func `isProcessTrusted, with usePrompt == true, preflight == true, should return preflight value without prompt`() async {
+  func `isProcessTrusted, with usePrompt == true, preflight == true, should return preflight value without prompt`() {
     nonisolated(unsafe) var didCall = false
-      let sut = AXClientMock()
-      sut._isProcessTrusted = {
-        didCall = true
-        return true
-      }
-      sut._isProcessTrustedWithOptions = { _ in
-        #expect(Bool(false), "Should not call isProcessTrustedWithOptions when preflight is true")
-        return false
-      }
-      
-      let result = sut.isProcessTrusted(usePrompt: true)
-      #expect(result == true)
-      #expect(didCall == true)
+    let sut = AXClientMock()
+    sut._isProcessTrusted = {
+      didCall = true
+      return true
+    }
+    sut._isProcessTrustedWithOptions = { _ in
+      #expect(Bool(false), "Should not call isProcessTrustedWithOptions when preflight is true")
+      return false
+    }
+
+    let result = sut.isProcessTrusted(usePrompt: true)
+    #expect(result == true)
+    #expect(didCall == true)
   }
 
   @Test
-  func `isProcessTrusted, with usePrompt == true, preflight == false, should call prompt and return result`() async {
+  func `isProcessTrusted, with usePrompt == true, preflight == false, should call prompt and return result`() {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     sut._isProcessTrusted = { false }
@@ -34,14 +34,14 @@ struct `AXClientExtensions Tests` {
       didCall = true
       return true
     }
-    
+
     let result = sut.isProcessTrusted(usePrompt: true)
     #expect(result == true)
     #expect(didCall == true)
   }
-  
+
   @Test
-  func `isProcessTrusted, with usePrompt == false, preflight == true, should return preflight only`() async {
+  func `isProcessTrusted, with usePrompt == false, preflight == true, should return preflight only`() {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     sut._isProcessTrusted = {
@@ -52,14 +52,14 @@ struct `AXClientExtensions Tests` {
       #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
       return false
     }
-    
+
     let result = sut.isProcessTrusted(usePrompt: false)
     #expect(result == true)
     #expect(didCall == true)
   }
-  
+
   @Test
-  func `isProcessTrusted, with usePrompt == false, preflight == false, should return preflight only`() async {
+  func `isProcessTrusted, with usePrompt == false, preflight == false, should return preflight only`() {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     sut._isProcessTrusted = {
@@ -70,14 +70,14 @@ struct `AXClientExtensions Tests` {
       #expect(Bool(false), "Should not call isProcessTrustedWithOptions when usePrompt is false")
       return false
     }
-    
+
     let result = sut.isProcessTrusted(usePrompt: false)
     #expect(result == false)
     #expect(didCall == true)
   }
 
   @Test
-  func `attributeNames, with valid element, should return names`() async throws {
+  func `attributeNames, with valid element, should return names`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -94,7 +94,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeNames, with AXError, should throw`() async {
+  func `attributeNames, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeNames = { _, _ in .failure }
@@ -105,7 +105,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeNames, with casting failure, should return empty array`() async throws {
+  func `attributeNames, with casting failure, should return empty array`() throws {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeNames = { _, ptr in
@@ -117,7 +117,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with single attribute, should return value`() async throws {
+  func `attributeValue, with single attribute, should return value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -136,7 +136,22 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with single attribute and error, should throw`() async {
+  func `attributeValue, with menu item modifiers, should return modifiers`() throws {
+    let sut = AXClientMock()
+    let element = UIElementMock()
+
+    sut._attributeValue = { _, _, value in
+      value.pointee = NSNumber(value: MenuItemModifiers([.shift, .option]).rawValue) as CFTypeRef
+      return .success
+    }
+    sut._getAXValueTypeID = { 0 }
+
+    let result = try sut.attributeValue(element: element, for: Attribute<MenuItemModifiers>.menuItemCmdModifiers)
+    #expect(result == [.shift, .option])
+  }
+
+  @Test
+  func `attributeValue, with single attribute and error, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     let attribute = Attribute<String>("testAttribute")
@@ -166,9 +181,8 @@ struct `AXClientExtensions Tests` {
     }
   }
 
-
   @Test
-  func `getAttributeValueCount, with valid attribute, should return count`() async throws {
+  func `getAttributeValueCount, with valid attribute, should return count`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -184,7 +198,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `getAttributeValueCount, with AXError, should throw`() async {
+  func `getAttributeValueCount, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getAttributeValueCount = { _, _, _ in .failure }
@@ -195,7 +209,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValues, with valid parameters, should return values`() async throws {
+  func `attributeValues, with valid parameters, should return values`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -211,7 +225,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValues, with AXError, should throw`() async {
+  func `attributeValues, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._attributeValues = { _, _, _, _, _ in .failure }
@@ -222,7 +236,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `isAttributeSettable, with valid attribute, should return bool`() async throws {
+  func `isAttributeSettable, with valid attribute, should return bool`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -238,7 +252,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `isAttributeSettable, with AXError, should throw`() async {
+  func `isAttributeSettable, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._isAttributeSettable = { _, _, _ in .failure }
@@ -249,7 +263,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with valid value, should set value`() async throws {
+  func `setAttributeValue, with valid value, should set value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -263,7 +277,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with AXError, should throw`() async {
+  func `setAttributeValue, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._setAttributeValue = { _, _, _ in .failure }
@@ -274,7 +288,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with CFRange, should encode to AXValue`() async throws {
+  func `setAttributeValue, with CFRange, should encode to AXValue`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -297,7 +311,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with CGPoint, should encode to AXValue`() async throws {
+  func `setAttributeValue, with CGPoint, should encode to AXValue`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -320,7 +334,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with CGRect, should encode to AXValue`() async throws {
+  func `setAttributeValue, with CGRect, should encode to AXValue`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -343,7 +357,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `setAttributeValue, with CGSize, should encode to AXValue`() async throws {
+  func `setAttributeValue, with CGSize, should encode to AXValue`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -366,7 +380,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `actionNames, with valid element, should return names`() async throws {
+  func `actionNames, with valid element, should return names`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -382,7 +396,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `actionNames, with AXError, should throw`() async {
+  func `actionNames, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._actionNames = { _, _ in .failure }
@@ -393,7 +407,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `actionDescription, with valid action, should return description`() async throws {
+  func `actionDescription, with valid action, should return description`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -410,7 +424,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `actionDescription, with AXError, should throw`() async {
+  func `actionDescription, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     let action = Action.press
@@ -422,7 +436,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `performAction, with valid action, should perform action`() async throws {
+  func `performAction, with valid action, should perform action`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -436,7 +450,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `performAction, with AXError, should throw`() async {
+  func `performAction, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._performAction = { _, _ in .failure }
@@ -447,7 +461,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `elementAtPosition, with valid coordinates, should return element`() async throws {
+  func `elementAtPosition, with valid coordinates, should return element`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let application = UIElementMock()
@@ -463,7 +477,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `elementAtPosition, with AXError, should throw`() async {
+  func `elementAtPosition, with AXError, should throw`() {
     let sut = AXClientMock()
     let application = UIElementMock()
     sut._elementAtPosition = { _, _, _, _ in .failure }
@@ -474,7 +488,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `getPid, with valid element, should return pid`() async throws {
+  func `getPid, with valid element, should return pid`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -490,7 +504,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `getPid, with AXError, should throw`() async {
+  func `getPid, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getPid = { _, _ in .failure }
@@ -500,14 +514,13 @@ struct `AXClientExtensions Tests` {
     }
   }
 
-
   @Test
-  func `getWindowID, with valid element, should return window ID`() async throws {
+  func `getWindowID, with valid element, should return window ID`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
     let expectedWindowID: CGWindowID = 12345
-    
+
     sut._getWindow = { receivedElement, windowIDPtr in
       #expect(receivedElement === element)
       windowIDPtr = expectedWindowID
@@ -521,7 +534,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `getWindowID, with AXError, should throw`() async {
+  func `getWindowID, with AXError, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
     sut._getWindow = { _, _ in .failure }
@@ -532,26 +545,26 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, two attributes, multi attribute values failure, should throw`() async {
+  func `attributeValue, two attributes, multi attribute values failure, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()
-    
+
     sut._attributeValueMultiple = { _, _, _, _ in
-      return .failure
+      .failure
     }
-    
+
     #expect(throws: AXClientError.self) {
       try sut.attributeValue(element: element, for: sut.children, sut.parent)
     }
   }
 
   @Test
-  func `setAttributeValue, CFRange, create AXValue failure, should fallback to raw value`() async throws {
+  func `setAttributeValue, CFRange, create AXValue failure, should fallback to raw value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
     let range = CFRange(location: 0, length: 10)
-    
+
     sut._createAXValue = { _, _ in nil }
     sut._setAttributeValue = { receivedElement, attribute, value in
       #expect(receivedElement === element)
@@ -563,18 +576,18 @@ struct `AXClientExtensions Tests` {
       didCall = true
       return .success
     }
-    
+
     try sut.setAttributeValue(element: element, attribute: Attribute<CFRange>(.selectedTextRange), value: range)
     #expect(didCall == true)
   }
 
   @Test
-  func `setAttributeValue, CGPoint, create AXValue failure, should fallback to raw value`() async throws {
+  func `setAttributeValue, CGPoint, create AXValue failure, should fallback to raw value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
     let point = CGPoint(x: 100, y: 200)
-    
+
     sut._createAXValue = { _, _ in nil }
     sut._setAttributeValue = { receivedElement, attribute, value in
       #expect(receivedElement === element)
@@ -584,18 +597,18 @@ struct `AXClientExtensions Tests` {
       didCall = true
       return .success
     }
-    
+
     try sut.setAttributeValue(element: element, attribute: Attribute<CGPoint>(.position), value: point)
     #expect(didCall == true)
   }
 
   @Test
-  func `setAttributeValue, CGRect, create AXValue failure, should fallback to raw value`() async throws {
+  func `setAttributeValue, CGRect, create AXValue failure, should fallback to raw value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
     let rect = CGRect(x: 10, y: 20, width: 100, height: 200)
-    
+
     sut._createAXValue = { _, _ in nil }
     sut._setAttributeValue = { receivedElement, attribute, value in
       #expect(receivedElement === element)
@@ -605,18 +618,18 @@ struct `AXClientExtensions Tests` {
       didCall = true
       return .success
     }
-    
+
     try sut.setAttributeValue(element: element, attribute: Attribute<CGRect>(.frame), value: rect)
     #expect(didCall == true)
   }
 
   @Test
-  func `setAttributeValue, CGSize, create AXValue failure, should fallback to raw value`() async throws {
+  func `setAttributeValue, CGSize, create AXValue failure, should fallback to raw value`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
     let size = CGSize(width: 300, height: 400)
-    
+
     sut._createAXValue = { _, _ in nil }
     sut._setAttributeValue = { receivedElement, attribute, value in
       #expect(receivedElement === element)
@@ -626,14 +639,13 @@ struct `AXClientExtensions Tests` {
       didCall = true
       return .success
     }
-    
+
     try sut.setAttributeValue(element: element, attribute: Attribute<CGSize>(.size), value: size)
     #expect(didCall == true)
   }
 
-
   @Test
-  func `attributeValue, with 2 attributes, should return tuple`() async throws {
+  func `attributeValue, with 2 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -674,7 +686,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 3 attributes, should return tuple`() async throws {
+  func `attributeValue, with 3 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -699,7 +711,25 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 4 attributes, should return tuple`() async throws {
+  func `attributeValue, with menu item modifiers in tuple, should return modifiers`() throws {
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let attr1 = Attribute<String>("attr1")
+    let attr2 = Attribute<MenuItemModifiers>.menuItemCmdModifiers
+
+    sut._attributeValueMultiple = { _, _, _, values in
+      values.pointee = ["value1", NSNumber(value: MenuItemModifiers([.control, .noCommand]).rawValue)] as CFArray
+      return .success
+    }
+    sut._getAXValueTypeID = { 0 }
+
+    let (result1, result2) = try sut.attributeValue(element: element, for: attr1, attr2)
+    #expect(result1 == "value1")
+    #expect(result2 == [.control, .noCommand])
+  }
+
+  @Test
+  func `attributeValue, with 4 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -726,7 +756,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 5 attributes, should return tuple`() async throws {
+  func `attributeValue, with 5 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -751,7 +781,8 @@ struct `AXClientExtensions Tests` {
       attr2,
       attr3,
       attr4,
-      attr5)
+      attr5,
+    )
     #expect(result1 == "value1")
     #expect(result2 == 42)
     #expect(result3 == true)
@@ -761,7 +792,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with 6 attributes, should return tuple`() async throws {
+  func `attributeValue, with 6 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -788,8 +819,9 @@ struct `AXClientExtensions Tests` {
       attr3,
       attr4,
       attr5,
-      attr6)
-    
+      attr6,
+    )
+
     #expect(result1 == "mockUIElement")
     #expect(result2 == "mockUIElement")
     #expect(result3 == "mockUIElement")
@@ -820,7 +852,7 @@ struct `AXClientExtensions Tests` {
         UIElementValueMock(type: .cgSize),
         UIElementValueMock(type: .cfRange),
         UIElementValueMock(type: .axError),
-        UIElementValueMock(type: .illegal)
+        UIElementValueMock(type: .illegal),
       ] as [AnyObject]
 
       sut._attributeValueMultiple = { _, _, _, outValues in
@@ -859,13 +891,13 @@ struct `AXClientExtensions Tests` {
         attr4,
         attr5,
         attr6,
-        attr7
+        attr7,
       )
     }
   }
 
   @Test
-  func `attributeValue, with 8 attributes, should return tuple`() async throws {
+  func `attributeValue, with 8 attributes, should return tuple`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -896,7 +928,8 @@ struct `AXClientExtensions Tests` {
       attr5,
       attr6,
       attr7,
-      attr8)
+      attr8,
+    )
     #expect(result1 == "value1")
     #expect(result2 == 42)
     #expect(result3 == true)
@@ -909,7 +942,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with stopOnError == true, should pass correct options`() async throws {
+  func `attributeValue, with stopOnError == true, should pass correct options`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -931,7 +964,7 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
-  func `attributeValue, with stopOnError == false, should pass correct options`() async throws {
+  func `attributeValue, with stopOnError == false, should pass correct options`() throws {
     nonisolated(unsafe) var didCall = false
     let sut = AXClientMock()
     let element = UIElementMock()
@@ -951,9 +984,6 @@ struct `AXClientExtensions Tests` {
     #expect(result2 == 42)
     #expect(didCall == true)
   }
-
-
-  // MARK: - computed vars
 
   @Test
   func `computedAttribute AMPMField, always, should return correct attribute`() {

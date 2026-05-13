@@ -1,6 +1,6 @@
-import Testing
-import Foundation
 import Dependencies
+import Foundation
+import Testing
 @testable import AXKit
 
 @Suite
@@ -13,7 +13,7 @@ struct `withRetryingOnAXTimeout Tests` {
       $0.continuousClock = clock
     } operation: {
       try await withRetryingOnAXTimeout {
-        return 42
+        42
       }
     }
     #expect(result == 42)
@@ -75,7 +75,7 @@ struct `withRetryingOnAXTimeout Tests` {
       } operation: {
         try await withRetryingOnAXTimeout(
           retryingEvery: .milliseconds(10),
-          until: .milliseconds(5)
+          until: .milliseconds(5),
         ) {
           attemptCount += 1
           throw AXClientError.cannotComplete
@@ -162,7 +162,7 @@ struct `withRetryingOnAXTimeout Tests` {
       $0.continuousClock = clock
     } operation: {
       try await withRetryingOnAXTimeout {
-        return [1, 2, 3]
+        [1, 2, 3]
       }
     }
     #expect(result == [1, 2, 3])
@@ -178,7 +178,7 @@ struct `withRetryingOnAXTimeout Tests` {
       } operation: {
         try await withRetryingOnAXTimeout(
           retryingEvery: .milliseconds(10),
-          until: .milliseconds(25)
+          until: .milliseconds(25),
         ) {
           attemptCount += 1
           throw AXClientError.cannotComplete

@@ -15,7 +15,6 @@ public struct AXClientLive: AXClient {
   public typealias Observer = AXObserver
   public typealias RunLoopSource = CFRunLoopSource
 
-  // MARK: - Process Trust
   public func isProcessTrustedWithOptions(_ options: CFDictionary?) -> Bool {
     AXIsProcessTrustedWithOptions(options)
   }
@@ -24,7 +23,6 @@ public struct AXClientLive: AXClient {
     AXIsProcessTrusted()
   }
 
-  // MARK: - UIElement
   public func getTypeID() -> CFTypeID {
     AXUIElementGetTypeID()
   }
@@ -46,18 +44,16 @@ public struct AXClientLive: AXClient {
     attribute: CFString,
     index: CFIndex,
     maxValues: CFIndex,
-    values: UnsafeMutablePointer<CFArray?>)
-    -> AXError
-  {
+    values: UnsafeMutablePointer<CFArray?>,
+  ) -> AXError {
     AXUIElementCopyAttributeValues(element, attribute, index, maxValues, values)
   }
 
   public func isAttributeSettable(
     element: UIElement,
     attribute: CFString,
-    settable: UnsafeMutablePointer<DarwinBoolean>)
-    -> AXError
-  {
+    settable: UnsafeMutablePointer<DarwinBoolean>,
+  ) -> AXError {
     AXUIElementIsAttributeSettable(element, attribute, settable)
   }
 
@@ -69,9 +65,8 @@ public struct AXClientLive: AXClient {
     element: UIElement,
     attributes: CFArray,
     options: AXCopyMultipleAttributeOptions,
-    values: UnsafeMutablePointer<CFArray?>)
-    -> AXError
-  {
+    values: UnsafeMutablePointer<CFArray?>,
+  ) -> AXError {
     AXUIElementCopyMultipleAttributeValues(element, attributes, options, values)
   }
 
@@ -94,9 +89,8 @@ public struct AXClientLive: AXClient {
     application: UIElement,
     x: Float,
     y: Float,
-    element: UnsafeMutablePointer<UIElement?>)
-    -> AXError
-  {
+    element: UnsafeMutablePointer<UIElement?>,
+  ) -> AXError {
     AXUIElementCopyElementAtPosition(application, x, y, element)
   }
 
@@ -116,8 +110,6 @@ public struct AXClientLive: AXClient {
     AXUIElementSetMessagingTimeout(element, timeoutInSeconds)
   }
 
-  // MARK: - AXObserver
-
   public func observerGetTypeID() -> CFTypeID {
     AXObserverGetTypeID()
   }
@@ -130,7 +122,8 @@ public struct AXClientLive: AXClient {
         let wrapper = Unmanaged<Box<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon).takeUnretainedValue()
         wrapper.callback?(observer, element, notification)
       },
-      outObserver)
+      outObserver,
+    )
   }
 
   public func observerCreateWithInfoCallback(application: pid_t, outObserver: UnsafeMutablePointer<Observer?>) -> AXError {
@@ -141,16 +134,16 @@ public struct AXClientLive: AXClient {
         let wrapper = Unmanaged<Box<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon).takeUnretainedValue()
         wrapper.callbackWithInfo?(observer, element, notification, info)
       },
-      outObserver)
+      outObserver,
+    )
   }
 
   public func observerAddNotification(
     observer: Observer,
     element: UIElement,
     notification: CFString,
-    refcon: UnsafeMutableRawPointer?)
-    -> AXError
-  {
+    refcon: UnsafeMutableRawPointer?,
+  ) -> AXError {
     AXObserverAddNotification(observer, element, notification, refcon)
   }
 
@@ -162,7 +155,6 @@ public struct AXClientLive: AXClient {
     AXObserverGetRunLoopSource(observer)
   }
 
-  // MARK: - AXValue
   public func getAXValueTypeID() -> CFTypeID {
     AXValueGetTypeID()
   }
@@ -193,5 +185,4 @@ public struct AXClientLive: AXClient {
 func _AXUIElementGetWindow(_ axUiElement: AXUIElement, _ wid: inout CGWindowID) -> AXError
 
 @_silgen_name("_AXUIElementCreateWithRemoteToken")
-nonisolated
-func _AXUIElementCreateWithRemoteToken(_ data: CFData) -> Unmanaged<AXUIElement>?
+nonisolated func _AXUIElementCreateWithRemoteToken(_ data: CFData) -> Unmanaged<AXUIElement>?

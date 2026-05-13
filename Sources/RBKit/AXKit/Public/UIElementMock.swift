@@ -6,7 +6,7 @@ public final class UIElementMock: Hashable, Sendable {
 
   public init(
     id: String = "",
-    attributes: [String: (any Sendable)?] = [:],
+    attributes: [String: Any?] = [:],
   ) {
     self.id = id
     self.attributes = attributes
@@ -15,7 +15,7 @@ public final class UIElementMock: Hashable, Sendable {
   // MARK: Public
 
   public let id: String
-  public let attributes: [String: (any Sendable)?]
+  public nonisolated(unsafe) var attributes: [String: Any?]
 
   public static func ==(lhs: UIElementMock, rhs: UIElementMock) -> Bool {
     lhs.id == rhs.id

@@ -1,6 +1,6 @@
 import Carbon
 
-public protocol CFRunLoopClientProtocol: Sendable {
+public protocol CFRunLoopClientProtocol {
   associatedtype RunLoopSource: AnyObject
 
   func add(source: RunLoopSource, to runLoop: CFRunLoop, mode: CFRunLoopMode)

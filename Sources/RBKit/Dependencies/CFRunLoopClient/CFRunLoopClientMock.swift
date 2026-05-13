@@ -1,33 +1,26 @@
 import Carbon
-import os
 
 public final class CFRunLoopClientMock: CFRunLoopClientProtocol {
 
   // MARK: Lifecycle
 
-  public nonisolated init() { }
+  public init() { }
 
   // MARK: Public
 
   public typealias RunLoopSource = RunLoopSourceMock
 
-  public var _add: @Sendable (
+  public var _add: (
     _ source: RunLoopSourceMock,
     _ runLoop: CFRunLoop,
     _ mode: CFRunLoopMode,
-  ) -> Void {
-    get { state.withLock { $0.add } }
-    set { state.withLock { $0.add = newValue } }
-  }
+  ) -> Void = { _, _, _ in }
 
-  public var _remove: @Sendable (
+  public var _remove: (
     _ source: RunLoopSourceMock,
     _ runLoop: CFRunLoop,
     _ mode: CFRunLoopMode,
-  ) -> Void {
-    get { state.withLock { $0.remove } }
-    set { state.withLock { $0.remove = newValue } }
-  }
+  ) -> Void = { _, _, _ in }
 
   public func add(source: RunLoopSourceMock, to runLoop: CFRunLoop, mode: CFRunLoopMode) {
     _add(source, runLoop, mode)
@@ -36,22 +29,5 @@ public final class CFRunLoopClientMock: CFRunLoopClientProtocol {
   public func remove(source: RunLoopSourceMock, from runLoop: CFRunLoop, mode: CFRunLoopMode) {
     _remove(source, runLoop, mode)
   }
-
-  // MARK: Private
-
-  private struct State: Sendable {
-    var add: @Sendable (
-      _ source: RunLoopSourceMock,
-      _ runLoop: CFRunLoop,
-      _ mode: CFRunLoopMode,
-    ) -> Void = { _, _, _ in }
-    var remove: @Sendable (
-      _ source: RunLoopSourceMock,
-      _ runLoop: CFRunLoop,
-      _ mode: CFRunLoopMode,
-    ) -> Void = { _, _, _ in }
-  }
-
-  private let state = OSAllocatedUnfairLock(initialState: State())
 
 }

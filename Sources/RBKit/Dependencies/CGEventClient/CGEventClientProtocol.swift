@@ -1,6 +1,6 @@
 import Carbon
 
-public protocol CGEventClientProtocol: Sendable {
+public protocol CGEventClientProtocol {
   associatedtype MachPort: AnyObject
 
   func createEventTap(

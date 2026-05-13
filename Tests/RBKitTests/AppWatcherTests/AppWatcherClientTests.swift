@@ -8,27 +8,36 @@ import Testing
 @MainActor
 struct AppWatcherClientTests {
   @Test(
-    .disabled("Live NSWorkspace observation can hang in headless test environments"),
-    .timeLimit(.minutes(1)),
     .dependencies {
       $0.processesClient = .nonXPC
       $0.sysctlClient = .nonZombie
-    },
+    }
   )
   func `liveValue: should create valid client`() async {
+    nonisolated(unsafe) var eventCount = 0
+
     let client = AppWatcherClient.liveValue
 
-    let event1Task = Task { @MainActor in
-      var iterator = client.events().makeAsyncIterator()
-      return await iterator.next()
+    var events1 = [AppWatcherEvent]()
+    Task {
+      for await evt in client.events() {
+        events1.append(evt)
+        eventCount += 1
+        break
+      }
     }
 
-    let event2Task = Task { @MainActor in
-      var iterator = client.events().makeAsyncIterator()
-      return await iterator.next()
+    var events2 = [AppWatcherEvent]()
+    Task {
+      for await evt in client.events() {
+        events2.append(evt)
+        eventCount += 1
+        break
+      }
     }
 
-    let events = await [event1Task.value, event2Task.value]
-    #expect(events.allSatisfy { $0 != nil })
+    try? await Task.sleep(for: .seconds(0.5))
+
+    #expect(eventCount == 2)
   }
 }

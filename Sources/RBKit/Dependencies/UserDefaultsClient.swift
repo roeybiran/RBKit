@@ -8,9 +8,7 @@ import Foundation
 public struct UserDefaultsClient: Sendable {
   public typealias Stream<T: Sendable> = AsyncStream<KeyValueObservedChange<T>>
 
-  public static var suite: UserDefaults {
-    UserDefaults.standard
-  }
+  public static let suite = UserDefaults.standard
 
   public var object: @Sendable (_ forKey: String) -> Any?
   public var url: @Sendable (_ forKey: String) -> URL?

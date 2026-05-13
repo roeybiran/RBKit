@@ -4,10 +4,7 @@ import Dependencies
 
 public enum CGEventClientKey: DependencyKey {
   public static let liveValue: any CGEventClientProtocol = CGEventClientLive()
-
-  public static var testValue: any CGEventClientProtocol {
-    CGEventClientMock()
-  }
+  public static let testValue: any CGEventClientProtocol = CGEventClientMock()
 }
 
 extension DependencyValues {

@@ -126,9 +126,7 @@ extension NSWorkspaceClient: DependencyKey {
 
   // MARK: Private
 
-  private static var instance: NSWorkspace {
-    NSWorkspace.shared
-  }
+  private static let instance = NSWorkspace.shared
 
 }
 

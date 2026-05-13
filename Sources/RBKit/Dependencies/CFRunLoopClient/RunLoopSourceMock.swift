@@ -1,6 +1,6 @@
 import Carbon
 
-public final class RunLoopSourceMock: Sendable {
+public final class RunLoopSourceMock {
 
   // MARK: Lifecycle
 

@@ -799,6 +799,6 @@ struct HotKeyManagerTests {
   }
 }
 
-nonisolated(unsafe) let mockEventDispatcherTarget = OpaquePointer(bitPattern: 0x1)
-nonisolated(unsafe) let mockEventHandlerRef = OpaquePointer(bitPattern: 0x2)
-nonisolated(unsafe) let mockEventHotKeyRef = OpaquePointer(bitPattern: 0x3)
+let mockEventDispatcherTarget = OpaquePointer(bitPattern: 0x1)
+let mockEventHandlerRef = OpaquePointer(bitPattern: 0x2)
+let mockEventHotKeyRef = OpaquePointer(bitPattern: 0x3)

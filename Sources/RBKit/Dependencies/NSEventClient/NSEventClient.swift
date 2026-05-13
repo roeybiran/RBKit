@@ -44,13 +44,9 @@ extension NSEventClient: DependencyKey {
               continuation.yield(NSEventValue(nsEvent: nsEvent))
             },
           )
-      let id = EventMonitorID()
-      monitors[id] = monitor
       continuation.onTermination = { _ in
-        Task { @MainActor in
-          guard let monitor = monitors.removeValue(forKey: id) else { return }
-          NSEvent.removeMonitor(monitor)
-        }
+        guard let monitor else { return }
+        NSEvent.removeMonitor(monitor)
       }
       return stream
     },

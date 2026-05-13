@@ -135,9 +135,8 @@ extension PathWatcherClient: DependencyKey {
         return stream
       }
 
-      let terminationRef = SendableFSEventStreamRef(ref)
       continuation.onTermination = { _ in
-        fsEventStreamClient.stop(streamRef: terminationRef.ref)
+        fsEventStreamClient.stop(streamRef: ref)
       }
 
       return stream
@@ -168,18 +167,4 @@ private final class Box {
 
   let eventHandler: (_ events: [PathWatcherEvent]) -> Void
 
-}
-
-// MARK: - SendableFSEventStreamRef
-
-private struct SendableFSEventStreamRef: Sendable {
-  init(_ ref: FSEventStreamRef) {
-    rawValue = UInt(bitPattern: ref)
-  }
-
-  let rawValue: UInt
-
-  var ref: FSEventStreamRef {
-    OpaquePointer(bitPattern: rawValue)!
-  }
 }

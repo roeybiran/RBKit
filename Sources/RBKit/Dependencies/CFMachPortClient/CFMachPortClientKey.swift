@@ -4,10 +4,7 @@ import Dependencies
 
 public enum CFMachPortClientKey: DependencyKey {
   public static let liveValue: any CFMachPortClientProtocol = CFMachPortClientLive()
-
-  public static var testValue: any CFMachPortClientProtocol {
-    CFMachPortClientMock()
-  }
+  public static let testValue: any CFMachPortClientProtocol = CFMachPortClientMock()
 }
 
 extension DependencyValues {

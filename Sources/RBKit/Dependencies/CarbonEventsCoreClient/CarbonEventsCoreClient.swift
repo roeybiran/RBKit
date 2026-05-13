@@ -50,14 +50,9 @@ extension CarbonEventsCoreClient: DependencyKey {
             return OSStatus(eventNotHandledErr)
           }
 
-          let boxPointer = UInt(bitPattern: userData)
-          let eventPointer = event.map { UInt(bitPattern: $0) }
+          let box = Unmanaged<BoxedHotKeyHandler>.fromOpaque(userData).takeUnretainedValue()
           return MainActor.assumeIsolated {
-            let box = Unmanaged<BoxedHotKeyHandler>
-              .fromOpaque(UnsafeRawPointer(bitPattern: boxPointer)!)
-              .takeUnretainedValue()
-            let event = eventPointer.map { EventRef(bitPattern: $0)! }
-            return box.callback(event)
+            box.callback(event)
           }
         },
         numEventTypes,

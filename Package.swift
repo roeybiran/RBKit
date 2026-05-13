@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -48,7 +48,7 @@ let package = Package(
       ],
     ),
   ],
-  swiftLanguageModes: [.v6],
+  swiftLanguageModes: [.v5],
 )
 
 for target in package.targets {
@@ -56,6 +56,7 @@ for target in package.targets {
   settings.append(contentsOf: [
     .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
     .enableUpcomingFeature("InferIsolatedConformances"),
+    .enableUpcomingFeature("IsolatedDefaultValues"),
   ])
   target.swiftSettings = settings
 }

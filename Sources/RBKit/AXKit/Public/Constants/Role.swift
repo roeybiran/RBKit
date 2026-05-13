@@ -17,5 +17,6 @@ public enum Role: String {
   case table = "AXTable"
   case textArea = "AXTextArea"
   case textField = "AXTextField"
+  case webArea = "AXWebArea"
   case window = "AXWindow"
 }

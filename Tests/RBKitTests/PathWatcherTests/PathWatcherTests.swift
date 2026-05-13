@@ -6,6 +6,8 @@ import Testing
 
 @testable import RBKit
 
+// MARK: - PathWatcherTests
+
 struct PathWatcherTests {
   @Test
   func `init`() {
@@ -25,7 +27,7 @@ struct PathWatcherTests {
     nonisolated(unsafe) var openCalled = false
     nonisolated(unsafe) var closeCalled = false
     nonisolated(unsafe) var eventHandlerCalled = false
-    nonisolated(unsafe) var receivedEvent: DispatchSource.FileSystemEvent?
+    let receivedEvent = UnsafeBox<DispatchSource.FileSystemEvent?>(nil)
     nonisolated(unsafe) var capturedMode: FileDescriptor.AccessMode?
     nonisolated(unsafe) var capturedOptions: FileDescriptor.OpenOptions?
     nonisolated(unsafe) var capturedFileDescriptor: FileDescriptor?
@@ -64,7 +66,7 @@ struct PathWatcherTests {
         do {
           let tempPath = FilePath(NSTemporaryDirectory())
           for try await event in client.watchPath(tempPath, .write, nil) {
-            receivedEvent = event
+            receivedEvent.value = event
             break
           }
         } catch {
@@ -79,7 +81,7 @@ struct PathWatcherTests {
       #expect(capturedMode == .readOnly)
       #expect(capturedOptions?.contains(.eventOnly) == true)
       #expect(eventHandlerCalled)
-      #expect(receivedEvent == .write)
+      #expect(receivedEvent.value == .write)
       #expect(closeCalled)
       #expect(capturedFileDescriptor?.rawValue == mockFileDescriptor.rawValue)
     }
@@ -482,4 +484,20 @@ struct PathWatcherTests {
       #expect(capturedFlags == expectedFlags)
     }
   }
+}
+
+// MARK: - UnsafeBox
+
+// swiftlint:disable:next no_unchecked_sendable -- Tests mutate this box from controlled task boundaries to observe cancellation side effects.
+private final class UnsafeBox<Value>: @unchecked Sendable {
+
+  // MARK: Lifecycle
+
+  init(_ value: Value) {
+    self.value = value
+  }
+
+  // MARK: Internal
+
+  var value: Value
 }

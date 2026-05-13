@@ -1,4 +1,4 @@
-import ScreenCaptureKit
+@preconcurrency import ScreenCaptureKit
 import Testing
 @testable import RBKit
 

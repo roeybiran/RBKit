@@ -1,3 +1,3 @@
 import Foundation
 
-open class DispatchSourceFileSystemObjectMock: NSObject, DispatchSourceFileSystemObject { }
+public final class DispatchSourceFileSystemObjectMock: NSObject, DispatchSourceFileSystemObject { }

@@ -143,9 +143,9 @@ struct EventTapManagerTests {
     #expect(sut.taps["test"] != nil)
 
     // Track calls for second attempt
-    var createEventTapCallCount = 0
-    var createRunLoopSourceCallCount = 0
-    var addCallCount = 0
+    nonisolated(unsafe) var createEventTapCallCount = 0
+    nonisolated(unsafe) var createRunLoopSourceCallCount = 0
+    nonisolated(unsafe) var addCallCount = 0
 
     cgEventMock._createEventTap = { _, _, _, _, _ in
       createEventTapCallCount += 1
@@ -280,7 +280,7 @@ struct EventTapManagerTests {
   func `Does nothing when no event tap exists`() {
     let (cgEventMock, _, _, sut) = makeMockManager()
 
-    var setEnabledCalled = false
+    nonisolated(unsafe) var setEnabledCalled = false
     cgEventMock._setEnabled = { (_: MachPortMock, _: Bool) in setEnabledCalled = true }
 
     sut.setIsEnabled(id: "test", false)

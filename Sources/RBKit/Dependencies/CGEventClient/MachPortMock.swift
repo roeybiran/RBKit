@@ -1,6 +1,6 @@
 import Carbon
 
-public final class MachPortMock {
+public final class MachPortMock: Sendable {
 
   // MARK: Lifecycle
 

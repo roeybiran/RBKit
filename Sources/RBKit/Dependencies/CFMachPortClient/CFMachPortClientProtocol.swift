@@ -1,6 +1,6 @@
 import Carbon
 
-public protocol CFMachPortClientProtocol {
+public protocol CFMachPortClientProtocol: Sendable {
   associatedtype MachPort: AnyObject
   associatedtype RunLoopSource: AnyObject
 

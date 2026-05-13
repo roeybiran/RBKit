@@ -4,7 +4,10 @@ import Dependencies
 
 public enum CFRunLoopClientKey: DependencyKey {
   public static let liveValue: any CFRunLoopClientProtocol = CFRunLoopClientLive()
-  public static let testValue: any CFRunLoopClientProtocol = CFRunLoopClientMock()
+
+  public static var testValue: any CFRunLoopClientProtocol {
+    CFRunLoopClientMock()
+  }
 }
 
 extension DependencyValues {

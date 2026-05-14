@@ -21,7 +21,7 @@ public struct NSWorkspaceClient: Sendable {
 
   @DependencyEndpoint(method: "open")
   public var openURLsWithApplicationAt: @Sendable @MainActor (
-    _ itemURLs: [URL],
+    _ urls: [URL],
     _ withApplicationAt: URL,
     _ configuration: NSWorkspace.OpenConfiguration,
   ) async throws -> NSRunningApplication = { _, _, _ in

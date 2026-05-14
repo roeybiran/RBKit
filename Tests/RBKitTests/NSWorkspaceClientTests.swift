@@ -40,7 +40,7 @@ struct `NSWorkspaceClient Tests` {
     }
   )
   @MainActor
-  func `open(itemURLs:withApplicationAt:configuration:), should route to openURLsWithApplicationAt`() async throws {
+  func `open(urls:withApplicationAt:configuration:), should route to openURLsWithApplicationAt`() async throws {
     let urls = [
       URL(filePath: "/tmp/Test.txt"),
       URL(filePath: "/tmp/Test Folder", directoryHint: .isDirectory),
@@ -50,7 +50,7 @@ struct `NSWorkspaceClient Tests` {
     configuration.createsNewApplicationInstance = true
     @Dependency(\.nsWorkspaceClient) var nsWorkspaceClient
     let result = try await nsWorkspaceClient.open(
-      itemURLs: urls,
+      urls: urls,
       withApplicationAt: applicationURL,
       configuration: configuration,
     )

@@ -12,7 +12,7 @@ public struct PathWatcherClient: Sendable {
     _ path: FilePath,
     _ mask: DispatchSource.FileSystemEvent,
     _ queue: DispatchQueue?,
-  ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Swift.Error> = { _, _, _ in .finished() }
+  ) -> AsyncThrowingStream<DispatchSource.FileSystemEvent, any Swift.Error> = { _, _, _ in .init { $0.finish() } }
 
   @DependencyEndpoint(method: "events")
   public var watchPathsRecursively: @Sendable (
@@ -21,7 +21,7 @@ public struct PathWatcherClient: Sendable {
     _ queue: DispatchQueue?,
     _ sinceWhen: PathWatcherEvent.ID?,
     _ flags: PathWatcherFlag?,
-  ) -> AsyncThrowingStream<[PathWatcherEvent], any Swift.Error> = { _, _, _, _, _ in .finished() }
+  ) -> AsyncThrowingStream<[PathWatcherEvent], any Swift.Error> = { _, _, _, _, _ in .init { $0.finish() } }
 }
 
 // MARK: DependencyKey

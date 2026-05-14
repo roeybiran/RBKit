@@ -12,7 +12,7 @@ public struct HotKeyManagerClient: Sendable {
   public var registerDefaults: @MainActor @Sendable (_ defaults: [HotKey.ID: HotKey]) -> Void
   public var register: @MainActor @Sendable (_ hotKey: HotKey, _ id: HotKey.ID) -> Void
   public var unregister: @MainActor @Sendable (_ id: HotKey.ID) -> Void
-  public var presses: @MainActor @Sendable (_ id: HotKey.ID) -> AsyncStream<EventType> = { _ in .finished }
+  public var presses: @MainActor @Sendable (_ id: HotKey.ID) -> AsyncStream<EventType> = { _ in .init { $0.finish() } }
   public var status: @MainActor @Sendable (_ id: HotKey.ID) -> HotKeyStatus?
 }
 

@@ -33,13 +33,13 @@ public struct UserDefaultsClient: Sendable {
   public var register: @Sendable (_ defaults: [String: Any]) -> Void
 
   @DependencyEndpoint(method: "observe")
-  public var observeString: @Sendable (KeyPath<UserDefaults, String>) -> Stream<String> = { _ in .finished }
+  public var observeString: @Sendable (KeyPath<UserDefaults, String>) -> Stream<String> = { _ in .init { $0.finish() } }
   @DependencyEndpoint(method: "observe")
-  public var observeBool: @Sendable (KeyPath<UserDefaults, Bool>) -> Stream<Bool> = { _ in .finished }
+  public var observeBool: @Sendable (KeyPath<UserDefaults, Bool>) -> Stream<Bool> = { _ in .init { $0.finish() } }
   @DependencyEndpoint(method: "observe")
-  public var observeInt: @Sendable (KeyPath<UserDefaults, Int>) -> Stream<Int> = { _ in .finished }
+  public var observeInt: @Sendable (KeyPath<UserDefaults, Int>) -> Stream<Int> = { _ in .init { $0.finish() } }
   @DependencyEndpoint(method: "observe")
-  public var observeDouble: @Sendable (KeyPath<UserDefaults, Double>) -> Stream<Double> = { _ in .finished }
+  public var observeDouble: @Sendable (KeyPath<UserDefaults, Double>) -> Stream<Double> = { _ in .init { $0.finish() } }
 
 }
 

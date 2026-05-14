@@ -54,10 +54,10 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [.current, passwords, xpc, zombie, regular])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
-      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -82,8 +82,8 @@ struct AppWatcherTests {
           .init(newValue: [app1, app2]),
         ])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
       deps.nsRunningApplicationClient.boolChanges = { app, keyPath, options in
         let label =
           if keyPath == \.isFinishedLaunching {
@@ -94,11 +94,11 @@ struct AppWatcherTests {
             #keyPath(NSRunningApplication.isTerminated)
           }
         boolObservationCalls.append((app.processIdentifier, label, options))
-        return .finished
+        return .init { $0.finish() }
       }
       deps.nsRunningApplicationClient.activationPolicyChanges = { app, _, options in
         activationPolicyObservationCalls.append((app.processIdentifier, options))
-        return .finished
+        return .init { $0.finish() }
       }
     } operation: {
       let sut = AppWatcher()
@@ -183,9 +183,9 @@ struct AppWatcherTests {
           }
         }
       }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
-      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -211,7 +211,7 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [app])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
       deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in
         AsyncStream { continuation in
           Task { @MainActor in
@@ -222,8 +222,8 @@ struct AppWatcherTests {
           }
         }
       }
-      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -248,15 +248,15 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [app])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, _ in
         if keyPath == \.isFinishedLaunching {
           return stream([.init(newValue: true)])
         }
-        return .finished
+        return .init { $0.finish() }
       }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -275,9 +275,9 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [app])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
-      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsRunningApplicationClient.boolChanges = { _, _, _ in .init { $0.finish() } }
       deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in
         stream([.init(newValue: .regular)])
       }
@@ -299,12 +299,12 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [app])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
       deps.nsRunningApplicationClient.boolChanges = { app, keyPath, _ in
         if keyPath == \.isHidden {
           guard let app = app as? AppMock else {
-            return .finished
+            return .init { $0.finish() }
           }
 
           return AsyncStream { continuation in
@@ -318,9 +318,9 @@ struct AppWatcherTests {
             }
           }
         }
-        return .finished
+        return .init { $0.finish() }
       }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -339,15 +339,15 @@ struct AppWatcherTests {
       deps.nsWorkspaceClient.runningApplicationsChanges = { _ in
         stream([.init(newValue: [app])])
       }
-      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .finished }
-      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .finished }
+      deps.nsWorkspaceClient.frontmostApplicationChanges = { _ in .init { $0.finish() } }
+      deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { _ in .init { $0.finish() } }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, _ in
         if keyPath == \.isTerminated {
           return stream([.init(newValue: true)])
         }
-        return .finished
+        return .init { $0.finish() }
       }
-      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .finished }
+      deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, _ in .init { $0.finish() } }
     } operation: {
       let sut = AppWatcher()
       return await collectEvents(from: sut.events())
@@ -378,7 +378,7 @@ struct AppWatcherTests {
       }
       deps.nsWorkspaceClient.menuBarOwningApplicationChanges = { options in
         menuBarOwningApplicationOptions.append(options)
-        return .finished
+        return .init { $0.finish() }
       }
       deps.nsRunningApplicationClient.boolChanges = { _, keyPath, options in
         let label =
@@ -390,11 +390,11 @@ struct AppWatcherTests {
             #keyPath(NSRunningApplication.isTerminated)
           }
         boolObservationCalls.append((label, options))
-        return .finished
+        return .init { $0.finish() }
       }
       deps.nsRunningApplicationClient.activationPolicyChanges = { _, _, options in
         activationPolicyObservationCalls.append(options)
-        return .finished
+        return .init { $0.finish() }
       }
     } operation: {
       let sut = AppWatcher()

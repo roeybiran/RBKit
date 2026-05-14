@@ -7,7 +7,7 @@ import Foundation
 
 @DependencyClient
 public struct AppWatcherClient: Sendable {
-  public var events: @MainActor @Sendable () -> AsyncStream<AppWatcherEvent> = { .finished }
+  public var events: @MainActor @Sendable () -> AsyncStream<AppWatcherEvent> = { .init { $0.finish() } }
 }
 
 // MARK: DependencyKey

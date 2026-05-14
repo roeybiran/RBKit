@@ -34,7 +34,7 @@ public struct NSRunningApplicationClient: Sendable {
     _ keyPath: KeyPath<NSRunningApplication, Bool>,
     _ options: NSKeyValueObservingOptions,
   ) -> AsyncStream<KeyValueObservedChange<Bool>> = { _, _, _ in
-    .finished
+    .init { $0.finish() }
   }
 
   @DependencyEndpoint(method: "changes")
@@ -43,7 +43,7 @@ public struct NSRunningApplicationClient: Sendable {
     _ keyPath: KeyPath<NSRunningApplication, NSApplication.ActivationPolicy>,
     _ options: NSKeyValueObservingOptions,
   ) -> AsyncStream<KeyValueObservedChange<NSApplication.ActivationPolicy>> = { _, _, _ in
-    .finished
+    .init { $0.finish() }
   }
 
   public var forceTerminate: @Sendable (_ app: NSRunningApplication) -> Bool = { _ in false }

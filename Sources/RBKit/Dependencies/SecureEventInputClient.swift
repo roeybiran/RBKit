@@ -8,7 +8,7 @@ import DependenciesMacros
 public struct SecureEventInputClient: Sendable {
   // https://developer.apple.com/library/archive/technotes/tn2150/_index.html
   // https://alexwlchan.net/2021/secure-input/
-  public var events: @Sendable (_ interval: TimeInterval) -> AsyncStream<Bool> = { _ in .finished }
+  public var events: @Sendable (_ interval: TimeInterval) -> AsyncStream<Bool> = { _ in .init { $0.finish() } }
   public var isEnabled: @Sendable () -> Bool = { false }
 }
 

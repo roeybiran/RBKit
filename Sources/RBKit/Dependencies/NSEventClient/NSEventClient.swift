@@ -12,7 +12,7 @@ public struct NSEventClient: Sendable {
   public var keyRepeatInterval: @MainActor @Sendable () -> TimeInterval = { .zero }
   public var mouseLocation: @MainActor @Sendable () -> NSPoint = { .zero }
   public var globalEvents: @MainActor @Sendable (_ mask: NSEvent.EventTypeMask) -> AsyncStream<NSEventValue> = {
-    _ in .finished
+    _ in .init { $0.finish() }
   }
 
   public var addLocalMonitor:

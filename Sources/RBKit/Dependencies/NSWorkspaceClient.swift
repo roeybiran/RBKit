@@ -46,7 +46,7 @@ public struct NSWorkspaceClient: Sendable {
   public var frontmostApplicationChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
   ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
-    .finished
+    .init { $0.finish() }
   }
 
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
@@ -54,7 +54,7 @@ public struct NSWorkspaceClient: Sendable {
   public var runningApplicationsChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
   ) -> AsyncStream<KeyValueObservedChange<[NSRunningApplication]>> = { _ in
-    .finished
+    .init { $0.finish() }
   }
 
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
@@ -62,7 +62,7 @@ public struct NSWorkspaceClient: Sendable {
   public var menuBarOwningApplicationChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
   ) -> AsyncStream<KeyValueObservedChange<NSRunningApplication?>> = { _ in
-    .finished
+    .init { $0.finish() }
   }
 
   @DependencyEndpoint(method: "icon")

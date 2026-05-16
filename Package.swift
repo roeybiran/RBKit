@@ -22,6 +22,7 @@ let package = Package(
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", from: "1.0.0"),
     .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.0.0"),
+    .package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay", from: "1.9.0"),
     .package(url: "https://github.com/airbnb/swift", from: "1.0.0"),
   ],
   targets: [
@@ -32,6 +33,7 @@ let package = Package(
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
+        .product(name: "IssueReporting", package: "xctest-dynamic-overlay"),
         .product(name: "Sharing", package: "swift-sharing"),
       ],
     ),

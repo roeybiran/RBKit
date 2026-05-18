@@ -1,17 +1,20 @@
-// AXActionConstants.h
-
+// swiftformat:disable organizeDeclarations
 public enum Action: String, Sendable {
-  // standard actions
-  case press = "AXPress"
-  case increment = "AXIncrement"
-  case decrement = "AXDecrement"
-  case confirm = "AXConfirm"
   case cancel = "AXCancel"
+  case confirm = "AXConfirm"
+  case decrement = "AXDecrement"
+  case delete = "AXDelete"
+  case increment = "AXIncrement"
+  case pick = "AXPick"
+  case press = "AXPress"
+  case raise = "AXRaise"
   case showAlternateUI = "AXShowAlternateUI"
   case showDefaultUI = "AXShowDefaultUI"
-  // new actions
-  case raise = "AXRaise"
   case showMenu = "AXShowMenu"
-  /// obsolete
-  case pick = "AXPick"
+
+  // MARK: - Undocumented
+
+  case scrollToVisible = "AXScrollToVisible"
 }
+
+// swiftformat:enable organizeDeclarations

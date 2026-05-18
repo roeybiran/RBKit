@@ -1,3 +1,4 @@
+import ApplicationServices
 import Carbon
 import Testing
 @testable import AXKit
@@ -70,6 +71,14 @@ struct `MenuItemModifiers+CustomStringConvertible Tests` {
   func `description, with noCommand only, should be empty`() {
     let mods = "\(MenuItemModifiers([.noCommand]))"
     #expect(mods == "")
+  }
+
+  @Test
+  func `raw values should match accessibility menu item modifier masks`() {
+    #expect(MenuItemModifiers.shift.rawValue == AXMenuItemModifiers.shift.rawValue)
+    #expect(MenuItemModifiers.option.rawValue == AXMenuItemModifiers.option.rawValue)
+    #expect(MenuItemModifiers.control.rawValue == AXMenuItemModifiers.control.rawValue)
+    #expect(MenuItemModifiers.noCommand.rawValue == AXMenuItemModifiers.noCommand.rawValue)
   }
 
   @Test

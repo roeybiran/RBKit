@@ -23,10 +23,8 @@ struct `Role Tests` {
       (.group, "AXGroup"),
       (.growArea, "AXGrowArea"),
       (.handle, "AXHandle"),
-      (.heading, "AXHeading"),
       (.helpTag, "AXHelpTag"),
       (.image, "AXImage"),
-      (.imageMap, "AXImageMap"),
       (.incrementor, "AXIncrementor"),
       (.layoutArea, "AXLayoutArea"),
       (.layoutItem, "AXLayoutItem"),
@@ -66,8 +64,13 @@ struct `Role Tests` {
       (.toolbar, "AXToolbar"),
       (.unknown, "AXUnknown"),
       (.valueIndicator, "AXValueIndicator"),
-      (.webArea, "AXWebArea"),
       (.window, "AXWindow"),
+      (.dateTimeArea, "AXDateTimeArea"),
+      (.heading, "AXHeading"),
+      (.imageMap, "AXImageMap"),
+      (.listMarker, "AXListMarker"),
+      (.page, "AXPage"),
+      (.webArea, "AXWebArea"),
     ]
 
     for (role, rawValue) in roles {

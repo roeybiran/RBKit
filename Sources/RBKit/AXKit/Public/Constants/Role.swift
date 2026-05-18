@@ -1,3 +1,4 @@
+// swiftformat:disable organizeDeclarations
 public enum Role: String, Sendable {
   case application = "AXApplication"
   case browser = "AXBrowser"
@@ -16,10 +17,8 @@ public enum Role: String, Sendable {
   case group = "AXGroup"
   case growArea = "AXGrowArea"
   case handle = "AXHandle"
-  case heading = "AXHeading"
   case helpTag = "AXHelpTag"
   case image = "AXImage"
-  case imageMap = "AXImageMap"
   case incrementor = "AXIncrementor"
   case layoutArea = "AXLayoutArea"
   case layoutItem = "AXLayoutItem"
@@ -59,6 +58,16 @@ public enum Role: String, Sendable {
   case toolbar = "AXToolbar"
   case unknown = "AXUnknown"
   case valueIndicator = "AXValueIndicator"
-  case webArea = "AXWebArea"
   case window = "AXWindow"
+
+  // MARK: - Undocumented
+
+  case dateTimeArea = "AXDateTimeArea"
+  case heading = "AXHeading"
+  case imageMap = "AXImageMap"
+  case listMarker = "AXListMarker"
+  case page = "AXPage"
+  case webArea = "AXWebArea"
 }
+
+// swiftformat:enable organizeDeclarations

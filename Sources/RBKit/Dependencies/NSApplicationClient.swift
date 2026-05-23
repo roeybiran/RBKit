@@ -39,6 +39,14 @@ public struct NSApplicationClient: Sendable {
     }
 
   public var currentEvent: @MainActor @Sendable () -> NSEvent?
+
+  public var currentAppearance: @MainActor @Sendable () -> NSAppearance = {
+    NSAppearance(named: .aqua)!
+  }
+
+  public var currentAppearanceObservation: @MainActor @Sendable () -> AsyncStream<Void> = {
+    .finished
+  }
 }
 
 // MARK: DependencyKey
@@ -57,9 +65,47 @@ extension NSApplicationClient: DependencyKey {
     activationPolicy: { NSApplication.shared.activationPolicy() },
     setActivationPolicy: { NSApplication.shared.setActivationPolicy($0) },
     currentEvent: { NSApplication.shared.currentEvent },
+    currentAppearance: { NSApplication.shared.effectiveAppearance },
+    currentAppearanceObservation: {
+      AsyncStream { continuation in
+        let observation = NSApplicationAppearanceObservation(continuation: continuation)
+        continuation.onTermination = { _ in
+          Task { @MainActor in
+            observation.invalidate()
+          }
+        }
+      }
+    },
   )
 
   public static let testValue = Self()
+}
+
+// MARK: - NSApplicationAppearanceObservation
+
+@MainActor
+private final class NSApplicationAppearanceObservation {
+
+  // MARK: Lifecycle
+
+  init(continuation: AsyncStream<Void>.Continuation) {
+    observation = NSApplication.shared.observe(\.effectiveAppearance, options: [.initial, .new]) { app, _ in
+      app.effectiveAppearance.performAsCurrentDrawingAppearance {
+        continuation.yield()
+      }
+    }
+  }
+
+  // MARK: Internal
+
+  func invalidate() {
+    observation?.invalidate()
+    observation = nil
+  }
+
+  // MARK: Private
+
+  private var observation: NSKeyValueObservation?
 }
 
 extension DependencyValues {

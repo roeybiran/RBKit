@@ -66,7 +66,7 @@ struct FzyJSClientTests {
   }
 
   @Test
-  func `fzyJS service cache should refresh recency on hit`() {
+  func `fzyJS service cache should not refresh recency on hit`() {
     let matcher = FzyJSService(cacheLimit: 3)
 
     _ = matcher.score("a", "a1")
@@ -78,6 +78,6 @@ struct FzyJSClientTests {
     let cacheKeys = matcher.cacheKeys
 
     #expect(cacheKeys.count == 3)
-    #expect(cacheKeys.map(\.candidate) == ["a3", "a1", "a4"])
+    #expect(cacheKeys.map(\.candidate) == ["a2", "a3", "a4"])
   }
 }

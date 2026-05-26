@@ -12,7 +12,6 @@ public final class FzyJSService {
   public func score(_ filter: String, _ candidate: String) -> Double {
     let cacheKey = CacheKey(filter: filter, candidate: candidate)
     if let cached = cache[cacheKey]?.score {
-      markCacheKeyAsRecentlyUsed(cacheKey)
       return cached
     }
 
@@ -28,9 +27,7 @@ public final class FzyJSService {
     var entry = cache[cacheKey] ?? Entry()
     entry.score = score
     cache[cacheKey] = entry
-    if isCached {
-      markCacheKeyAsRecentlyUsed(cacheKey)
-    } else {
+    if !isCached {
       cacheKeys.append(cacheKey)
     }
 
@@ -40,7 +37,6 @@ public final class FzyJSService {
   public func ranges(_ filter: String, _ candidate: String) -> [Range<String.Index>] {
     let cacheKey = CacheKey(filter: filter, candidate: candidate)
     if let cached = cache[cacheKey]?.ranges {
-      markCacheKeyAsRecentlyUsed(cacheKey)
       return cached
     }
 
@@ -58,9 +54,7 @@ public final class FzyJSService {
     var entry = cache[cacheKey] ?? Entry()
     entry.ranges = ranges
     cache[cacheKey] = entry
-    if isCached {
-      markCacheKeyAsRecentlyUsed(cacheKey)
-    } else {
+    if !isCached {
       cacheKeys.append(cacheKey)
     }
 
@@ -85,11 +79,4 @@ public final class FzyJSService {
 
   private let cacheLimit: Int
   private var cache = [CacheKey: Entry]()
-
-  private func markCacheKeyAsRecentlyUsed(_ cacheKey: CacheKey) {
-    if let index = cacheKeys.firstIndex(of: cacheKey) {
-      cacheKeys.remove(at: index)
-      cacheKeys.append(cacheKey)
-    }
-  }
 }

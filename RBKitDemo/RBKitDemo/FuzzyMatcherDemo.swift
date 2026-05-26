@@ -6,14 +6,15 @@ import SwiftUI
 struct FuzzyMatcherDemo: View {
   struct Match: Identifiable {
     let candidate: String
-    let score: FzyJS.Rank
+    let score: Double
+    let ranges: [Range<String.Index>]
 
     var id: String {
       candidate
     }
   }
 
-  @Dependency(\.fuzzyMatcher) private var fuzzyMatcher
+  @Dependency(\.fzyJS) private var fzyJS
 
   @State private var query = ""
   @State private var lines = [String]()
@@ -24,7 +25,7 @@ struct FuzzyMatcherDemo: View {
       TextField("Query", text: $query)
       List(matches) { match in
         LazyVStack(alignment: .leading) {
-          Text(highlightedText(match.candidate, positions: match.score.positions)).lineLimit(1)
+          Text(highlightedText(match.candidate, ranges: match.ranges)).lineLimit(1)
         }
       }
     }
@@ -44,34 +45,34 @@ struct FuzzyMatcherDemo: View {
 
     if trimmedQuery.isEmpty {
       matches = Array(lines).map {
-        Match(candidate: $0, score: .init())
+        Match(candidate: $0, score: 0, ranges: [])
       }
     } else {
       for candidate in lines {
-        let score = await fuzzyMatcher.score(trimmedQuery.normalized(), candidate)
+        let score = await fzyJS.score(trimmedQuery.normalized(), candidate)
 
-        if score.rank <= 0 {
+        if score <= 0 {
           continue
         }
 
-        matches.append(Match(candidate: candidate, score: score))
+        let ranges = await fzyJS.ranges(trimmedQuery.normalized(), candidate)
+        matches.append(Match(candidate: candidate, score: score, ranges: ranges))
       }
       matches.sort { lhs, rhs in
-        lhs.score.rank > rhs.score.rank
+        lhs.score > rhs.score
       }
     }
     return matches
   }
 
-  private func highlightedText(_ string: String, positions: [String.Index]) -> AttributedString {
+  private func highlightedText(_ string: String, ranges: [Range<String.Index>]) -> AttributedString {
     var attributed = AttributedString(string)
     attributed.font = .system(.body, design: .monospaced)
 
-    for position in positions {
-      let upperBound = string.index(after: position)
+    for range in ranges {
       guard
-        let attributedLowerBound = AttributedString.Index(position, within: attributed),
-        let attributedUpperBound = AttributedString.Index(upperBound, within: attributed)
+        let attributedLowerBound = AttributedString.Index(range.lowerBound, within: attributed),
+        let attributedUpperBound = AttributedString.Index(range.upperBound, within: attributed)
       else {
         continue
       }

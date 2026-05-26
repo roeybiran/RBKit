@@ -7,51 +7,52 @@ import Testing
 struct FzyJSClientTests {
   @Test(
     .dependencies {
-      $0.fuzzyMatcher.score = { _, _ in .init(rank: 42, hasMatch: true) }
+      $0.fzyJS.score = { _, _ in 42 }
+      $0.fzyJS.ranges = { _, candidate in
+        [candidate.startIndex ..< candidate.index(after: candidate.startIndex)]
+      }
     }
   )
-  func `fuzzyMatcher dependency should be overridable`() {
-    @Dependency(\.fuzzyMatcher) var fuzzyMatcher
-    let resolvedScore = fuzzyMatcher.score("amor", "app/models/order")
+  func `fzyJS dependency should be overridable`() {
+    @Dependency(\.fzyJS) var fzyJS
+    let resolvedScore = fzyJS.score("amor", "app/models/order")
+    let resolvedRanges = fzyJS.ranges("amor", "app/models/order")
 
-    #expect(resolvedScore.rank == 42)
-    #expect(resolvedScore.hasMatch)
-    #expect(resolvedScore.positions.isEmpty)
+    #expect(resolvedScore == 42)
+    #expect(resolvedRanges.count == 1)
   }
 
   @Test
-  func `fuzzyMatcher cache should compose primitive core api`() {
-    let matcher = FzyJS.Cache()
+  func `fzyJS service should compose primitive core api`() {
+    let matcher = FzyJSService()
     let candidate = "app/models/order"
     let score = matcher.score("amor", candidate)
-    let expectedScore = FzyJS.rank("amor", candidate)
 
-    #expect(score.rank == expectedScore.rank)
-    #expect(score.hasMatch == expectedScore.hasMatch)
-    #expect(score.positions == expectedScore.positions)
+    #expect(score == FzyJS.score("amor", candidate))
+    #expect(matcher.ranges("amor", candidate).map(\.lowerBound) == FzyJS.positions("amor", candidate))
   }
 
   @Test
-  func `fuzzyMatcher cache should return empty positions for no match`() {
-    let score = FzyJS.Cache().score("obtv", "oaktextview.mm")
+  func `fzyJS service should return empty ranges for no match`() {
+    let matcher = FzyJSService()
+    let score = matcher.score("obtv", "oaktextview.mm")
 
-    #expect(score.rank == FzyJS.SCORE_MIN)
-    #expect(!score.hasMatch)
-    #expect(score.positions.isEmpty)
+    #expect(score == FzyJS.SCORE_MIN)
+    #expect(matcher.ranges("obtv", "oaktextview.mm").isEmpty)
   }
 
   @Test
-  func `fuzzyMatcher cache should guard primitive score with empty positions for equal length non match`() {
-    let score = FzyJS.Cache().score("abc", "xyz")
+  func `fzyJS service should guard primitive score with empty ranges for equal length non match`() {
+    let matcher = FzyJSService()
+    let score = matcher.score("abc", "xyz")
 
-    #expect(score.rank == FzyJS.SCORE_MIN)
-    #expect(!score.hasMatch)
-    #expect(score.positions.isEmpty)
+    #expect(score == FzyJS.SCORE_MIN)
+    #expect(matcher.ranges("abc", "xyz").isEmpty)
   }
 
   @Test
-  func `fuzzyMatcher cache should keep latest entries`() {
-    let matcher = FzyJS.Cache(cacheLimit: 3)
+  func `fzyJS service cache should keep latest entries`() {
+    let matcher = FzyJSService(cacheLimit: 3)
 
     _ = matcher.score("a", "a1")
     _ = matcher.score("a", "a2")
@@ -65,8 +66,8 @@ struct FzyJSClientTests {
   }
 
   @Test
-  func `fuzzyMatcher cache should refresh recency on hit`() {
-    let matcher = FzyJS.Cache(cacheLimit: 3)
+  func `fzyJS service cache should refresh recency on hit`() {
+    let matcher = FzyJSService(cacheLimit: 3)
 
     _ = matcher.score("a", "a1")
     _ = matcher.score("a", "a2")

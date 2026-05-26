@@ -203,26 +203,28 @@ struct FzyJSTests {
     #expect(FzyJS.positions("foo", candidate) == Array(candidate.indices))
   }
 
+  @MainActor
   @Test
-  func `rank composes the public fzy api into positions`() {
+  func `service composes the public fzy api into score and ranges`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/index.js#L787-L939
     let candidate = "app/models/order"
-    let rank = FzyJS.rank("amor", candidate)
+    let service = FzyJSService()
 
-    #expect(rank.rank == FzyJS.score("amor", candidate))
-    #expect(rank.hasMatch == FzyJS.hasMatch("amor", candidate))
-    #expect(rank.positions == FzyJS.positions("amor", candidate))
+    #expect(service.score("amor", candidate) == FzyJS.score("amor", candidate))
+    #expect(service.ranges("amor", candidate).map(\.lowerBound) == FzyJS.positions("amor", candidate))
+    #expect(service.ranges("amor", candidate).allSatisfy { candidate.distance(from: $0.lowerBound, to: $0.upperBound) == 1 })
   }
 
+  @MainActor
   @Test
-  func `rank guards the equal length primitive edge case`() {
+  func `service score guards the equal length primitive edge case`() {
     // https://github.com/jhawthorn/fzy.js/blob/main/index.js#L796-L806
-    let rank = FzyJS.rank("abc", "xyz")
+    let service = FzyJSService()
 
     #expect(FzyJS.score("abc", "xyz") == SCORE_MAX)
-    #expect(!rank.hasMatch)
-    #expect(rank.rank == SCORE_MIN)
-    #expect(rank.positions.isEmpty)
+    #expect(!FzyJS.hasMatch("abc", "xyz"))
+    #expect(service.score("abc", "xyz") == SCORE_MIN)
+    #expect(service.ranges("abc", "xyz").isEmpty)
   }
 
   @Test

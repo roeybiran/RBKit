@@ -45,7 +45,7 @@ public struct NSApplicationClient: Sendable {
   }
 
   public var currentAppearanceObservation: @MainActor @Sendable () -> AsyncStream<Void> = {
-    .finished
+    AsyncStream { $0.finish() }
   }
 }
 

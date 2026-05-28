@@ -40,8 +40,13 @@ public protocol AXClient: Sendable {
     options: AXCopyMultipleAttributeOptions,
     values: UnsafeMutablePointer<CFArray?>,
   ) -> AXError
-  // func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError
-  // func parameterizedAttributeValue(element: UIElement, parameterizedAttribute: CFString, parameter: CFTypeRef, result: UnsafeMutablePointer<CFTypeRef?>) -> AXError
+  func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError
+  func parameterizedAttributeValue(
+    element: UIElement,
+    parameterizedAttribute: CFString,
+    parameter: CFTypeRef,
+    result: UnsafeMutablePointer<CFTypeRef?>,
+  ) -> AXError
   func actionNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError
   func actionDescription(element: UIElement, action: CFString, description: UnsafeMutablePointer<CFString?>) -> AXError
   func performAction(element: UIElement, action: CFString) -> AXError
@@ -367,6 +372,33 @@ extension AXClient {
     )
     guard result == .success else { throw AXClientError(axError: result) }
     return values as? [Any]
+  }
+
+  public func parameterizedAttributeNames(element: UIElement) throws(AXClientError) -> [String] {
+    var names: CFArray?
+    let result = parameterizedAttributeNames(element: element, names: &names)
+    guard result == .success else { throw AXClientError(axError: result) }
+    return ((names as? [CFString]) as? [String]) ?? []
+  }
+
+  public func parameterizedAttributeValue<A>(
+    element: UIElement,
+    attribute: String,
+    parameter: Any,
+  ) throws(AXClientError) -> A {
+    var value: CFTypeRef?
+    let result = parameterizedAttributeValue(
+      element: element,
+      parameterizedAttribute: attribute as CFString,
+      parameter: encode(parameter),
+      result: &value,
+    )
+    guard result == .success else { throw AXClientError(axError: result) }
+    guard let value = cast(value.map(decode), as: A.self) else {
+      assertionFailure("The accessibility API returned no error yet casting failed. This shouldn't happen.")
+      throw .attributeUnsupported
+    }
+    return value
   }
 
   public func isAttributeSettable<T>(element: UIElement, attribute: Attribute<T>) throws(AXClientError) -> Bool {

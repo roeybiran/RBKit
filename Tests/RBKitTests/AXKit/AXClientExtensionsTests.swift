@@ -545,6 +545,83 @@ struct `AXClientExtensions Tests` {
   }
 
   @Test
+  func `parameterizedAttributeNames, with valid element, should return names`() throws {
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+
+    sut._parameterizedAttributeNames = { receivedElement, names in
+      #expect(receivedElement === element)
+      names.pointee = [
+        AttributeName.UIElementCountForSearchPredicateParameterized.rawValue,
+        AttributeName.UIElementsForSearchPredicateParameterized.rawValue,
+      ] as CFArray
+      didCall = true
+      return .success
+    }
+
+    let names = try sut.parameterizedAttributeNames(element: element)
+    #expect(names == [
+      AttributeName.UIElementCountForSearchPredicateParameterized.rawValue,
+      AttributeName.UIElementsForSearchPredicateParameterized.rawValue,
+    ])
+    #expect(didCall == true)
+  }
+
+  @Test
+  func `parameterizedAttributeNames, with AXError, should throw`() {
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._parameterizedAttributeNames = { _, _ in .failure }
+
+    #expect(throws: AXClientError.self) {
+      try sut.parameterizedAttributeNames(element: element)
+    }
+  }
+
+  @Test
+  func `parameterizedAttributeValue, with valid parameter, should return value`() throws {
+    nonisolated(unsafe) var didCall = false
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    let parameter = ["AXSearchKey": "AXButtonSearchKey"]
+    let expectedElements = [UIElementMock(), UIElementMock()]
+
+    sut._parameterizedAttributeValue = { receivedElement, attribute, receivedParameter, value in
+      #expect(receivedElement === element)
+      #expect(attribute == AttributeName.UIElementsForSearchPredicateParameterized.rawValue as CFString)
+      #expect(receivedParameter as? [String: String] == parameter)
+      value.pointee = expectedElements as CFArray
+      didCall = true
+      return .success
+    }
+    sut._getAXValueTypeID = { 0 }
+
+    let elements: [UIElementMock] = try sut.parameterizedAttributeValue(
+      element: element,
+      attribute: AttributeName.UIElementsForSearchPredicateParameterized.rawValue,
+      parameter: parameter,
+    )
+    #expect(elements == expectedElements)
+    #expect(didCall == true)
+  }
+
+  @Test
+  func `parameterizedAttributeValue, with AXError, should throw`() {
+    let sut = AXClientMock()
+    let element = UIElementMock()
+    sut._parameterizedAttributeValue = { _, _, _, _ in .failure }
+
+    #expect(throws: AXClientError.self) {
+      let _: [UIElementMock] = try sut.parameterizedAttributeValue(
+        element: element,
+        attribute: AttributeName.UIElementsForSearchPredicateParameterized.rawValue,
+        parameter: ["AXSearchKey": "AXButtonSearchKey"],
+      )
+    }
+  }
+
+  @Test
   func `attributeValue, two attributes, multi attribute values failure, should throw`() {
     let sut = AXClientMock()
     let element = UIElementMock()

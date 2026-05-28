@@ -104,6 +104,8 @@ public enum AttributeName: String, Sendable {
   case screenPointForLayoutPointParameterized = "AXScreenPointForLayoutPoint"
   case screenSizeForLayoutSizeParameterized = "AXScreenSizeForLayoutSize"
   case searchButton = "AXSearchButton"
+  case UIElementCountForSearchPredicateParameterized = "AXUIElementCountForSearchPredicate"
+  case UIElementsForSearchPredicateParameterized = "AXUIElementsForSearchPredicate"
   case secondField = "AXSecondField"
   case selected = "AXSelected"
   case selectedCells = "AXSelectedCells"

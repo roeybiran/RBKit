@@ -70,8 +70,18 @@ public struct AXClientLive: AXClient {
     AXUIElementCopyMultipleAttributeValues(element, attributes, options, values)
   }
 
-  // func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError { fatalError() }
-  // func parameterizedAttributeValue(element: UIElement, parameterizedAttribute: CFString, parameter: CFTypeRef, result: UnsafeMutablePointer<CFTypeRef?>) -> AXError { fatalError() }
+  public func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError {
+    AXUIElementCopyParameterizedAttributeNames(element, names)
+  }
+
+  public func parameterizedAttributeValue(
+    element: UIElement,
+    parameterizedAttribute: CFString,
+    parameter: CFTypeRef,
+    result: UnsafeMutablePointer<CFTypeRef?>,
+  ) -> AXError {
+    AXUIElementCopyParameterizedAttributeValue(element, parameterizedAttribute, parameter, result)
+  }
 
   public func actionNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError {
     AXUIElementCopyActionNames(element, names)

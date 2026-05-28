@@ -50,7 +50,13 @@ public final class AXClientMock: AXClient {
     CFArray,
     AXCopyMultipleAttributeOptions,
     UnsafeMutablePointer<CFArray?>,
-  ) -> AXError = { _, _, _, _ in unimplemented(placeholder: .apiDisabled) }
+  ) -> AXError = { _, _, _, _ in .apiDisabled }
+
+  public nonisolated(unsafe) var _parameterizedAttributeNames: (UIElement, UnsafeMutablePointer<CFArray?>)
+    -> AXError = { _, _ in .parameterizedAttributeUnsupported }
+
+  public nonisolated(unsafe) var _parameterizedAttributeValue: (UIElement, CFString, CFTypeRef, UnsafeMutablePointer<CFTypeRef?>)
+    -> AXError = { _, _, _, _ in .parameterizedAttributeUnsupported }
 
   public nonisolated(unsafe) var _actionNames: (UIElement, UnsafeMutablePointer<CFArray?>) -> AXError = { _, _ in
     unimplemented(placeholder: .apiDisabled)
@@ -175,6 +181,19 @@ public final class AXClientMock: AXClient {
     values: UnsafeMutablePointer<CFArray?>,
   ) -> AXError {
     _attributeValueMultiple(element, attributes, options, values)
+  }
+
+  public func parameterizedAttributeNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError {
+    _parameterizedAttributeNames(element, names)
+  }
+
+  public func parameterizedAttributeValue(
+    element: UIElement,
+    parameterizedAttribute: CFString,
+    parameter: CFTypeRef,
+    result: UnsafeMutablePointer<CFTypeRef?>,
+  ) -> AXError {
+    _parameterizedAttributeValue(element, parameterizedAttribute, parameter, result)
   }
 
   public func actionNames(element: UIElement, names: UnsafeMutablePointer<CFArray?>) -> AXError {

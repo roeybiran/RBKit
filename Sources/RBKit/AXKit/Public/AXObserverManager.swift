@@ -4,8 +4,7 @@ import Dependencies
 import DependenciesMacros
 import Foundation
 
-@MainActor
-public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClient>: Sendable
+public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClient>
   where AX.RunLoopSource == RunLoopClient.RunLoopSource
 {
 
@@ -74,10 +73,8 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
     }
 
     continuation.onTermination = { [weak self] _ in
-      Task { @MainActor in
-        guard let self else { return }
-        self.runLoopClient.removeSource(runLoop: currentRunLoop, source: runLoopSource, mode: .commonModes)
-        self.observers.removeValue(forKey: process)
+      Task {
+        await self?.removeObserver(process: process, runLoop: currentRunLoop, source: runLoopSource)
       }
     }
 
@@ -96,5 +93,10 @@ public final class AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClien
   private let client: AX
   private let runLoopClient: RunLoopClient
   private var observers = [pid_t: ObserverData]()
+
+  private func removeObserver(process: pid_t, runLoop: RunLoopClient.RunLoop, source: RunLoopClient.RunLoopSource) {
+    runLoopClient.removeSource(runLoop: runLoop, source: source, mode: .commonModes)
+    observers.removeValue(forKey: process)
+  }
 
 }

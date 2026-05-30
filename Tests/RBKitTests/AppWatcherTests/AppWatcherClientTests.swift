@@ -9,6 +9,8 @@ import Testing
 struct AppWatcherClientTests {
   @Test(
     .dependencies {
+      $0.nsWorkspaceClient = .liveValue
+      $0.nsRunningApplicationClient = .liveValue
       $0.processesClient = .nonXPC
       $0.sysctlClient = .nonZombie
     }

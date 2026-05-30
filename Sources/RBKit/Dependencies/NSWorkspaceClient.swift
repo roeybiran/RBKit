@@ -12,7 +12,7 @@ import UniformTypeIdentifiers
 @DependencyClient
 public struct NSWorkspaceClient: Sendable {
   @DependencyEndpoint(method: "open")
-  public var openURLWithConfiguration: @Sendable @MainActor (
+  public var openURLWithConfiguration: @Sendable (
     _ url: URL,
     _ configuration: NSWorkspace.OpenConfiguration,
   ) async throws -> NSRunningApplication = { _, _ in
@@ -20,7 +20,7 @@ public struct NSWorkspaceClient: Sendable {
   }
 
   @DependencyEndpoint(method: "open")
-  public var openURLsWithApplicationAt: @Sendable @MainActor (
+  public var openURLsWithApplicationAt: @Sendable (
     _ urls: [URL],
     _ withApplicationAt: URL,
     _ configuration: NSWorkspace.OpenConfiguration,
@@ -30,7 +30,7 @@ public struct NSWorkspaceClient: Sendable {
 
   public var open: @Sendable (_ url: URL) -> Bool = { _ in false }
 
-  public var openApplication: @Sendable @MainActor (
+  public var openApplication: @Sendable (
     _ at: URL,
     _ configuration: NSWorkspace.OpenConfiguration,
   ) async throws -> NSRunningApplication = { _, _ in
@@ -42,6 +42,7 @@ public struct NSWorkspaceClient: Sendable {
   public var urlForApplication: @Sendable (_ withBundleIdentifier: String) -> URL?
 
   public var frontmostApplication: @Sendable () -> NSRunningApplication? = { nil }
+
   @DependencyEndpoint(method: "frontmostApplication")
   public var frontmostApplicationChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
@@ -50,6 +51,7 @@ public struct NSWorkspaceClient: Sendable {
   }
 
   public var runningApplications: @Sendable () -> [NSRunningApplication] = { [] }
+
   @DependencyEndpoint(method: "runningApplications")
   public var runningApplicationsChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
@@ -58,6 +60,7 @@ public struct NSWorkspaceClient: Sendable {
   }
 
   public var menuBarOwningApplication: @Sendable () -> NSRunningApplication?
+
   @DependencyEndpoint(method: "menuBarOwningApplication")
   public var menuBarOwningApplicationChanges: @Sendable @MainActor (
     _ options: NSKeyValueObservingOptions
@@ -67,6 +70,7 @@ public struct NSWorkspaceClient: Sendable {
 
   @DependencyEndpoint(method: "icon")
   public var iconForFile: @Sendable (_ forFile: String) -> NSImage = { _ in .init() }
+
   @DependencyEndpoint(method: "icon")
   public var iconForContentType: @Sendable (_ `for`: UTType) -> NSImage = { _ in .init() }
 

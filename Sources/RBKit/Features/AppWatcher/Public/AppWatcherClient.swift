@@ -13,14 +13,7 @@ public struct AppWatcherClient: Sendable {
 // MARK: DependencyKey
 
 extension AppWatcherClient: DependencyKey {
-  public static let liveValue = Self(events: {
-    withDependencies { deps in
-      deps.nsWorkspaceClient = .liveValue
-      deps.nsRunningApplicationClient = .liveValue
-    } operation: {
-      AppWatcher().events()
-    }
-  })
+  public static let liveValue = Self(events: { AppWatcher().events() })
 
   public static let testValue = Self()
 }

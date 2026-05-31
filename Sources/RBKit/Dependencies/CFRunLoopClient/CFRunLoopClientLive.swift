@@ -1,15 +1,20 @@
-import Carbon
+@preconcurrency import CoreFoundation
 
 public struct CFRunLoopClientLive: CFRunLoopClientProtocol {
   public init() { }
 
+  public typealias RunLoop = CFRunLoop
   public typealias RunLoopSource = CFRunLoopSource
 
-  public func add(source: CFRunLoopSource, to runLoop: CFRunLoop, mode: CFRunLoopMode) {
+  public func getCurrent() -> RunLoop? {
+    CFRunLoopGetCurrent()
+  }
+
+  public func addSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode) {
     CFRunLoopAddSource(runLoop, source, mode)
   }
 
-  public func remove(source: CFRunLoopSource, from runLoop: CFRunLoop, mode: CFRunLoopMode) {
+  public func removeSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode) {
     CFRunLoopRemoveSource(runLoop, source, mode)
   }
 

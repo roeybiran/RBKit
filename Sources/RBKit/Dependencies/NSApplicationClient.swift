@@ -70,8 +70,8 @@ extension NSApplicationClient: DependencyKey {
       AsyncStream { continuation in
         let observation = NSApplicationAppearanceObservation(continuation: continuation)
         continuation.onTermination = { _ in
-          Task { @MainActor in
-            observation.invalidate()
+          Task {
+            await observation.invalidate()
           }
         }
       }

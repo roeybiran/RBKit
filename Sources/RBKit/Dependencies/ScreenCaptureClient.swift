@@ -6,14 +6,11 @@ import DependenciesMacros
 
 @DependencyClient
 public struct ScreenCaptureClient: Sendable {
-  // ScreenCaptureKit's Objective-C-backed async entry points crash here unless
-  // the dependency endpoints are explicitly main-actor isolated.
-
   public var excludingDesktopWindows:
-    @MainActor @Sendable (_ excludingDesktopWindows: Bool, _ onScreenWindowsOnly: Bool) async throws
+    @Sendable (_ excludingDesktopWindows: Bool, _ onScreenWindowsOnly: Bool) async throws
     -> SCShareableContent
   public var captureImage:
-    @MainActor @Sendable (_ contentFilter: SCContentFilter, _ configuration: SCStreamConfiguration) async throws
+    @Sendable (_ contentFilter: SCContentFilter, _ configuration: SCStreamConfiguration) async throws
     -> CGImage
 }
 

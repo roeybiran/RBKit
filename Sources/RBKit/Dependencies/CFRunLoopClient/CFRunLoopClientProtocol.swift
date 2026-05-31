@@ -1,8 +1,10 @@
-import Carbon
+@preconcurrency import CoreFoundation
 
-public protocol CFRunLoopClientProtocol {
-  associatedtype RunLoopSource: AnyObject
+public protocol CFRunLoopClientProtocol: Sendable {
+  associatedtype RunLoop: AnyObject & Hashable & Sendable
+  associatedtype RunLoopSource: AnyObject & Hashable & Sendable
 
-  func add(source: RunLoopSource, to runLoop: CFRunLoop, mode: CFRunLoopMode)
-  func remove(source: RunLoopSource, from runLoop: CFRunLoop, mode: CFRunLoopMode)
+  func getCurrent() -> RunLoop?
+  func addSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode)
+  func removeSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode)
 }

@@ -6,9 +6,8 @@ import Testing
 @MainActor
 struct EventTapManagerClientGlueCodeTests {
   @Test
-  func `Can access live value and call getIsEnabled`() {
+  func `Can access live value`() {
     let eventTapClient = EventTapManagerClient.liveValue
-    let result = eventTapClient.getIsEnabled("non-existent-tap")
-    #expect(result == false)
+    _ = eventTapClient
   }
 }

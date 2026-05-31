@@ -1,4 +1,4 @@
-import Carbon
+import CoreFoundation
 
 public final class CFRunLoopClientMock: CFRunLoopClientProtocol {
 
@@ -8,26 +8,23 @@ public final class CFRunLoopClientMock: CFRunLoopClientProtocol {
 
   // MARK: Public
 
+  public typealias RunLoop = CFRunLoop
   public typealias RunLoopSource = RunLoopSourceMock
 
-  public var _add: (
-    _ source: RunLoopSourceMock,
-    _ runLoop: CFRunLoop,
-    _ mode: CFRunLoopMode,
-  ) -> Void = { _, _, _ in }
+  public nonisolated(unsafe) var _getCurrent: () -> RunLoop? = { CFRunLoopGetCurrent() }
+  public nonisolated(unsafe) var _addSource: (RunLoop, RunLoopSource, CFRunLoopMode) -> Void = { _, _, _ in }
+  public nonisolated(unsafe) var _removeSource: (RunLoop, RunLoopSource, CFRunLoopMode) -> Void = { _, _, _ in }
 
-  public var _remove: (
-    _ source: RunLoopSourceMock,
-    _ runLoop: CFRunLoop,
-    _ mode: CFRunLoopMode,
-  ) -> Void = { _, _, _ in }
-
-  public func add(source: RunLoopSourceMock, to runLoop: CFRunLoop, mode: CFRunLoopMode) {
-    _add(source, runLoop, mode)
+  public func getCurrent() -> RunLoop? {
+    _getCurrent()
   }
 
-  public func remove(source: RunLoopSourceMock, from runLoop: CFRunLoop, mode: CFRunLoopMode) {
-    _remove(source, runLoop, mode)
+  public func addSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode) {
+    _addSource(runLoop, source, mode)
+  }
+
+  public func removeSource(runLoop: RunLoop, source: RunLoopSource, mode: CFRunLoopMode) {
+    _removeSource(runLoop, source, mode)
   }
 
 }

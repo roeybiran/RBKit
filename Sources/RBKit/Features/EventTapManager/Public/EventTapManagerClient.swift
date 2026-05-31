@@ -16,7 +16,6 @@ public struct EventTapManagerClient: Sendable {
     _ callback: @escaping Callback,
   ) -> Void
   public var stop: @Sendable @MainActor (_ id: ID) -> Void
-  public var getIsEnabled: @Sendable @MainActor (_ id: ID) -> Bool = { _ in false }
   public var setIsEnabled: @Sendable @MainActor (_ id: ID, _ enabled: Bool) -> Void
 }
 
@@ -29,7 +28,6 @@ extension EventTapManagerClient: DependencyKey {
   public static let liveValue = Self(
     start: { manager.start(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
     stop: { manager.stop(id: $0) },
-    getIsEnabled: { manager.getIsEnabled(id: $0) },
     setIsEnabled: { manager.setIsEnabled(id: $0, $1) },
   )
   public static let testValue = Self()

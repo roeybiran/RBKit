@@ -1,6 +1,7 @@
 import ApplicationServices
 import Dependencies
 import Foundation
+import RBKit
 
 public final class AXClientMock: AXClient {
 

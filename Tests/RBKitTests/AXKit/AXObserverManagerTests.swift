@@ -1,5 +1,6 @@
 import ApplicationServices
 import Foundation
+import RBKit
 import Testing
 @testable import AXKit
 
@@ -69,7 +70,7 @@ struct `AXObserverManager Tests` {
   func `notifications, with valid pid, should create observer and return stream`() async throws {
     nonisolated(unsafe) var didCreateObserver = false
     let mockClient = AXClientMock()
-    var mockRunLoopClient = CFRunLoopClientMock()
+    let mockRunLoopClient = CFRunLoopClientMock()
     let pid: pid_t = 12345
     let expectedObserver = ObserverMock(id: "test-observer-123")
 
@@ -80,7 +81,7 @@ struct `AXObserverManager Tests` {
       return .success
     }
     mockClient._observerGetRunLoopSource = { _ in RunLoopSourceMock() }
-    mockRunLoopClient._getCurrent = { RunLoopSourceMock() }
+    mockRunLoopClient._getCurrent = { CFRunLoopGetCurrent() }
 
     let manager = AXObserverManager(client: mockClient, runLoopClient: mockRunLoopClient)
     try await manager.createObserver(process: pid)

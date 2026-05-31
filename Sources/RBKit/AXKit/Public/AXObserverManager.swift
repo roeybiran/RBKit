@@ -3,8 +3,9 @@
 import Dependencies
 import DependenciesMacros
 import Foundation
+import RBKit
 
-public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClient>
+public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProtocol>
   where AX.RunLoopSource == RunLoopClient.RunLoopSource
 {
 

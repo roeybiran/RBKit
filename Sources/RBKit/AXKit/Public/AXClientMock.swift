@@ -3,7 +3,7 @@ import Dependencies
 import Foundation
 import RBKit
 
-public final class AXClientMock: AXClient {
+public final class AXClientMock: AXClientProtocol {
 
   // MARK: Lifecycle
 

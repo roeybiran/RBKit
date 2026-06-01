@@ -5,13 +5,13 @@ import DependenciesMacros
 import Foundation
 import RBKit
 
-public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProtocol>
-  where AX.RunLoopSource == RunLoopClient.RunLoopSource
+public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunLoopClientProtocol>
+  where AXClient.RunLoopSource == RunLoopClient.RunLoopSource
 {
 
   // MARK: Lifecycle
 
-  public init(client: AX, runLoopClient: RunLoopClient) {
+  public init(client: AXClient, runLoopClient: RunLoopClient) {
     self.client = client
     self.runLoopClient = runLoopClient
   }
@@ -19,7 +19,7 @@ public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProto
   // MARK: Public
 
   public func createObserver(process: pid_t) throws(AXClientError) {
-    var outObserver: AX.Observer?
+    var outObserver: AXClient.Observer?
     let result = client.observerCreate(application: process, outObserver: &outObserver)
     guard result == .success else {
       throw AXClientError(axError: result)
@@ -29,11 +29,11 @@ public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProto
       throw AXClientError.unknown
     }
 
-    let box = Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>()
+    let box = Box<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>()
     observers[process] = ObserverData(observer: outObserver, box: box)
   }
 
-  public func add(notification: AXNotification, to process: pid_t, element: AX.UIElement) throws(AXClientError) {
+  public func add(notification: AXNotification, to process: pid_t, element: AXClient.UIElement) throws(AXClientError) {
     guard let observerData = observers[process] else {
       throw .unknown
     }
@@ -49,9 +49,9 @@ public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProto
     }
   }
 
-  public func notifications(for process: pid_t) -> AsyncThrowingStream<(pid_t, AX.UIElement, AXNotification), any Error> {
+  public func notifications(for process: pid_t) -> AsyncThrowingStream<(pid_t, AXClient.UIElement, AXNotification), any Error> {
     let (stream, continuation) = AsyncThrowingStream.makeStream(
-      of: (pid_t, AX.UIElement, AXNotification).self,
+      of: (pid_t, AXClient.UIElement, AXNotification).self,
       throwing: (any Error).self,
     )
 
@@ -87,11 +87,11 @@ public actor AXObserverManager<AX: AXClient, RunLoopClient: CFRunLoopClientProto
   // MARK: Private
 
   private struct ObserverData {
-    let observer: AX.Observer
-    let box: Box<AX.ObserverCallback, AX.ObserverCallbackWithInfo>
+    let observer: AXClient.Observer
+    let box: Box<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>
   }
 
-  private let client: AX
+  private let client: AXClient
   private let runLoopClient: RunLoopClient
   private var observers = [pid_t: ObserverData]()
 

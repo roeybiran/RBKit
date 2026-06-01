@@ -4,9 +4,9 @@ import Dependencies
 import DependenciesMacros
 import Foundation
 
-// MARK: - AXClient
+// MARK: - AXClientProtocol
 
-public protocol AXClient: Sendable {
+public protocol AXClientProtocol: Sendable {
   typealias AXObject = AnyObject & Hashable & Sendable
   associatedtype UIElement: AXObject
   associatedtype UIElementValue: AXObject
@@ -89,7 +89,7 @@ public protocol AXClient: Sendable {
   func _createElement(withRemoteToken remoteToken: CFData) -> Unmanaged<UIElement>?
 }
 
-extension AXClient {
+extension AXClientProtocol {
 
   // MARK: Public
 

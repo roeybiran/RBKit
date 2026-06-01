@@ -2,7 +2,7 @@
 
 // MARK: - AXClientLive
 
-public struct AXClientLive: AXClient {
+public struct AXClientLive: AXClientProtocol {
 
   // MARK: Lifecycle
 

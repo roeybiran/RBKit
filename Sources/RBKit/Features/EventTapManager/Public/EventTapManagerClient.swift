@@ -37,7 +37,7 @@ extension EventTapManagerClient: DependencyKey {
   @MainActor static let manager = EventTapManager(
     cgEventClient: CGEventClientLive(),
     cfMachPortClient: CFMachPortClientLive(),
-    cfRunLoopClient: CFRunLoopClientLive(),
+    cfRunLoopClient: CFRunLoopClientLive.Main(),
   )
 
 }

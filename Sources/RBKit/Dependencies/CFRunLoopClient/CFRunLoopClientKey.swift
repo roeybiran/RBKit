@@ -3,7 +3,7 @@ import Dependencies
 // MARK: - CFRunLoopClientKey
 
 public enum CFRunLoopClientKey: DependencyKey {
-  public static let liveValue: any CFRunLoopClientProtocol = CFRunLoopClientLive()
+  public static let liveValue: any CFRunLoopClientProtocol = CFRunLoopClientLive.Main()
   public static let testValue: any CFRunLoopClientProtocol = CFRunLoopClientMock()
 }
 

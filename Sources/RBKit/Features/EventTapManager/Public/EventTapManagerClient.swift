@@ -9,14 +9,14 @@ public struct EventTapManagerClient: Sendable {
   public typealias ID = String
   public typealias Callback = (_ type: CGEventType, _ event: CGEvent) -> CGEvent?
 
-  public var start: @Sendable @MainActor (
+  public var add: @Sendable (
     _ id: ID,
     _ events: [CGEventType],
     _ place: CGEventTapPlacement,
     _ callback: @escaping Callback,
-  ) -> Void
-  public var stop: @Sendable @MainActor (_ id: ID) -> Void
-  public var setIsEnabled: @Sendable @MainActor (_ id: ID, _ enabled: Bool) -> Void
+  ) async -> Void
+  public var remove: @Sendable (_ id: ID) async -> Void
+  public var setIsEnabled: @Sendable (_ id: ID, _ enabled: Bool) async -> Void
 }
 
 // MARK: DependencyKey
@@ -26,15 +26,15 @@ extension EventTapManagerClient: DependencyKey {
   // MARK: Public
 
   public static let liveValue = Self(
-    start: { manager.start(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
-    stop: { manager.stop(id: $0) },
-    setIsEnabled: { manager.setIsEnabled(id: $0, $1) },
+    add: { await manager.add(id: $0, eventsOfInterest: $1, place: $2, clientCallback: $3) },
+    remove: { await manager.remove(id: $0) },
+    setIsEnabled: { await manager.setIsEnabled(id: $0, $1) },
   )
   public static let testValue = Self()
 
   // MARK: Internal
 
-  @MainActor static let manager = EventTapManager(
+  static let manager = EventTapManager(
     cgEventClient: CGEventClientLive(),
     cfMachPortClient: CFMachPortClientLive(),
     cfRunLoopClient: CFRunLoopClientLive.Main(),
@@ -43,7 +43,7 @@ extension EventTapManagerClient: DependencyKey {
 }
 
 extension DependencyValues {
-  public var eventTapClient: EventTapManagerClient {
+  public var eventTapManagerClient: EventTapManagerClient {
     get { self[EventTapManagerClient.self] }
     set { self[EventTapManagerClient.self] = newValue }
   }

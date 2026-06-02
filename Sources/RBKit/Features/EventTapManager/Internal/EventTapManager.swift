@@ -1,7 +1,6 @@
 @preconcurrency import Carbon
 
-@MainActor
-final class EventTapManager<
+actor EventTapManager<
   EventClient: CGEventClientProtocol,
   MachPortClient: CFMachPortClientProtocol,
   RunLoopClient: CFRunLoopClientProtocol,
@@ -26,21 +25,25 @@ final class EventTapManager<
 
   typealias ID = EventTapManagerClient.ID
 
-  var boxes = [ID: BoxedEventHandler]()
-  var taps = [ID: EventClient.MachPort]()
-  var runLoopSources = [ID: MachPortClient.RunLoopSource]()
+  struct ActiveTap {
+    var box: BoxedEventHandler
+    var machPort: EventClient.MachPort
+    var runLoopSource: MachPortClient.RunLoopSource
+  }
+
+  var activeTaps = [ID: ActiveTap]()
 
   let cgEventClient: EventClient
   let cfMachPortClient: MachPortClient
   let cfRunLoopClient: RunLoopClient
 
-  func start(
+  func add(
     id: ID,
     eventsOfInterest: [CGEventType],
     place: CGEventTapPlacement = .headInsertEventTap,
     clientCallback: @escaping EventTapManagerClient.Callback,
   ) {
-    guard taps[id] == nil else { return }
+    guard activeTaps[id] == nil else { return }
 
     let eventsOfInterestMask = (eventsOfInterest + [.tapDisabledByTimeout, .tapDisabledByUserInput])
       .map { 1 << $0.rawValue }
@@ -64,29 +67,25 @@ final class EventTapManager<
       return
     }
 
-    boxes[id] = box
-    taps[id] = machPort
-
     let runLoopSource = cfMachPortClient.createRunLoopSource(port: machPort, order: 0)
-    cfRunLoopClient.addSource(runLoop: runLoop, source: runLoopSource, mode: .commonModes)
-    runLoopSources[id] = runLoopSource
+    let runLoopMode = CFRunLoopMode.commonModes as CFRunLoopMode
+    cfRunLoopClient.addSource(runLoop: runLoop, source: runLoopSource, mode: runLoopMode)
+    activeTaps[id] = .init(box: box, machPort: machPort, runLoopSource: runLoopSource)
   }
 
-  func stop(id: ID) {
+  func remove(id: ID) {
     guard
       let runLoop = cfRunLoopClient.getCurrent(),
-      let runLoopSource = runLoopSources.removeValue(forKey: id),
-      let machPort = taps.removeValue(forKey: id)
+      let activeTap = activeTaps.removeValue(forKey: id)
     else { return }
 
-    cfRunLoopClient.removeSource(runLoop: runLoop, source: runLoopSource, mode: .commonModes)
-    cfMachPortClient.invalidate(machPort: machPort)
-
-    boxes.removeValue(forKey: id)
+    let runLoopMode = CFRunLoopMode.commonModes as CFRunLoopMode
+    cfRunLoopClient.removeSource(runLoop: runLoop, source: activeTap.runLoopSource, mode: runLoopMode)
+    cfMachPortClient.invalidate(machPort: activeTap.machPort)
   }
 
   func setIsEnabled(id: ID, _ enabled: Bool) {
-    guard let machPort = taps[id] else {
+    guard let machPort = activeTaps[id]?.machPort else {
       assertionFailure("Expected event tap for id '\(id)' to exist before setting enabled state.")
       return
     }

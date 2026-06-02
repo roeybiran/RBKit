@@ -79,7 +79,8 @@ public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunL
       }
     }
 
-    runLoopClient.addSource(runLoop: currentRunLoop, source: runLoopSource, mode: .commonModes)
+    let runLoopMode = CFRunLoopMode.commonModes as CFRunLoopMode
+    runLoopClient.addSource(runLoop: currentRunLoop, source: runLoopSource, mode: runLoopMode)
 
     return stream
   }
@@ -96,7 +97,8 @@ public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunL
   private var observers = [pid_t: ObserverData]()
 
   private func removeObserver(process: pid_t, runLoop: RunLoopClient.RunLoop, source: RunLoopClient.RunLoopSource) {
-    runLoopClient.removeSource(runLoop: runLoop, source: source, mode: .commonModes)
+    let runLoopMode = CFRunLoopMode.commonModes as CFRunLoopMode
+    runLoopClient.removeSource(runLoop: runLoop, source: source, mode: runLoopMode)
     observers.removeValue(forKey: process)
   }
 

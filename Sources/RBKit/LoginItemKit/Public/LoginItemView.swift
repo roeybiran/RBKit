@@ -35,7 +35,7 @@ public struct LoginItemView: View {
 
   // MARK: Private
 
-  @StateObject private var viewModel = ViewModel()
+  @State private var viewModel = ViewModel()
 
 }
 

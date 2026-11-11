@@ -1,7 +1,9 @@
 import Foundation
+import Observation
 
 @MainActor
-final class ViewModel: ObservableObject {
+@Observable
+final class ViewModel {
 
   // MARK: Internal
 
@@ -16,8 +18,8 @@ final class ViewModel: ObservableObject {
     case openLoginItemsButtonClicked
   }
 
-  @Published var state = State()
-  var dependencies = Dependencies.live
+  var state = State()
+  @ObservationIgnored var dependencies = Dependencies.live
 
   func send(_ action: Action) {
     switch action {

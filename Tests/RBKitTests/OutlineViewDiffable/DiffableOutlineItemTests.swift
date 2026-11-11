@@ -3,7 +3,7 @@ import Testing
 
 @testable import RBKit
 
-struct `OutlineItem Tests` {
+struct `DiffableOutlineItem Tests` {
 
   // MARK: Internal
 
@@ -12,10 +12,10 @@ struct `OutlineItem Tests` {
     let child = TestValue(id: 1, title: "Child")
     let root = TestValue(id: 0, title: "Root")
 
-    let item = OutlineItem(
+    let item = DiffableOutlineItem(
       root,
       children: [
-        OutlineItem(child)
+        DiffableOutlineItem(child)
       ],
     )
 
@@ -25,7 +25,7 @@ struct `OutlineItem Tests` {
 
   @Test
   func `dynamicMemberLookup should forward value members`() {
-    let item = OutlineItem(TestValue(id: 123, title: "Node"))
+    let item = DiffableOutlineItem(TestValue(id: 123, title: "Node"))
 
     #expect(item.id == 123)
     #expect(item.title == "Node")
@@ -33,29 +33,29 @@ struct `OutlineItem Tests` {
 
   @Test
   func `id should forward value id`() {
-    #expect(OutlineItem(TestValue(id: 123, title: "Node")).id == 123)
+    #expect(DiffableOutlineItem(TestValue(id: 123, title: "Node")).id == 123)
   }
 
   @Test
   func `subscript(_:) should return child`() {
-    let item = OutlineItem(
+    let item = DiffableOutlineItem(
       TestValue(id: 0, title: "Root"),
       children: [
-        OutlineItem(TestValue(id: 1, title: "First")),
-        OutlineItem(TestValue(id: 2, title: "Second")),
+        DiffableOutlineItem(TestValue(id: 1, title: "First")),
+        DiffableOutlineItem(TestValue(id: 2, title: "Second")),
       ],
     )
 
-    expectNoDifference(item[1], OutlineItem(TestValue(id: 2, title: "Second")))
+    expectNoDifference(item[1], DiffableOutlineItem(TestValue(id: 2, title: "Second")))
   }
 
   @Test
   func `== should compare ids`() {
-    let lhs = OutlineItem(TestValue(id: 1, title: "Old"))
-    let rhs = OutlineItem(
+    let lhs = DiffableOutlineItem(TestValue(id: 1, title: "Old"))
+    let rhs = DiffableOutlineItem(
       TestValue(id: 1, title: "New"),
       children: [
-        OutlineItem(TestValue(id: 2, title: "Child"))
+        DiffableOutlineItem(TestValue(id: 2, title: "Child"))
       ],
     )
 

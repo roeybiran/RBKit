@@ -401,7 +401,7 @@ public final class OutlineViewDiffableDataSourceV2<Item: TreeNodeProtocol & Hash
       endAnimationGrouping()
 
       updatePhase = .reload
-      var reloadedItems = [OutlineItem<Item>]()
+      var reloadedItems = [DiffableOutlineItem<Item>]()
       let unchangedStructureIDs = retainedIDs.subtracting(movedIDs)
       let reloadCandidateIDs = unchangedStructureIDs.union(movedIDs)
 
@@ -475,8 +475,8 @@ public final class OutlineViewDiffableDataSourceV2<Item: TreeNodeProtocol & Hash
       return fallbackItem
     }
 
-    let primaryChildren: [OutlineItem<Item>]
-    let secondaryChildren: [OutlineItem<Item>]
+    let primaryChildren: [DiffableOutlineItem<Item>]
+    let secondaryChildren: [DiffableOutlineItem<Item>]
 
     switch updatePhase {
     case .reload, .insertions:
@@ -522,7 +522,7 @@ public final class OutlineViewDiffableDataSourceV2<Item: TreeNodeProtocol & Hash
   public func outlineView(_: NSOutlineView, isItemExpandable item: Any) -> Bool {
     if isFallbackItem(item) { return false }
 
-    let outlineItem: OutlineItem<Item>? =
+    let outlineItem: DiffableOutlineItem<Item>? =
       switch updatePhase {
       case .reload, .insertions:
         currentSnapshot.outlineItem(for: item)
@@ -580,7 +580,7 @@ public final class OutlineViewDiffableDataSourceV2<Item: TreeNodeProtocol & Hash
 
 extension OutlineViewDiffableDataSourceV2 {
   private func logInvalidInsert(
-    newItem: OutlineItem<Item>,
+    newItem: DiffableOutlineItem<Item>,
     toIndex: Int,
     currentChildCount: Int,
     parentID: Item.ID?,
@@ -598,7 +598,7 @@ extension OutlineViewDiffableDataSourceV2 {
   }
 
   private func logInvalidRemove(
-    oldItem: OutlineItem<Item>,
+    oldItem: DiffableOutlineItem<Item>,
     expectedParentID: Item.ID?,
     currentParentID: Item.ID?,
     currentIndex: Int,
@@ -618,8 +618,8 @@ extension OutlineViewDiffableDataSourceV2 {
   }
 
   private func logInvalidMoveFrom(
-    oldItem: OutlineItem<Item>,
-    newItem: OutlineItem<Item>,
+    oldItem: DiffableOutlineItem<Item>,
+    newItem: DiffableOutlineItem<Item>,
     fromIndex: Int,
     toIndex: Int,
     fromParentChildCount: Int,
@@ -642,8 +642,8 @@ extension OutlineViewDiffableDataSourceV2 {
   }
 
   private func logInvalidMoveTo(
-    oldItem: OutlineItem<Item>,
-    newItem: OutlineItem<Item>,
+    oldItem: DiffableOutlineItem<Item>,
+    newItem: DiffableOutlineItem<Item>,
     toIndex: Int,
     maxToIndex: Int,
     fromParentID: Item.ID?,
@@ -664,8 +664,8 @@ extension OutlineViewDiffableDataSourceV2 {
   }
 
   private func logInvalidMoveIntoDescendant(
-    oldItem: OutlineItem<Item>,
-    newItem: OutlineItem<Item>,
+    oldItem: DiffableOutlineItem<Item>,
+    newItem: DiffableOutlineItem<Item>,
     fromParentID: Item.ID?,
     toParentID: Item.ID?,
   ) {

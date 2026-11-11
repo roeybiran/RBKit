@@ -1,5 +1,5 @@
 @dynamicMemberLookup
-public struct OutlineItem<Value: Identifiable & Hashable & Sendable>: Hashable, Identifiable, Sendable {
+public struct DiffableOutlineItem<Value: Identifiable & Hashable & Sendable>: Hashable, Identifiable, Sendable {
 
   // MARK: Lifecycle
 

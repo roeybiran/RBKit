@@ -955,7 +955,7 @@ struct `OutlineViewDiffableDataSource Tests` {
         return nil
       }
 
-      return OutlineItem(TestNode(id: parentID))
+      return DiffableOutlineItem(TestNode(id: parentID))
     }
 
     override func childIndex(forItem item: Any) -> Int {
@@ -1019,7 +1019,7 @@ struct `OutlineViewDiffableDataSource Tests` {
     // MARK: Private
 
     private func itemID(for item: Any?) -> Int? {
-      if let item = item as? OutlineItem<TestNode> {
+      if let item = item as? DiffableOutlineItem<TestNode> {
         return item.id
       }
       if let item = item as? TestNode {

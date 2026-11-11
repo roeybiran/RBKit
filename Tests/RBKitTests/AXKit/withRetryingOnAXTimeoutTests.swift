@@ -1,7 +1,7 @@
 import Dependencies
 import Foundation
 import Testing
-@testable import AXKit
+@testable import RBKit
 
 @Suite
 struct `withRetryingOnAXTimeout Tests` {

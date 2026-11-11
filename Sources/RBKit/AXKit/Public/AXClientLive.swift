@@ -129,7 +129,8 @@ public struct AXClientLive: AXClientProtocol {
       application,
       { observer, element, notification, refcon in
         guard let refcon else { return assertionFailure() }
-        let wrapper = Unmanaged<Box<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon).takeUnretainedValue()
+        let wrapper = Unmanaged<AXObserverCallbackBox<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon)
+          .takeUnretainedValue()
         wrapper.callback?(observer, element, notification)
       },
       outObserver,
@@ -141,7 +142,8 @@ public struct AXClientLive: AXClientProtocol {
       application,
       { observer, element, notification, info, refcon in
         guard let refcon else { return assertionFailure() }
-        let wrapper = Unmanaged<Box<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon).takeUnretainedValue()
+        let wrapper = Unmanaged<AXObserverCallbackBox<ObserverCallback, ObserverCallbackWithInfo>>.fromOpaque(refcon)
+          .takeUnretainedValue()
         wrapper.callbackWithInfo?(observer, element, notification, info)
       },
       outObserver,

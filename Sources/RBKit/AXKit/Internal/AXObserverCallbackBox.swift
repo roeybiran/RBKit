@@ -1,4 +1,4 @@
-final class Box<Callback, CallbackWithInfo> {
+final class AXObserverCallbackBox<Callback, CallbackWithInfo> {
   var callback: Callback?
   var callbackWithInfo: CallbackWithInfo?
 }

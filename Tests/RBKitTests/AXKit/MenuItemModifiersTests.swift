@@ -1,7 +1,7 @@
 import ApplicationServices
 import Carbon
 import Testing
-@testable import AXKit
+@testable import RBKit
 
 @Suite
 struct `MenuItemModifiers+CustomStringConvertible Tests` {

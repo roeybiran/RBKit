@@ -3,7 +3,6 @@
 import Dependencies
 import DependenciesMacros
 import Foundation
-import RBKit
 
 public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunLoopClientProtocol>
   where AXClient.RunLoopSource == RunLoopClient.RunLoopSource
@@ -29,7 +28,7 @@ public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunL
       throw AXClientError.unknown
     }
 
-    let box = Box<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>()
+    let box = AXObserverCallbackBox<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>()
     observers[process] = ObserverData(observer: outObserver, box: box)
   }
 
@@ -89,7 +88,7 @@ public actor AXObserverManager<AXClient: AXClientProtocol, RunLoopClient: CFRunL
 
   private struct ObserverData {
     let observer: AXClient.Observer
-    let box: Box<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>
+    let box: AXObserverCallbackBox<AXClient.ObserverCallback, AXClient.ObserverCallbackWithInfo>
   }
 
   private let client: AXClient

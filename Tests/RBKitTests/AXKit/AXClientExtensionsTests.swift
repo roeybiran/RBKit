@@ -1,7 +1,7 @@
 import ApplicationServices
 import Foundation
 import Testing
-@testable import AXKit
+@testable import RBKit
 
 @Suite
 struct `AXClientExtensions Tests` {

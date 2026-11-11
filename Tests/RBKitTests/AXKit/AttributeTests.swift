@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import AXKit
+@testable import RBKit
 
 @Suite
 struct `Attribute Tests` {

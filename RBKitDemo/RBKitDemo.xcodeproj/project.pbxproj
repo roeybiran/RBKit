@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		14427EB22F02EEDD00C0B981 /* RBKit in Frameworks */ = {isa = PBXBuildFile; productRef = 14427EB12F02EEDD00C0B981 /* RBKit */; };
+		14427EB42F02EEDD00C0B981 /* HotKeyRecorder in Frameworks */ = {isa = PBXBuildFile; productRef = 14427EB32F02EEDD00C0B981 /* HotKeyRecorder */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14427EB22F02EEDD00C0B981 /* RBKit in Frameworks */,
+				14427EB42F02EEDD00C0B981 /* HotKeyRecorder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +73,7 @@
 			name = RBKitDemo;
 			packageProductDependencies = (
 				14427EB12F02EEDD00C0B981 /* RBKit */,
+				14427EB32F02EEDD00C0B981 /* HotKeyRecorder */,
 			);
 			productName = RBKitDemo;
 			productReference = 14427E9C2F02EDED00C0B981 /* RBKitDemo.app */;
@@ -356,6 +359,10 @@
 		14427EB12F02EEDD00C0B981 /* RBKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RBKit;
+		};
+		14427EB32F02EEDD00C0B981 /* HotKeyRecorder */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HotKeyRecorder;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

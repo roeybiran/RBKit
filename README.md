@@ -21,6 +21,18 @@ Everything lives in the single `RBKit` module:
 
 `RBKitTestSupport` provides shared test helpers and mocks.
 
+### Opt-in libraries
+
+These are separate products. Importing `RBKit` never compiles or links them or their dependencies:
+
+| Product | Adds |
+|---|---|
+| `HotKeyRecorder` | ComposableArchitecture |
+| `PermissionsKit` | ComposableArchitecture |
+| `OnboardingKit` | ComposableArchitecture, PermissionsKit, RBAnalytics |
+| `RBAnalytics` | TelemetryDeck |
+| `SparkleExtras` | Sparkle |
+
 The `RBKitDemo` app (`RBKitDemo/RBKitDemo.xcodeproj`) has a page for each area.
 
 ## AXKit

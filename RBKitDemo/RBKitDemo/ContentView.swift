@@ -9,6 +9,7 @@ enum DemoPage: String, CaseIterable, Identifiable {
   case axKit = "AXKit"
   case outlineViewDiffable = "OutlineViewDiffable"
   case uiComponents = "UI Components"
+  case hotKeyRecorder = "HotKeyRecorder"
 
   var id: Self {
     self
@@ -41,6 +42,8 @@ struct ContentView: View {
         OutlineViewDiffableDemo()
       case .uiComponents:
         UIComponentsDemo()
+      case .hotKeyRecorder:
+        HotKeyRecorderDemo()
       case nil:
         Text("Select a demo")
       }

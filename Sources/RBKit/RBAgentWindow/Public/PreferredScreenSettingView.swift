@@ -7,7 +7,7 @@ public struct PreferredScreenSettingView: View {
 
   // MARK: Lifecycle
 
-  public init(label: String = "Preferred Screen:") {
+  public init(label: String = "Preferred screen") {
     self.label = label
   }
 

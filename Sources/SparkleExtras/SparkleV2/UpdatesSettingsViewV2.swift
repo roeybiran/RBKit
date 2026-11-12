@@ -7,7 +7,7 @@ public struct UpdatesSettingsViewV2: View {
 
   // MARK: Lifecycle
 
-  public init(label: String = "Software Updates:") {
+  public init(label: String = "Software updates:") {
     self.label = label
   }
 
@@ -19,12 +19,12 @@ public struct UpdatesSettingsViewV2: View {
         Text(viewModel.title)
       }
 
-      LabeledContent("Current Version:") {
+      LabeledContent("Current version:") {
         Text(viewModel.currentVersion)
       }
 
       if let lastUpdateCheckDate = viewModel.lastUpdateCheckDate {
-        LabeledContent("Last Checked:") {
+        LabeledContent("Last checked:") {
           Text(lastUpdateCheckDate.formatted(date: .abbreviated, time: .shortened))
         }
       }

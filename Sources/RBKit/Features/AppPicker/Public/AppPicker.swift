@@ -3,7 +3,6 @@ import SwiftUI
 
 // MARK: - AppPicker
 
-@available(macOS, deprecated: 15.0, message: "Use Picker initializers with currentValueLabel.")
 public struct AppPicker: View {
 
   // MARK: Lifecycle
@@ -74,6 +73,12 @@ public struct AppPicker: View {
         .tag(Selection.other)
     } label: {
       Text("App")
+    } currentValueLabel: {
+      if let bundleID {
+        PickedAppLabel(AppPickerItem(bundleID: bundleID))
+      } else {
+        Text("None")
+      }
     }
     .labelsHidden()
     .appImporter(

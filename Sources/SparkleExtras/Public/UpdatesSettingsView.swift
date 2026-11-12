@@ -9,12 +9,8 @@ public struct UpdatesSettingsView: View {
 
   // MARK: Lifecycle
 
-  init(
-    updater: SPUUpdater,
-    label: String = "Software Updates:",
-  ) {
+  init(updater: SPUUpdater) {
     self.updater = updater
-    self.label = label
     automaticallyChecksForUpdates = updater.automaticallyChecksForUpdates
     automaticallyDownloadsUpdates = updater.automaticallyDownloadsUpdates
   }
@@ -22,24 +18,16 @@ public struct UpdatesSettingsView: View {
   // MARK: Public
 
   public var body: some View {
-    LabeledContent(label) {
-      VStack {
-        Toggle("Automatically check for updates", isOn: $automaticallyChecksForUpdates)
-          .onChange(of: automaticallyChecksForUpdates) {
-            updater.automaticallyChecksForUpdates = automaticallyChecksForUpdates
-          }
-        Toggle("Automatically download updates", isOn: $automaticallyDownloadsUpdates)
-          .disabled(!automaticallyChecksForUpdates)
-          .onChange(of: automaticallyDownloadsUpdates) {
-            updater.automaticallyDownloadsUpdates = automaticallyDownloadsUpdates
-          }
+    Toggle("Automatically check for updates", isOn: $automaticallyChecksForUpdates)
+      .onChange(of: automaticallyChecksForUpdates) {
+        updater.automaticallyChecksForUpdates = automaticallyChecksForUpdates
       }
-    }
+    Toggle("Automatically download updates", isOn: $automaticallyDownloadsUpdates)
+      .disabled(!automaticallyChecksForUpdates)
+      .onChange(of: automaticallyDownloadsUpdates) {
+        updater.automaticallyDownloadsUpdates = automaticallyDownloadsUpdates
+      }
   }
-
-  // MARK: Internal
-
-  let label: String
 
   // MARK: Private
 
@@ -50,15 +38,17 @@ public struct UpdatesSettingsView: View {
 }
 
 extension UpdatesSettingsView {
-  public init(label: String = "Software Updates:") {
+  public init() {
     let updater = SparkleController.shared.updaterController.updater
     self.updater = updater
-    self.label = label
     automaticallyChecksForUpdates = updater.automaticallyChecksForUpdates
     automaticallyDownloadsUpdates = updater.automaticallyDownloadsUpdates
   }
 }
 
 #Preview {
-  UpdatesSettingsView()
+  Form {
+    UpdatesSettingsView()
+  }
+  .formStyle(.grouped)
 }

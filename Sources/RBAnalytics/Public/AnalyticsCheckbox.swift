@@ -22,11 +22,8 @@ public struct AnalyticsCheckbox: View {
         },
       )
     ) {
-      VStack(alignment: .leading) {
-        Text("Share app analytics")
-        Text("Analytics are completely anonymous and used only for product improvements.")
-          .settingsSubtitle()
-      }
+      Text("Share app analytics")
+      Text("Analytics are completely anonymous and used only for product improvements.")
     }
   }
 

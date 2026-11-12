@@ -6,7 +6,7 @@ public struct InputSourcePickerView: View {
 
   // MARK: Lifecycle
 
-  public init(label: String = "Preferred Input Source:") {
+  public init(label: String = "Preferred input source") {
     self.label = label
   }
 

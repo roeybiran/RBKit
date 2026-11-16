@@ -1,9 +1,8 @@
-import AppKit
 import SwiftUI
 
 // MARK: - Pane
 
-/// A single page of the settings window, listed in the sidebar and shown in the detail area.
+/// A single page of the settings window, listed in the sidebar and shown in the detail column.
 ///
 /// The content should be a `Form`. It is rendered with the grouped form style, the way
 /// System Settings and Xcode present their settings: each `Section` becomes a rounded inset
@@ -29,13 +28,10 @@ public struct Pane {
     systemImage: String,
     @ViewBuilder content: () -> some View,
   ) {
-    let hostingController = NSHostingController(rootView: AnyView(content().formStyle(.grouped)))
-    // The window, not the pane, owns its size. Panes scroll when their content doesn't fit.
-    hostingController.sizingOptions = []
     self.label = label
     self.identifier = identifier
     self.systemImage = systemImage
-    viewController = hostingController
+    self.content = AnyView(content())
   }
 
   // MARK: Public
@@ -46,6 +42,6 @@ public struct Pane {
 
   // MARK: Internal
 
-  let viewController: NSViewController
+  let content: AnyView
 
 }

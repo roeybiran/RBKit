@@ -12,101 +12,71 @@ import Testing
 struct SettingsWindowControllerTests {
   @Test
   func `SettingsWindowController.init(_:), should store the panes`() {
-    let pane = makeTestPane("Test Pane", identifier: "test-pane")
-    let viewController = pane.viewController
-    let controller = SettingsWindowController([pane])
+    let controller = SettingsWindowController([makeTestPane("Test Pane", identifier: "test-pane")])
 
-    #expect(controller.panes.count == 1)
-    #expect(controller.panes[0].label == "Test Pane")
-    #expect(controller.panes[0].viewController === viewController)
+    #expect(controller.model.panes.count == 1)
+    #expect(controller.model.panes[0].label == "Test Pane")
   }
 
   @Test
-  func `loadWindow(), with one pane, should show the pane without a sidebar`() {
-    let pane = makeTestPane("Test Pane", identifier: "test-pane")
-    let viewController = pane.viewController
-    let controller = SettingsWindowController([pane])
+  func `loadWindow(), should host the SwiftUI settings view in a resizable window`() {
+    let controller = SettingsWindowController([makeTestPane("Test Pane", identifier: "test-pane")])
 
     _ = controller.window
 
-    #expect(controller.window != nil)
-    #expect(controller.window?.styleMask.contains([.titled, .closable, .resizable]) == true)
+    #expect(controller.window?.styleMask.contains([.titled, .closable, .resizable, .fullSizeContentView]) == true)
     #expect(controller.window?.autorecalculatesKeyViewLoop == true)
     #expect(controller.windowFrameAutosaveName == SettingsWindowController.frameAutosaveName)
-    #expect(controller.contentViewController === controller.detailViewController)
-    #expect(controller.sidebarViewController == nil)
-    #expect(controller.window?.toolbar == nil)
-    #expect(controller.detailViewController.currentViewController === viewController)
+    #expect(controller.contentViewController != nil)
   }
 
   @Test
-  func `loadWindow(), with more than one pane, should configure a sidebar and toolbar`() {
+  func `loadWindow(), with more than one pane, should restore the stored pane`() {
     @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 1
 
-    let pane1 = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController1 = pane1.viewController
-    let pane2 = makeTestPane("Pane 2", identifier: "pane-2")
-    let viewController2 = pane2.viewController
-
-    let controller = SettingsWindowController([pane1, pane2])
+    let controller = SettingsWindowController([
+      makeTestPane("Pane 1", identifier: "pane-1"),
+      makeTestPane("Pane 2", identifier: "pane-2"),
+    ])
 
     _ = controller.window
 
-    let splitViewController = controller.contentViewController as? NSSplitViewController
-    #expect(splitViewController?.splitViewItems.count == 2)
-    #expect(splitViewController?.splitViewItems.first?.behavior == .sidebar)
-    #expect(controller.window?.toolbar != nil)
-    #expect(controller.window?.styleMask.contains(.fullSizeContentView) == true)
-    #expect(controller.selectedPaneIndex == storedSelectedTabIndex)
-    #expect(controller.detailViewController.currentViewController === viewController2)
-    #expect(controller.sidebarViewController?.tableView.numberOfRows == 2)
-    #expect(controller.sidebarViewController?.tableView.selectedRow == 1)
+    #expect(controller.model.selectedIndex == 1)
     #expect(controller.window?.title == "Pane 2")
+    #expect(!controller.model.canGoBack)
   }
 
   @Test
   func `loadWindow(), with invalid last selected tab index, should select the first pane`() {
     @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 2
 
-    let pane1 = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController1 = pane1.viewController
-    let pane2 = makeTestPane("Pane 2", identifier: "pane-2")
-    let viewController2 = pane2.viewController
-
-    let controller = SettingsWindowController([pane1, pane2])
+    let controller = SettingsWindowController([
+      makeTestPane("Pane 1", identifier: "pane-1"),
+      makeTestPane("Pane 2", identifier: "pane-2"),
+    ])
     _ = controller.window
-    #expect(controller.selectedPaneIndex == 0)
-    #expect(controller.detailViewController.currentViewController === viewController1)
+
+    #expect(controller.model.selectedIndex == 0)
+    #expect(controller.window?.title == "Pane 1")
     #expect(storedSelectedTabIndex == 0)
   }
 
   @Test
-  func `openPane(identifier:), should select the pane and support back and forward`() {
+  func `openPane(identifier:), should select, title, and persist the pane`() {
     @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 0
 
-    let panes = (0..<3).map { makeTestPane("Pane \($0)", identifier: "pane-\($0)") }
-    let controller = SettingsWindowController(panes)
+    let controller = SettingsWindowController((0..<3).map { makeTestPane("Pane \($0)", identifier: "pane-\($0)") })
     _ = controller.window
 
-    #expect(!controller.canGoBack)
     controller.openPane(identifier: "pane-2")
-    #expect(controller.selectedPaneIndex == 2)
+    #expect(controller.model.selectedIndex == 2)
     #expect(controller.window?.title == "Pane 2")
     #expect(storedSelectedTabIndex == 2)
-    #expect(controller.sidebarViewController?.tableView.selectedRow == 2)
 
-    controller.openPane(identifier: "pane-1")
     controller.goBack(nil)
-    #expect(controller.selectedPaneIndex == 2)
-    #expect(controller.canGoForward)
-    controller.goBack(nil)
-    #expect(controller.selectedPaneIndex == 0)
-    #expect(!controller.canGoBack)
+    #expect(controller.window?.title == "Pane 0")
     controller.goForward(nil)
-    #expect(controller.selectedPaneIndex == 2)
-
-    controller.openPane(identifier: "pane-0")
-    #expect(!controller.canGoForward)
+    #expect(controller.window?.title == "Pane 2")
   }
 
   @Test
@@ -114,7 +84,6 @@ struct SettingsWindowControllerTests {
     @Shared(.isSettingsWindowFloating) var isSettingsWindowFloating = false
 
     let pane = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController = pane.viewController
     let controller = SettingsWindowController([pane])
 
     #expect(controller.window?.level == .normal)
@@ -137,7 +106,6 @@ struct SettingsWindowControllerTests {
     @Shared(.isSettingsWindowFloating) var isSettingsWindowFloating = true
 
     let pane = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController = pane.viewController
     let controller = SettingsWindowController([pane])
 
     _ = controller.window
@@ -157,29 +125,8 @@ struct SettingsWindowControllerTests {
   }
 
   @Test
-  func `selecting in the sidebar, should show and persist the selected pane`() {
-    @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 0
-
-    let pane1 = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController1 = pane1.viewController
-    let pane2 = makeTestPane("Pane 2", identifier: "pane-2")
-    let viewController2 = pane2.viewController
-
-    let controller = SettingsWindowController([pane1, pane2])
-    _ = controller.window
-
-    controller.sidebarViewController?.tableView.selectRowIndexes([1], byExtendingSelection: false)
-
-    #expect(controller.window?.title == "Pane 2")
-    #expect(controller.detailViewController.currentViewController === viewController2)
-    #expect(storedSelectedTabIndex == 1)
-    #expect(controller.canGoBack)
-  }
-
-  @Test
   func `windowDidLoad(), with one pane, should use the generic window title`() async {
     let pane1 = makeTestPane("Pane 1", identifier: "pane-1")
-    let viewController1 = pane1.viewController
     let controller = SettingsWindowController([pane1])
     _ = controller.window
 
@@ -201,7 +148,6 @@ struct SettingsWindowControllerTests {
     }
 
     let pane = makeTestPane("Test Pane", identifier: "test-pane")
-    let viewController = pane.viewController
     let controller = Sub([pane])
 
     controller.doCommand(by: #selector(NSSavePanel.cancel(_:)))

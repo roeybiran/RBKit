@@ -1,4 +1,3 @@
-import AppKit
 import SwiftUI
 import Testing
 @testable import RBKit
@@ -8,16 +7,12 @@ import Testing
 @MainActor
 struct PaneTests {
   @Test
-  func `Pane.init(_:identifier:systemImage:content:), should store values and host the content`() {
-    let pane = Pane("Test Pane", identifier: "test-pane", systemImage: "gearshape") {
-      Form { Text("Hello") }
-    }
+  func `Pane.init(_:identifier:systemImage:content:), should store values`() {
+    let pane = makeTestPane("Test Pane", identifier: "test-pane")
 
     #expect(pane.label == "Test Pane")
     #expect(pane.identifier == "test-pane")
     #expect(pane.systemImage == "gearshape")
-    #expect(pane.viewController is NSHostingController<AnyView>)
-    #expect((pane.viewController as? NSHostingController<AnyView>)?.sizingOptions == [])
   }
 }
 

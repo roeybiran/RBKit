@@ -31,7 +31,7 @@ struct SettingsWindowControllerTests {
   }
 
   @Test
-  func `loadWindow(), with more than one pane, should restore the stored pane`() {
+  func `loadWindow(), with more than one pane, should restore the stored pane`() async {
     @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 1
 
     let controller = SettingsWindowController([
@@ -41,9 +41,9 @@ struct SettingsWindowControllerTests {
 
     _ = controller.window
 
-    #expect(controller.model.selectedIndex == 1)
-    #expect(controller.window?.title == "Pane 2")
+    #expect(controller.model.selection == "pane-2")
     #expect(!controller.model.canGoBack)
+    #expect(await windowTitle(of: controller, becomes: "Pane 2"))
   }
 
   @Test
@@ -56,27 +56,30 @@ struct SettingsWindowControllerTests {
     ])
     _ = controller.window
 
-    #expect(controller.model.selectedIndex == 0)
-    #expect(controller.window?.title == "Pane 1")
+    #expect(controller.model.selection == "pane-1")
     #expect(storedSelectedTabIndex == 0)
   }
 
   @Test
-  func `openPane(identifier:), should select, title, and persist the pane`() {
+  func `openPane(identifier:), should select and persist the pane`() async {
     @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 0
 
     let controller = SettingsWindowController((0..<3).map { makeTestPane("Pane \($0)", identifier: "pane-\($0)") })
     _ = controller.window
 
     controller.openPane(identifier: "pane-2")
-    #expect(controller.model.selectedIndex == 2)
-    #expect(controller.window?.title == "Pane 2")
+    #expect(controller.model.selection == "pane-2")
     #expect(storedSelectedTabIndex == 2)
+    #expect(await windowTitle(of: controller, becomes: "Pane 2"))
+
+    controller.openPane(identifier: "missing")
+    #expect(controller.model.selection == "pane-2")
 
     controller.goBack(nil)
-    #expect(controller.window?.title == "Pane 0")
+    #expect(controller.model.selection == "pane-0")
+    #expect(storedSelectedTabIndex == 0)
     controller.goForward(nil)
-    #expect(controller.window?.title == "Pane 2")
+    #expect(controller.model.selection == "pane-2")
   }
 
   @Test
@@ -126,16 +129,10 @@ struct SettingsWindowControllerTests {
 
   @Test
   func `windowDidLoad(), with one pane, should use the generic window title`() async {
-    let pane1 = makeTestPane("Pane 1", identifier: "pane-1")
-    let controller = SettingsWindowController([pane1])
+    let controller = SettingsWindowController([makeTestPane("Pane 1", identifier: "pane-1")])
     _ = controller.window
 
-    _ = controller.window
-    for _ in 1...10 {
-      if (controller.window?.title ?? "") == "\(Bundle.main.appName) Settings" { break }
-      try? await Task.sleep(for: TEST_SLEEP_DURATION)
-    }
-    #expect((controller.window?.title ?? "") == "\(Bundle.main.appName) Settings")
+    #expect(await windowTitle(of: controller, becomes: "\(Bundle.main.appName) Settings"))
   }
 
   @Test
@@ -154,6 +151,18 @@ struct SettingsWindowControllerTests {
 
     #expect(controller.closed)
   }
+}
+
+/// Waits for SwiftUI to bridge the selected pane's navigation title to the window.
+@MainActor
+private func windowTitle(of controller: SettingsWindowController, becomes title: String) async -> Bool {
+  controller.window?.contentView?.layoutSubtreeIfNeeded()
+  for _ in 1...50 {
+    if controller.window?.title == title { return true }
+    try? await Task.sleep(for: TEST_SLEEP_DURATION)
+    controller.window?.contentView?.layoutSubtreeIfNeeded()
+  }
+  return controller.window?.title == title
 }
 
 // MARK: - UserDefaults + @unchecked @retroactive Sendable

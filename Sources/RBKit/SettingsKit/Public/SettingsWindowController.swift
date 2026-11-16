@@ -62,7 +62,7 @@ open class SettingsWindowController: NSWindowController {
         .frame(minWidth: minimumSize.width, minHeight: minimumSize.height)
     )
     hostingController.sizingOptions = [.minSize]
-    hostingController.sceneBridgingOptions = [.toolbars]
+    hostingController.sceneBridgingOptions = .all
     contentViewController = hostingController
 
     let autosaveName = Self.frameAutosaveName
@@ -76,7 +76,9 @@ open class SettingsWindowController: NSWindowController {
       self?.selectionDidChange()
     }
     let storedIndex = storedSelectedTabIndex
-    model.select(model.panes.indices.contains(storedIndex) ? storedIndex : 0, recordingHistory: false)
+    let panes = model.panes
+    model.restoreSelection(panes.indices.contains(storedIndex) ? panes[storedIndex].id : panes.first?.id)
+    selectionDidChange()
 
     isSettingsWindowFloatingCancellable = $isSettingsWindowFloating.publisher
       .sink { [weak self] isSettingsWindowFloating in
@@ -101,7 +103,8 @@ open class SettingsWindowController: NSWindowController {
 
   public func openPane(identifier: String) {
     _ = window
-    model.select(identifier: identifier)
+    guard model.panes.contains(where: { $0.id == identifier }) else { return }
+    model.selection = identifier
   }
 
   // MARK: Internal
@@ -127,12 +130,10 @@ open class SettingsWindowController: NSWindowController {
   private var isSettingsWindowFloatingCancellable: AnyCancellable?
 
   private func selectionDidChange() {
-    if model.panes.count > 1, let pane = model.selectedPane {
-      window?.title = pane.label
-      $storedSelectedTabIndex.withLock { $0 = model.selectedIndex }
-    } else {
-      window?.title = "\(Bundle.main.appName) Settings"
+    guard model.panes.count > 1, let index = model.panes.firstIndex(where: { $0.id == model.selection }) else {
+      return
     }
+    $storedSelectedTabIndex.withLock { $0 = index }
   }
 
 }

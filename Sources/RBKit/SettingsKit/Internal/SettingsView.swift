@@ -8,15 +8,14 @@ struct SettingsView: View {
 
   // MARK: Internal
 
-  let model: SettingsModel
+  @Bindable var model: SettingsModel
 
   var body: some View {
     if model.panes.count > 1 {
       NavigationSplitView {
-        List(selection: selection) {
-          ForEach(model.panes, id: \.identifier) { pane in
+        List(model.panes, selection: $model.selection) { pane in
+          NavigationLink(value: pane.id) {
             Label(pane.label, systemImage: pane.systemImage)
-              .tag(pane.identifier)
           }
         }
         .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 280)
@@ -41,24 +40,26 @@ struct SettingsView: View {
 
   // MARK: Private
 
-  private var selection: Binding<String?> {
-    Binding(
-      get: { model.selectedPane?.identifier },
-      set: { identifier in
-        // A source list always has a selection; ignore attempts to clear it.
-        guard let identifier else { return }
-        model.select(identifier: identifier)
-      },
-    )
+  /// The selected pane's label when there is a sidebar to pick from, else the app's name.
+  private var title: String {
+    if model.panes.count > 1, let pane = model.selectedPane {
+      pane.label
+    } else {
+      "\(Bundle.main.appName) Settings"
+    }
   }
 
-  @ViewBuilder
   private var detail: some View {
-    if let pane = model.selectedPane {
-      pane.content
-        .formStyle(.grouped)
-        .id(pane.identifier)
+    Group {
+      if let pane = model.selectedPane {
+        pane.content
+          .formStyle(.grouped)
+          .id(pane.id)
+      } else {
+        ContentUnavailableView("No Selection", systemImage: "sidebar.left")
+      }
     }
+    .navigationTitle(title)
   }
 
 }

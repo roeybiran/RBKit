@@ -7,56 +7,72 @@ struct SettingsModelTests {
   // MARK: Internal
 
   @Test
-  func `select(_:), should record history, and goBack/goForward should walk it`() {
+  func `setPanes(_:), should select the first pane without recording history`() {
     let model = makeModel(paneCount: 3)
 
+    #expect(model.selection == "pane-0")
+    #expect(model.selectedPane?.label == "Pane 0")
     #expect(!model.canGoBack)
-    model.select(2)
-    model.select(identifier: "pane-1")
-    #expect(model.selectedIndex == 1)
+  }
+
+  @Test
+  func `selection, when changed, should record history that goBack and goForward walk`() {
+    let model = makeModel(paneCount: 3)
+
+    model.selection = "pane-2"
+    model.selection = "pane-1"
 
     model.goBack()
-    #expect(model.selectedIndex == 2)
+    #expect(model.selection == "pane-2")
     #expect(model.canGoForward)
     model.goBack()
-    #expect(model.selectedIndex == 0)
+    #expect(model.selection == "pane-0")
     #expect(!model.canGoBack)
     model.goForward()
-    #expect(model.selectedIndex == 2)
+    #expect(model.selection == "pane-2")
 
-    model.select(0)
+    model.selection = "pane-0"
     #expect(!model.canGoForward)
   }
 
   @Test
-  func `select(_:), with the current pane or recordingHistory false, should not record history`() {
+  func `selection, when set to the same pane, should not record history`() {
     let model = makeModel(paneCount: 2)
 
-    model.select(0)
-    model.select(1, recordingHistory: false)
-    #expect(model.selectedIndex == 1)
+    model.selection = "pane-0"
     #expect(!model.canGoBack)
   }
 
   @Test
-  func `select(_:), with an invalid index or identifier, should keep the selection`() {
+  func `selection, when cleared, should let goBack return to the previous pane`() {
     let model = makeModel(paneCount: 2)
-    model.select(1)
 
-    model.select(5)
-    model.select(identifier: "missing")
-    #expect(model.selectedIndex == 1)
+    model.selection = nil
+    #expect(model.selectedPane == nil)
+    model.goBack()
+    #expect(model.selection == "pane-0")
   }
 
   @Test
-  func `setPanes(_:), should clamp the selection and clear history`() {
+  func `restoreSelection(_:), should not record history`() {
+    let model = makeModel(paneCount: 2)
+
+    model.restoreSelection("pane-1")
+    #expect(model.selection == "pane-1")
+    #expect(!model.canGoBack)
+  }
+
+  @Test
+  func `setPanes(_:), should keep a selection that still exists and clear history`() {
     let model = makeModel(paneCount: 3)
-    model.select(2)
+    model.selection = "pane-2"
+
+    model.setPanes(Array(model.panes.reversed()))
+    #expect(model.selection == "pane-2")
+    #expect(!model.canGoBack)
 
     model.setPanes([makeTestPane("Only", identifier: "only")])
-    #expect(model.selectedIndex == 0)
-    #expect(model.selectedPane?.identifier == "only")
-    #expect(!model.canGoBack)
+    #expect(model.selection == "only")
   }
 
   @Test
@@ -65,11 +81,11 @@ struct SettingsModelTests {
     var count = 0
     model.onSelectionChange = { count += 1 }
 
-    model.select(1)
+    model.selection = "pane-1"
+    model.selection = "pane-1"
     model.goBack()
     model.goForward()
-    model.setPanes(model.panes)
-    #expect(count == 4)
+    #expect(count == 3)
   }
 
   // MARK: Private

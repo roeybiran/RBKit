@@ -17,7 +17,7 @@ import SwiftUI
 ///   }
 /// }
 /// ```
-public struct Pane {
+public struct Pane: Identifiable {
 
   // MARK: Lifecycle
 
@@ -39,6 +39,10 @@ public struct Pane {
   public let label: String
   public let identifier: String
   public let systemImage: String
+
+  public var id: String {
+    identifier
+  }
 
   // MARK: Internal
 

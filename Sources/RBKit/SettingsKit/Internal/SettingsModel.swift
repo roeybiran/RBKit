@@ -8,13 +8,24 @@ final class SettingsModel {
   // MARK: Internal
 
   private(set) var panes = [Pane]()
-  private(set) var selectedIndex = 0
 
-  /// Called after the selected pane changes, including when the panes are replaced.
+  /// Called after the selection changes.
   @ObservationIgnored var onSelectionChange: (() -> Void)?
 
+  /// The selected pane, bound to the sidebar list. Changing it records history.
+  var selection: Pane.ID? {
+    didSet {
+      guard selection != oldValue else { return }
+      if !isTraversingHistory, let oldValue {
+        backStack.append(oldValue)
+        forwardStack.removeAll()
+      }
+      onSelectionChange?()
+    }
+  }
+
   var selectedPane: Pane? {
-    panes.indices.contains(selectedIndex) ? panes[selectedIndex] : nil
+    panes.first { $0.id == selection }
   }
 
   var canGoBack: Bool {
@@ -25,48 +36,53 @@ final class SettingsModel {
     !forwardStack.isEmpty
   }
 
+  /// Replaces the panes, keeping the selection if it still exists, and clears history.
   func setPanes(_ panes: [Pane]) {
     self.panes = panes
     backStack.removeAll()
     forwardStack.removeAll()
-    if !panes.indices.contains(selectedIndex) {
-      selectedIndex = 0
+    if selectedPane == nil {
+      restoreSelection(panes.first?.id)
     }
-    onSelectionChange?()
   }
 
-  func select(_ index: Int, recordingHistory: Bool = true) {
-    guard panes.indices.contains(index) else { return }
-    if recordingHistory, index != selectedIndex {
-      backStack.append(selectedIndex)
-      forwardStack.removeAll()
+  /// Selects a pane without recording history, e.g. when restoring a saved selection.
+  func restoreSelection(_ id: Pane.ID?) {
+    withoutRecordingHistory {
+      selection = id
     }
-    selectedIndex = index
-    onSelectionChange?()
-  }
-
-  func select(identifier: String) {
-    guard let index = panes.firstIndex(where: { $0.identifier == identifier }) else { return }
-    select(index)
   }
 
   func goBack() {
-    guard let index = backStack.popLast() else { return }
-    forwardStack.append(selectedIndex)
-    selectedIndex = index
-    onSelectionChange?()
+    guard let id = backStack.popLast() else { return }
+    if let selection {
+      forwardStack.append(selection)
+    }
+    withoutRecordingHistory {
+      selection = id
+    }
   }
 
   func goForward() {
-    guard let index = forwardStack.popLast() else { return }
-    backStack.append(selectedIndex)
-    selectedIndex = index
-    onSelectionChange?()
+    guard let id = forwardStack.popLast() else { return }
+    if let selection {
+      backStack.append(selection)
+    }
+    withoutRecordingHistory {
+      selection = id
+    }
   }
 
   // MARK: Private
 
-  private var backStack = [Int]()
-  private var forwardStack = [Int]()
+  private var backStack = [Pane.ID]()
+  private var forwardStack = [Pane.ID]()
+  @ObservationIgnored private var isTraversingHistory = false
+
+  private func withoutRecordingHistory(_ body: () -> Void) {
+    isTraversingHistory = true
+    body()
+    isTraversingHistory = false
+  }
 
 }

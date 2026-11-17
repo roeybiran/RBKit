@@ -14,6 +14,20 @@ struct PaneTests {
     #expect(pane.identifier == "test-pane")
     #expect(pane.systemImage == "gearshape")
   }
+
+  @Test
+  func `Pane.content, should be rebuilt each time it is shown`() {
+    var buildCount = 0
+    let pane = Pane("Test Pane", identifier: "test-pane", systemImage: "gearshape") {
+      let _ = buildCount += 1
+      Form { }
+    }
+
+    #expect(buildCount == 0)
+    _ = pane.content()
+    _ = pane.content()
+    #expect(buildCount == 2)
+  }
 }
 
 @MainActor

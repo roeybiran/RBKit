@@ -45,26 +45,15 @@ public struct AppPicker: View {
       Divider()
 
       ForEach(standardAppsByBundleID.values.sorted(by: \.title)) { app in
-        HStack {
-          Image(nsImage: app.image)
-            .resizable()
-            .frame(width: 16, height: 16)
-          Text(app.title)
-        }
-        .tag(Selection.app(app.id))
+        PickedAppLabel(app)
+          .tag(Selection.app(app.id))
       }
 
       Divider()
 
       if let bundleID, standardAppsByBundleID[bundleID] == nil {
-        let app = AppPickerItem(bundleID: bundleID)
-        HStack {
-          Image(nsImage: app.image)
-            .resizable()
-            .frame(width: 16, height: 16)
-          Text(app.title)
-        }
-        .tag(Selection.app(app.id))
+        PickedAppLabel(AppPickerItem(bundleID: bundleID))
+          .tag(Selection.app(bundleID))
 
         Divider()
       }
@@ -75,7 +64,7 @@ public struct AppPicker: View {
       Text("App")
     } currentValueLabel: {
       if let bundleID {
-        PickedAppLabel(AppPickerItem(bundleID: bundleID))
+        PickedAppLabel(standardAppsByBundleID[bundleID] ?? AppPickerItem(bundleID: bundleID))
       } else {
         Text("None")
       }

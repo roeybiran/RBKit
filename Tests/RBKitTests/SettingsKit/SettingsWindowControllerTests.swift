@@ -32,11 +32,13 @@ struct SettingsWindowControllerTests {
 
   @Test
   func `loadWindow(), with more than one pane, should restore the stored pane`() async {
-    @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 1
+    @Shared(.settingsWindowLastPaneIdentifier) var storedSelectedPaneIdentifier
+    $storedSelectedPaneIdentifier.withLock { $0 = "pane-2" }
 
+    // Reordered since the pane was stored: it is restored by identifier, not by position.
     let controller = SettingsWindowController([
-      makeTestPane("Pane 1", identifier: "pane-1"),
       makeTestPane("Pane 2", identifier: "pane-2"),
+      makeTestPane("Pane 1", identifier: "pane-1"),
     ])
 
     _ = controller.window
@@ -47,8 +49,9 @@ struct SettingsWindowControllerTests {
   }
 
   @Test
-  func `loadWindow(), with invalid last selected tab index, should select the first pane`() {
-    @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 2
+  func `loadWindow(), with an unknown stored pane, should select the first pane`() {
+    @Shared(.settingsWindowLastPaneIdentifier) var storedSelectedPaneIdentifier
+    $storedSelectedPaneIdentifier.withLock { $0 = "removed-pane" }
 
     let controller = SettingsWindowController([
       makeTestPane("Pane 1", identifier: "pane-1"),
@@ -57,29 +60,43 @@ struct SettingsWindowControllerTests {
     _ = controller.window
 
     #expect(controller.model.selection == "pane-1")
-    #expect(storedSelectedTabIndex == 0)
+    #expect(storedSelectedPaneIdentifier == "pane-1")
   }
 
   @Test
   func `openPane(identifier:), should select and persist the pane`() async {
-    @Shared(.settingsWindowLastTabIndex) var storedSelectedTabIndex = 0
+    @Shared(.settingsWindowLastPaneIdentifier) var storedSelectedPaneIdentifier
+    $storedSelectedPaneIdentifier.withLock { $0 = nil }
 
     let controller = SettingsWindowController((0..<3).map { makeTestPane("Pane \($0)", identifier: "pane-\($0)") })
     _ = controller.window
 
     controller.openPane(identifier: "pane-2")
     #expect(controller.model.selection == "pane-2")
-    #expect(storedSelectedTabIndex == 2)
+    #expect(storedSelectedPaneIdentifier == "pane-2")
     #expect(await windowTitle(of: controller, becomes: "Pane 2"))
 
     controller.openPane(identifier: "missing")
     #expect(controller.model.selection == "pane-2")
 
-    controller.goBack(nil)
+    controller.model.goBack()
     #expect(controller.model.selection == "pane-0")
-    #expect(storedSelectedTabIndex == 0)
-    controller.goForward(nil)
+    #expect(storedSelectedPaneIdentifier == "pane-0")
+    controller.model.goForward()
     #expect(controller.model.selection == "pane-2")
+  }
+
+  @Test
+  func `openPane(identifier:), before the window loads, should not record history`() {
+    @Shared(.settingsWindowLastPaneIdentifier) var storedSelectedPaneIdentifier
+    $storedSelectedPaneIdentifier.withLock { $0 = "pane-1" }
+
+    let controller = SettingsWindowController((0..<3).map { makeTestPane("Pane \($0)", identifier: "pane-\($0)") })
+
+    controller.openPane(identifier: "pane-2")
+    #expect(controller.model.selection == "pane-2")
+    #expect(!controller.model.canGoBack)
+    #expect(storedSelectedPaneIdentifier == "pane-2")
   }
 
   @Test

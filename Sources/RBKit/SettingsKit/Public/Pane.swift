@@ -26,12 +26,12 @@ public struct Pane: Identifiable {
     _ label: String,
     identifier: String,
     systemImage: String,
-    @ViewBuilder content: () -> some View,
+    @ViewBuilder content: @escaping @MainActor () -> some View,
   ) {
     self.label = label
     self.identifier = identifier
     self.systemImage = systemImage
-    self.content = AnyView(content())
+    self.content = { AnyView(content()) }
   }
 
   // MARK: Public
@@ -46,6 +46,8 @@ public struct Pane: Identifiable {
 
   // MARK: Internal
 
-  let content: AnyView
+  /// Builds the pane's content. Called each time the pane is shown, so the content always
+  /// starts from current values rather than ones captured when the pane was created.
+  let content: @MainActor () -> AnyView
 
 }

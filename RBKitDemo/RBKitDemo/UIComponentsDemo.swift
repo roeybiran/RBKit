@@ -17,24 +17,15 @@ final class UIComponentsDemoViewController: NSViewController {
   lazy var menubarExtraCheckbox = MenuBarExtraSettingView(statusItem: statusItem)
 
   lazy var settingsWindowController = SettingsWindowController([
-    Pane(
-      "General",
-      identifier: "general",
-      systemImage: "gearshape.fill",
-      viewController: GeneralPane(),
-    ),
-    Pane(
-      "Appearance",
-      identifier: "appearance",
-      systemImage: "paintpalette.fill",
-      viewController: AppearancePane(),
-    ),
-    Pane(
-      "Advanced",
-      identifier: "advanced",
-      systemImage: "wrench.and.screwdriver.fill",
-      viewController: AdvancedPane(),
-    ),
+    Pane("General", identifier: "general", systemImage: "gearshape.fill") {
+      GeneralPane()
+    },
+    Pane("Appearance", identifier: "appearance", systemImage: "paintpalette.fill") {
+      AppearancePane()
+    },
+    Pane("Advanced", identifier: "advanced", systemImage: "wrench.and.screwdriver.fill") {
+      AdvancedPane()
+    },
   ])
 
   var operationButtonOperationCount = 0
@@ -259,66 +250,48 @@ final class UIComponentsDemoViewController: NSViewController {
 
 // MARK: - GeneralPane
 
-final class GeneralPane: NSViewController {
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    let content = NSTextView()
-    content.string =
-      "General settings content goes here.\n\nThis pane demonstrates a larger content area with scrollable text."
-    view.addSubview(content)
-    content.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate {
-      content.constraints(for: .pinningToEdges, of: view, offset: .uniform(20))
-      content.widthAnchor.constraint(equalToConstant: 410)
-      content.heightAnchor.constraint(equalToConstant: 300)
+struct GeneralPane: View {
+  var body: some View {
+    Form {
+      Section("Starting Points") {
+        Toggle(isOn: $restoresWindows) {
+          Text("Restore open windows")
+          Text("Reopens the windows that were open when you quit.")
+        }
+      }
     }
   }
+
+  @State private var restoresWindows = true
+
 }
 
 // MARK: - AppearancePane
 
-final class AppearancePane: NSViewController {
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    let stack = NSStackView(views: [
-      NSTextField(labelWithString: "Appearance Settings"),
-      NSTextField(labelWithString: "Theme options and visual customizations would go here."),
-    ])
-    stack.orientation = .vertical
-    stack.alignment = .leading
-    stack.spacing = 12
-
-    view.addSubview(stack)
-    stack.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate {
-      stack.constraints(for: .pinningToEdges, of: view, offset: .uniform(20))
+struct AppearancePane: View {
+  var body: some View {
+    Form {
+      Section {
+        Toggle("Show icons", isOn: $showsIcons)
+      } footer: {
+        Text("Theme options and visual customizations would go here.")
+      }
     }
   }
+
+  @State private var showsIcons = true
+
 }
 
 // MARK: - AdvancedPane
 
-final class AdvancedPane: NSViewController {
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    let resetButton = NSButton(title: "Reset All Settings", target: nil, action: nil)
-    let exportButton = NSButton(title: "Export Configuration", target: nil, action: nil)
-
-    let stack = NSStackView(views: [
-      NSTextField(labelWithString: "Advanced Settings"),
-      resetButton,
-      exportButton,
-    ])
-    stack.orientation = .vertical
-    stack.alignment = .leading
-    stack.spacing = 12
-
-    view.addSubview(stack)
-    stack.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate {
-      stack.constraints(for: .pinningToEdges, of: view, offset: .uniform(20))
+struct AdvancedPane: View {
+  var body: some View {
+    Form {
+      Section("Configuration") {
+        Button("Reset All Settings") { }
+        Button("Export Configuration") { }
+      }
     }
   }
 }

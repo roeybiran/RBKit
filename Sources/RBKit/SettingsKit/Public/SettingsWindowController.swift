@@ -75,9 +75,9 @@ open class SettingsWindowController: NSWindowController {
     model.onSelectionChange = { [weak self] in
       self?.selectionDidChange()
     }
-    let storedIndex = storedSelectedTabIndex
+    let storedIdentifier = storedSelectedPaneIdentifier
     let panes = model.panes
-    model.restoreSelection(panes.indices.contains(storedIndex) ? panes[storedIndex].id : panes.first?.id)
+    model.restoreSelection(panes.contains { $0.id == storedIdentifier } ? storedIdentifier : panes.first?.id)
     selectionDidChange()
 
     isSettingsWindowFloatingCancellable = $isSettingsWindowFloating.publisher
@@ -102,9 +102,14 @@ open class SettingsWindowController: NSWindowController {
   }
 
   public func openPane(identifier: String) {
-    _ = window
     guard model.panes.contains(where: { $0.id == identifier }) else { return }
-    model.selection = identifier
+    if isWindowLoaded {
+      model.selection = identifier
+    } else {
+      // Opening the window on a pane is not a navigation the user can go back from.
+      _ = window
+      model.restoreSelection(identifier)
+    }
   }
 
   // MARK: Internal
@@ -113,27 +118,15 @@ open class SettingsWindowController: NSWindowController {
 
   let model = SettingsModel()
 
-  @objc
-  func goBack(_: Any?) {
-    model.goBack()
-  }
-
-  @objc
-  func goForward(_: Any?) {
-    model.goForward()
-  }
-
   // MARK: Private
 
   @Shared(.isSettingsWindowFloating) private var isSettingsWindowFloating = false
-  @Shared(.settingsWindowLastTabIndex) private var storedSelectedTabIndex = 0
+  @Shared(.settingsWindowLastPaneIdentifier) private var storedSelectedPaneIdentifier: String? = nil
   private var isSettingsWindowFloatingCancellable: AnyCancellable?
 
   private func selectionDidChange() {
-    guard model.panes.count > 1, let index = model.panes.firstIndex(where: { $0.id == model.selection }) else {
-      return
-    }
-    $storedSelectedTabIndex.withLock { $0 = index }
+    guard model.panes.count > 1, let selection = model.selection else { return }
+    $storedSelectedPaneIdentifier.withLock { $0 = selection }
   }
 
 }

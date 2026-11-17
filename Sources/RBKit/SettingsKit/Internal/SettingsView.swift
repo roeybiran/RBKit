@@ -8,12 +8,12 @@ struct SettingsView: View {
 
   // MARK: Internal
 
-  @Bindable var model: SettingsModel
+  let model: SettingsModel
 
   var body: some View {
     if model.panes.count > 1 {
-      NavigationSplitView {
-        List(model.panes, selection: $model.selection) { pane in
+      NavigationSplitView(columnVisibility: .constant(.all)) {
+        List(model.panes, selection: selection) { pane in
           NavigationLink(value: pane.id) {
             Label(pane.label, systemImage: pane.systemImage)
           }
@@ -49,10 +49,20 @@ struct SettingsView: View {
     }
   }
 
+  /// The sidebar's selection. Ignores deselection, so a pane is always selected.
+  private var selection: Binding<Pane.ID?> {
+    Binding {
+      model.selection
+    } set: { id in
+      guard let id else { return }
+      model.selection = id
+    }
+  }
+
   private var detail: some View {
     Group {
       if let pane = model.selectedPane {
-        pane.content
+        pane.content()
           .formStyle(.grouped)
           .id(pane.id)
       } else {

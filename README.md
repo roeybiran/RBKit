@@ -14,7 +14,7 @@ git config core.hooksPath .githooks
 
 Everything lives in the single `RBKit` module:
 
-- **AXKit** (`Sources/RBKit/AXKit`): a type-safe wrapper around `AXUIElement.h`.
+- **AXKit** (`Sources/RBKit/Features/AXKit`): a type-safe wrapper around `AXUIElement.h`.
 - **OutlineViewDiffable**: a diffable data source for `NSOutlineView`.
 - **CrashReporterKit**, **InputSourceKit**, **LoginItemKit**, **RBAgentWindow**, **SettingsKit**, **RBUILib**: app building blocks.
 - Feature clients (AppWatcher, EventTapManager, HotKeyManager, FuzzyKit, FrecencyKit, PathWatcher, …), extensions and views.
@@ -104,7 +104,7 @@ func getMenuItems_shouldReturnMenuItems() throws {
 
 ### References
 
-- [/System/Library/Accessibility/AccessibilityDefinitions.plist](/System/Library/Accessibility/AccessibilityDefinitions.plist) (a snapshot is in `Resources/AXKit/`; see `Scripts/generate_accessibility_types.sh`)
+- [/System/Library/Accessibility/AccessibilityDefinitions.plist](/System/Library/Accessibility/AccessibilityDefinitions.plist) (a snapshot is in `Scripts/`; see `Scripts/generate_accessibility_types.sh`)
 
 ### Acknowledgements
 

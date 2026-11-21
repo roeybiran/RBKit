@@ -6,4 +6,4 @@ runs:
   steps:
     - name: Select Xcode
       shell: bash
-      run: sudo xcode-select --switch "/Applications/Xcode_26.0.1.app"
+      run: sudo xcode-select --switch "/Applications/Xcode_26.6.app"

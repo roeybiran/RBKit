@@ -8,38 +8,25 @@ import Testing
 @MainActor
 struct AppWatcherClientTests {
   @Test(
+    .timeLimit(.minutes(1)),
     .dependencies {
       $0.nsWorkspaceClient = .liveValue
       $0.nsRunningApplicationClient = .liveValue
       $0.processesClient = .nonXPC
       $0.sysctlClient = .nonZombie
-    }
+    },
   )
   func `liveValue: should create valid client`() async {
-    nonisolated(unsafe) var eventCount = 0
-
     let client = AppWatcherClient.liveValue
 
-    var events1 = [AppWatcherEvent]()
-    Task {
-      for await evt in client.events() {
-        events1.append(evt)
-        eventCount += 1
-        break
-      }
-    }
+    // Each stream emits an initial `.launched` event. Wait for it rather than sleeping a fixed
+    // interval, which is flaky on loaded CI runners.
+    let first1 = Task { await client.events().first { _ in true } }
+    let first2 = Task { await client.events().first { _ in true } }
 
-    var events2 = [AppWatcherEvent]()
-    Task {
-      for await evt in client.events() {
-        events2.append(evt)
-        eventCount += 1
-        break
-      }
-    }
+    let (event1, event2) = await (first1.value, first2.value)
 
-    try? await Task.sleep(for: .seconds(0.5))
-
-    #expect(eventCount == 2)
+    #expect(event1 != nil)
+    #expect(event2 != nil)
   }
 }

@@ -44,6 +44,17 @@ struct `OutlineViewDiffableSnapshot Tests` {
   }
 
   @Test
+  func `children(of:) with nil known and unknown items, should return roots children and nothing`() {
+    var snapshot = OutlineViewDiffableSnapshot<TestNode>()
+    snapshot.append(items: [.init(id: 0, children: [.init(id: 1)]), .init(id: 2)])
+
+    #expect(snapshot.children(of: nil).map(\.value.id) == [0, 2])
+    #expect(snapshot.children(of: snapshot[0]).map(\.value.id) == [1])
+    #expect(snapshot.children(of: DiffableOutlineItem(TestNode(id: 3))).isEmpty)
+    #expect(snapshot.children(of: "unknown").isEmpty)
+  }
+
+  @Test
   func `hasSameValues(as:) should compare root item values`() {
     var snapshot = OutlineViewDiffableSnapshot<TestNode>()
     var sameValues = OutlineViewDiffableSnapshot<TestNode>()

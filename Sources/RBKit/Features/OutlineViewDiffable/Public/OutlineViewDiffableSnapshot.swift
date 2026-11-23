@@ -62,10 +62,8 @@ public struct OutlineViewDiffableSnapshot<Item: TreeNodeProtocol & Hashable & Se
   }
 
   func children(of item: Any?) -> [DiffableOutlineItem<Item>] {
-    if let item = outlineItem(for: item) {
-      return item.children
-    }
-    return originalTree
+    guard let item else { return originalTree }
+    return outlineItem(for: item)?.children ?? []
   }
 
   func children(parentID: DiffableOutlineItem<Item>.ID?) -> [DiffableOutlineItem<Item>] {

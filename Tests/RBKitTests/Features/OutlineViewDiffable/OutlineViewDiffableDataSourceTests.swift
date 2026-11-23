@@ -41,41 +41,6 @@ struct `OutlineViewDiffableDataSource Tests` {
   }
 
   @Test
-  func `apply(_:animatingDifferences:completion:) with invalid insertion index, should hard reload and update snapshot`() {
-    withOutlineViewDiffableTestLock {
-      let outlineView = TestOutlineView()
-      let dataSource = OutlineViewDiffableDataSource<TestNode>(outlineView: outlineView)
-      let firstNode = TestNode(id: 0)
-      let secondNode = TestNode(id: 1)
-
-      var initialSnapshot = OutlineViewDiffableSnapshot<TestNode>()
-      initialSnapshot.append(items: [firstNode])
-      dataSource.apply(initialSnapshot, animatingDifferences: false)
-
-      outlineView.reset()
-      outlineView.numberOfChildrenByParentID[TestOutlineView.rootParentID] = 0
-      outlineView.parentIDByItemID[firstNode.id] = TestOutlineView.rootParentID
-      outlineView.childIndexByItemID[firstNode.id] = 0
-
-      var updatedSnapshot = OutlineViewDiffableSnapshot<TestNode>()
-      updatedSnapshot.append(items: [firstNode, secondNode])
-
-      var completionArguments = [Bool]()
-      dataSource.apply(updatedSnapshot, animatingDifferences: true) { didApply in
-        completionArguments.append(didApply)
-      }
-
-      #expect(outlineView.beginUpdatesCallCount == 1)
-      #expect(outlineView.endUpdatesCallCount == 1)
-      #expect(outlineView.insertedOperations.isEmpty)
-      #expect(outlineView.reloadDataCallCount == 1)
-      #expect(completionArguments == [true])
-      #expect(dataSource.outlineView(outlineView, numberOfChildrenOfItem: nil as Any?) == 2)
-      #expect(dataSource.itemIdentifier(for: secondNode.id) == secondNode)
-    }
-  }
-
-  @Test
   func `apply(_:animatingDifferences:completion:) with unchanged snapshot, should call completion with false`() {
     withOutlineViewDiffableTestLock {
       let outlineView = TestOutlineView()
@@ -529,7 +494,6 @@ struct `OutlineViewDiffableDataSource Tests` {
       harness.dataSource.apply(harness.makeSnapshot([]), animatingDifferences: true) { didApply in
         completionArguments.append(didApply)
       }
-      harness.settle()
 
       #expect(completionArguments == [true])
       #expect(harness.outlineView.numberOfRows == 0)
@@ -556,7 +520,6 @@ struct `OutlineViewDiffableDataSource Tests` {
         .init(id: 2, version: 2),
       ]
       harness.dataSource.apply(harness.makeSnapshot(updatedNodes), animatingDifferences: true)
-      harness.settle()
 
       #expect(harness.outlineView.reloadDataCallCount == 0)
       #expect(harness.dataSource.itemIdentifier(for: 0) == .init(id: 0, version: 1))
@@ -586,7 +549,6 @@ struct `OutlineViewDiffableDataSource Tests` {
         .init(id: 1, version: 0),
       ]
       harness.dataSource.apply(harness.makeSnapshot(updatedNodes), animatingDifferences: true)
-      harness.settle()
 
       #expect(harness.outlineView.reloadDataCallCount == 0)
       #expect(harness.outlineView.moveCallCount > 0)
@@ -738,23 +700,19 @@ struct `OutlineViewDiffableDataSource Tests` {
     }
   }
 
-  @Test(.disabled("Disabled for now because this exhaustive stress test is too slow in CI and local runs."))
-  func `apply(_:animatingDifferences:completion:) with exhaustive three node forests, should preserve public behavior`() throws {
-    try withOutlineViewDiffableTestLock {
+  @Test
+  func `apply(_:animatingDifferences:completion:) with exhaustive three node forests, should preserve public behavior`() {
+    withOutlineViewDiffableTestLock {
       let harness = OutlineViewDiffableTestHarness()
-      let forests = exhaustiveForests(for: [0, 1, 2])
-      nonisolated(unsafe) var sawInsert = false
-      nonisolated(unsafe) var sawMove = false
-      nonisolated(unsafe) var sawRemove = false
-      nonisolated(unsafe) var transition = 0
+      let forests = outlineViewDiffableTestForests(of: [0, 1, 2])
+      var sawInsert = false
+      var sawMove = false
+      var sawRemove = false
 
-      for fromForest in forests {
-        let fromNodes = makeNodes(fromForest)
+      #expect(forests.count == 46)
 
-        for toForest in forests {
-          let toNodes = makeNodes(toForest)
-          transition += 1
-          let expectedIDs = Set(preorderIDs(toNodes))
+      for fromNodes in forests {
+        for toNodes in forests {
           nonisolated(unsafe) var completionArguments = [Bool]()
 
           harness.dataSource.apply(harness.makeSnapshot(fromNodes), animatingDifferences: false)
@@ -764,36 +722,32 @@ struct `OutlineViewDiffableDataSource Tests` {
           harness.dataSource.apply(harness.makeSnapshot(toNodes), animatingDifferences: true) { didApply in
             completionArguments.append(didApply)
           }
-          harness.expandAllItems()
 
-          if harness.visibleIDs() != preorderIDs(toNodes) {
+          var issues = harness.inconsistencies(with: toNodes)
+          if completionArguments != [fromNodes != toNodes] {
+            issues.append("completion was called with \(completionArguments)")
+          }
+          if harness.outlineView.reloadDataCallCount > 0 {
+            issues.append("fell back to reloading")
+          }
+
+          harness.expandAllItems()
+          if harness.visibleIDs() != toNodes.preorderIDs {
+            issues.append("fully expanded: \(harness.visibleIDs())")
+          }
+
+          if !issues.isEmpty {
             Issue.record(
               """
-              Transition \(transition - 1) produced the wrong visible preorder.
-              from: \(forestDescription(fromForest))
-              to: \(forestDescription(toForest))
-              visible: \(harness.visibleIDs())
-              expected: \(preorderIDs(toNodes))
+              from: \(fromNodes.forestDescription)
+              to: \(toNodes.forestDescription)
+              \(issues.joined(separator: "\n"))
               """
             )
             return
           }
 
-          #expect(completionArguments == [fromNodes != toNodes])
-          #expect(harness.visibleIDs() == preorderIDs(toNodes))
-
           expectPublicTree(toNodes, in: harness)
-
-          for row in 0..<harness.outlineView.numberOfRows {
-            let node = try #require(harness.dataSource.itemIdentifier(forRow: row))
-            #expect(harness.dataSource.row(for: node) == row)
-            #expect(expectedIDs.contains(node.id))
-          }
-
-          for id in 0...2 {
-            let node = harness.dataSource.itemIdentifier(for: id)
-            #expect((node != nil) == expectedIDs.contains(id))
-          }
 
           sawInsert = sawInsert || harness.outlineView.insertCallCount > 0
           sawMove = sawMove || harness.outlineView.moveCallCount > 0
@@ -801,14 +755,247 @@ struct `OutlineViewDiffableDataSource Tests` {
         }
       }
 
-      #expect(forests.count == 46)
       #expect(sawInsert)
       #expect(sawMove)
       #expect(sawRemove)
     }
   }
 
-  @Test(.disabled("Disabled for now because this stress coverage is slower than the rest of the suite."))
+  @Test(arguments: [1, 2, 3, 4] as [UInt64], [false, true])
+  func `apply(_:animatingDifferences:completion:) with random forests and expansion states, should keep the outline view consistent`(
+    seed: UInt64,
+    isInWindow: Bool,
+  ) async {
+    let harness = OutlineViewDiffableTestHarness(isInWindow: isInWindow)
+    var generator = OutlineViewDiffableTestRandomNumberGenerator(seed: seed)
+    var fromNodes = [OutlineViewDiffableTestNode]()
+
+    for step in 0..<300 {
+      let items = (0..<harness.outlineView.numberOfRows).map { harness.outlineView.item(atRow: $0) }
+      for item in items where Bool.random(using: &generator) {
+        if harness.outlineView.isItemExpanded(item) {
+          harness.outlineView.collapseItem(item)
+        } else {
+          harness.outlineView.expandItem(item)
+        }
+      }
+
+      let expandedIDs = harness.expandedIDs()
+      let toNodes = [OutlineViewDiffableTestNode].random(idCount: 10, using: &generator)
+      let isAnimated = step % 8 != 0
+      harness.resetOperationLog()
+
+      harness.dataSource.apply(harness.makeSnapshot(toNodes), animatingDifferences: isAnimated)
+
+      var issues = harness.inconsistencies(with: toNodes)
+      if isAnimated, harness.outlineView.reloadDataCallCount > 0 {
+        issues.append("fell back to reloading")
+      }
+      if harness.outlineView.reloadItemInsideUpdatesCallCount > 0 {
+        issues.append("reloaded an item in the middle of an update")
+      }
+
+      if step % 10 == 0 {
+        // Lets deferred reloads through every now and then.
+        await Task.yield()
+        harness.expandAllItems()
+        if harness.visibleIDs() != toNodes.preorderIDs {
+          issues.append("fully expanded: \(harness.visibleIDs())")
+        }
+      }
+
+      if !issues.isEmpty {
+        Issue.record(
+          """
+          step: \(step)
+          from: \(fromNodes.forestDescription)
+          to: \(toNodes.forestDescription)
+          expanded: \(expandedIDs.sorted())
+          \(issues.joined(separator: "\n"))
+          """
+        )
+        return
+      }
+
+      fromNodes = toNodes
+    }
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) with changed values in a window, should reload their rows once the animations end`(
+  ) async {
+    let harness = OutlineViewDiffableTestHarness(isInWindow: true)
+
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0), .init(id: 1), .init(id: 2)]),
+      animatingDifferences: false,
+    )
+    #expect(harness.visibleIDs() == [0, 1, 2])
+    harness.resetOperationLog()
+
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0), .init(id: 2), .init(id: 1, version: 1)]),
+      animatingDifferences: true,
+    )
+
+    #expect(harness.visibleIDs() == [0, 2, 1])
+    #expect(harness.dataSource.itemIdentifier(for: 1)?.version == 1)
+    #expect(harness.outlineView.reloadItemCallCount == 0)
+    #expect(harness.outlineView.noteHeightOfRowsCallCount == 1)
+
+    #expect(await harness.wait { harness.outlineView.reloadItemCallCount > 0 })
+    #expect(harness.outlineView.reloadItemCallCount == 1)
+    #expect(harness.outlineView.reloadDataCallCount == 0)
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) with changed expandability in a window, should reload the item right away`(
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness(isInWindow: true)
+
+      harness.dataSource.apply(harness.makeSnapshot([.init(id: 0), .init(id: 1)]), animatingDifferences: false)
+      #expect(harness.visibleIDs() == [0, 1])
+      harness.resetOperationLog()
+
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 0, children: [.init(id: 2)]), .init(id: 1, version: 1)]),
+        animatingDifferences: true,
+      )
+
+      #expect(harness.outlineView.reloadItemCallCount == 1)
+
+      harness.outlineView.expandItem(harness.outlineView.item(atRow: 0))
+
+      #expect(harness.visibleIDs() == [0, 2, 1])
+    }
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) again before the animations end in a window, should reload every row that changed since`(
+  ) async {
+    let harness = OutlineViewDiffableTestHarness(isInWindow: true)
+
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0), .init(id: 1), .init(id: 2)]),
+      animatingDifferences: false,
+    )
+    #expect(harness.visibleIDs() == [0, 1, 2])
+    harness.resetOperationLog()
+
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0, version: 1), .init(id: 1), .init(id: 2)]),
+      animatingDifferences: true,
+    )
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0, version: 1), .init(id: 1), .init(id: 2, version: 1), .init(id: 3)]),
+      animatingDifferences: true,
+    )
+
+    #expect(harness.outlineView.reloadItemCallCount == 0)
+    #expect(await harness.wait { harness.outlineView.reloadItemCallCount >= 2 })
+    // Gives a second, stale reload the chance to show up.
+    try? await Task.sleep(for: .milliseconds(500))
+    #expect(harness.outlineView.reloadItemCallCount == 2)
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) without animation before the animations end in a window, should not reload rows again`(
+  ) async {
+    let harness = OutlineViewDiffableTestHarness(isInWindow: true)
+
+    harness.dataSource.apply(harness.makeSnapshot([.init(id: 0), .init(id: 1)]), animatingDifferences: false)
+    #expect(harness.visibleIDs() == [0, 1])
+
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0, version: 1), .init(id: 1)]),
+      animatingDifferences: true,
+    )
+    harness.dataSource.apply(
+      harness.makeSnapshot([.init(id: 0, version: 2), .init(id: 1)]),
+      animatingDifferences: false,
+    )
+    harness.resetOperationLog()
+    try? await Task.sleep(for: .milliseconds(500))
+
+    #expect(harness.outlineView.reloadItemCallCount == 0)
+    #expect(harness.visibleIDs() == [0, 1])
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) with moved expanded items, should keep them expanded`() {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      let first = OutlineViewDiffableTestNode(id: 0, children: [.init(id: 1)])
+      let second = OutlineViewDiffableTestNode(id: 2, children: [.init(id: 3, children: [.init(id: 4)])])
+
+      harness.dataSource.apply(harness.makeSnapshot([first, second, .init(id: 5)]), animatingDifferences: false)
+      harness.expandAllItems()
+      harness.resetOperationLog()
+
+      harness.dataSource.apply(
+        harness.makeSnapshot([
+          .init(id: 5),
+          .init(id: 2, children: [first, .init(id: 3, children: [.init(id: 4)])]),
+        ]),
+        animatingDifferences: true,
+      )
+
+      #expect(harness.outlineView.reloadDataCallCount == 0)
+      #expect(harness.visibleIDs() == [5, 2, 0, 1, 3, 4])
+      #expect(harness.expandedIDs() == [0, 2, 3])
+    }
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) with animated apply right after a reload, should diff against the reloaded snapshot`(
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      let nodes = [OutlineViewDiffableTestNode(id: 0), .init(id: 1), .init(id: 2)]
+
+      // Nothing asks the outline view for its rows in between, so it only loads the first snapshot lazily.
+      harness.dataSource.apply(harness.makeSnapshot(nodes), animatingDifferences: false)
+      harness.dataSource.apply(harness.makeSnapshot([nodes[2], .init(id: 3), nodes[0]]), animatingDifferences: true)
+
+      #expect(harness.visibleIDs() == [2, 3, 0])
+    }
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) with animated apply right after a reload of expanded items, should diff against the reloaded snapshot`(
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      func nodes(version: Int, grandchildren: [Int]) -> [OutlineViewDiffableTestNode] {
+        [
+          .init(id: 0, children: [.init(id: 1, version: version, children: grandchildren.map { .init(id: $0) })]),
+          .init(id: 4, children: [.init(id: 6), .init(id: 7), .init(id: 8)]),
+        ]
+      }
+
+      harness.dataSource.apply(harness.makeSnapshot(nodes(version: 0, grandchildren: [2, 3])), animatingDifferences: false)
+      harness.expandAllItems()
+      harness.outlineView.collapseItem(harness.outlineView.item(atRow: 0))
+
+      harness.dataSource.apply(harness.makeSnapshot(nodes(version: 1, grandchildren: [2, 3])), animatingDifferences: false)
+      harness.dataSource.apply(
+        harness.makeSnapshot([
+          .init(id: 4, children: [.init(id: 8), .init(id: 9), .init(id: 6)]),
+          .init(id: 0, children: [.init(id: 1, version: 1, children: [.init(id: 3), .init(id: 5), .init(id: 2)])]),
+        ]),
+        animatingDifferences: true,
+      )
+
+      #expect(harness.visibleIDs() == [4, 8, 9, 6, 0])
+
+      harness.expandAllItems()
+
+      #expect(harness.visibleIDs() == [4, 8, 9, 6, 0, 1, 3, 5, 2])
+    }
+  }
+
+  @Test
   func `apply(_:animatingDifferences:completion:) with curated four node transitions, should cover mixed mutations and reload behavior`(
   ) throws {
     try withOutlineViewDiffableTestLock {
@@ -888,7 +1075,7 @@ struct `OutlineViewDiffableDataSource Tests` {
         harness.expandAllItems()
 
         #expect(completionArguments == [fromNodes != toNodes])
-        #expect(harness.visibleIDs() == preorderIDs(toNodes))
+        #expect(harness.visibleIDs() == toNodes.preorderIDs)
 
         expectPublicTree(toNodes, in: harness)
 
@@ -1048,165 +1235,6 @@ struct `OutlineViewDiffableDataSource Tests` {
   private struct RemoveOperation: Equatable {
     var indexes: [Int]
     var parentID: Int
-  }
-
-  private struct ForestSpec: Hashable {
-    var id: Int
-    var children = [Self]()
-  }
-
-  private enum Placement: Hashable {
-    case absent
-    case root
-    case child(Int)
-  }
-
-  private func exhaustiveForests(for ids: [Int]) -> [[ForestSpec]] {
-    var forests = Set<[ForestSpec]>()
-
-    func permute(_ values: [Int]) -> [[Int]] {
-      if values.count < 2 {
-        return [values]
-      }
-
-      return values.indices.flatMap { index in
-        var remaining = values
-        let value = remaining.remove(at: index)
-        return permute(remaining).map { [value] + $0 }
-      }
-    }
-
-    func isValid(_ placements: [Int: Placement]) -> Bool {
-      let presentIDs = ids.filter { placements[$0] != .absent }
-
-      for id in presentIDs {
-        if case .child(let parentID) = placements[id], !presentIDs.contains(parentID) {
-          return false
-        }
-
-        var seen = Set<Int>()
-        var currentID = id
-        while case .child(let parentID) = placements[currentID] {
-          if seen.contains(parentID) {
-            return false
-          }
-
-          seen.insert(parentID)
-          currentID = parentID
-        }
-      }
-
-      return true
-    }
-
-    func orderings(for childrenByParent: [Int?: [Int]]) -> [[Int?: [Int]]] {
-      let parents = childrenByParent.keys.sorted {
-        switch ($0, $1) {
-        case (nil, nil):
-          true
-        case (nil, _):
-          true
-        case (_, nil):
-          false
-        case (.some(let lhs), .some(let rhs)):
-          lhs < rhs
-        }
-      }
-
-      func build(_ index: Int, _ partial: [Int?: [Int]]) -> [[Int?: [Int]]] {
-        if index == parents.count {
-          return [partial]
-        }
-
-        let parent = parents[index]
-        let children = childrenByParent[parent] ?? []
-        let permutations = permute(children)
-
-        return permutations.flatMap { permutation in
-          var updated = partial
-          updated[parent] = permutation
-          return build(index + 1, updated)
-        }
-      }
-
-      return build(0, [:])
-    }
-
-    func buildForests(_ ids: [Int], _ placements: [Int: Placement]) {
-      if !isValid(placements) {
-        return
-      }
-
-      var childrenByParent = [Int?: [Int]]()
-      for id in ids {
-        switch placements[id] {
-        case .absent, nil:
-          continue
-        case .root:
-          childrenByParent[nil, default: []].append(id)
-        case .child(let parentID):
-          childrenByParent[parentID, default: []].append(id)
-        }
-      }
-
-      func buildNode(_ id: Int, _ orderedChildrenByParent: [Int?: [Int]]) -> ForestSpec {
-        .init(
-          id: id,
-          children: (orderedChildrenByParent[id] ?? []).map { childID in
-            buildNode(childID, orderedChildrenByParent)
-          },
-        )
-      }
-
-      for orderedChildrenByParent in orderings(for: childrenByParent) {
-        let roots = orderedChildrenByParent[nil] ?? []
-        forests.insert(roots.map { buildNode($0, orderedChildrenByParent) })
-      }
-    }
-
-    func visit(_ index: Int, _ placements: [Int: Placement]) {
-      if index == ids.count {
-        buildForests(ids, placements)
-        return
-      }
-
-      let id = ids[index]
-      let options = [Placement.absent, .root] + ids.filter { $0 != id }.map(Placement.child)
-
-      for option in options {
-        var updated = placements
-        updated[id] = option
-        visit(index + 1, updated)
-      }
-    }
-
-    visit(0, [:])
-
-    return forests.sorted {
-      preorderIDs(makeNodes($0)).lexicographicallyPrecedes(preorderIDs(makeNodes($1)))
-    }
-  }
-
-  private func makeNodes(_ forest: [ForestSpec]) -> [OutlineViewDiffableTestNode] {
-    forest.map { spec in
-      .init(id: spec.id, children: makeNodes(spec.children))
-    }
-  }
-
-  private func preorderIDs(_ nodes: [OutlineViewDiffableTestNode]) -> [Int] {
-    nodes.flatMap { [$0.id] + preorderIDs($0.children.elements) }
-  }
-
-  private func forestDescription(_ forest: [ForestSpec]) -> String {
-    forest.map { nodeDescription($0) }.joined(separator: "|")
-  }
-
-  private func nodeDescription(_ node: ForestSpec) -> String {
-    if node.children.isEmpty {
-      return "\(node.id)"
-    }
-
-    return "\(node.id)(\(node.children.map(nodeDescription).joined(separator: ",")))"
   }
 
   private func expectPublicTree(

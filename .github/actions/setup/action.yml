@@ -1,5 +1,5 @@
 name: Setup
-description: Select the Xcode toolchain used by CI jobs
+description: Select the Xcode toolchain used by CI jobs and restore the SwiftPM cache
 
 runs:
   using: composite
@@ -7,3 +7,13 @@ runs:
     - name: Select Xcode
       shell: bash
       run: sudo xcode-select --switch "/Applications/Xcode_27.2.app"
+
+    # SwiftPM's shared cache holds the git mirrors and binary artifacts that `swift package` fetches
+    # from. Without it, every job clones every dependency from scratch, which can take 10+ minutes.
+    - name: Cache SwiftPM dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/Library/Caches/org.swift.swiftpm
+        key: spm-${{ runner.os }}-${{ runner.arch }}-xcode27.2-${{ hashFiles('Package.resolved') }}
+        restore-keys: |
+          spm-${{ runner.os }}-${{ runner.arch }}-xcode27.2-

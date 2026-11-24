@@ -9,7 +9,7 @@ public protocol TreeNodeProtocol: Identifiable {
 }
 
 extension TreeNodeProtocol {
-  /// Recursively returns children of self in a breadth-first order.
+  /// Returns every descendant of self: its children first, then the descendants of each child in turn.
   public var descendants: [Self] {
     let descendantChildren = children.reduce(into: [Self]()) { result, child in
       result.append(contentsOf: child.descendants)

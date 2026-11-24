@@ -350,19 +350,16 @@ extension OutlineViewDiffableDemoViewController: NSOutlineViewDelegate {
 
   // MARK: Internal
 
-  func outlineView(_ outlineView: NSOutlineView, isGroupItem item: Any) -> Bool {
-    let row = outlineView.row(forItem: item)
-    return dataSource.itemIdentifier(forRow: row)?.isGroupRow ?? false
+  func outlineView(_: NSOutlineView, isGroupItem item: Any) -> Bool {
+    dataSource.itemIdentifier(forItem: item)?.isGroupRow ?? false
   }
 
-  func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
-    let row = outlineView.row(forItem: item)
-    return !(dataSource.itemIdentifier(forRow: row)?.isGroupRow ?? false)
+  func outlineView(_: NSOutlineView, shouldSelectItem item: Any) -> Bool {
+    !(dataSource.itemIdentifier(forItem: item)?.isGroupRow ?? false)
   }
 
   func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-    let row = outlineView.row(forItem: item)
-    guard let node = dataSource.itemIdentifier(forRow: row) else { return nil }
+    guard let node = dataSource.itemIdentifier(forItem: item) else { return nil }
 
     switch tableColumn?.identifier.rawValue {
     case "pathColumn":

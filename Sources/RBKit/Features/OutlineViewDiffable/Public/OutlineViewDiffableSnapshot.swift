@@ -1,3 +1,5 @@
+import IssueReporting
+
 public struct OutlineViewDiffableSnapshot<Item: TreeNodeProtocol & Hashable & Sendable> {
 
   // MARK: Lifecycle
@@ -6,20 +8,45 @@ public struct OutlineViewDiffableSnapshot<Item: TreeNodeProtocol & Hashable & Se
 
   // MARK: Public
 
+  /// Appends `items` after the existing root items.
+  ///
+  /// Every item in a snapshot must have a unique ID. An item whose ID is already in the snapshot is reported and
+  /// left out, along with its children.
   public mutating func append(items: [Item]) {
-    func makeOutlineItem(_ item: Item) -> DiffableOutlineItem<Item> {
-      .init(item, children: item.children.map(makeOutlineItem))
+    typealias ID = DiffableOutlineItem<Item>.ID
+
+    var seenIDs = Set(flattenedTree.keys)
+    var duplicateIDs = [ID]()
+
+    func makeOutlineItems(_ items: some Sequence<Item>) -> [DiffableOutlineItem<Item>] {
+      var outlineItems = [DiffableOutlineItem<Item>]()
+      for item in items {
+        if seenIDs.insert(item.id).inserted {
+          outlineItems.append(.init(item, children: makeOutlineItems(item.children)))
+        } else {
+          duplicateIDs.append(item.id)
+        }
+      }
+      return outlineItems
     }
 
-    let originalTree = items.map(makeOutlineItem)
+    let originalTree = originalTree + makeOutlineItems(items)
 
-    var childrenByParent = [DiffableOutlineItem<Item>.ID?: [DiffableOutlineItem<Item>]]()
-    var childIndexByID = [DiffableOutlineItem<Item>.ID: Int]()
-    var parentOrder = [DiffableOutlineItem<Item>.ID?]()
-    var flattenedTree = [DiffableOutlineItem<Item>.ID: DiffableOutlineItem<Item>]()
-    var parentByID = [DiffableOutlineItem<Item>.ID: DiffableOutlineItem<Item>.ID?]()
+    if !duplicateIDs.isEmpty {
+      reportIssue(
+        """
+        OutlineViewDiffableSnapshot was given items with duplicate IDs, which were left out: \(duplicateIDs)
+        """
+      )
+    }
 
-    func append(_ items: [DiffableOutlineItem<Item>], parentID: DiffableOutlineItem<Item>.ID?) {
+    var childrenByParent = [ID?: [DiffableOutlineItem<Item>]]()
+    var childIndexByID = [ID: Int]()
+    var parentOrder = [ID?]()
+    var flattenedTree = [ID: DiffableOutlineItem<Item>]()
+    var parentByID = [ID: ID?]()
+
+    func append(_ items: [DiffableOutlineItem<Item>], parentID: ID?) {
       childrenByParent[parentID] = items
       parentOrder.append(parentID)
 
@@ -39,7 +66,7 @@ public struct OutlineViewDiffableSnapshot<Item: TreeNodeProtocol & Hashable & Se
     self.parentByID = parentByID
     self.parentOrder = parentOrder
     self.flattenedTree = flattenedTree
-    values = items
+    values.append(contentsOf: items)
   }
 
   // MARK: Internal

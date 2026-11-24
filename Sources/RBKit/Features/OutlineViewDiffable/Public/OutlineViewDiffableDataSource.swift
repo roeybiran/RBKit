@@ -15,10 +15,17 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
     self.outlineView = outlineView
     super.init()
     outlineView.dataSource = self
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(outlineViewItemDidExpand),
+      name: NSOutlineView.itemDidExpandNotification,
+      object: outlineView,
+    )
   }
 
   // MARK: Public
 
+  /// Whether an item can be expanded. When unset, items that have children are expandable.
   public var isExpandable: ((Item) -> Bool)?
   public var validateDrop: ((NSOutlineView, any NSDraggingInfo, Item?, Int) -> NSDragOperation)?
   public var acceptDrop: ((NSOutlineView, any NSDraggingInfo, Item?, Int) -> Bool)?
@@ -44,10 +51,15 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
       return
     }
 
+    // The outline view forgets the expansion and selection of items it reloads, of items that are re-created under a
+    // new parent, and of items that move into a collapsed parent.
+    let viewState = viewState(of: outlineView)
+
     guard animatingDifferences, let operations = currentSnapshot.operations(to: snapshot) else {
       currentSnapshot = snapshot
       deferredReloadBaseline = nil
       outlineView.reloadData()
+      restore(viewState, on: outlineView)
       completion?(true)
       return
     }
@@ -64,6 +76,7 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
       perform(operations, from: oldSnapshot, on: outlineView)
       outlineView.endUpdates()
       reloadChangedItems(from: oldSnapshot, on: outlineView, deferringDisplayedItems: false)
+      restore(viewState, on: outlineView)
       completion?(true)
       return
     }
@@ -91,6 +104,7 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
 
     outlineView.endUpdates()
     reloadChangedItems(from: oldSnapshot, on: outlineView, deferringDisplayedItems: true)
+    restore(viewState, on: outlineView)
 
     completion?(true)
   }
@@ -108,6 +122,11 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
     }
 
     return currentSnapshot.outlineItem(for: outlineView.item(atRow: row))?.value
+  }
+
+  /// Returns the current value of an item the outline view passed to its delegate or data source.
+  public func itemIdentifier(forItem item: Any?) -> Item? {
+    currentSnapshot.outlineItem(for: item)?.value
   }
 
   public func row(for itemIdentifier: Item) -> Int? {
@@ -180,6 +199,11 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
 
   private final class FallbackItem: NSObject { }
 
+  private struct ViewState {
+    var expandedIDs = [Item.ID]()
+    var selectedIDs = [Item.ID]()
+  }
+
   private weak var outlineView: NSOutlineView?
   private var currentSnapshot = OutlineViewDiffableSnapshot<Item>()
   private let fallbackItem = FallbackItem()
@@ -187,8 +211,62 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
   private var deferredReloadBaseline: OutlineViewDiffableSnapshot<Item>?
   private var deferredReloadID = 0
 
+  /// Items that were expanded before they ended up inside a collapsed parent.
+  private var pendingExpandedIDs = Set<Item.ID>()
+
+  @objc
+  private func outlineViewItemDidExpand(_ notification: Notification) {
+    if pendingExpandedIDs.isEmpty { return }
+    guard let outlineView, let parent = currentSnapshot.outlineItem(for: notification.userInfo?["NSObject"]) else { return }
+
+    for child in parent.children where pendingExpandedIDs.remove(child.id) != nil {
+      if isExpandable(child) {
+        outlineView.expandItem(child)
+      }
+    }
+  }
+
+  private func viewState(of outlineView: NSOutlineView) -> ViewState {
+    var viewState = ViewState()
+    let selectedRows = outlineView.selectedRowIndexes
+    for row in 0..<outlineView.numberOfRows {
+      let item = outlineView.item(atRow: row)
+      guard let id = (item as? DiffableOutlineItem<Item>)?.id else { continue }
+      if outlineView.isItemExpanded(item) {
+        viewState.expandedIDs.append(id)
+      }
+      if selectedRows.contains(row) {
+        viewState.selectedIDs.append(id)
+      }
+    }
+    return viewState
+  }
+
+  private func restore(_ viewState: ViewState, on outlineView: NSOutlineView) {
+    // The outline view can't expand an item inside a collapsed parent, so those wait for the parent to expand.
+    var stillPendingIDs = Set<Item.ID>()
+    for id in viewState.expandedIDs + pendingExpandedIDs.filter({ !viewState.expandedIDs.contains($0) }) {
+      guard let item = currentSnapshot.item(id: id), isExpandable(item) else { continue }
+      if outlineView.isItemExpanded(item) { continue }
+      outlineView.expandItem(item)
+      if !outlineView.isItemExpanded(item) {
+        stillPendingIDs.insert(id)
+      }
+    }
+    pendingExpandedIDs = stillPendingIDs
+
+    let selectedRows = IndexSet(
+      viewState.selectedIDs.compactMap { id in
+        currentSnapshot.item(id: id).map(outlineView.row(forItem:)).flatMap { $0 >= 0 ? $0 : nil }
+      }
+    )
+    if selectedRows != outlineView.selectedRowIndexes {
+      outlineView.selectRowIndexes(selectedRows, byExtendingSelection: false)
+    }
+  }
+
   private func isExpandable(_ item: DiffableOutlineItem<Item>) -> Bool {
-    isExpandable?(item.value) ?? false
+    isExpandable?(item.value) ?? !item.children.isEmpty
   }
 
   private func perform(

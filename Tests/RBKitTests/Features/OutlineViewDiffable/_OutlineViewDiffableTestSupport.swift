@@ -185,6 +185,10 @@ final class OutlineViewDiffableTestHarness {
     (0..<outlineView.numberOfRows).compactMap { dataSource.itemIdentifier(forRow: $0)?.id }
   }
 
+  func selectedIDs() -> Set<Int> {
+    Set(outlineView.selectedRowIndexes.compactMap { dataSource.itemIdentifier(forRow: $0)?.id })
+  }
+
   func expandedIDs() -> Set<Int> {
     Set(
       (0..<outlineView.numberOfRows).compactMap { row in

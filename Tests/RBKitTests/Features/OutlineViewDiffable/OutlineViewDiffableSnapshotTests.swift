@@ -29,18 +29,46 @@ struct `OutlineViewDiffableSnapshot Tests` {
   }
 
   @Test
-  func `append(items:) should rebuild lookups from the latest tree`() {
+  func `append(items:) with a second call, should add the items after the existing roots`() {
     var snapshot = OutlineViewDiffableSnapshot<TestNode>()
 
     snapshot.append(items: [.init(id: 0, children: [.init(id: 1)])])
-    let staleRoot = snapshot[0]
+    snapshot.append(items: [.init(id: 2, children: [.init(id: 3)])])
 
-    snapshot.append(items: [.init(id: 0, children: [.init(id: 2)])])
+    #expect(snapshot.children(of: nil).map(\.value.id) == [0, 2])
+    #expect(snapshot.children(parentID: 2).map(\.value.id) == [3])
+    #expect(snapshot.parentID(id: 3) == 2)
+    #expect(snapshot.ids == [0, 1, 2, 3])
+    #expect(snapshot.orderedParentIDs == [nil, 0, 1, 2, 3])
 
-    #expect(snapshot.children(of: staleRoot).map(\.value.id) == [2])
-    #expect(snapshot.item(id: 1) == nil)
-    #expect(snapshot.item(id: 2)?.value == .init(id: 2))
-    #expect(snapshot.ids == [0, 2])
+    var combined = OutlineViewDiffableSnapshot<TestNode>()
+    combined.append(items: [.init(id: 0, children: [.init(id: 1)]), .init(id: 2, children: [.init(id: 3)])])
+    #expect(snapshot.hasSameValues(as: combined))
+  }
+
+  @Test
+  func `append(items:) with duplicate IDs, should report them and keep the first occurrence`() {
+    var snapshot = OutlineViewDiffableSnapshot<TestNode>()
+
+    withKnownIssue {
+      snapshot.append(items: [
+        .init(id: 0, children: [.init(id: 1)]),
+        .init(id: 2, children: [.init(id: 1, children: [.init(id: 4)])]),
+      ])
+    }
+
+    #expect(snapshot.children(parentID: 0).map(\.value.id) == [1])
+    #expect(snapshot.children(parentID: 2).isEmpty)
+    #expect(snapshot.children(of: snapshot[1]).isEmpty)
+    #expect(snapshot.item(id: 1)?.value == .init(id: 1))
+    #expect(snapshot.parentID(id: 1) == 0)
+    #expect(snapshot.ids == [0, 1, 2])
+
+    withKnownIssue {
+      snapshot.append(items: [.init(id: 0)])
+    }
+
+    #expect(snapshot.children(of: nil).map(\.value.id) == [0, 2])
   }
 
   @Test

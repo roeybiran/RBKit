@@ -96,7 +96,7 @@ struct TreeNodeProtocolTests {
   )
 
   @Test
-  func `descendants, should list nodes depth first`() {
+  func `descendants, should list children first and then the descendants of each child`() {
     #expect(
       Self.mockTree.descendants == [
         MockNode(

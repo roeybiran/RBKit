@@ -366,6 +366,9 @@ struct `OutlineViewDiffableDataSource Tests` {
       let secondChildRow = try #require(harness.dataSource.row(for: .init(id: 2)))
 
       #expect(harness.dataSource.itemIdentifier(forRow: firstChildRow) == .init(id: 1))
+      #expect(harness.dataSource.itemIdentifier(forItem: harness.outlineView.item(atRow: firstChildRow)) == .init(id: 1))
+      #expect(harness.dataSource.itemIdentifier(forItem: nil) == nil)
+      #expect(harness.dataSource.itemIdentifier(forItem: NSObject()) == nil)
       #expect(harness.dataSource.itemIdentifier(forRow: secondChildRow) == .init(id: 2, children: [.init(id: 3)]))
       #expect(harness.dataSource.outlineView(harness.outlineView, numberOfChildrenOfItem: firstChild) == 0)
       #expect(harness.dataSource.outlineView(harness.outlineView, numberOfChildrenOfItem: secondChild) == 1)
@@ -596,13 +599,14 @@ struct `OutlineViewDiffableDataSource Tests` {
       let rootItem = try #require(harness.outlineView.item(atRow: 0))
       let leafItem = try #require(harness.outlineView.item(atRow: 1))
 
-      #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: rootItem) == false)
-      #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: leafItem) == false)
-
-      harness.dataSource.isExpandable = { !$0.children.isEmpty }
-
       #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: rootItem) == true)
       #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: leafItem) == false)
+      #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: NSObject()) == false)
+
+      harness.dataSource.isExpandable = { $0.children.isEmpty }
+
+      #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: rootItem) == false)
+      #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: leafItem) == true)
       #expect(harness.dataSource.outlineView(harness.outlineView, isItemExpandable: NSObject()) == false)
     }
   }
@@ -920,6 +924,89 @@ struct `OutlineViewDiffableDataSource Tests` {
 
     #expect(harness.outlineView.reloadItemCallCount == 0)
     #expect(harness.visibleIDs() == [0, 1])
+  }
+
+  @Test(arguments: [false, true])
+  func `apply(_:animatingDifferences:completion:) with rows inserted above the selection, should keep the same items selected`(
+    isAnimated: Bool
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 1), .init(id: 2), .init(id: 3)]),
+        animatingDifferences: false,
+      )
+      harness.outlineView.selectRowIndexes([1, 2], byExtendingSelection: false)
+
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 9), .init(id: 3), .init(id: 1), .init(id: 2)]),
+        animatingDifferences: isAnimated,
+      )
+
+      #expect(harness.selectedIDs() == [3, 2])
+    }
+  }
+
+  @Test
+  func `apply(_:animatingDifferences:completion:) without animation and with the selected item removed, should clear the selection`(
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 1), .init(id: 2), .init(id: 3)]),
+        animatingDifferences: false,
+      )
+      harness.outlineView.selectRowIndexes([1], byExtendingSelection: false)
+
+      harness.dataSource.apply(harness.makeSnapshot([.init(id: 1), .init(id: 3)]), animatingDifferences: false)
+
+      #expect(harness.selectedIDs().isEmpty)
+    }
+  }
+
+  @Test(arguments: [false, true])
+  func `apply(_:animatingDifferences:completion:) with expanded items wrapped in a new parent, should keep them expanded`(
+    isAnimated: Bool
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      let wrapped = OutlineViewDiffableTestNode(id: 1, children: [.init(id: 2, children: [.init(id: 3)])])
+      harness.dataSource.apply(harness.makeSnapshot([wrapped, .init(id: 5)]), animatingDifferences: false)
+      harness.expandAllItems()
+
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 10, children: [wrapped]), .init(id: 5)]),
+        animatingDifferences: isAnimated,
+      )
+
+      #expect(harness.visibleIDs() == [10, 5])
+      harness.outlineView.expandItem(harness.outlineView.item(atRow: 0))
+      #expect(harness.visibleIDs() == [10, 1, 2, 3, 5])
+    }
+  }
+
+  @Test(arguments: [false, true])
+  func `apply(_:animatingDifferences:completion:) with an expanded item moved into a collapsed parent, should keep it expanded`(
+    isAnimated: Bool
+  ) {
+    withOutlineViewDiffableTestLock {
+      let harness = OutlineViewDiffableTestHarness()
+      let moved = OutlineViewDiffableTestNode(id: 1, children: [.init(id: 2)])
+      harness.dataSource.apply(
+        harness.makeSnapshot([moved, .init(id: 5, children: [.init(id: 6)])]),
+        animatingDifferences: false,
+      )
+      harness.outlineView.expandItem(harness.outlineView.item(atRow: 0))
+
+      harness.dataSource.apply(
+        harness.makeSnapshot([.init(id: 5, children: [.init(id: 6), moved])]),
+        animatingDifferences: isAnimated,
+      )
+
+      #expect(harness.visibleIDs() == [5])
+      harness.outlineView.expandItem(harness.outlineView.item(atRow: 0))
+      #expect(harness.visibleIDs() == [5, 6, 1, 2])
+    }
   }
 
   @Test

@@ -78,10 +78,10 @@ final class OutlineViewDiffableDemoViewController: NSViewController {
     NSLayoutConstraint.activate([
       container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
       container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      container.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
+      container.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
       container.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
-      outlineScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: 420),
-      logScrollView.heightAnchor.constraint(equalToConstant: 160),
+      outlineScrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200),
+      logScrollView.heightAnchor.constraint(equalToConstant: 100),
     ])
 
     dataSource.isExpandable = { !$0.children.isEmpty }

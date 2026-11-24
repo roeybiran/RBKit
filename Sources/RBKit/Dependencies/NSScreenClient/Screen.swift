@@ -52,7 +52,6 @@ public struct Screen: Equatable, Sendable {
     localizedName = nsScreen.localizedName
     backingScaleFactor = nsScreen.backingScaleFactor
     visibleFrame = nsScreen.visibleFrame
-    // safeAreaInsets = nsScreen.safeAreaInsets
     auxiliaryTopLeftArea = nsScreen.auxiliaryTopLeftArea
     auxiliaryTopRightArea = nsScreen.auxiliaryTopRightArea
     maximumPotentialExtendedDynamicRangeColorComponentValue =
@@ -76,22 +75,9 @@ public struct Screen: Equatable, Sendable {
   // Getting Screen Information
   public let depth: NSWindow.Depth
   public let frame: NSRect
-  /// var supportedWindowDepths: UnsafePointer<NSWindow.Depth>
-  /// var deviceDescription: [NSDeviceDescriptionKey : Any]
-  /// struct NSDeviceDescriptionKey
-  /// var colorSpace: NSColorSpace?
   public let localizedName: String
-  // func canRepresent(NSDisplayGamut) -> Bool
-  // class var screensHaveSeparateSpaces: Bool
-
-  /// Converting Between Screen and Backing Coordinates
-  /// func backingAlignedRect(NSRect, options: AlignmentOptions) -> NSRect
   public let backingScaleFactor: CGFloat
-  /// func convertRectFromBacking(NSRect) -> NSRect
-  /// func convertRectToBacking(NSRect) -> NSRect
-  /// Getting the Visible Portion of the Screen
   public let visibleFrame: NSRect
-  // let safeAreaInsets: NSEdgeInsets
   public let auxiliaryTopLeftArea: NSRect?
   public let auxiliaryTopRightArea: NSRect?
 

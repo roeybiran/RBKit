@@ -67,7 +67,6 @@ extension CGWindowValue {
     self.memoryUsage = memoryUsage
 
     // https://developer.apple.com/documentation/coregraphics/quartz_window_services/optional_window_list_keys
-    // self.workspace = dictionary[kCGWindowWorkspace] as? Int32
     ownerName = dictionary[kCGWindowOwnerName] as? String
     name = dictionary[kCGWindowName] as? String
     isOnscreen = dictionary[kCGWindowIsOnscreen] as? Bool

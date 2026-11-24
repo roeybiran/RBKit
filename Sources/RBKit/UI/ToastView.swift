@@ -108,7 +108,6 @@ public final class ToastView: NSView {
     anchorView.addSubview(self)
 
     NSLayoutConstraint.activate {
-      // centerXAnchor.constraint(equalTo: anchorView.centerXAnchor)
       trailingAnchor.constraint(equalTo: anchorView.layoutMarginsGuide.trailingAnchor)
       topAnchor.constraint(equalTo: anchorView.layoutMarginsGuide.topAnchor)
     }

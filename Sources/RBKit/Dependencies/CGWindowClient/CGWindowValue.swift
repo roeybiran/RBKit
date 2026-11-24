@@ -16,7 +16,6 @@ public struct CGWindowValue: Hashable, Sendable {
   public let ownerPID: pid_t
   public let memoryUsage: Int
 
-  // let workspace: Int32?
   public let ownerName: String?
   public let name: String?
   public let isOnscreen: Bool?

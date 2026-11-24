@@ -35,6 +35,22 @@ These are separate products. Importing `RBKit` never compiles or links them or t
 
 The `RBKitDemo` app (`RBKitDemo/RBKitDemo.xcodeproj`) has a page for each area.
 
+## Logging
+
+Every module logs to the `com.roeybiran.RBKit` subsystem, with the feature's name as the category (`AppWatcher`, `FrecencyKit`, `LoginItemKit`, `OutlineViewDiffable`, `SparkleManager`, `SymbolicHotKeysClient`, `ToastView`). Errors are always logged.
+
+Verbose tracing is off by default. Turn it on per category in the host app:
+
+```sh
+defaults write <bundle-id> RBKitVerboseLogging -array AppWatcher OutlineViewDiffable
+```
+
+Watch it with:
+
+```sh
+log stream --level debug --predicate 'subsystem == "com.roeybiran.RBKit"'
+```
+
 ## AXKit
 
 ### Testability

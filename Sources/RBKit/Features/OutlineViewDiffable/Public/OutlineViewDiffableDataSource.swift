@@ -1,5 +1,7 @@
 import AppKit
 
+private let log = RBLogger("OutlineViewDiffable")
+
 // MARK: - OutlineViewDiffableDataSource
 
 @MainActor
@@ -131,12 +133,13 @@ public final class OutlineViewDiffableDataSource<Item: TreeNodeProtocol & Hashab
       return children[index]
     }
 
-    outlineViewDiffableLogMessage(
+    let parent = String(describing: currentSnapshot.outlineItem(for: item))
+    log.os.error(
       """
       OUTLINE DIFF MISSING CHILD
       REASON: The outline view requested a child that isn't in the current snapshot.
-      INDEX: \(index)
-      PARENT: \(String(describing: currentSnapshot.outlineItem(for: item)))
+      INDEX: \(index, privacy: .public)
+      PARENT: \(parent)
       """
     )
     return fallbackItem

@@ -2,12 +2,8 @@ import Carbon
 import Dependencies
 import DependenciesMacros
 import Foundation
-import os
 
-private let symbolicHotKeysClientLogger = Logger(
-  subsystem: "com.roeybiran.RBKit",
-  category: "SymbolicHotKeysClient",
-)
+private let log = RBLogger("SymbolicHotKeysClient")
 
 // MARK: - SymbolicHotKeysClient
 
@@ -20,7 +16,7 @@ extension SymbolicHotKeysClient {
   public func isConflicting(key: Key, modifiers: Modifiers) -> Bool {
     let (hotKeysUnmanaged, status) = copySymbolicHotKeys()
     if status != noErr {
-      symbolicHotKeysClientLogger.error("Error getting system hot keys")
+      log.os.error("Error getting system hot keys, status: \(status, privacy: .public)")
       return false
     }
 

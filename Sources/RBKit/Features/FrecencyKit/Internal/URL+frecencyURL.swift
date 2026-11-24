@@ -1,8 +1,7 @@
 import Dependencies
 import Foundation
-import os
 
-let logger = Logger()
+private let log = RBLogger("FrecencyKit")
 
 extension URL {
   static var frecencyURL: URL {
@@ -27,10 +26,12 @@ extension URL {
         )
         parentDir = bundleDir
       } catch {
-        logger.log("Failed to create the application support directory, error: \(error)")
+        log.os.error(
+          "Failed to create the application support directory, error: \(error.localizedDescription, privacy: .public)"
+        )
       }
     } else {
-      logger.log("Failed to get self bundle identifier")
+      log.os.error("Failed to get self bundle identifier")
     }
 
     return parentDir.appending(component: "recents", directoryHint: .notDirectory)

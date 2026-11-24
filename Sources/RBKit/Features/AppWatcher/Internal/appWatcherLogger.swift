@@ -1,15 +1,6 @@
 import AppKit
-import os
 
-private let appWatcherLogger = Logger(
-  subsystem: Bundle.main.bundleIdentifier ?? "",
-  category: "app watcher",
-)
-
-func debugLog(_ message: String) {
-  guard UserDefaults.standard.bool(forKey: "_appWatcherLoggingEnabled") else { return }
-  appWatcherLogger.log("\(message, privacy: .public)")
-}
+private let log = RBLogger("AppWatcher")
 
 // MARK: - Event
 
@@ -57,5 +48,5 @@ enum Event: CustomStringConvertible {
 }
 
 func debugLog(event: Event, app: NSRunningApplication?) {
-  debugLog("\(event): \(app?.bundleIdentifier ?? "UNKNOWN APP")")
+  log.verbose("\(event): \(app?.bundleIdentifier ?? "UNKNOWN APP")")
 }

@@ -1,5 +1,7 @@
 import AppKit
 
+private let log = RBLogger("ToastView")
+
 // MARK: - ToastView
 
 public final class ToastView: NSView {
@@ -16,7 +18,7 @@ public final class ToastView: NSView {
 
   deinit {
     task?.cancel()
-    logger.log("NotificationView: deinit")
+    log.verbose("deinit")
   }
 
   // MARK: Public

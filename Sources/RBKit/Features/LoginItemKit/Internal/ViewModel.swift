@@ -1,6 +1,10 @@
 import Foundation
 import Observation
 
+private let log = RBLogger("LoginItemKit")
+
+// MARK: - ViewModel
+
 @MainActor
 @Observable
 final class ViewModel {
@@ -30,7 +34,7 @@ final class ViewModel {
       do {
         try isOn ? dependencies.register() : dependencies.unregister()
       } catch {
-        logger.log("\(error)")
+        log.os.error("Failed to change login item registration, error: \(error.localizedDescription, privacy: .public)")
       }
       checkRegistrationStatus()
 

@@ -1,5 +1,6 @@
 import Foundation
 import os
+import RBKit
 import Sparkle
 
 // MARK: - SparkleManager
@@ -113,7 +114,7 @@ final class SparkleManager: NSObject {
 
   // MARK: Private
 
-  private let logger = Logger(subsystem: "com.roeybiran.RBKitPrivate.SparkleExtras", category: "SparkleManager")
+  private let log = RBLogger("SparkleManager")
 
   /// The updater must reference this user driver, so it is created after init.
   private lazy var updater = SPUUpdater(
@@ -135,7 +136,7 @@ final class SparkleManager: NSObject {
 
 extension SparkleManager: SPUUserDriver {
   func show(_: SPUUpdatePermissionRequest) async -> SUUpdatePermissionResponse {
-    logger.debug("SPUUserDriver.show(_:)")
+    log.os.debug("SPUUserDriver.show(_:)")
     return .init(
       automaticUpdateChecks: updater.automaticallyChecksForUpdates,
       automaticUpdateDownloading: updater.automaticallyDownloadsUpdates as NSNumber,
@@ -144,14 +145,14 @@ extension SparkleManager: SPUUserDriver {
   }
 
   func showUserInitiatedUpdateCheck(cancellation _: @escaping () -> Void) {
-    logger.debug("SPUUserDriver.showUserInitiatedUpdateCheck(cancellation:)")
+    log.os.debug("SPUUserDriver.showUserInitiatedUpdateCheck(cancellation:)")
   }
 
   func showUpdateFound(
     with appcastItem: SUAppcastItem,
     state userUpdateState: SPUUserUpdateState,
   ) async -> SPUUserUpdateChoice {
-    logger.debug(
+    log.os.debug(
       "SPUUserDriver.showUpdateFound(with:state:) version=\(appcastItem.displayVersionString, privacy: .public) stage=\(String(describing: userUpdateState.stage), privacy: .public)"
     )
     state = .available(
@@ -164,32 +165,32 @@ extension SparkleManager: SPUUserDriver {
   }
 
   func showUpdateReleaseNotes(with _: SPUDownloadData) {
-    logger.debug("SPUUserDriver.showUpdateReleaseNotes(with:)")
+    log.os.debug("SPUUserDriver.showUpdateReleaseNotes(with:)")
   }
 
   func showUpdateReleaseNotesFailedToDownloadWithError(_ error: any Error) {
-    logger
+    log.os
       .debug(
         "SPUUserDriver.showUpdateReleaseNotesFailedToDownloadWithError(_:) error=\(error.localizedDescription, privacy: .public)"
       )
   }
 
   func showUpdateNotFoundWithError(_ error: any Error) async {
-    logger.debug("SPUUserDriver.showUpdateNotFoundWithError(_:) error=\(error.localizedDescription, privacy: .public)")
+    log.os.debug("SPUUserDriver.showUpdateNotFoundWithError(_:) error=\(error.localizedDescription, privacy: .public)")
     state = .notFound(error)
   }
 
   func showUpdaterError(_ error: any Error) async {
-    logger.debug("SPUUserDriver.showUpdaterError(_:) error=\(error.localizedDescription, privacy: .public)")
+    log.os.debug("SPUUserDriver.showUpdaterError(_:) error=\(error.localizedDescription, privacy: .public)")
     state = .failed(error)
   }
 
   func showDownloadInitiated(cancellation _: @escaping () -> Void) {
-    logger.debug("SPUUserDriver.showDownloadInitiated(cancellation:)")
+    log.os.debug("SPUUserDriver.showDownloadInitiated(cancellation:)")
   }
 
   func showDownloadDidReceiveExpectedContentLength(_ expectedContentLength: UInt64) {
-    logger
+    log.os
       .debug(
         "SPUUserDriver.showDownloadDidReceiveExpectedContentLength(_:) expectedContentLength=\(expectedContentLength, privacy: .public)"
       )
@@ -197,22 +198,22 @@ extension SparkleManager: SPUUserDriver {
   }
 
   func showDownloadDidReceiveData(ofLength length: UInt64) {
-    logger.debug("SPUUserDriver.showDownloadDidReceiveData(ofLength:) length=\(length, privacy: .public)")
+    log.os.debug("SPUUserDriver.showDownloadDidReceiveData(ofLength:) length=\(length, privacy: .public)")
     state = .downloadProgressed(length)
   }
 
   func showDownloadDidStartExtractingUpdate() {
-    logger.debug("SPUUserDriver.showDownloadDidStartExtractingUpdate()")
+    log.os.debug("SPUUserDriver.showDownloadDidStartExtractingUpdate()")
     state = .extractionStarted
   }
 
   func showExtractionReceivedProgress(_ progressValue: Double) {
-    logger.debug("SPUUserDriver.showExtractionReceivedProgress(_:) progressValue=\(progressValue, privacy: .public)")
+    log.os.debug("SPUUserDriver.showExtractionReceivedProgress(_:) progressValue=\(progressValue, privacy: .public)")
     state = .extractionProgressed(max(0, min(progressValue, 1)))
   }
 
   func showReadyToInstallAndRelaunch() async -> SPUUserUpdateChoice {
-    logger.debug("SPUUserDriver.showReadyToInstallAndRelaunch()")
+    log.os.debug("SPUUserDriver.showReadyToInstallAndRelaunch()")
     state = .readyToInstallAndRelaunch
     return .dismiss
   }
@@ -221,7 +222,7 @@ extension SparkleManager: SPUUserDriver {
     withApplicationTerminated applicationTerminated: Bool,
     retryTerminatingApplication _: @escaping () -> Void,
   ) {
-    logger
+    log.os
       .debug(
         "SPUUserDriver.showInstallingUpdate(withApplicationTerminated:retryTerminatingApplication:) applicationTerminated=\(applicationTerminated, privacy: .public)"
       )
@@ -229,12 +230,12 @@ extension SparkleManager: SPUUserDriver {
   }
 
   func showUpdateInstalledAndRelaunched(_ relaunched: Bool) async {
-    logger.debug("SPUUserDriver.showUpdateInstalledAndRelaunched(_:) relaunched=\(relaunched, privacy: .public)")
+    log.os.debug("SPUUserDriver.showUpdateInstalledAndRelaunched(_:) relaunched=\(relaunched, privacy: .public)")
     state = .installedAndRelaunched(relaunched)
   }
 
   func dismissUpdateInstallation() {
-    logger.debug("SPUUserDriver.dismissUpdateInstallation()")
+    log.os.debug("SPUUserDriver.dismissUpdateInstallation()")
     state = .dismissed
   }
 }

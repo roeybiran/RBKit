@@ -11,15 +11,12 @@ extension Effect {
   ) -> Effect<Action> {
     .run { send in
       for await _ in clock.timer(interval: duration) {
-//        NSLog("polling: \(instant)")
         let conditionMet = condition()
         if conditionMet {
-          // NSLog("polling condition met")
           await send(action())
           break
         }
       }
-      // NSLog("polling ended")
     }
     .cancellable(id: id)
   }

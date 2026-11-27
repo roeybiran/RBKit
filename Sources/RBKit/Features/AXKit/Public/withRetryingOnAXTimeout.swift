@@ -8,18 +8,20 @@ nonisolated public func withRetryingOnAXTimeout<T>(
 ) async throws -> T {
   @Dependency(\.continuousClock) var clock
 
-  var elapsed = Duration.seconds(0)
+  func retry(on clock: some Clock<Duration>) async throws -> T {
+    let deadline = clock.now.advanced(by: timeout)
 
-  while elapsed < timeout {
-    do {
-      return try await closure()
-    } catch AXClientError.cannotComplete {
-      try? await clock.sleep(for: interval)
-      elapsed += interval
-    } catch {
-      throw error
+    while clock.now < deadline {
+      try Task.checkCancellation()
+      do {
+        return try await closure()
+      } catch AXClientError.cannotComplete {
+        try await clock.sleep(for: interval)
+      }
     }
+
+    throw AXClientError.cannotComplete
   }
 
-  throw AXClientError.cannotComplete
+  return try await retry(on: clock)
 }

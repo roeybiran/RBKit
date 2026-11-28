@@ -12,6 +12,7 @@ public struct HotKeyManagerClient: Sendable {
   public var registerDefaults: @MainActor @Sendable (_ defaults: [HotKey.ID: HotKey]) -> Void
   public var register: @MainActor @Sendable (_ hotKey: HotKey, _ id: HotKey.ID) -> Void
   public var unregister: @MainActor @Sendable (_ id: HotKey.ID) -> Void
+  public var setIsEnabled: @MainActor @Sendable (_ id: HotKey.ID, _ isEnabled: Bool) -> Void
   public var presses: @MainActor @Sendable (_ id: HotKey.ID) -> AsyncStream<EventType> = { _ in .init { $0.finish() } }
   public var status: @MainActor @Sendable (_ id: HotKey.ID) -> HotKeyStatus?
 }
@@ -57,6 +58,9 @@ extension HotKeyManagerClient: DependencyKey {
     },
     unregister: { id in
       manager.unregister(id: id)
+    },
+    setIsEnabled: { id, isEnabled in
+      manager.setIsEnabled(id: id, isEnabled)
     },
     presses: { id in
       manager.presses(of: id)

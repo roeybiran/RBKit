@@ -31,26 +31,9 @@ final class HotKeyManager {
 
     isResumed = true
 
-    (userDefaultsClient.dictionary(forKey: .DEFAULTS_ALL_HOT_KEYS_KEY) ?? [:])
-      .compactMap { idKey, value -> (id: HotKey.ID, hotKey: HotKey)? in
-        if
-          let id = Int(idKey),
-          let dict = value as? [String: Any],
-          let keyCode = dict[.DEFAULTS_KEY_CODE_KEY] as? Int,
-          let key = Key(rawValue: keyCode),
-          let carbonModifiers = dict[.DEFAULTS_MODIFIERS_KEY] as? Int
-        {
-          return (
-            id: id,
-            hotKey: HotKey(key: key, modifiers: Modifiers(carbon: carbonModifiers)),
-          )
-        } else {
-          return nil
-        }
-      }
-      .forEach { hotKey in
-        register(hotKey: hotKey.hotKey, id: hotKey.id)
-      }
+    for (id, hotKey) in savedHotKeys() {
+      register(hotKey: hotKey, id: id)
+    }
 
     if eventHandlerRef != nil { return }
     guard let eventTargetRef = carbonEventsCoreClient.getEventDispatcherTarget() else { return }
@@ -81,6 +64,18 @@ final class HotKeyManager {
     }
     activeRegistrations.removeAll()
     activeHotKeyIDs.removeAll()
+  }
+
+  /// Turns a hot key off at the system level without forgetting it, or back on from its saved value.
+  func setIsEnabled(id: HotKey.ID, _ isEnabled: Bool) {
+    if isEnabled {
+      guard let hotKey = savedHotKeys()[id] else { return }
+      register(hotKey: hotKey, id: id)
+    } else {
+      guard let registration = activeRegistrations.removeValue(forKey: id) else { return }
+      activeHotKeyIDs.removeValue(forKey: registration.hotKey)
+      _ = carbonEventsCoreClient.unregisterEventHotKey(registration.ref)
+    }
   }
 
   func registerDefaults(_ defaults: [HotKey.ID: HotKey]) {
@@ -193,6 +188,21 @@ final class HotKeyManager {
   ]
 
   private let eventHandlerBox = BoxedHotKeyHandler()
+
+  private func savedHotKeys() -> [HotKey.ID: HotKey] {
+    (userDefaultsClient.dictionary(forKey: .DEFAULTS_ALL_HOT_KEYS_KEY) ?? [:])
+      .reduce(into: [HotKey.ID: HotKey]()) { result, element in
+        if
+          let id = Int(element.key),
+          let dict = element.value as? [String: Any],
+          let keyCode = dict[.DEFAULTS_KEY_CODE_KEY] as? Int,
+          let key = Key(rawValue: keyCode),
+          let carbonModifiers = dict[.DEFAULTS_MODIFIERS_KEY] as? Int
+        {
+          result[id] = HotKey(key: key, modifiers: Modifiers(carbon: carbonModifiers))
+        }
+      }
+  }
 
   private func handle(event: EventRef?) -> OSStatus {
     guard let event else {

@@ -155,6 +155,103 @@ struct HotKeyManagerTests {
   }
 
   @Test
+  func `setIsEnabled false should unregister only that hot key, keeping it saved, and true should register it again`() throws {
+    nonisolated(unsafe) var registerCalls = 0
+    nonisolated(unsafe) var unregisteredRefs = [EventHotKeyRef]()
+    nonisolated(unsafe) var setAnyCalls = 0
+
+    let hotKey1 = HotKey(key: .a, modifiers: [.command])
+    let hotKey2 = HotKey(key: .b, modifiers: [.command])
+    let sut = withDependencies {
+      $0.userDefaultsClient.dictionary = { _ in
+        [
+          "1": [
+            String.DEFAULTS_KEY_CODE_KEY: hotKey1.key.keyCode,
+            String.DEFAULTS_MODIFIERS_KEY: hotKey1.modifiers.carbon,
+          ],
+          "2": [
+            String.DEFAULTS_KEY_CODE_KEY: hotKey2.key.keyCode,
+            String.DEFAULTS_MODIFIERS_KEY: hotKey2.modifiers.carbon,
+          ],
+        ]
+      }
+      $0.userDefaultsClient.setAny = { _, _ in setAnyCalls += 1 }
+      $0.carbonEventsCoreClient.getEventDispatcherTarget = { mockEventDispatcherTarget }
+      $0.carbonEventsCoreClient.installEventHandler = { _, _, _, _ in (mockEventHandlerRef, noErr) }
+      $0.carbonEventsCoreClient.registerEventHotKey = { _, _, hotKeyID, _, _ in
+        registerCalls += 1
+        return (OpaquePointer(bitPattern: Int(hotKeyID.id) * 100 + registerCalls), noErr)
+      }
+      $0.carbonEventsCoreClient.unregisterEventHotKey = {
+        unregisteredRefs.append($0)
+        return noErr
+      }
+    } operation: {
+      HotKeyManager()
+    }
+
+    sut.start()
+    let firstRef = try #require(sut.activeRegistrations[1]?.ref)
+    let secondRef = try #require(sut.activeRegistrations[2]?.ref)
+    let setAnyCallsAfterStart = setAnyCalls
+
+    sut.setIsEnabled(id: 1, false)
+
+    #expect(unregisteredRefs == [firstRef])
+    #expect(sut.activeRegistrations[1] == nil)
+    #expect(sut.activeRegistrations[2]?.ref == secondRef)
+    #expect(sut.hotKeyStatuses[1] == .registered(hotKey1))
+    #expect(setAnyCalls == setAnyCallsAfterStart)
+
+    sut.setIsEnabled(id: 1, true)
+
+    #expect(registerCalls == 3)
+    #expect(sut.activeRegistrations[1]?.hotKey == hotKey1)
+    #expect(sut.activeRegistrations[2]?.ref == secondRef)
+  }
+
+  @Test
+  func `setIsEnabled, with nothing to change, should do nothing`() throws {
+    nonisolated(unsafe) var registerCalls = 0
+    nonisolated(unsafe) var unregisterCalls = 0
+
+    let hotKey = HotKey(key: .a, modifiers: [.command])
+    let sut = withDependencies {
+      $0.userDefaultsClient.dictionary = { _ in
+        [
+          "1": [
+            String.DEFAULTS_KEY_CODE_KEY: hotKey.key.keyCode,
+            String.DEFAULTS_MODIFIERS_KEY: hotKey.modifiers.carbon,
+          ]
+        ]
+      }
+      $0.userDefaultsClient.setAny = { _, _ in }
+      $0.carbonEventsCoreClient.getEventDispatcherTarget = { mockEventDispatcherTarget }
+      $0.carbonEventsCoreClient.registerEventHotKey = { _, _, _, _, _ in
+        registerCalls += 1
+        return (OpaquePointer(bitPattern: registerCalls + 100), noErr)
+      }
+      $0.carbonEventsCoreClient.unregisterEventHotKey = { _ in
+        unregisterCalls += 1
+        return noErr
+      }
+    } operation: {
+      HotKeyManager()
+    }
+
+    sut.setIsEnabled(id: 1, false)
+    sut.setIsEnabled(id: 2, true)
+    #expect(registerCalls == 0)
+    #expect(unregisterCalls == 0)
+
+    sut.setIsEnabled(id: 1, true)
+    let ref = try #require(sut.activeRegistrations[1]?.ref)
+    sut.setIsEnabled(id: 1, true)
+    #expect(registerCalls == 1)
+    #expect(sut.activeRegistrations[1]?.ref == ref)
+  }
+
+  @Test
   func `start, when already resumed, should do nothing`() {
     nonisolated(unsafe) var installCalls = 0
     nonisolated(unsafe) var registerCalls = 0
